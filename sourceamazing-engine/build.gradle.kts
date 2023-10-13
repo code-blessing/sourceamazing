@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    `sourceamazing-publishing`
 }
 
 repositories {
@@ -23,4 +24,18 @@ dependencies {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+
+//
+// Publishing
+//
+extensions.getByType<PublishingExtension>().publications {
+    getByName<MavenPublication>("mavenSourceamazing") {
+        artifactId = "sourceamazing-engine"
+        pom {
+            name.set("SourceAmazing Engine")
+            description.set("The engine of SourceAmazing creating the generated source code from the schemas and templates.")
+        }
+    }
 }

@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    `sourceamazing-publishing`
 }
 
 repositories {
@@ -19,8 +20,19 @@ dependencies {
 
 }
 
-
-
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+//
+// Publishing
+//
+extensions.getByType<PublishingExtension>().publications {
+    getByName<MavenPublication>("mavenSourceamazing") {
+        artifactId = "sourceamazing-xml-schema"
+        pom {
+            name.set("SourceAmazing XML Schemas")
+            description.set("Creates out of the SourceAmazing schema a XML Schema to maintain the input data.")
+        }
+    }
 }

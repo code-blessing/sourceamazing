@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    `maven-publish`
+    `sourceamazing-publishing`
 }
 
 repositories {
@@ -21,36 +21,16 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "org.codeblessing.sourceamazing"
-            artifactId = "tools"
-            version = "0.1"
 
-            from(components["java"])
-
-            pom {
-                name.set("SourceAmazing Tools")
-                description.set("A small libraries of tools working together with source amazing templates.")
-                url.set("http://www.codeblessing.org")
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/license/mit/")
-                    }
-                }
-                developers {
-                    developer {
-                        name.set("Jonathan Weiss")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git@github.com:code-blessing/sourceamazing.git")
-                    url.set("https://github.com/code-blessing/sourceamazing")
-                }
-
-            }
+//
+// Publishing
+//
+extensions.getByType<PublishingExtension>().publications {
+    getByName<MavenPublication>("mavenSourceamazing") {
+        artifactId = "sourceamazing-tools"
+        pom {
+            name.set("SourceAmazing Tools")
+            description.set("A small library of tools working together with SourceAmazing schemas and templates.")
         }
     }
 }
