@@ -4,6 +4,10 @@ plugins {
     signing
 }
 
+group = "org.codeblessing.sourceamazing"
+version = project.property("sourceamazing.version") as String
+
+
 val publicationName = "mavenSourceamazing"
 
 configure<JavaPluginExtension> {
@@ -30,8 +34,8 @@ publishingExtension.repositories {
 
 publishingExtension.publications {
     create<MavenPublication>(publicationName) {
-        groupId = "org.codeblessing.sourceamazing"
-        version = project.property("sourceamazing.version") as String
+        groupId = project.group as String
+        version = project.version as String
 
         from(components["java"])
 
