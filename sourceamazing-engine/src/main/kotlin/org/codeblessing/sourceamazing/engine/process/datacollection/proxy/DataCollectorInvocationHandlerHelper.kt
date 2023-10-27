@@ -28,6 +28,15 @@ object DataCollectorInvocationHandlerHelper {
         return getParameter(method, FacetNameValue::class.java, FacetName::class.java, args)
     }
 
+    fun <T> getConceptBuilderParameter(method: Method, args: Array<out Any>, clazz: Class<T>): T? {
+        for ((index, parameter) in method.parameters.withIndex()) {
+            if(parameter.getAnnotation(ConceptBuilder::class.java) != null) {
+                return args[index] as T?
+            }
+        }
+        return null;
+    }
+
     fun getFacetValueParameter(method: Method, args: Array<out Any>): Any? {
         return getNullableParameter(method, FacetValue::class.java, Any::class.java, args)
     }

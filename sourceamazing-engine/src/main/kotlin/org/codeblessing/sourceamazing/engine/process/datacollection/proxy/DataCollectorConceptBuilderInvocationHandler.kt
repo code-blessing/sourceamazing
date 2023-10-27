@@ -29,9 +29,14 @@ class DataCollectorConceptBuilderInvocationHandler(
                 val facetName = DataCollectorInvocationHandlerHelper.getFacetNameParameter(method, args)
                 val facetValue = DataCollectorInvocationHandlerHelper.getFacetValueParameter(method, args)
                 conceptData.addOrReplaceFacetValue(facetName = facetName, facetValue = facetValue)
-                return InvocationHandlerHelper.requiredProxy(proxy, method)
+                return proxy
             } else if(InvocationHandlerHelper.isMethodAnnotatedWith(method, AddConcept::class.java)) {
-                return DataCollectorBuilderProxyHelper.createBuilderProxy(method, args, dataCollector, parentConceptIdentifier = conceptData.conceptIdentifier)
+                return DataCollectorBuilderProxyHelper.createBuilderProxy(
+                    method = method,
+                    args = args,
+                    dataCollector = dataCollector,
+                    parentConceptIdentifier = conceptData.conceptIdentifier
+                )
             }
         }
 
