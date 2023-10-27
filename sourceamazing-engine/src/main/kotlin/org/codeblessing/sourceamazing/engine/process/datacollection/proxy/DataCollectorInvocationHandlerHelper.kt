@@ -11,8 +11,11 @@ import kotlin.reflect.KClass
 object DataCollectorInvocationHandlerHelper {
 
     fun getConceptNameParameter(method: Method, args: Array<out Any>): ConceptName {
-        // TODO support for presetConceptName annotation
-        return getParameter(method, ConceptNameValue::class.java, ConceptName::class.java, args)
+        val conceptNameValueAnnotation = method.getAnnotation(ConceptNameValue::class.java)
+        if(conceptNameValueAnnotation != null) {
+            return ConceptName.of(conceptNameValueAnnotation.conceptName)
+        }
+        return getParameter(method, DynamicConceptNameValue::class.java, ConceptName::class.java, args)
     }
 
     fun getConceptIdentifierParameter(method: Method, args: Array<out Any>): ConceptIdentifier {
@@ -39,7 +42,6 @@ object DataCollectorInvocationHandlerHelper {
 
     fun <T> getNullableParameter(method: Method, annotation: Class<out Annotation>, type: Class<T>, args: Array<out Any>): T? {
         // TODO validate that only one parameter is present
-        // TODO handle case that no parameter is present
 
         for ((index, parameter) in method.parameters.withIndex()) {
             if(parameter.getAnnotation(annotation) != null) {

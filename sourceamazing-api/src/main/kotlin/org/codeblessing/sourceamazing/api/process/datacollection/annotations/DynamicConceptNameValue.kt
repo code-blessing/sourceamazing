@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.api.process.datacollection.annotations
 
 
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ConceptNameValue(val conceptName: String)
+annotation class DynamicConceptNameValue()
