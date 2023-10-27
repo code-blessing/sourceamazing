@@ -6,7 +6,7 @@ import java.lang.reflect.Method
 
 object DataCollectorBuilderProxyHelper {
 
-    fun createBuilderProxy(method: Method?, args: Array<out Any>?, dataCollector: ConceptDataCollector): Any {
+    fun createBuilderProxy(method: Method, args: Array<out Any>, dataCollector: ConceptDataCollector): Any {
         val conceptDataBuilderClass = DataCollectorInvocationHandlerHelper.getConceptBuilderClazz(method)
 
         val conceptName = DataCollectorInvocationHandlerHelper.getConceptNameParameter(method, args)
