@@ -8,18 +8,18 @@ import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 @DataCollector
 interface DefaultDataCollectorConceptBuilder {
 
-    @AddFacet
-    fun addFacetValue(@FacetNameValue facetName: FacetName, @FacetValue facetValue: Any?): DefaultDataCollectorConceptBuilder
+    @AddFacets
+    fun addFacetValue(@DynamicFacetNameValue facetName: FacetName, @DynamicFacetValue facetValue: Any?): DefaultDataCollectorConceptBuilder
 
     // Builder style
-    @AddConcept(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
+    @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
     ): DefaultDataCollectorConceptBuilder
 
     // DSL style
-    @AddConcept(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
+    @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,

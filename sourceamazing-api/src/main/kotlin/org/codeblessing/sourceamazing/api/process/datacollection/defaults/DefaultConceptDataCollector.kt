@@ -8,13 +8,13 @@ import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 interface DefaultConceptDataCollector {
 
     // Builder style
-    @AddConcept(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
+    @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier): DefaultDataCollectorConceptBuilder
 
     // DSL style
-    @AddConcept(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
+    @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,

@@ -85,14 +85,15 @@ class DataCollectorInvocationHandlerTest {
     interface DataCollectorRoot {
 
         // Builder style
-        @AddConcept(conceptBuilderClazz = PersonConceptBuilder::class)
+        @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
             @ConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
+            @FacetValue(personFirstnameFacetName) firstname: String,
         ): PersonConceptBuilder
 
         // DSL style
-        @AddConcept(conceptBuilderClazz = PersonConceptBuilder::class)
+        @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
             @ConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
@@ -103,27 +104,33 @@ class DataCollectorInvocationHandlerTest {
     @DataCollector
     interface PersonConceptBuilder {
 
-        @AddFacet
+        @AddFacets
         fun firstname(
-            @FacetValue firstname: String,
-            @FacetNameValue facetName: FacetName = FacetName.of(personFirstnameFacetName),
+            @DynamicFacetValue firstname: String,
+            @DynamicFacetNameValue facetName: FacetName = FacetName.of(personFirstnameFacetName),
         ): PersonConceptBuilder
 
-        @AddFacet
+        @AddFacets
         fun age(
-            @FacetValue age: Int,
-            @FacetNameValue facetName: FacetName = FacetName.of(personAgeFacetName),
+            @FacetValue(personAgeFacetName) age: Int,
+        ): PersonConceptBuilder
+
+        @AddFacets
+        fun firstnameAndAge(
+            @DynamicFacetValue firstname: String,
+            @DynamicFacetNameValue facetName: FacetName = FacetName.of(personFirstnameFacetName),
+            @FacetValue(personAgeFacetName) age: Int,
         ): PersonConceptBuilder
 
         // Builder style
-        @AddConcept(conceptBuilderClazz = SkillConceptBuilder::class)
+        @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
         fun skill(
             @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
             @ConceptNameValue conceptName: ConceptName = ConceptName.of(skillConceptName),
         ): SkillConceptBuilder
 
         // DSL style
-        @AddConcept(conceptBuilderClazz = SkillConceptBuilder::class)
+        @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
         fun skill(
             @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
             @ConceptNameValue conceptName: ConceptName = ConceptName.of(skillConceptName),
@@ -134,17 +141,22 @@ class DataCollectorInvocationHandlerTest {
     @DataCollector
     interface SkillConceptBuilder {
 
-        @AddFacet
-        fun description(
-            @FacetValue description: String,
-            @FacetNameValue facetName: FacetName = FacetName.of(skillDescriptionFacetName),
+        @AddFacets
+        fun descriptionAndStillEnjoying(
+            @FacetValue(skillDescriptionFacetName) description: String,
+            @FacetValue(skillStillEnjoyingFacetName) stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
-        @AddFacet
-        fun stillEnjoying(
-            @FacetValue stillEnjoying: Boolean,
-            @FacetNameValue facetName: FacetName = FacetName.of(skillStillEnjoyingFacetName),
+        @AddFacets
+        fun description(
+            @FacetValue(skillDescriptionFacetName) description: String,
         ): SkillConceptBuilder
+
+        @AddFacets
+        fun stillEnjoying(
+            @FacetValue(skillStillEnjoyingFacetName) stillEnjoying: Boolean,
+        ): SkillConceptBuilder
+
     }
 
 
@@ -157,12 +169,11 @@ class DataCollectorInvocationHandlerTest {
 
         // Add data in builder style
         val james = dataCollectorProxy
-            .newPerson(jamesConceptIdentifier)
+            .newPerson(jamesConceptIdentifier, firstname = "James")
             .firstname("James")
             .age(18)
         james.skill(cookingConceptIdentifier)
-            .description("Cooking for Dinner")
-            .stillEnjoying(true)
+            .descriptionAndStillEnjoying("Cooking for Dinner", true)
         james.skill(skateboardConceptIdentifier)
             .description("Skateboarding")
             .stillEnjoying(false)
@@ -172,8 +183,7 @@ class DataCollectorInvocationHandlerTest {
         val judoConceptIdentifier = ConceptIdentifier.of("Judo")
         dataCollectorProxy
             .newPerson(lindaConceptIdentifier) {
-                firstname("Linda")
-                age(29)
+                firstnameAndAge(firstname = "Linda", age = 29)
                 skill(judoConceptIdentifier) {
                     description("Judo")
                     stillEnjoying(true)

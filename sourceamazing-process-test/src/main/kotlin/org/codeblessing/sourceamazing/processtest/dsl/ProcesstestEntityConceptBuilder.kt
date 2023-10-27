@@ -8,19 +8,19 @@ import org.codeblessing.sourceamazing.api.process.schema.FacetName
 @DataCollector
 interface ProcesstestEntityConceptBuilder {
 
-    @AddFacet
+    @AddFacets
     fun name(
-        @FacetValue entityName: String,
-        @FacetNameValue facetName: FacetName = FacetName.of("Name"),
+        @DynamicFacetValue entityName: String,
+        @DynamicFacetNameValue facetName: FacetName = FacetName.of("Name"),
     ): ProcesstestEntityConceptBuilder
 
-    @AddFacet
+    @AddFacets
     fun alternativeName(
-        @FacetValue alternativeName: String?,
-        @FacetNameValue facetName: FacetName = FacetName.of("AlternativeName"),
+        @DynamicFacetValue alternativeName: String?,
+        @DynamicFacetNameValue facetName: FacetName = FacetName.of("AlternativeName"),
     ): ProcesstestEntityConceptBuilder
 
-    @AddConcept(conceptBuilderClazz = ProcesstestEntityAttributeConceptBuilder::class)
+    @AddConceptAndFacets(conceptBuilderClazz = ProcesstestEntityAttributeConceptBuilder::class)
     fun newEntityAttribute(
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier = ConceptIdentifier.random(),
         @ConceptNameValue conceptName: ConceptName = ConceptName.of("EntityAttribute"),

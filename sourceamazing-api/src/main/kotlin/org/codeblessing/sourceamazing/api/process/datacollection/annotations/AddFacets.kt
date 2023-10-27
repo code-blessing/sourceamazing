@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.api.process.datacollection.annotations
 
 
-@Target(AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FacetNameValue()
+annotation class AddFacets()

@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import java.lang.reflect.Method
+import java.lang.reflect.Parameter
 import kotlin.reflect.KClass
 
 object DataCollectorInvocationHandlerHelper {
@@ -20,12 +21,11 @@ object DataCollectorInvocationHandlerHelper {
     }
 
     fun getConceptBuilderClazz(method: Method): KClass<*> {
-        return method.getAnnotation(AddConcept::class.java).conceptBuilderClazz
+        return method.getAnnotation(AddConceptAndFacets::class.java).conceptBuilderClazz
     }
 
-    fun getFacetNameParameter(method: Method, args: Array<out Any>): FacetName {
-        // TODO support for presetFacetName annotation
-        return getParameter(method, FacetNameValue::class.java, FacetName::class.java, args)
+    fun getFacetName(parameter: Parameter): FacetName {
+        return FacetName.of(parameter.getAnnotation(FacetValue::class.java).facetName)
     }
 
     fun <T> getConceptBuilderParameter(method: Method, args: Array<out Any>, clazz: Class<T>): T? {
@@ -37,11 +37,7 @@ object DataCollectorInvocationHandlerHelper {
         return null;
     }
 
-    fun getFacetValueParameter(method: Method, args: Array<out Any>): Any? {
-        return getNullableParameter(method, FacetValue::class.java, Any::class.java, args)
-    }
-
-    private fun <T> getNullableParameter(method: Method, annotation: Class<out Annotation>, type: Class<T>, args: Array<out Any>): T? {
+    fun <T> getNullableParameter(method: Method, annotation: Class<out Annotation>, type: Class<T>, args: Array<out Any>): T? {
         // TODO validate that only one parameter is present
         // TODO handle case that no parameter is present
 
@@ -51,10 +47,20 @@ object DataCollectorInvocationHandlerHelper {
             }
         }
         throw IllegalStateException("Method $method: No arguments found for annotation '$annotation' in $args")
-
     }
-    private fun <T> getParameter(method: Method, annotation: Class<out Annotation>, type: Class<T>, args: Array<out Any>): T {
+
+    fun <T> getParameter(method: Method, annotation: Class<out Annotation>, type: Class<T>, args: Array<out Any>): T {
         return getNullableParameter(method, annotation, type, args)
             ?: throw IllegalStateException("Method $method: Arguments for annotation '$annotation' in $args was null.")
     }
+
+    fun <T> getNullableParameter(method: Method, parameter: Parameter, type: Class<T>, args: Array<out Any>): T? {
+        for ((index, parameterOfIndex) in method.parameters.withIndex()) {
+            if(parameterOfIndex == parameter) {
+                return args[index] as T?
+            }
+        }
+        throw IllegalStateException("Method $method: No arguments found for parameter '$parameter' in $args")
+    }
+
 }
