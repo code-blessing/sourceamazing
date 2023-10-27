@@ -247,42 +247,36 @@ class EngineProcessTest {
         ) {
 
             val employeePreferencesFormId = ConceptIdentifier.of("EmployeeWorkPreferencesForm")
-            dataCollector
+            val employeePreferencesForm = dataCollector
                 .newConceptData(formConceptName, employeePreferencesFormId)
-                .setParent(null)
                 .addFacetValue(formTitleFacetName,  "Employee Work Preferences")
 
-            dataCollector
+            employeePreferencesForm
                 .newConceptData(textInputFormControlConceptName, ConceptIdentifier.of("EmployeeFirstname"))
-                .setParent(employeePreferencesFormId)
                 .addFacetValue(formControlDisplayNameFacetName,  "Firstname")
                 .addFacetValue(formControlValueRequiredFacetName,  true)
                 .addFacetValue(textInputFormatHintFacetName, TextInputFormatHint.PLAIN)
 
-            dataCollector
+            employeePreferencesForm
                 .newConceptData(textInputFormControlConceptName, ConceptIdentifier.of("EmployeeLastname"))
-                .setParent(employeePreferencesFormId)
                 .addFacetValue(formControlDisplayNameFacetName,  "Lastname")
                 .addFacetValue(formControlValueRequiredFacetName,  false)
                 .addFacetValue(textInputFormatHintFacetName, TextInputFormatHint.MONEY)
 
             val preferredWorkplaceId = ConceptIdentifier.of("EmployeePreferredWorkplace")
-            dataCollector
+            val preferredWorkplace = employeePreferencesForm
                 .newConceptData(selectDropdownFormControlConceptName, preferredWorkplaceId)
-                .setParent(employeePreferencesFormId)
                 .addFacetValue(formControlDisplayNameFacetName,  "Workplace Preference")
                 .addFacetValue(selectDropdownDefaultValueFacetName,  "company")
                 .addFacetValue(formControlValueRequiredFacetName,  true)
 
-            dataCollector
+            preferredWorkplace
                 .newConceptData(selectDropdownEntryConceptName, ConceptIdentifier.of("HomeOffice"))
-                .setParent(preferredWorkplaceId)
                 .addFacetValue(selectDropdownEntryValueFacetName,  "home")
                 .addFacetValue(selectDropdownEntryDisplayNameFacetName,  "Home Office")
 
-            dataCollector
+            preferredWorkplace
                 .newConceptData(selectDropdownEntryConceptName, ConceptIdentifier.of("CompanyOffice"))
-                .setParent(preferredWorkplaceId)
                 .addFacetValue(selectDropdownEntryValueFacetName,  "company")
                 .addFacetValue(selectDropdownEntryDisplayNameFacetName,  "Company Office")
 

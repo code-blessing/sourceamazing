@@ -10,15 +10,13 @@ import kotlin.reflect.KClass
 object DataCollectorInvocationHandlerHelper {
 
     fun getConceptNameParameter(method: Method, args: Array<out Any>): ConceptName {
+        // TODO support for presetConceptName annotation
         return getParameter(method, ConceptNameValue::class.java, ConceptName::class.java, args)
     }
 
     fun getConceptIdentifierParameter(method: Method, args: Array<out Any>): ConceptIdentifier {
+        // TODO support for random id annotation on method
         return getParameter(method, ConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
-    }
-
-    fun getParentConceptIdentifierParameter(method: Method, args: Array<out Any>): ConceptIdentifier? {
-        return getNullableParameter(method, ParentConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
     }
 
     fun getConceptBuilderClazz(method: Method): KClass<*> {
@@ -26,6 +24,7 @@ object DataCollectorInvocationHandlerHelper {
     }
 
     fun getFacetNameParameter(method: Method, args: Array<out Any>): FacetName {
+        // TODO support for presetFacetName annotation
         return getParameter(method, FacetNameValue::class.java, FacetName::class.java, args)
     }
 
