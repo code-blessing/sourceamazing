@@ -6,16 +6,14 @@ import org.codeblessing.sourceamazing.api.process.datacollection.exceptions.Inva
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.api.process.schema.annotations.ChildConcepts
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.engine.process.schema.SchemaCreator
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 private const val databaseTableConceptConst = "DatabaseTable"
 private const val databaseFieldConceptConst = "DatabaseField"
@@ -69,15 +67,15 @@ class ConceptResolverTest {
 
     private val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(DatabaseSchema::class.java)
 
-    private fun createCollector(schema: SchemaAccess): ConceptDataCollector {
-        return ConceptDataCollector(schema)
+    private fun createCollector(): ConceptDataCollector {
+        return ConceptDataCollector()
     }
 
 
     @Test
     fun `validate empty concept`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         // act
         val conceptGraph = ConceptResolver.validateAndResolveConcepts(schema, conceptDataCollector.provideConceptData())
@@ -89,7 +87,7 @@ class ConceptResolverTest {
     @Test
     fun `validate valid concept data`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
         val personIdFieldId = ConceptIdentifier.of("PersonIdField")
         val addressTableId = ConceptIdentifier.of("Address")
@@ -171,7 +169,7 @@ class ConceptResolverTest {
     @Test
     fun `validate invalid concept data with same concept identifier multiple times`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -198,7 +196,7 @@ class ConceptResolverTest {
     @Test
     fun `validate invalid concept data with unknown parent identifier`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -225,7 +223,7 @@ class ConceptResolverTest {
     @Test
     fun `validate invalid concept data with unknown reference identifier`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
         val addressTableId = ConceptIdentifier.of("Address")
         val unknownTableId = ConceptIdentifier.of("Unknown")

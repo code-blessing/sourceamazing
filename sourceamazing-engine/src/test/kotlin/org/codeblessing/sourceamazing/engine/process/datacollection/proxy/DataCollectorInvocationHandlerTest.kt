@@ -2,13 +2,12 @@ package org.codeblessing.sourceamazing.engine.process.datacollection.proxy
 
 import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 import org.codeblessing.sourceamazing.api.process.datacollection.defaults.DefaultConceptDataCollector
-import org.codeblessing.sourceamazing.api.process.datacollection.defaults.DefaultDataCollectorConceptBuilder
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.engine.process.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.engine.proxy.ProxyCreator
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 private const val personConceptName = "Person"
@@ -209,7 +208,7 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun createDataCollector(): ConceptDataCollector {
-        return ConceptDataCollector(TestSchema(emptyList()), validateConcept = false)
+        return ConceptDataCollector()
     }
 
 }

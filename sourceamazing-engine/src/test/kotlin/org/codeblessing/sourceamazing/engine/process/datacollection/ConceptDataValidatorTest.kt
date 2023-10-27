@@ -1,17 +1,17 @@
 package org.codeblessing.sourceamazing.engine.process.datacollection
 
+import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
+import org.codeblessing.sourceamazing.api.process.datacollection.exceptions.*
+import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
+import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.api.process.schema.annotations.ChildConcepts
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
-import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
-import org.codeblessing.sourceamazing.api.process.datacollection.exceptions.*
-import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.engine.process.schema.SchemaCreator
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 
@@ -66,14 +66,15 @@ class ConceptDataValidatorTest {
     }
 
     private val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(DatabaseSchema::class.java)
-    private fun createCollector(schema: SchemaAccess): ConceptDataCollector {
-        return ConceptDataCollector(schema)
+
+    private fun createCollector(): ConceptDataCollector {
+        return ConceptDataCollector()
     }
 
     @Test
     fun `validate a valid singe root concept entry`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -89,7 +90,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a invalid concept entry with unknown concept name`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -106,7 +107,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a valid child concept entry`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -145,7 +146,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a invalid root concept entry with unexpected parent concept`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
         val personTableId = ConceptIdentifier.of("Person")
 
         conceptDataCollector.existingOrNewConceptData(
@@ -162,7 +163,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a invalid child concept entry with expected but missing parent concept`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
         conceptDataCollector.existingOrNewConceptData(
@@ -183,7 +184,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with missing facet`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
@@ -203,7 +204,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with wrong additional facet`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
@@ -224,7 +225,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with wrong facet type`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
@@ -244,7 +245,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with mandatory facet type but null value`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
@@ -264,7 +265,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with optional reference facet type and null value`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
@@ -285,7 +286,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate a concept with reference facet type with value other than ConceptIdentifier`() {
         // arrange
-        val conceptDataCollector = createCollector(schema)
+        val conceptDataCollector = createCollector()
 
         val personTableId = ConceptIdentifier.of("Person")
         val personFirstnameFieldId = ConceptIdentifier.of("Person_firstname")
