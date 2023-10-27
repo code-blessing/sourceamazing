@@ -1,17 +1,24 @@
 package org.codeblessing.sourceamazing.processtest
 
+import org.codeblessing.sourceamazing.api.extensions.ExtensionName
 import org.codeblessing.sourceamazing.api.process.datacollection.defaults.DefaultConceptDataCollector
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
 import org.codeblessing.sourceamazing.api.process.DefaultDomainUnit
+import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
+import org.codeblessing.sourceamazing.processtest.dsl.ProcesstestConceptDataCollector
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class ProcesstestDomainUnit: DefaultDomainUnit<ProcesstestDomainSchema>(
-    schemaDefinitionClass = ProcesstestDomainSchema::class.java
+class ProcesstestDomainUnit: DomainUnit<ProcesstestDomainSchema, ProcesstestConceptDataCollector>(
+    schemaDefinitionClass = ProcesstestDomainSchema::class.java,
+    inputDefinitionClass = ProcesstestConceptDataCollector::class.java,
+
 ) {
+    private val defaultDataCollectionExtensionName = ExtensionName.of("XmlSchemaInputExtension")
+    private val defaultXmlPaths = setOf(Paths.get("input-data").resolve("input-data.xml"))
 
     companion object {
         val outputDirectory: Path = Paths.get("output-data")
@@ -39,17 +46,40 @@ class ProcesstestDomainUnit: DefaultDomainUnit<ProcesstestDomainSchema>(
     override fun collectInputData(
         parameterAccess: ParameterAccess,
         extensionAccess: DataCollectionExtensionAccess,
-        dataCollector: DefaultConceptDataCollector
+        dataCollector: ProcesstestConceptDataCollector
     ) {
-        super.collectInputData(parameterAccess, extensionAccess, dataCollector)
+        extensionAccess.collectWithDataCollectionFromFilesExtension(
+            extensionName = defaultDataCollectionExtensionName,
+            inputFiles = defaultXmlPaths,
+        )
 
-        dataCollector
-            .newConceptData(ProcesstestEntitySchemaConstants.conceptName, ConceptIdentifier.of("MeinTestkonzept"))
-            .addFacetValue(ProcesstestEntitySchemaConstants.entityName,  "MeinTestkonzept-Name")
+        val firstConceptIdentifier = ConceptIdentifier.of("MeinTestkonzept")
+        val meinTestkonzept = dataCollector
+            .newEntity(conceptIdentifier = firstConceptIdentifier)
+            .name(entityName = "MeinTestkonzept-Name")
+            .alternativeName(alternativeName = "MeinTestkonzeptli")
 
-        dataCollector
-            .newConceptData(ProcesstestEntitySchemaConstants.conceptName, ConceptIdentifier.of("MeinZweitesTestkonzept"))
-            .addFacetValue(ProcesstestEntitySchemaConstants.entityName,  "MeinZweitesTestkonzept-Name")
+        meinTestkonzept
+            .newEntityAttribute(parentConceptIdentifier = firstConceptIdentifier)
+            .attributeName(attributeName = "Anzahl")
+            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
+
+        meinTestkonzept
+            .newEntityAttribute(parentConceptIdentifier = firstConceptIdentifier)
+            .attributeName(attributeName = "Required")
+            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.BOOLEAN)
+
+
+        val secondConceptIdentifier = ConceptIdentifier.of("MeinZweitesTestkonzept")
+        val meinZweitesTestkonzept = dataCollector
+            .newEntity(conceptIdentifier = secondConceptIdentifier)
+            .name(entityName = "MeinZweitesTestkonzept-Name")
+            .alternativeName(alternativeName = "MeinTestkonzeptli 2")
+
+        meinZweitesTestkonzept
+            .newEntityAttribute(parentConceptIdentifier = secondConceptIdentifier)
+            .attributeName(attributeName = "Kilometer")
+            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
 
     }
 }
