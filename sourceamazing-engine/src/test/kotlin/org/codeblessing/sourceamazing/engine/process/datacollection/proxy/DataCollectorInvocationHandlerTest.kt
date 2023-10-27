@@ -125,15 +125,16 @@ class DataCollectorInvocationHandlerTest {
         // Builder style
         @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
         @ConceptNameValue(skillConceptName)
+        @AutoRandomConceptIdentifier
         fun skill(
-            @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
+            @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier? = null,
         ): SkillConceptBuilder
 
         // DSL style
         @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
         @ConceptNameValue(skillConceptName)
         fun skill(
-            @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
+            @ConceptIdentifierValue skillConceptIdentifier: String?,
             @ConceptBuilder builder: SkillConceptBuilder.() -> Unit)
 
     }
@@ -160,8 +161,6 @@ class DataCollectorInvocationHandlerTest {
     }
 
 
-
-
     @Test
     fun `test data invocation with individual data collector`() {
         val conceptDataCollector = createDataCollector()
@@ -170,7 +169,6 @@ class DataCollectorInvocationHandlerTest {
         // Add data in builder style
         val james = dataCollectorProxy
             .newPerson(jamesConceptIdentifier, firstname = "James")
-            .firstname("James")
             .age(18)
         james.skill(cookingConceptIdentifier)
             .descriptionAndStillEnjoying("Cooking for Dinner", true)
@@ -184,7 +182,7 @@ class DataCollectorInvocationHandlerTest {
         dataCollectorProxy
             .newPerson(lindaConceptIdentifier) {
                 firstnameAndAge(firstname = "Linda", age = 29)
-                skill(judoConceptIdentifier) {
+                skill(judoConceptIdentifier.name) {
                     description("Judo")
                     stillEnjoying(true)
                 }
