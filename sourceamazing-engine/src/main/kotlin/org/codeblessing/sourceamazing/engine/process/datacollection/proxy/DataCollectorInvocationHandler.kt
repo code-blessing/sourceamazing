@@ -22,7 +22,7 @@ class DataCollectorInvocationHandler(private val dataCollector: ConceptDataColle
         if(InvocationHandlerHelper.isMethodAnnotatedWithExactlyOneOf(method, requiredMethodAnnotations)) {
 
             if(InvocationHandlerHelper.isMethodAnnotatedWith(method, AddConcept::class.java)) {
-                return DataCollectorBuilderProxyHelper.createBuilderProxy(method, args, dataCollector)
+                return DataCollectorBuilderProxyHelper.createBuilderProxy(method, args, dataCollector, parentConceptIdentifier = null)
             }
         }
 

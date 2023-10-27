@@ -60,12 +60,12 @@ class ProcesstestDomainUnit: DomainUnit<ProcesstestDomainSchema, ProcesstestConc
             .alternativeName(alternativeName = "MeinTestkonzeptli")
 
         meinTestkonzept
-            .newEntityAttribute(parentConceptIdentifier = firstConceptIdentifier)
+            .newEntityAttribute()
             .attributeName(attributeName = "Anzahl")
             .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
 
         meinTestkonzept
-            .newEntityAttribute(parentConceptIdentifier = firstConceptIdentifier)
+            .newEntityAttribute()
             .attributeName(attributeName = "Required")
             .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.BOOLEAN)
 
@@ -77,7 +77,7 @@ class ProcesstestDomainUnit: DomainUnit<ProcesstestDomainSchema, ProcesstestConc
             .alternativeName(alternativeName = "MeinTestkonzeptli 2")
 
         meinZweitesTestkonzept
-            .newEntityAttribute(parentConceptIdentifier = secondConceptIdentifier)
+            .newEntityAttribute()
             .attributeName(attributeName = "Kilometer")
             .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
 

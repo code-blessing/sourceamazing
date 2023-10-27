@@ -10,7 +10,6 @@ interface DefaultConceptDataCollector {
     @AddConcept(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
-        @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-        @ParentConceptIdentifierValue parentConceptIdentifier: ConceptIdentifier? = null): DefaultDataCollectorConceptBuilder
+        @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier): DefaultDataCollectorConceptBuilder
 
 }

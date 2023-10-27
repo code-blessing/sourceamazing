@@ -32,19 +32,16 @@ class DataCollectorInvocationHandlerTest {
             .newConceptData(
                 conceptName = personConcept,
                 conceptIdentifier = jamesConceptIdentifier,
-                parentConceptIdentifier = null
             )
             .addFacetValue(facetName = personFirstnameFacet, facetValue = "James")
             .addFacetValue(facetName = personAgeFacet, facetValue = 18)
         james.newConceptData(
             conceptName = skillConcept,
             conceptIdentifier = cookingConceptIdentifier,
-            parentConceptIdentifier = jamesConceptIdentifier
         ).addFacetValue(facetName = skillDescriptionFacet, facetValue = "Cooking for Dinner")
         james.newConceptData(
             conceptName = skillConcept,
             conceptIdentifier = skateboardConceptIdentifier,
-            parentConceptIdentifier = jamesConceptIdentifier
         ).addFacetValue(facetName = skillDescriptionFacet, facetValue = "Skateboarding")
 
 
@@ -54,14 +51,12 @@ class DataCollectorInvocationHandlerTest {
             .newConceptData(
                 conceptName = personConcept,
                 conceptIdentifier = lindaConceptIdentifier,
-                parentConceptIdentifier = null
             )
             .addFacetValue(facetName = personFirstnameFacet, facetValue = "Linda")
             .addFacetValue(facetName = personAgeFacet, facetValue = 29)
         linda.newConceptData(
             conceptName = skillConcept,
             conceptIdentifier = judoConceptIdentifier,
-            parentConceptIdentifier = lindaConceptIdentifier
         ).addFacetValue(facetName = skillDescriptionFacet, facetValue = "Judo")
 
 

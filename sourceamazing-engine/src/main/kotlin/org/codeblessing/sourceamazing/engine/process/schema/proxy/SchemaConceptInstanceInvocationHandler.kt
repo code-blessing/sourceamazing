@@ -1,11 +1,8 @@
 package org.codeblessing.sourceamazing.engine.process.schema.proxy
 
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.AddConcept
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.SetParent
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptNode
-import org.codeblessing.sourceamazing.engine.process.datacollection.proxy.DataCollectorInvocationHandlerHelper
 import org.codeblessing.sourceamazing.engine.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.engine.proxy.ProxyCreator
 import java.lang.reflect.InvocationHandler

@@ -8,9 +8,6 @@ import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 @DataCollector
 interface DefaultDataCollectorConceptBuilder {
 
-    @SetParent
-    fun setParent(@ParentConceptIdentifierValue parentConceptIdentifier: ConceptIdentifier?): DefaultDataCollectorConceptBuilder
-
     @AddFacet
     fun addFacetValue(@FacetNameValue facetName: FacetName, @FacetValue facetValue: Any?): DefaultDataCollectorConceptBuilder
 
@@ -18,7 +15,7 @@ interface DefaultDataCollectorConceptBuilder {
     fun newConceptData(
         @ConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-        @ParentConceptIdentifierValue parentConceptIdentifier: ConceptIdentifier? = null): DefaultDataCollectorConceptBuilder
+    ): DefaultDataCollectorConceptBuilder
 
 
 }

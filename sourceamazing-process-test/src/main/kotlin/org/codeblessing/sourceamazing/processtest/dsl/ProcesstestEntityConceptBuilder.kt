@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.processtest.dsl
 
-import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
+import org.codeblessing.sourceamazing.api.process.schema.FacetName
 
 @DataCollector
 interface ProcesstestEntityConceptBuilder {
@@ -23,7 +23,6 @@ interface ProcesstestEntityConceptBuilder {
     @AddConcept(conceptBuilderClazz = ProcesstestEntityAttributeConceptBuilder::class)
     fun newEntityAttribute(
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier = ConceptIdentifier.random(),
-        @ParentConceptIdentifierValue parentConceptIdentifier: ConceptIdentifier? /* TODO automatic parentId */,
         @ConceptNameValue conceptName: ConceptName = ConceptName.of("EntityAttribute"),
         ): ProcesstestEntityAttributeConceptBuilder
 
