@@ -29,6 +29,11 @@ object DataCollectorInvocationHandlerHelper {
         return getParameter(method, ConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
     }
 
+    fun getParentConceptIdentifierOrDefaultParameter(method: Method?, args: Array<out Any>?): ConceptIdentifier? {
+
+        return getNullableParameter(method, ParentConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
+    }
+
     fun getParentConceptIdentifierParameter(method: Method?, args: Array<out Any>?): ConceptIdentifier? {
         return getNullableParameter(method, ParentConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
     }
