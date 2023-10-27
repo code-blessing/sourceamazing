@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.engine.process.datacollection.proxy
 
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.AddConcept
+import org.codeblessing.sourceamazing.api.process.datacollection.annotations.AddConceptAndFacets
 import org.codeblessing.sourceamazing.engine.process.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.engine.proxy.InvocationHandlerHelper
 import java.lang.reflect.InvocationHandler
@@ -9,7 +9,7 @@ import java.lang.reflect.Method
 class DataCollectorInvocationHandler(private val dataCollector: ConceptDataCollector) : InvocationHandler {
 
     private val requiredMethodAnnotations = setOf(
-        AddConcept::class.java,
+        AddConceptAndFacets::class.java,
     )
 
     override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any {
@@ -20,13 +20,15 @@ class DataCollectorInvocationHandler(private val dataCollector: ConceptDataColle
 
 
         if(InvocationHandlerHelper.isMethodAnnotatedWithExactlyOneOf(method, requiredMethodAnnotations)) {
+            if(InvocationHandlerHelper.isMethodAnnotatedWith(method, AddConceptAndFacets::class.java)) {
+                InvocationHandlerHelper.validateAllMethodParamsAnnotated(method)
 
-            if(InvocationHandlerHelper.isMethodAnnotatedWith(method, AddConcept::class.java)) {
                 return DataCollectorBuilderProxyHelper.createBuilderProxy(
                     method = method,
                     args = args,
                     dataCollector = dataCollector,
-                    parentConceptIdentifier = null /* always null because we are in root data collector */)
+                    parentConceptIdentifier = null, /* always null because we are in root data collector */
+                )
             }
         }
 

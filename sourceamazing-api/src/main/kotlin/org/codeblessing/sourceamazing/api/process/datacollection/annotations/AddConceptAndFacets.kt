@@ -5,4 +5,4 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class AddConcept(val conceptBuilderClazz: KClass<*>)
+annotation class AddConceptAndFacets(val conceptBuilderClazz: KClass<*>)

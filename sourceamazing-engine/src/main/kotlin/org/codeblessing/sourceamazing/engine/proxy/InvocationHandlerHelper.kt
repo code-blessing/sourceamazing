@@ -1,9 +1,20 @@
 package org.codeblessing.sourceamazing.engine.proxy
 
+import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
+import java.lang.reflect.Parameter
 
 object InvocationHandlerHelper {
+
+    private val parameterAnnotations: Set<Class<out Annotation>> = setOf(
+        ConceptBuilder::class.java,
+        ConceptIdentifierValue::class.java,
+        ConceptNameValue::class.java,
+        DynamicFacetNameValue::class.java,
+        DynamicFacetValue::class.java,
+        FacetValue::class.java,
+    )
 
     fun handleObjectMethodsOrThrow(
         invocationHandler: InvocationHandler,
@@ -27,6 +38,33 @@ object InvocationHandlerHelper {
 
     fun isMethodAnnotatedWith(method: Method, annotation: Class<out Annotation>): Boolean {
         return method.getAnnotation(annotation) != null
+    }
+
+    fun isParamAnnotatedWith(parameter: Parameter, annotation: Class<out Annotation>): Boolean {
+        return parameter.getAnnotation(annotation) != null
+    }
+
+    fun isParamAnnotatedWith(parameter: Parameter, annotations: Set<Class<out Annotation>>): Boolean {
+        return annotations.any { annotation -> isParamAnnotatedWith(parameter, annotation) }
+    }
+
+    fun isAllMethodParamsAnnotated(method: Method): Boolean {
+        return method.parameters.all { parameter -> isParamAnnotatedWith(parameter, parameterAnnotations) }
+    }
+
+    fun numberOfParamsAnnotatedWith(method: Method, annotation: Class<out Annotation>): Int {
+        return paramsAnnotatedWith(method, annotation).size
+    }
+
+    fun paramsAnnotatedWith(method: Method, annotation: Class<out Annotation>): List<Parameter> {
+        return method.parameters.filter { parameter -> isParamAnnotatedWith(parameter, annotation) }.toList()
+    }
+
+
+    fun validateAllMethodParamsAnnotated(method: Method) {
+        if(!isAllMethodParamsAnnotated(method)) {
+            throw IllegalStateException("Method $method has not all parameters annotated with a param annotation ($parameterAnnotations).")
+        }
     }
 
     fun validatedArguments(method: Method?, argsOrNull: Array<out Any>?): Array<out Any> {
