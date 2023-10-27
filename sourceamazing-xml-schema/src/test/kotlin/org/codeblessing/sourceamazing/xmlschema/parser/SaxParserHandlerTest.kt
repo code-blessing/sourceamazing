@@ -65,9 +65,9 @@ internal class SaxParserHandlerTest {
         factory.isNamespaceAware = true
         factory.isValidating = false // turn of validation as schema is not found
         val saxParser: SAXParser = factory.newSAXParser()
-        val schema = createSchema()
-        val dataCollector = ConceptDataCollector(schema)
+        val dataCollector = ConceptDataCollector()
 
+        val schema = createSchema()
         val saxParserHandler = SaxParserHandler(schema, dataCollector, emptyMap(), Paths.get("."), virtualFileSystem, logger)
 
         testXml.byteInputStream().use {

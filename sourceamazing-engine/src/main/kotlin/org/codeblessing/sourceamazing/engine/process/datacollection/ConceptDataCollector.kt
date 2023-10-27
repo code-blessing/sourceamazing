@@ -1,14 +1,11 @@
 package org.codeblessing.sourceamazing.engine.process.datacollection
 
-import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
 import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
+import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
-import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 
-class ConceptDataCollector(private val schema: SchemaAccess, private val validateConcept: Boolean = true):
-    ExtensionDataCollector {
+class ConceptDataCollector: ExtensionDataCollector {
 
     private var sequenceNumber: Int = 0;
 
