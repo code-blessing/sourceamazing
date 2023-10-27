@@ -19,7 +19,6 @@ object DataCollectorBuilderProxyHelper {
         args: Array<out Any>,
         conceptData: ConceptData,
     ) {
-
         val numberOfDynamicFacetNameValueParams = InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, DynamicFacetNameValue::class.java)
         if(numberOfDynamicFacetNameValueParams > 0) {
             if(numberOfDynamicFacetNameValueParams > 1) {

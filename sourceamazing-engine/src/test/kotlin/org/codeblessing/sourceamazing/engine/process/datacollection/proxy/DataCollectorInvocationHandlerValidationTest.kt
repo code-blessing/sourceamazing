@@ -33,7 +33,7 @@ class DataCollectorInvocationHandlerValidationTest {
         @AddConceptAndFacets(conceptBuilderClazz = BuilderWithUnannotatedFields::class)
         fun newConcept(
             /* missing annotation */ conceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = concept1,
+            @DynamicConceptNameValue conceptName: ConceptName = concept1,
         ): BuilderWithUnannotatedFields
     }
 
@@ -63,7 +63,7 @@ class DataCollectorInvocationHandlerValidationTest {
         @AddConceptAndFacets(conceptBuilderClazz = BuilderWithUnannotatedFields::class)
         fun newConcept(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = concept1,
+            @DynamicConceptNameValue conceptName: ConceptName = concept1,
         ): BuilderWithUnannotatedFields
     }
 

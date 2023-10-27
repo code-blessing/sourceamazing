@@ -10,7 +10,7 @@ object InvocationHandlerHelper {
     private val parameterAnnotations: Set<Class<out Annotation>> = setOf(
         ConceptBuilder::class.java,
         ConceptIdentifierValue::class.java,
-        ConceptNameValue::class.java,
+        DynamicConceptNameValue::class.java,
         DynamicFacetNameValue::class.java,
         DynamicFacetValue::class.java,
         FacetValue::class.java,

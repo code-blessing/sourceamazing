@@ -88,7 +88,7 @@ class DataCollectorInvocationHandlerTest {
         @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
+            @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
             @FacetValue(personFirstnameFacetName) firstname: String,
         ): PersonConceptBuilder
 
@@ -96,7 +96,7 @@ class DataCollectorInvocationHandlerTest {
         @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
+            @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
             @ConceptBuilder builder: PersonConceptBuilder.() -> Unit,
         )
     }
@@ -124,16 +124,16 @@ class DataCollectorInvocationHandlerTest {
 
         // Builder style
         @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
+        @ConceptNameValue(skillConceptName)
         fun skill(
             @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = ConceptName.of(skillConceptName),
         ): SkillConceptBuilder
 
         // DSL style
         @AddConceptAndFacets(conceptBuilderClazz = SkillConceptBuilder::class)
+        @ConceptNameValue(skillConceptName)
         fun skill(
             @ConceptIdentifierValue skillConceptIdentifier: ConceptIdentifier,
-            @ConceptNameValue conceptName: ConceptName = ConceptName.of(skillConceptName),
             @ConceptBuilder builder: SkillConceptBuilder.() -> Unit)
 
     }

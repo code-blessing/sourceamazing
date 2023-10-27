@@ -14,14 +14,14 @@ interface DefaultDataCollectorConceptBuilder {
     // Builder style
     @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
-        @ConceptNameValue conceptName: ConceptName,
+        @DynamicConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
     ): DefaultDataCollectorConceptBuilder
 
     // DSL style
     @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
-        @ConceptNameValue conceptName: ConceptName,
+        @DynamicConceptNameValue conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
         @ConceptBuilder builder: DefaultDataCollectorConceptBuilder.() -> Unit)
 

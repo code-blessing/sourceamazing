@@ -23,7 +23,7 @@ interface ProcesstestEntityConceptBuilder {
     @AddConceptAndFacets(conceptBuilderClazz = ProcesstestEntityAttributeConceptBuilder::class)
     fun newEntityAttribute(
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier = ConceptIdentifier.random(),
-        @ConceptNameValue conceptName: ConceptName = ConceptName.of("EntityAttribute"),
+        @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of("EntityAttribute"),
         ): ProcesstestEntityAttributeConceptBuilder
 
 
