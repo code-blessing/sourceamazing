@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
+import org.codeblessing.sourceamazing.engine.proxy.InvocationHandlerHelper
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import kotlin.reflect.KClass
@@ -19,8 +20,36 @@ object DataCollectorInvocationHandlerHelper {
     }
 
     fun getConceptIdentifierParameter(method: Method, args: Array<out Any>): ConceptIdentifier {
-        // TODO support for random id annotation on method
-        return getParameter(method, ConceptIdentifierValue::class.java, ConceptIdentifier::class.java, args)
+        val numberOfParams = InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, ConceptIdentifierValue::class.java)
+        if(numberOfParams > 0) {
+            if(numberOfParams > 1) {
+                throw IllegalStateException("Method '$method' has to many parameters annotated " +
+                        "with ${ConceptIdentifierValue::class.java}. " +
+                        "Zero or one is allowed, was ${numberOfParams}.")
+            }
+
+            val conceptIdentifierValue = getNullableParameter(method, ConceptIdentifierValue::class.java, Any::class.java, args)
+            if(conceptIdentifierValue != null) {
+                return when(conceptIdentifierValue) {
+                    is String -> ConceptIdentifier.of(conceptIdentifierValue)
+                    is ConceptIdentifier -> conceptIdentifierValue
+                    else -> throw IllegalStateException("Method '$method' has a parameter annotated with '${ConceptIdentifier::class.java}' " +
+                            "where it's value is neither of type '${String::class.java}' nor '${ConceptIdentifier::class.java}' " +
+                            "but '${conceptIdentifierValue}'.")
+                }
+            }
+        }
+
+        val autoRandomConceptIdentifier = method.getAnnotation(AutoRandomConceptIdentifier::class.java)
+        if(autoRandomConceptIdentifier != null) {
+            return ConceptIdentifier.random()
+        }
+
+        throw IllegalStateException("No concept identifier found in method '$method'. " +
+                "Use the annotations '${ConceptIdentifierValue::class.java}' to manually declare one " +
+                "or '${AutoRandomConceptIdentifier::class.java}' to add a random one. " +
+                "Method arguments were: '${args.joinToString()}'")
+
     }
 
     fun getConceptBuilderClazz(method: Method): KClass<*> {
