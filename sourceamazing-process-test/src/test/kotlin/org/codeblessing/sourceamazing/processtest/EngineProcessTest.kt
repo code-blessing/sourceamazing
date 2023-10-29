@@ -85,7 +85,7 @@ class EngineProcessTest {
     """.trimIndent()
 
 
-    private val loggingConfigurationClasspath = "/sourceamazing-logging.properties"
+    private val loggingConfigurationClasspath = "/sourceamazing-default-logging.properties"
     private val loggingConfiguration = """
             handlers= java.util.logging.ConsoleHandler
             .level= INFO

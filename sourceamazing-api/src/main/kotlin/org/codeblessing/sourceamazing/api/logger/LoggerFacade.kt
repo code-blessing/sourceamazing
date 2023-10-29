@@ -7,4 +7,5 @@ interface LoggerFacade {
     fun logUserInfo(msgProvider: () -> String)
     fun logWarnings(msg: String)
     fun logWarnings(msgProvider: () -> String)
+    fun closeLoggerFacade()
 }
