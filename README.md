@@ -97,18 +97,11 @@ and generate any kind of files with.
 ## Setup, Documentation and Examples
 
 If you are new to SourceAmazing, start with the step-by-step 
-documentation at [Step-by-Step Guide (00-step-by-step-example.md)](documentation/00-step-by-step-example.md).
+documentation at [documentation/00-step-by-step-example.md](documentation/00-step-by-step-example.md).
 
-Step-by-step example guide:
-* [The idea of the example project (01-the-example-project.md)](01-the-example-project.md)
-* [Setup SourceAmazing (02-installation.md)](02-installation.md)
-* [Defining the Code Generation Input/Definitions (03-defining-the-input.md) ](03-defining-the-input.md)
-* [Defining the Code Generation Output/Templates (04-defining-the-output.md)](04-defining-the-output.md)
+For a complete list of features, go to [documentation/features.md](documentation/features.md).
 
-
-For a complete list of features, go to [features.md](documentation/features.md).
-
-A glossary with the most important definition can be found at [glossary.md](documentation/glossary.md).
+A glossary with the most important definition can be found at [documentation/glossary.md](documentation/glossary.md).
 
 ## License
 
