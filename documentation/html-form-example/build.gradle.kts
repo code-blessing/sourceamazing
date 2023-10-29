@@ -8,9 +8,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.codeblessing.sourceamazing:sourceamazing-api:1.0.0")
-    runtimeOnly("org.codeblessing.sourceamazing:sourceamazing-engine:1.0.0")
-    runtimeOnly("org.codeblessing.sourceamazing:sourceamazing-xml-schema:1.0.0")
+    implementation("org.codeblessing.sourceamazing:sourceamazing-api:1.1.0")
+    runtimeOnly("org.codeblessing.sourceamazing:sourceamazing-engine:1.1.0")
+    runtimeOnly("org.codeblessing.sourceamazing:sourceamazing-xml-schema:1.1.0")
 }
 
 application {
