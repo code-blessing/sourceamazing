@@ -18,7 +18,7 @@ object XmlDomSchemaCreator {
     private const val xsdNamespace = "http://www.w3.org/2001/XMLSchema"
     private const val xsdNamespacePrefix = "xsd"
 
-    fun createSchemagicSchemaContent(schema: SchemaAccess): String {
+    fun createXsdSchemaContent(schema: SchemaAccess): String {
         val document = initializeDocument()
         val schemaElement = createMainStructure(document)
         attachConceptIdentifierAttribute(document, schemaElement, schema)

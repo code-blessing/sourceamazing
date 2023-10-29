@@ -62,7 +62,7 @@ internal class XmlDomSchemaCreatorTest {
     @Test
     fun testXmlDomSchemaCreator() {
         val schema: SchemaAccess = createSchema()
-        val schemaContent = XmlDomSchemaCreator.createSchemagicSchemaContent(schema)
+        val schemaContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)
         assertEquals(expectedXml, schemaContent)
     }
 

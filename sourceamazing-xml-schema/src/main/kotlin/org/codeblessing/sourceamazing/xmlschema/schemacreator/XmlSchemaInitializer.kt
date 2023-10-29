@@ -17,7 +17,7 @@ object XmlSchemaInitializer {
         schema: SchemaAccess,
         fileSystemAccess: FileSystemAccess
     ) {
-        val xmlSchemaFileContent = XmlDomSchemaCreator.createSchemagicSchemaContent(schema)
+        val xmlSchemaFileContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)
         val xmlSchemaFileName = "sourceamazing-xml-schema.xsd"
         fileSystemAccess.writeFile(schemaDirectory.resolve(xmlSchemaFileName), xmlSchemaFileContent)
     }
