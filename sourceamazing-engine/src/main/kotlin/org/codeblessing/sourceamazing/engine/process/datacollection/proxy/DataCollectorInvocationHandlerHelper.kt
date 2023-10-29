@@ -16,7 +16,7 @@ object DataCollectorInvocationHandlerHelper {
         if(conceptNameValueAnnotation != null) {
             return ConceptName.of(conceptNameValueAnnotation.conceptName)
         }
-        return getParameter(method, DynamicConceptNameValue::class.java, ConceptName::class.java, args)
+        return getParameter(method, ParameterDefinedConceptName::class.java, ConceptName::class.java, args)
     }
 
     fun getConceptIdentifierParameter(method: Method, args: Array<out Any>): ConceptIdentifier {

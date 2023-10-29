@@ -2,8 +2,8 @@ package org.codeblessing.sourceamazing.engine.process.datacollection.proxy
 
 import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
 import org.codeblessing.sourceamazing.api.process.datacollection.annotations.ConceptBuilder
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.DynamicFacetNameValue
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.DynamicFacetValue
+import org.codeblessing.sourceamazing.api.process.datacollection.annotations.ParameterDefinedFacetName
+import org.codeblessing.sourceamazing.api.process.datacollection.annotations.ValueOfParameterDefinedFacetName
 import org.codeblessing.sourceamazing.api.process.datacollection.annotations.FacetValue
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
@@ -19,19 +19,19 @@ object DataCollectorBuilderProxyHelper {
         args: Array<out Any>,
         conceptData: ConceptData,
     ) {
-        val numberOfDynamicFacetNameValueParams = InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, DynamicFacetNameValue::class.java)
-        if(numberOfDynamicFacetNameValueParams > 0) {
-            if(numberOfDynamicFacetNameValueParams > 1) {
-                throw IllegalStateException("Method '$method' has more than one parameter annotated with '${DynamicFacetNameValue::class.java}'.")
+        val numberOfParameterDefinedFacetNameParams = InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, ParameterDefinedFacetName::class.java)
+        if(numberOfParameterDefinedFacetNameParams > 0) {
+            if(numberOfParameterDefinedFacetNameParams > 1) {
+                throw IllegalStateException("Method '$method' has more than one parameter annotated with '${ParameterDefinedFacetName::class.java}'.")
             }
 
-            if(InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, DynamicFacetValue::class.java) != 1) {
-                throw IllegalStateException("Method '$method' has parameter annotated with '${DynamicFacetNameValue::class.java}' and " +
-                        "must have exactly one corresponding parameter annotated with '${DynamicFacetValue::class.java}'.")
+            if(InvocationHandlerHelper.numberOfParamsAnnotatedWith(method, ValueOfParameterDefinedFacetName::class.java) != 1) {
+                throw IllegalStateException("Method '$method' has parameter annotated with '${ParameterDefinedFacetName::class.java}' and " +
+                        "must have exactly one corresponding parameter annotated with '${ValueOfParameterDefinedFacetName::class.java}'.")
             }
 
-            val facetName = DataCollectorInvocationHandlerHelper.getParameter(method, DynamicFacetNameValue::class.java, FacetName::class.java, args)
-            val facetValue = DataCollectorInvocationHandlerHelper.getNullableParameter(method, DynamicFacetValue::class.java, Any::class.java, args)
+            val facetName = DataCollectorInvocationHandlerHelper.getParameter(method, ParameterDefinedFacetName::class.java, FacetName::class.java, args)
+            val facetValue = DataCollectorInvocationHandlerHelper.getNullableParameter(method, ValueOfParameterDefinedFacetName::class.java, Any::class.java, args)
             conceptData.addOrReplaceFacetValue(facetName = facetName, facetValue = facetValue)
         }
 

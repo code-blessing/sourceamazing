@@ -10,20 +10,20 @@ interface ProcesstestEntityConceptBuilder {
 
     @AddFacets
     fun name(
-        @DynamicFacetValue entityName: String,
-        @DynamicFacetNameValue facetName: FacetName = FacetName.of("Name"),
+        @ValueOfParameterDefinedFacetName entityName: String,
+        @ParameterDefinedFacetName facetName: FacetName = FacetName.of("Name"),
     ): ProcesstestEntityConceptBuilder
 
     @AddFacets
     fun alternativeName(
-        @DynamicFacetValue alternativeName: String?,
-        @DynamicFacetNameValue facetName: FacetName = FacetName.of("AlternativeName"),
+        @ValueOfParameterDefinedFacetName alternativeName: String?,
+        @ParameterDefinedFacetName facetName: FacetName = FacetName.of("AlternativeName"),
     ): ProcesstestEntityConceptBuilder
 
     @AddConceptAndFacets(conceptBuilderClazz = ProcesstestEntityAttributeConceptBuilder::class)
     fun newEntityAttribute(
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier = ConceptIdentifier.random(),
-        @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of("EntityAttribute"),
+        @ParameterDefinedConceptName conceptName: ConceptName = ConceptName.of("EntityAttribute"),
         ): ProcesstestEntityAttributeConceptBuilder
 
 

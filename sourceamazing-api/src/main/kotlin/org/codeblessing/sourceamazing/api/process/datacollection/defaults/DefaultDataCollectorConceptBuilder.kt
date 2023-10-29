@@ -9,19 +9,19 @@ import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 interface DefaultDataCollectorConceptBuilder {
 
     @AddFacets
-    fun addFacetValue(@DynamicFacetNameValue facetName: FacetName, @DynamicFacetValue facetValue: Any?): DefaultDataCollectorConceptBuilder
+    fun addFacetValue(@ParameterDefinedFacetName facetName: FacetName, @ValueOfParameterDefinedFacetName facetValue: Any?): DefaultDataCollectorConceptBuilder
 
     // Builder style
     @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
-        @DynamicConceptNameValue conceptName: ConceptName,
+        @ParameterDefinedConceptName conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
     ): DefaultDataCollectorConceptBuilder
 
     // DSL style
     @AddConceptAndFacets(conceptBuilderClazz = DefaultDataCollectorConceptBuilder::class)
     fun newConceptData(
-        @DynamicConceptNameValue conceptName: ConceptName,
+        @ParameterDefinedConceptName conceptName: ConceptName,
         @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
         @ConceptBuilder builder: DefaultDataCollectorConceptBuilder.() -> Unit)
 
