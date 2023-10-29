@@ -90,7 +90,6 @@ code has started right now.
 
 ### Next steps
 
-There are some more features SourceAmazing provides.
+The next step will be to use an alternative to XML files, a kotlin DSL.
 
-To learn about that, go to the [Features](features.md) page.
-
+Go for that to the guide [Using Input Builder and DSLs](05-using-input-builder-and-dsl.md).
