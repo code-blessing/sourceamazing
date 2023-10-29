@@ -88,7 +88,7 @@ class DataCollectorInvocationHandlerTest {
         @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
+            @ParameterDefinedConceptName conceptName: ConceptName = ConceptName.of(personConceptName),
             @FacetValue(personFirstnameFacetName) firstname: String,
         ): PersonConceptBuilder
 
@@ -96,7 +96,7 @@ class DataCollectorInvocationHandlerTest {
         @AddConceptAndFacets(conceptBuilderClazz = PersonConceptBuilder::class)
         fun newPerson(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @DynamicConceptNameValue conceptName: ConceptName = ConceptName.of(personConceptName),
+            @ParameterDefinedConceptName conceptName: ConceptName = ConceptName.of(personConceptName),
             @ConceptBuilder builder: PersonConceptBuilder.() -> Unit,
         )
     }
@@ -106,8 +106,8 @@ class DataCollectorInvocationHandlerTest {
 
         @AddFacets
         fun firstname(
-            @DynamicFacetValue firstname: String,
-            @DynamicFacetNameValue facetName: FacetName = FacetName.of(personFirstnameFacetName),
+            @ValueOfParameterDefinedFacetName firstname: String,
+            @ParameterDefinedFacetName facetName: FacetName = FacetName.of(personFirstnameFacetName),
         ): PersonConceptBuilder
 
         @AddFacets
@@ -117,8 +117,8 @@ class DataCollectorInvocationHandlerTest {
 
         @AddFacets
         fun firstnameAndAge(
-            @DynamicFacetValue firstname: String,
-            @DynamicFacetNameValue facetName: FacetName = FacetName.of(personFirstnameFacetName),
+            @ValueOfParameterDefinedFacetName firstname: String,
+            @ParameterDefinedFacetName facetName: FacetName = FacetName.of(personFirstnameFacetName),
             @FacetValue(personAgeFacetName) age: Int,
         ): PersonConceptBuilder
 

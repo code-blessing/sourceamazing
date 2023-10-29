@@ -9,14 +9,14 @@ interface ProcesstestEntityAttributeConceptBuilder {
 
     @AddFacets
     fun attributeName(
-        @DynamicFacetValue attributeName: String,
-        @DynamicFacetNameValue facetName: FacetName = FacetName.of("AttributeName"),
+        @ValueOfParameterDefinedFacetName attributeName: String,
+        @ParameterDefinedFacetName facetName: FacetName = FacetName.of("AttributeName"),
     ): ProcesstestEntityAttributeConceptBuilder
 
     @AddFacets
     fun attributeType(
-        @DynamicFacetValue type: EntityAttributeConcept.AttributeTypeEnum,
-        @DynamicFacetNameValue facetName: FacetName = FacetName.of("AttributeType"),
+        @ValueOfParameterDefinedFacetName type: EntityAttributeConcept.AttributeTypeEnum,
+        @ParameterDefinedFacetName facetName: FacetName = FacetName.of("AttributeType"),
     )
 
 }

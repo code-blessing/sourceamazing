@@ -33,15 +33,15 @@ class DataCollectorInvocationHandlerValidationTest {
         @AddConceptAndFacets(conceptBuilderClazz = BuilderWithUnannotatedFields::class)
         fun newConcept(
             /* missing annotation */ conceptIdentifier: ConceptIdentifier,
-            @DynamicConceptNameValue conceptName: ConceptName = concept1,
+            @ParameterDefinedConceptName conceptName: ConceptName = concept1,
         ): BuilderWithUnannotatedFields
     }
 
     interface SimpleBuilder {
         @AddFacets
         fun simpleField(
-            @DynamicFacetValue simpleField: String,
-            @DynamicFacetNameValue facetName: FacetName = FacetName.of(facet1AlphaName),
+            @ValueOfParameterDefinedFacetName simpleField: String,
+            @ParameterDefinedFacetName facetName: FacetName = FacetName.of(facet1AlphaName),
         ): BuilderWithUnannotatedFields
     }
 
@@ -63,7 +63,7 @@ class DataCollectorInvocationHandlerValidationTest {
         @AddConceptAndFacets(conceptBuilderClazz = BuilderWithUnannotatedFields::class)
         fun newConcept(
             @ConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @DynamicConceptNameValue conceptName: ConceptName = concept1,
+            @ParameterDefinedConceptName conceptName: ConceptName = concept1,
         ): BuilderWithUnannotatedFields
     }
 
@@ -71,7 +71,7 @@ class DataCollectorInvocationHandlerValidationTest {
         @AddFacets
         fun simpleField(
             /* missing */ simpleField: String,
-            @DynamicFacetNameValue facetName: FacetName = FacetName.of(facet1AlphaName),
+            @ParameterDefinedFacetName facetName: FacetName = FacetName.of(facet1AlphaName),
         ): BuilderWithUnannotatedFields
     }
 
