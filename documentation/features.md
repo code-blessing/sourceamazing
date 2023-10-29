@@ -9,4 +9,3 @@ The features NOT covered in the
 * Passing values (System Properties, Environment Variables) to 
 the Domain Unit using the property access interface.
 * Using the AdHoc builder to add data to the model.
-* Using the Java-Builder / Kotlin DSL to add data to the model. 
