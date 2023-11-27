@@ -73,7 +73,6 @@ object SchemaCreator {
             ChildConceptsWithCommonBaseInterface::class.java,
             Facet::class.java,
             ConceptId::class.java,
-            if(hasParent) ParentConcept::class.java else null,
         )
     }
 
@@ -138,20 +137,6 @@ object SchemaCreator {
                     throw MalformedSchemaException("The return type of a method with ${ConceptId::class.qualifiedName} " +
                             "must be ${String::class.qualifiedName} or ${ConceptIdentifier::class.qualifiedName} " +
                             "in method '$method'.")
-                }
-            } else if(hasMethodAnnotation(ParentConcept::class.java, method)) {
-                if(parentConceptSchema == null) {
-                    throw MalformedSchemaException("You define a method to get the parent with the ${ParentConcept::class.qualifiedName} " +
-                            "annotation but you are on a top level concept " +
-                            "in method '$method'.")
-                }
-
-                if(returnType.java != parentConceptSchema.conceptClass) {
-                    throw MalformedSchemaException("The method annotated with '${ParentConcept::class.qualifiedName}' " +
-                            "must return the interface of the parent class (${parentConceptSchema.conceptClass.kotlin.qualifiedName}) but " +
-                            "the return type was '${returnType.qualifiedName}' " +
-                            "in method '$method'.")
-
                 }
             }
         }

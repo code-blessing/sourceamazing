@@ -16,7 +16,6 @@ class SchemaConceptInstanceInvocationHandler(private val conceptNode: ConceptNod
         ChildConceptsWithCommonBaseInterface::class.java,
         Facet::class.java,
         ConceptId::class.java,
-        ParentConcept::class.java,
     )
 
     override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
@@ -51,12 +50,6 @@ class SchemaConceptInstanceInvocationHandler(private val conceptNode: ConceptNod
                     ConceptIdentifier::class -> conceptNode.conceptIdentifier
                     else -> throw IllegalStateException("Unsupported type for conceptIdentifier method.")
                 }
-            }
-
-            if(InvocationHandlerHelper.isMethodAnnotatedWith(method, ParentConcept::class.java)) {
-                val parentConceptNode = conceptNode.parentConceptNode ?: throw IllegalStateException("Parent concept node was null.")
-                val parentInterfaceClass = method.returnType
-                return ProxyCreator.createProxy(parentInterfaceClass, SchemaConceptInstanceInvocationHandler(parentConceptNode))
             }
         }
 

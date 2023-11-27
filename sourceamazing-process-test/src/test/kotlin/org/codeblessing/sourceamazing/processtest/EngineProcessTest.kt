@@ -175,11 +175,6 @@ class EngineProcessTest {
 
         @Facet("ValueRequired")
         fun isValueRequired(): Boolean
-
-        @ParentConcept
-        fun getParentForm(): FormConcept
-
-
     }
 
     @Concept("TextInputFormControl")
@@ -307,7 +302,7 @@ class EngineProcessTest {
                 if(formControl is TextInputFormControlConcept) {
                     content += """    <label>${formControl.getFormControlDisplayName()}${if(formControl.isValueRequired()) "*" else ""}</label>""" + "\n"
                     content += """    <input type="text" name="${formControl.getFormControlName()}" />""" + "\n"
-                    content += """    <!-- in form '${formControl.getParentForm().getFormId()}' (${formControl.getParentForm().getFormTitle()}) -->""" + "\n"
+                    content += """    <!-- in form '${form.getFormId()}' (${form.getFormTitle()}) -->""" + "\n"
                 } else if (formControl is SelectDropdownFormControlConcept) {
                         content += """    <label>${formControl.getFormControlDisplayName()}${if(formControl.isValueRequired()) "*" else ""}</label>""" + "\n"
                         content += """    <select name="${formControl.getFormControlName()}" option="${formControl.getDefaultValue()}">""" + "\n"
