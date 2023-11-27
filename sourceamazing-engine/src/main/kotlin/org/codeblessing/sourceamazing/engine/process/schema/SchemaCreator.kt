@@ -107,6 +107,7 @@ object SchemaCreator {
     }
 
     private fun isInheriting(subInterface: Class<*>, baseInterface: Class<*>): Boolean {
+        // TODO this only supports direct baseInterfaces
         return subInterface.interfaces.contains(baseInterface)
     }
 
