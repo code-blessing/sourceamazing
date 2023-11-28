@@ -1,34 +1,29 @@
 package org.codeblessing.sourceamazing.engine.process.schema.proxy
 
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.schema.annotations.*
+import org.codeblessing.sourceamazing.api.process.schema.annotations.ChildConcept
+import org.codeblessing.sourceamazing.api.process.schema.annotations.ChildConceptWithCommonBaseInterface
+import org.codeblessing.sourceamazing.api.process.schema.annotations.ConceptId
+import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptNode
+import org.codeblessing.sourceamazing.engine.process.schema.SchemaAnnotationConst
 import org.codeblessing.sourceamazing.engine.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.engine.proxy.ProxyCreator
-import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
-class SchemaConceptInstanceInvocationHandler(private val conceptNode: ConceptNode) : InvocationHandler {
+class SchemaConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): AbstractSchemaInvocationHandler() {
 
-    private val requiredMethodAnnotations = setOf(
-        ChildConcepts::class.java,
-        ChildConceptsWithCommonBaseInterface::class.java,
-        Facet::class.java,
-        ConceptId::class.java,
-    )
+    private val requiredMethodAnnotations = SchemaAnnotationConst.supportedConceptAnnotations
 
     override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
-        InvocationHandlerHelper.requiredProxy(proxyOrNull, methodOrNull)
-        val method: Method = InvocationHandlerHelper.validatedMethod(methodOrNull)
-        InvocationHandlerHelper.validatedArguments(methodOrNull, argsOrNull)
+        val method = validateArguments(proxyOrNull, methodOrNull, argsOrNull)
 
         if(InvocationHandlerHelper.isMethodAnnotatedWithExactlyOneOf(method, requiredMethodAnnotations)) {
+            handleCommonAnnotations(method, conceptNode)?.let { return it }
 
-            if(InvocationHandlerHelper.isMethodAnnotatedWith(method, ChildConcepts::class.java)
-                || InvocationHandlerHelper.isMethodAnnotatedWith(method, ChildConceptsWithCommonBaseInterface::class.java)) {
-
-                return SchemaInvocationHandlerHelper.mapToProxy(method, conceptNode) { interfaceClass: KClass<*>, childConceptNode: ConceptNode ->
+            if(InvocationHandlerHelper.isMethodAnnotatedWithExactlyOneOf(method, SchemaAnnotationConst.singleInstanceChildConceptAnnotations)) {
+                return SchemaInvocationHandlerHelper.mapToSingleProxy(method, conceptNode) { interfaceClass: KClass<*>, childConceptNode: ConceptNode ->
                     ProxyCreator.createProxy(interfaceClass.java, SchemaConceptInstanceInvocationHandler(childConceptNode))
                 }
             }

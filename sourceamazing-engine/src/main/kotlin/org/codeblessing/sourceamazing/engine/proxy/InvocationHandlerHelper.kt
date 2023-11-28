@@ -19,20 +19,20 @@ object InvocationHandlerHelper {
     fun handleObjectMethodsOrThrow(
         invocationHandler: InvocationHandler,
         method: Method?,
-        requiredMethodAnnotations: Set<Class<out Annotation>>
+        requiredMethodAnnotations: Collection<Class<out Annotation>>
     ): Any {
         if(method != null) {
-            if(method.name == "toString") {
+            if(method.name == ::toString.name) {
                 return invocationHandler.toString()
             }
-            if(method.name == "hashCode") {
+            if(method.name == ::hashCode.name) {
                 return invocationHandler.hashCode()
             }
         }
         throw IllegalStateException("Method $method not annotated. Use exactly one of this annotations: $requiredMethodAnnotations")
     }
 
-    fun isMethodAnnotatedWithExactlyOneOf(method: Method, annotations: Set<Class<out Annotation>>): Boolean {
+    fun isMethodAnnotatedWithExactlyOneOf(method: Method, annotations: Collection<Class<out Annotation>>): Boolean {
         return annotations.filter { annotation ->  isMethodAnnotatedWith(method, annotation) }.size == 1
     }
 
@@ -40,15 +40,15 @@ object InvocationHandlerHelper {
         return method.getAnnotation(annotation) != null
     }
 
-    fun isParamAnnotatedWith(parameter: Parameter, annotation: Class<out Annotation>): Boolean {
+    private fun isParamAnnotatedWith(parameter: Parameter, annotation: Class<out Annotation>): Boolean {
         return parameter.getAnnotation(annotation) != null
     }
 
-    fun isParamAnnotatedWith(parameter: Parameter, annotations: Set<Class<out Annotation>>): Boolean {
+    private fun isParamAnnotatedWith(parameter: Parameter, annotations: Collection<Class<out Annotation>>): Boolean {
         return annotations.any { annotation -> isParamAnnotatedWith(parameter, annotation) }
     }
 
-    fun isAllMethodParamsAnnotated(method: Method): Boolean {
+    private fun isAllMethodParamsAnnotated(method: Method): Boolean {
         return method.parameters.all { parameter -> isParamAnnotatedWith(parameter, parameterAnnotations) }
     }
 
