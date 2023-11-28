@@ -389,7 +389,7 @@ class SchemaCreatorTest {
     }
 
     @Test
-    fun `test schema with root schema inside a child concept throw exception`() {
+    fun `test schema with concept having itself as child concept throw exception`() {
         Assertions.assertThrows(MalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(DirectCyclicSchemaDefinitionClass::class.java)
         }
@@ -424,10 +424,18 @@ class SchemaCreatorTest {
 
 
     @Test
-    fun `test schema with two parents concepts having same child concept throw exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(TwoParentConceptForOneChildConceptSchemaDefinitionClass::class.java)
-        }
+    fun `test schema with two parents concepts having same child concept`() {
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(TwoParentConceptForOneChildConceptSchemaDefinitionClass::class.java)
+
+        Assertions.assertEquals(3, schema.numberOfConcepts())
+        val parent1Concept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptParent1Concept"))
+        val parent2Concept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptParent2Concept"))
+        val childConcept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptChildConcept"))
+        Assertions.assertEquals(parent1Concept.parentConceptName, childConcept.parentConceptName)
+        Assertions.assertEquals(parent2Concept.parentConceptName, childConcept.parentConceptName)
+        Assertions.assertNull(parent1Concept.parentConceptName)
+        Assertions.assertNull(parent2Concept.parentConceptName)
+
     }
 
     @Schema
