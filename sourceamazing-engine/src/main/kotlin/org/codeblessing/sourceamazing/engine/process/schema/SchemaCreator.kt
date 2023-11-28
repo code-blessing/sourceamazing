@@ -14,7 +14,8 @@ object SchemaCreator {
         validateTypeAnnotation(annotation = Schema::class.java, classToInspect = schemaDefinitionClass)
 
         if(hasClassAnnotation(annotation = Concept::class.java, classToInspect = schemaDefinitionClass)) {
-            throw MalformedSchemaException("Definition class '${schemaDefinitionClass.name}' can not be a concept having an annotation of type '${Concept::class.java.name}'")
+            throw MalformedSchemaException("Definition class '${schemaDefinitionClass.name}' " +
+                    "can not be a concept having an annotation of type '${Concept::class.java.name}'")
         }
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
@@ -22,18 +23,19 @@ object SchemaCreator {
         schemaDefinitionClass.methods.forEach { method ->
             if(!supportForChildConceptMethod(concepts, schemaDefinitionClass, method, null)) {
                 throw MalformedSchemaException("Schema definition class '${schemaDefinitionClass.name}' can " +
-                        "only have methods annotated with '${ChildConcepts::class.qualifiedName}'. Not valid for method '$method'.")
-
+                        "only have methods annotated with the following " +
+                        "annotations: ${SchemaAnnotationConst.supportedSchemaAnnotations}. " +
+                        "Not valid for method '$method'.")
             }
         }
 
         return SchemaImpl(concepts)
     }
 
-    private fun validateChildConceptMethod(definitionClass: Class<*>, method: Method) {
-        if(method.returnType != List::class.java) {
+    private fun validateChildConceptReturnTypeMethod(expectedReturnType: Class<*>, definitionClass: Class<*>, method: Method) {
+        if(method.returnType != expectedReturnType) {
             throw MalformedSchemaException("The method '$method' on the definition class '${definitionClass.name}' " +
-                    "must return a '${List::class.java}' but is returning a '${method.returnType}'.")
+                    "must return '${expectedReturnType}' but is returning '${method.returnType}'.")
         }
     }
 
@@ -46,13 +48,14 @@ object SchemaCreator {
         val parentConceptSchema = parentConceptName?.let { concepts[parentConceptName] }
         addConceptSchema(concepts, conceptName, conceptClass, parentConceptSchema)
 
-        val supportedConceptAnnotations = supportedConceptAnnotations(parentConceptSchema != null)
+        val supportedConceptAnnotations = SchemaAnnotationConst.supportedConceptAnnotations
 
         conceptClass.methods.forEach { method ->
-            if(!supportForChildConceptMethod(concepts, conceptClass, method, conceptName) && !hasSupportedConceptAnnotation(method, supportedConceptAnnotations)) {
+            if(!supportForChildConceptMethod(concepts, conceptClass, method, conceptName)
+                && !hasSupportedConceptAnnotation(method, supportedConceptAnnotations)) {
                 throw MalformedSchemaException(
                     "Concept definition class '${conceptClass.name}' can " +
-                            "only have methods annotated with ${supportedConceptAnnotations.map { "'${it.kotlin.qualifiedName}'" }.joinToString(" or ")}. " +
+                            "only have methods annotated with the following annotations: ${supportedConceptAnnotations}. " +
                             "Not valid for method '$method'."
                 )
             }
@@ -72,7 +75,8 @@ object SchemaCreator {
         val allHierarchicalBranches = allHierarchyPathsToRoot(concepts, parentConceptName)
         allHierarchicalBranches.forEach { parentConceptHierarchy ->
             if(parentConceptHierarchy.contains(conceptName)) {
-                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. Parent concepts in a hierarchy must be all different concepts, but was $parentConceptHierarchy.")
+                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. " +
+                        "Parent concepts in a hierarchy must be all different concepts, but was $parentConceptHierarchy.")
             }
         }
     }
@@ -99,47 +103,107 @@ object SchemaCreator {
         return supportedConceptAnnotations.any { supportedAnnotation: Class<out Annotation> -> hasMethodAnnotation(supportedAnnotation, method) }
     }
 
-    private fun supportedConceptAnnotations(hasParent: Boolean): List<Class<out Annotation>> {
-        return listOfNotNull(
-            ChildConcepts::class.java,
-            ChildConceptsWithCommonBaseInterface::class.java,
-            Facet::class.java,
-            ConceptId::class.java,
-        )
-    }
-
-    private fun supportForChildConceptMethod(concepts: MutableMap<ConceptName, ConceptSchema>, definitionClass: Class<*>, method: Method, parentConceptName: ConceptName?): Boolean {
+    private fun supportForChildConceptMethod(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        definitionClass: Class<*>,
+        method: Method,
+        parentConceptName: ConceptName?
+    ): Boolean {
         if(hasMethodAnnotation(ChildConcepts::class.java, method)) {
             validateAndAddConceptForChildConceptsAnnotation(concepts, definitionClass, method, parentConceptName)
             return true
+        } else if(hasMethodAnnotation(ChildConcept::class.java, method)) {
+            validateAndAddConceptForChildConceptAnnotation(concepts, definitionClass, method, parentConceptName)
+            return true
         } else if(hasMethodAnnotation(ChildConceptsWithCommonBaseInterface::class.java, method)) {
             validateAndAddConceptForChildConceptsWithCommonBaseInterfaceAnnotation(concepts, definitionClass, method, parentConceptName)
+            return true
+        } else if(hasMethodAnnotation(ChildConceptWithCommonBaseInterface::class.java, method)) {
+            validateAndAddConceptForChildConceptWithCommonBaseInterfaceAnnotation(concepts, definitionClass, method, parentConceptName)
             return true
         }
         return false
     }
 
-    private fun validateAndAddConceptForChildConceptsAnnotation(concepts: MutableMap<ConceptName, ConceptSchema>, definitionClass: Class<*>, method: Method, parentConceptName: ConceptName?) {
-        validateChildConceptMethod(definitionClass, method)
+    private fun validateAndAddConceptForChildConceptAnnotation(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        definitionClass: Class<*>,
+        method: Method,
+        parentConceptName: ConceptName?
+    ) {
+        val conceptClass = method.getAnnotation(ChildConcept::class.java).conceptClass.java
+        validateChildConceptReturnTypeMethod(conceptClass, definitionClass, method)
+        validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
+    }
+
+    private fun validateAndAddConceptForChildConceptsAnnotation(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        definitionClass: Class<*>,
+        method: Method,
+        parentConceptName: ConceptName?
+    ) {
+        validateChildConceptReturnTypeMethod(List::class.java, definitionClass, method)
         val conceptClass = method.getAnnotation(ChildConcepts::class.java).conceptClass.java
         validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
     }
 
-    private fun validateAndAddConceptForChildConceptsWithCommonBaseInterfaceAnnotation(concepts: MutableMap<ConceptName, ConceptSchema>, definitionClass: Class<*>, method: Method, parentConceptName: ConceptName?) {
-        validateChildConceptMethod(definitionClass, method)
+    private fun validateAndAddConceptForChildConceptWithCommonBaseInterfaceAnnotation(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        definitionClass: Class<*>,
+        method: Method,
+        parentConceptName: ConceptName?
+    ) {
+        val baseInterfaceClass = method.getAnnotation(ChildConceptWithCommonBaseInterface::class.java).baseInterfaceClass.java
+        validateChildConceptReturnTypeMethod(baseInterfaceClass, definitionClass, method)
+        val conceptClasses = method.getAnnotation(ChildConceptWithCommonBaseInterface::class.java).conceptClasses.map { it.java }
+        validateAndAddChildConceptWithCommonBaseClass(concepts, method, parentConceptName, conceptClasses, baseInterfaceClass)
+    }
+
+    private fun validateAndAddConceptForChildConceptsWithCommonBaseInterfaceAnnotation(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        definitionClass: Class<*>,
+        method: Method,
+        parentConceptName: ConceptName?
+    ) {
+        validateChildConceptReturnTypeMethod(List::class.java, definitionClass, method)
         val baseInterfaceClass = method.getAnnotation(ChildConceptsWithCommonBaseInterface::class.java).baseInterfaceClass.java
         val conceptClasses = method.getAnnotation(ChildConceptsWithCommonBaseInterface::class.java).conceptClasses.map { it.java }
+        validateAndAddChildConceptWithCommonBaseClass(concepts, method, parentConceptName, conceptClasses, baseInterfaceClass)
+    }
+
+    private fun validateAndAddChildConceptWithCommonBaseClass(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        method: Method,
+        parentConceptName: ConceptName?,
+        conceptClasses: List<Class<out Any>>,
+        baseInterfaceClass: Class<out Any>
+    ) {
         conceptClasses.forEach { conceptClass ->
             if(!isInheriting(conceptClass, baseInterfaceClass)) {
                 throw MalformedSchemaException("Class ${conceptClass.name} must inherit base class ${baseInterfaceClass.name} in method $method.")
             }
             validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
         }
+
     }
 
     private fun isInheriting(subInterface: Class<*>, baseInterface: Class<*>): Boolean {
-        // TODO this only supports direct baseInterfaces
-        return subInterface.interfaces.contains(baseInterface)
+        return allInterfaces(subInterface).contains(baseInterface)
+    }
+
+    private fun allInterfaces(clazz: Class<*>): Set<Class<*>> {
+        val interfaceCollector = mutableSetOf<Class<*>>()
+        collectInterfacesRecursive(interfaceCollector, clazz)
+        return interfaceCollector
+    }
+
+    private fun collectInterfacesRecursive(interfaceCollector: MutableSet<Class<*>>, clazz: Class<*>) {
+        clazz.interfaces.forEach { iface ->
+            if(!interfaceCollector.contains(iface)) {
+                interfaceCollector.add(iface)
+                collectInterfacesRecursive(interfaceCollector, iface)
+            }
+        }
     }
 
     private fun addConceptSchema(

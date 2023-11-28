@@ -50,14 +50,14 @@ class ConceptReuseTest {
             @Facet("Nullable")
             fun nullable(): Boolean
 
-            @ChildConceptsWithCommonBaseInterface(
+            @ChildConceptWithCommonBaseInterface(
                 baseInterfaceClass = FieldType::class,
                 conceptClasses = [
                     BuiltinFieldTypeConcept::class,
                     ReferenceFieldTypeConcept::class,
                 ]
             )
-            fun singleValueType(): List<FieldType> // TODO unfortunately a list, not a single concept
+            fun singleValueType(): FieldType
 
         }
 
@@ -71,14 +71,14 @@ class ConceptReuseTest {
                 LIST, SET;
             }
 
-            @ChildConceptsWithCommonBaseInterface(
+            @ChildConceptWithCommonBaseInterface(
                 baseInterfaceClass = FieldType::class,
                 conceptClasses = [
                     BuiltinFieldTypeConcept::class,
                     ReferenceFieldTypeConcept::class,
                 ]
             )
-            fun collectionValuesType(): List<FieldType> // TODO unfortunately a list, not a single concept
+            fun collectionValuesType(): FieldType
         }
 
         sealed interface FieldType
@@ -204,25 +204,25 @@ class ConceptReuseTest {
 
 
             assertEquals("firstname", firstnameField.fieldName())
-            val firstnameType = firstnameField.singleValueType().first() as ConceptReuseSchema.BuiltinFieldTypeConcept
+            val firstnameType = firstnameField.singleValueType() as ConceptReuseSchema.BuiltinFieldTypeConcept
             assertEquals(BuiltinTypeEnum.STRING, firstnameType.builtinType())
 
             assertEquals("age", ageField.fieldName())
-            val ageType = ageField.singleValueType().first() as ConceptReuseSchema.BuiltinFieldTypeConcept
+            val ageType = ageField.singleValueType() as ConceptReuseSchema.BuiltinFieldTypeConcept
             assertEquals(BuiltinTypeEnum.INTEGER, ageType.builtinType())
 
             assertEquals("spouse", spouseReferenceField.fieldName())
-            val spouseType = spouseReferenceField.singleValueType().first() as ConceptReuseSchema.ReferenceFieldTypeConcept
+            val spouseType = spouseReferenceField.singleValueType() as ConceptReuseSchema.ReferenceFieldTypeConcept
             assertEquals("the person business object", spouseType.referencedBusinessObject().name())
 
             assertEquals("nicknames", nicknamesField.fieldName())
             assertEquals(CollectionKindEnum.LIST, nicknamesField.collectionKind())
-            val nicknameType = nicknamesField.collectionValuesType().first() as ConceptReuseSchema.BuiltinFieldTypeConcept
+            val nicknameType = nicknamesField.collectionValuesType() as ConceptReuseSchema.BuiltinFieldTypeConcept
             assertEquals(BuiltinTypeEnum.STRING, nicknameType.builtinType())
 
             assertEquals("children", childrenField.fieldName())
             assertEquals(CollectionKindEnum.SET, childrenField.collectionKind())
-            val childrenType = childrenField.collectionValuesType().first() as ConceptReuseSchema.ReferenceFieldTypeConcept
+            val childrenType = childrenField.collectionValuesType() as ConceptReuseSchema.ReferenceFieldTypeConcept
             assertEquals("the person business object", childrenType.referencedBusinessObject().name())
 
         }
