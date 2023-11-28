@@ -44,7 +44,7 @@ object SchemaCreator {
         validateConceptItselfNotPresentInUpperHierarchy(concepts, conceptName, parentConceptName)
 
         val parentConceptSchema = parentConceptName?.let { concepts[parentConceptName] }
-        concepts[conceptName] = createConceptSchema(conceptName, conceptClass, parentConceptSchema)
+        addConceptSchema(concepts, conceptName, conceptClass, parentConceptSchema)
 
         val supportedConceptAnnotations = supportedConceptAnnotations(parentConceptSchema != null)
 
@@ -65,18 +65,34 @@ object SchemaCreator {
             return
         }
 
-        val conceptHierarchy: MutableList<ConceptName> = mutableListOf(conceptName, parentConceptName)
-        do {
-            val currentConceptNameInParentHierarchy = conceptHierarchy.last()
-            val currentConcept = concepts[currentConceptNameInParentHierarchy]
-                ?: throw IllegalStateException("Concept '${currentConceptNameInParentHierarchy.name}' not found (parent or ancestor of ${conceptName.name}).")
+        if(conceptName == parentConceptName) {
+            throw MalformedSchemaException("Concept '${conceptName.name}' can not be its own parent.")
+        }
 
-            if(conceptName == currentConceptNameInParentHierarchy) {
-                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. Parent concepts in a hierarchy must be all different concepts, but was $conceptHierarchy.")
+        val allHierarchicalBranches = allHierarchyPathsToRoot(concepts, parentConceptName)
+        allHierarchicalBranches.forEach { parentConceptHierarchy ->
+            if(parentConceptHierarchy.contains(conceptName)) {
+                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. Parent concepts in a hierarchy must be all different concepts, but was $parentConceptHierarchy.")
             }
+        }
+    }
 
-            currentConcept.parentConceptName?.let { conceptHierarchy.add(it) } ?: break
-        } while (true)
+    private fun allHierarchyPathsToRoot(concepts: Map<ConceptName, ConceptSchema>, conceptName: ConceptName): Set<List<ConceptName>> {
+        val conceptSchema = concepts[conceptName] ?: throw IllegalStateException("Concept '${conceptName.name}' not found.")
+
+        val resultSet: MutableSet<List<ConceptName>> = mutableSetOf()
+        conceptSchema.parentConceptNames.forEach { parentConceptName ->
+            allHierarchyPathsToRoot(concepts, parentConceptName).forEach { allBranchesOfParent ->
+                resultSet.add(listOf(conceptName) + allBranchesOfParent)
+            }
+        }
+
+        if(resultSet.isEmpty()) {
+            // if it is a root concept, there is one branch from itself to the root
+            return setOf(listOf(conceptName))
+        }
+
+        return resultSet
     }
 
     private fun hasSupportedConceptAnnotation(method: Method, supportedConceptAnnotations: List<Class<out Annotation>>): Boolean {
@@ -126,7 +142,56 @@ object SchemaCreator {
         return subInterface.interfaces.contains(baseInterface)
     }
 
-    private fun createConceptSchema(conceptName: ConceptName, conceptClass: Class<*>, parentConceptSchema: ConceptSchema?): ConceptSchema {
+    private fun addConceptSchema(
+        concepts: MutableMap<ConceptName, ConceptSchema>,
+        conceptName: ConceptName,
+        conceptClass: Class<*>,
+        parentConceptSchema: ConceptSchema?
+    ) {
+        val isRootConcept = parentConceptSchema == null
+        val alreadyExistingConcept = concepts[conceptName]
+        if(alreadyExistingConcept != null) {
+            val newParentConceptNames = if (parentConceptSchema != null) {
+                alreadyExistingConcept.parentConceptNames + parentConceptSchema.conceptName
+            } else {
+                alreadyExistingConcept.parentConceptNames
+            }
+
+            concepts[conceptName] = ConceptSchemaImpl(
+                conceptName = conceptName,
+                conceptClass = conceptClass,
+                isRootConcept = isRootConcept || alreadyExistingConcept.isRootConcept,
+                parentConceptNames = newParentConceptNames,
+                facets = alreadyExistingConcept.facets,
+                minOccurrence = alreadyExistingConcept.minOccurrence,
+                maxOccurrence = alreadyExistingConcept.maxOccurrence,
+            )
+        } else {
+            val facets = gatherFacets(conceptClass)
+            val minOccurrence = conceptClass.getAnnotation(Concept::class.java).minOccurrence;
+            val maxOccurrence = conceptClass.getAnnotation(Concept::class.java).maxOccurrence;
+
+            val newParentConceptNames = if (parentConceptSchema != null) {
+                setOf(parentConceptSchema.conceptName)
+            } else {
+                emptySet()
+            }
+
+            concepts[conceptName] = ConceptSchemaImpl(
+                conceptName = conceptName,
+                conceptClass = conceptClass,
+                isRootConcept = isRootConcept,
+                parentConceptNames = newParentConceptNames,
+                facets = facets,
+                minOccurrence = minOccurrence,
+                maxOccurrence = maxOccurrence
+            )
+
+        }
+
+    }
+
+    private fun gatherFacets(conceptClass: Class<*>): List<FacetSchema> {
         val facets = mutableListOf<FacetSchema>()
         conceptClass.methods.forEach { method ->
             val returnType = method.returnType.kotlin
@@ -156,18 +221,7 @@ object SchemaCreator {
                 }
             }
         }
-
-        val minOccurrence = conceptClass.getAnnotation(Concept::class.java).minOccurrence;
-        val maxOccurrence = conceptClass.getAnnotation(Concept::class.java).maxOccurrence;
-
-        return ConceptSchemaImpl(
-            conceptName = conceptName,
-            conceptClass = conceptClass,
-            parentConceptName = parentConceptSchema?.conceptName,
-            facets = facets,
-            minOccurrence = minOccurrence,
-            maxOccurrence = maxOccurrence
-        )
+        return facets
     }
 
     private fun validatedEnumerationType(facetName: FacetName, facetType: FacetTypeEnum, method: Method): KClass<*>? {
