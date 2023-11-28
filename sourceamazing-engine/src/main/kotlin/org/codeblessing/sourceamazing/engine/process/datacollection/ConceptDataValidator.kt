@@ -95,11 +95,11 @@ object ConceptDataValidator {
     }
 
     private fun isValidParentConcept(schemaConcept: ConceptSchema, conceptData: ConceptData): Boolean {
-        if(schemaConcept.parentConceptName != null && conceptData.parentConceptIdentifier == null) {
-            return false
+        if(conceptData.parentConceptIdentifier == null) {
+            return schemaConcept.isRootConcept
         }
 
-        return !(schemaConcept.parentConceptName == null && conceptData.parentConceptIdentifier != null)
+        return schemaConcept.parentConceptNames.isNotEmpty()
     }
 
 }

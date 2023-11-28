@@ -63,7 +63,7 @@ class SchemaCreatorTest {
         Assertions.assertEquals(1, schema.numberOfConcepts())
         val fooConcept = schema.conceptByConceptName(ConceptName.of("FooConcept"))
         Assertions.assertEquals(ConceptName.of("FooConcept"), fooConcept.conceptName)
-        Assertions.assertNull(fooConcept.parentConceptName)
+        Assertions.assertEquals(0, fooConcept.parentConceptNames.size)
         Assertions.assertTrue(fooConcept.facetNames.contains(FacetName.of("Bar")))
     }
 
@@ -115,8 +115,8 @@ class SchemaCreatorTest {
         Assertions.assertEquals(ConceptName.of("InheritanceOneChildConcept"), inheritanceOneChildConcept.conceptName)
         val inheritanceTwoChildConcept = schema.conceptByConceptName(ConceptName.of("InheritanceTwoChildConcept"))
         Assertions.assertEquals(ConceptName.of("InheritanceTwoChildConcept"), inheritanceTwoChildConcept.conceptName)
-        Assertions.assertNull(inheritanceOneChildConcept.parentConceptName)
-        Assertions.assertNull(inheritanceTwoChildConcept.parentConceptName)
+        Assertions.assertEquals(0, inheritanceOneChildConcept.parentConceptNames.size)
+        Assertions.assertEquals(0, inheritanceTwoChildConcept.parentConceptNames.size)
     }
 
     @Schema
@@ -210,8 +210,8 @@ class SchemaCreatorTest {
         Assertions.assertEquals(ConceptName.of("SeparatelyDefinedInheritanceOneChildConcept"), inheritanceOneChildConcept.conceptName)
         val inheritanceTwoChildConcept = schema.conceptByConceptName(ConceptName.of("SeparatelyDefinedInheritanceTwoChildConcept"))
         Assertions.assertEquals(ConceptName.of("SeparatelyDefinedInheritanceTwoChildConcept"), inheritanceTwoChildConcept.conceptName)
-        Assertions.assertNull(inheritanceOneChildConcept.parentConceptName)
-        Assertions.assertNull(inheritanceTwoChildConcept.parentConceptName)
+        Assertions.assertEquals(0, inheritanceOneChildConcept.parentConceptNames.size)
+        Assertions.assertEquals(0, inheritanceTwoChildConcept.parentConceptNames.size)
     }
 
 
@@ -347,7 +347,7 @@ class SchemaCreatorTest {
 
         val subConcept1 = schema.conceptByConceptName(ConceptName.of("SubConcept1"))
         Assertions.assertEquals(ConceptName.of("SubConcept1"), subConcept1.conceptName)
-        Assertions.assertNull(subConcept1.parentConceptName)
+        Assertions.assertEquals(0, subConcept1.parentConceptNames.size)
         Assertions.assertEquals(2, subConcept1.facetNames.size)
         Assertions.assertTrue(subConcept1.facetNames.contains(FacetName.of("SubConcept1Facet1")))
         Assertions.assertTrue(subConcept1.facetNames.contains(FacetName.of("SubConcept1Facet2")))
@@ -355,24 +355,24 @@ class SchemaCreatorTest {
 
         val subSubConcept1 = schema.conceptByConceptName(ConceptName.of("SubSubConcept1"))
         Assertions.assertEquals(ConceptName.of("SubSubConcept1"), subSubConcept1.conceptName)
-        Assertions.assertEquals(ConceptName.of("SubConcept1"), subSubConcept1.parentConceptName)
+        Assertions.assertEquals(ConceptName.of("SubConcept1"), subSubConcept1.parentConceptNames.firstOrNull())
         Assertions.assertEquals(0, subSubConcept1.facetNames.size)
 
         val subSubSubConcept1 = schema.conceptByConceptName(ConceptName.of("SubSubSubConcept1"))
         Assertions.assertEquals(ConceptName.of("SubSubSubConcept1"), subSubSubConcept1.conceptName)
-        Assertions.assertEquals(ConceptName.of("SubSubConcept1"), subSubSubConcept1.parentConceptName)
+        Assertions.assertEquals(ConceptName.of("SubSubConcept1"), subSubSubConcept1.parentConceptNames.firstOrNull())
         Assertions.assertEquals(0, subSubSubConcept1.facetNames.size)
 
 
         val subConcept2 = schema.conceptByConceptName(ConceptName.of("SubConcept2"))
         Assertions.assertEquals(ConceptName.of("SubConcept2"), subConcept2.conceptName)
-        Assertions.assertNull(subConcept2.parentConceptName)
+        Assertions.assertEquals(0, subConcept2.parentConceptNames.size)
         Assertions.assertEquals(1, subConcept2.facetNames.size)
         Assertions.assertTrue(subConcept2.facetNames.contains(FacetName.of("SubConcept2Facet")))
 
         val subSubConcept2 = schema.conceptByConceptName(ConceptName.of("SubSubConcept2"))
         Assertions.assertEquals(ConceptName.of("SubSubConcept2"), subSubConcept2.conceptName)
-        Assertions.assertEquals(ConceptName.of("SubConcept2"), subSubConcept2.parentConceptName)
+        Assertions.assertEquals(ConceptName.of("SubConcept2"), subSubConcept2.parentConceptNames.firstOrNull())
         Assertions.assertEquals(0, subSubConcept2.facetNames.size)
     }
 
@@ -431,10 +431,10 @@ class SchemaCreatorTest {
         val parent1Concept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptParent1Concept"))
         val parent2Concept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptParent2Concept"))
         val childConcept = schema.conceptByConceptName(ConceptName.of("TwoParentConceptChildConcept"))
-        Assertions.assertEquals(parent1Concept.parentConceptName, childConcept.parentConceptName)
-        Assertions.assertEquals(parent2Concept.parentConceptName, childConcept.parentConceptName)
-        Assertions.assertNull(parent1Concept.parentConceptName)
-        Assertions.assertNull(parent2Concept.parentConceptName)
+        Assertions.assertTrue(childConcept.parentConceptNames.contains(parent1Concept.conceptName))
+        Assertions.assertTrue(childConcept.parentConceptNames.contains(parent2Concept.conceptName))
+        Assertions.assertEquals(0, parent1Concept.parentConceptNames.size)
+        Assertions.assertEquals(0, parent2Concept.parentConceptNames.size)
 
     }
 
@@ -486,7 +486,7 @@ class SchemaCreatorTest {
         Assertions.assertEquals(1, schema.numberOfConcepts())
         val concept = schema.conceptByConceptName(ConceptName.of("DuplicateRootConcept"))
         Assertions.assertEquals(ConceptName.of("DuplicateRootConcept"), concept.conceptName)
-        Assertions.assertNull(concept.parentConceptName)
+        Assertions.assertEquals(0, concept.parentConceptNames.size)
     }
 
     @Schema
