@@ -19,7 +19,7 @@ class EngineProcess(private val processSession: ProcessSession) {
         processSession.loggerFacade.closeLoggerFacade()
     }
 
-    private fun processDomainUnit(domainUnit: DomainUnit<*, *>) {
+    internal fun processDomainUnit(domainUnit: DomainUnit<*, *>) {
         val domainUnitDescription = domainUnit.javaClass.simpleName
         val loggerFacade = processSession.loggerFacade
         val schema = domainUnit.createSchema(DomainUnitSchemaHelperImpl())

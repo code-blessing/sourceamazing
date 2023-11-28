@@ -41,11 +41,7 @@ object SchemaCreator {
         validateTypeAnnotation(annotation = Concept::class.java, classToInspect = conceptClass)
         val conceptName = ConceptName.of(conceptClass.getAnnotation(Concept::class.java).conceptName)
 
-        concepts[conceptName]?.let {
-            if(it.parentConceptName != parentConceptName) {
-                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'.")
-            }
-        }
+        validateConceptItselfNotPresentInUpperHierarchy(concepts, conceptName, parentConceptName)
 
         val parentConceptSchema = parentConceptName?.let { concepts[parentConceptName] }
         concepts[conceptName] = createConceptSchema(conceptName, conceptClass, parentConceptSchema)
@@ -61,6 +57,26 @@ object SchemaCreator {
                 )
             }
         }
+    }
+
+    private fun validateConceptItselfNotPresentInUpperHierarchy(concepts: MutableMap<ConceptName, ConceptSchema>, conceptName: ConceptName, parentConceptName: ConceptName?) {
+        if(parentConceptName == null) {
+            // root concept
+            return
+        }
+
+        val conceptHierarchy: MutableList<ConceptName> = mutableListOf(conceptName, parentConceptName)
+        do {
+            val currentConceptNameInParentHierarchy = conceptHierarchy.last()
+            val currentConcept = concepts[currentConceptNameInParentHierarchy]
+                ?: throw IllegalStateException("Concept '${currentConceptNameInParentHierarchy.name}' not found (parent or ancestor of ${conceptName.name}).")
+
+            if(conceptName == currentConceptNameInParentHierarchy) {
+                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. Parent concepts in a hierarchy must be all different concepts, but was $conceptHierarchy.")
+            }
+
+            currentConcept.parentConceptName?.let { conceptHierarchy.add(it) } ?: break
+        } while (true)
     }
 
     private fun hasSupportedConceptAnnotation(method: Method, supportedConceptAnnotations: List<Class<out Annotation>>): Boolean {
