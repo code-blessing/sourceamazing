@@ -73,14 +73,16 @@ class SchemaCreatorTest {
         @ChildConcepts(WrongConceptIdentifierConcept::class)
         fun getChildrenConcepts(): List<WrongConceptIdentifierConcept>
 
+
+        @Concept("WrongConceptIdentifier")
+        interface WrongConceptIdentifierConcept {
+            @ConceptId
+            fun getWrongTypedIdentifier(): Any
+
+        }
+
     }
 
-    @Concept("WrongConceptIdentifier")
-    interface WrongConceptIdentifierConcept {
-        @ConceptId
-        fun getWrongTypedIdentifier(): Any
-
-    }
 
     @Test
     fun `test with wrong concept identifier type`() {
@@ -94,14 +96,15 @@ class SchemaCreatorTest {
         @ChildConceptsWithCommonBaseInterface(CommonChildConceptInterface::class, conceptClasses = [InheritanceOneChildConcept::class, InheritanceTwoChildConcept::class])
         fun getMultipleChildrenConcepts(): List<CommonChildConceptInterface>
 
+        interface CommonChildConceptInterface
+
+        @Concept("InheritanceOneChildConcept")
+        interface InheritanceOneChildConcept: CommonChildConceptInterface {}
+
+        @Concept("InheritanceTwoChildConcept")
+        interface InheritanceTwoChildConcept: CommonChildConceptInterface {}
+
     }
-    interface CommonChildConceptInterface
-
-    @Concept("InheritanceOneChildConcept")
-    interface InheritanceOneChildConcept: CommonChildConceptInterface {}
-
-    @Concept("InheritanceTwoChildConcept")
-    interface InheritanceTwoChildConcept: CommonChildConceptInterface {}
 
 
     @Test
@@ -121,14 +124,15 @@ class SchemaCreatorTest {
         @ChildConceptsWithCommonBaseInterface(IncompatibleChildConceptInterface::class, conceptClasses = [IncompatibleInheritanceOneChildConcept::class, IncompatibleInheritanceTwoChildConcept::class])
         fun getMultipleChildrenConcepts(): List<IncompatibleChildConceptInterface>
 
+        interface IncompatibleChildConceptInterface
+
+        @Concept("IncompatibleInheritanceOneChildConcept")
+        interface IncompatibleInheritanceOneChildConcept: IncompatibleChildConceptInterface {}
+
+        @Concept("IncompatibleInheritanceTwoChildConcept")
+        interface IncompatibleInheritanceTwoChildConcept {}
+
     }
-    interface IncompatibleChildConceptInterface
-
-    @Concept("IncompatibleInheritanceOneChildConcept")
-    interface IncompatibleInheritanceOneChildConcept: IncompatibleChildConceptInterface {}
-
-    @Concept("IncompatibleInheritanceTwoChildConcept")
-    interface IncompatibleInheritanceTwoChildConcept {}
 
     @Test
     fun `test with incompatible inheritance child concepts`() {
@@ -142,15 +146,16 @@ class SchemaCreatorTest {
         @ChildConceptsWithCommonBaseInterface(DuplicatedConceptChildConceptInterface::class, conceptClasses = [DuplicatedConceptInheritanceOneChildConcept::class, DuplicatedConceptInheritanceTwoChildConcept::class])
         fun getMultipleChildrenConcepts(): List<DuplicatedConceptChildConceptInterface>
 
+        @Concept("DuplicatedConceptInheritanceChildConcept")
+        interface DuplicatedConceptChildConceptInterface
+
+        @Concept("DuplicatedConceptInheritanceOneChildConcept")
+        interface DuplicatedConceptInheritanceOneChildConcept: DuplicatedConceptChildConceptInterface {}
+
+        @Concept("DuplicatedConceptInheritanceTwoChildConcept")
+        interface DuplicatedConceptInheritanceTwoChildConcept {}
+
     }
-    @Concept("DuplicatedConceptInheritanceChildConcept")
-    interface DuplicatedConceptChildConceptInterface
-
-    @Concept("DuplicatedConceptInheritanceOneChildConcept")
-    interface DuplicatedConceptInheritanceOneChildConcept: DuplicatedConceptChildConceptInterface {}
-
-    @Concept("DuplicatedConceptInheritanceTwoChildConcept")
-    interface DuplicatedConceptInheritanceTwoChildConcept {}
 
     @Test
     fun `test with duplicated concept inheritance child concepts`() {
@@ -164,8 +169,9 @@ class SchemaCreatorTest {
         @ChildConceptsWithCommonBaseInterface(EmptyCommonChildConceptInterface::class, conceptClasses = [])
         fun getMultipleChildrenConcepts(): List<EmptyCommonChildConceptInterface>
 
+        interface EmptyCommonChildConceptInterface
+
     }
-    interface EmptyCommonChildConceptInterface
 
     @Test
     fun `test with base interface without inheritance child concepts`() {
@@ -185,14 +191,15 @@ class SchemaCreatorTest {
         @ChildConcepts(SeparatelyDefinedInheritanceTwoChildConcept::class)
         fun getSeparatelyDefinedInheritanceTwoChildConcept(): List<SeparatelyDefinedInheritanceTwoChildConcept>
 
+        interface SeparatelyDefinedCommonChildConceptInterface
+
+        @Concept("SeparatelyDefinedInheritanceOneChildConcept")
+        interface SeparatelyDefinedInheritanceOneChildConcept: SeparatelyDefinedCommonChildConceptInterface {}
+
+        @Concept("SeparatelyDefinedInheritanceTwoChildConcept")
+        interface SeparatelyDefinedInheritanceTwoChildConcept: SeparatelyDefinedCommonChildConceptInterface {}
+
     }
-    interface SeparatelyDefinedCommonChildConceptInterface
-
-    @Concept("SeparatelyDefinedInheritanceOneChildConcept")
-    interface SeparatelyDefinedInheritanceOneChildConcept: SeparatelyDefinedCommonChildConceptInterface {}
-
-    @Concept("SeparatelyDefinedInheritanceTwoChildConcept")
-    interface SeparatelyDefinedInheritanceTwoChildConcept: SeparatelyDefinedCommonChildConceptInterface {}
 
 
     @Test
@@ -272,9 +279,10 @@ class SchemaCreatorTest {
         @ChildConcepts(NotConcept::class)
         fun getChildrenConceptsOfFoo(): List<NotConcept>
 
+        interface NotConcept
     }
 
-    interface NotConcept
+
     @Test
     fun `test schema with a method not returning an interface annotated with @Concept should throw an exception`() {
         Assertions.assertThrows(MalformedSchemaException::class.java) {
@@ -290,46 +298,47 @@ class SchemaCreatorTest {
         @ChildConcepts(SubConcept2::class)
         fun getChildrenConcepts2(): List<SubConcept2>
 
+
+        @Concept("SubConcept1")
+        interface SubConcept1 {
+            @ChildConcepts(SubSubConcept1::class)
+            fun getChildrenConceptsOfChild(): List<SubSubConcept1>
+
+            @Facet("SubConcept1Facet1")
+            fun getSubConcept1Facet1(): String
+
+            @Facet("SubConcept1Facet2")
+            fun getSubConcept1Facet2(): String
+
+
+        }
+
+        @Concept("SubSubConcept1")
+        interface SubSubConcept1 {
+            @ChildConcepts(SubSubSubConcept1::class)
+            fun getChildrenConceptsOfChild(): List<SubSubSubConcept1>
+
+        }
+
+
+        @Concept("SubSubSubConcept1")
+        interface SubSubSubConcept1
+
+        @Concept("SubConcept2")
+        interface SubConcept2 {
+            @ChildConcepts(SubSubConcept2::class)
+            fun getChildrenConceptsOfChild(): List<SubSubConcept2>
+
+            @Facet("SubConcept2Facet")
+            fun getSubConcept2Facet(): String
+
+
+        }
+
+        @Concept("SubSubConcept2")
+        interface SubSubConcept2
+
     }
-
-    @Concept("SubConcept1")
-    interface SubConcept1 {
-        @ChildConcepts(SubSubConcept1::class)
-        fun getChildrenConceptsOfChild(): List<SubSubConcept1>
-
-        @Facet("SubConcept1Facet1")
-        fun getSubConcept1Facet1(): String
-
-        @Facet("SubConcept1Facet2")
-        fun getSubConcept1Facet2(): String
-
-
-    }
-
-    @Concept("SubSubConcept1")
-    interface SubSubConcept1 {
-        @ChildConcepts(SubSubSubConcept1::class)
-        fun getChildrenConceptsOfChild(): List<SubSubSubConcept1>
-
-    }
-
-
-    @Concept("SubSubSubConcept1")
-    interface SubSubSubConcept1
-
-    @Concept("SubConcept2")
-    interface SubConcept2 {
-        @ChildConcepts(SubSubConcept2::class)
-        fun getChildrenConceptsOfChild(): List<SubSubConcept2>
-
-        @Facet("SubConcept2Facet")
-        fun getSubConcept2Facet(): String
-
-
-    }
-
-    @Concept("SubSubConcept2")
-    interface SubSubConcept2
 
     @Test
     fun `test schema with two nested concepts`() {
@@ -372,13 +381,11 @@ class SchemaCreatorTest {
         @ChildConcepts(DirectCyclicConcept::class)
         fun getCyclicChildrenConcept(): List<DirectCyclicConcept>
 
-    }
-
-    @Concept("DirectCyclicConcept")
-    interface DirectCyclicConcept {
-        @ChildConcepts(DirectCyclicConcept::class)
-        fun getChildrenConcepts(): List<DirectCyclicConcept>
-
+        @Concept("DirectCyclicConcept")
+        interface DirectCyclicConcept {
+            @ChildConcepts(DirectCyclicConcept::class)
+            fun getChildrenConcepts(): List<DirectCyclicConcept>
+        }
     }
 
     @Test
@@ -396,24 +403,25 @@ class SchemaCreatorTest {
         @ChildConcepts(TwoParentConceptParent2Concept::class)
         fun getSecondParentConcept(): List<TwoParentConceptParent2Concept>
 
+
+        @Concept("TwoParentConceptParent1Concept")
+        interface TwoParentConceptParent1Concept {
+            @ChildConcepts(TwoParentConceptChildConcept::class)
+            fun getChildrenConcepts(): List<TwoParentConceptChildConcept>
+
+        }
+
+        @Concept("TwoParentConceptParent2Concept")
+        interface TwoParentConceptParent2Concept {
+            @ChildConcepts(TwoParentConceptChildConcept::class)
+            fun getChildrenConcepts(): List<TwoParentConceptChildConcept>
+
+        }
+
+        @Concept("TwoParentConceptChildConcept")
+        interface TwoParentConceptChildConcept
     }
 
-    @Concept("TwoParentConceptParent1Concept")
-    interface TwoParentConceptParent1Concept {
-        @ChildConcepts(TwoParentConceptChildConcept::class)
-        fun getChildrenConcepts(): List<TwoParentConceptChildConcept>
-
-    }
-
-    @Concept("TwoParentConceptParent2Concept")
-    interface TwoParentConceptParent2Concept {
-        @ChildConcepts(TwoParentConceptChildConcept::class)
-        fun getChildrenConcepts(): List<TwoParentConceptChildConcept>
-
-    }
-
-    @Concept("TwoParentConceptChildConcept")
-    interface TwoParentConceptChildConcept
 
     @Test
     fun `test schema with two parents concepts having same child concept throw exception`() {
@@ -427,21 +435,22 @@ class SchemaCreatorTest {
         @ChildConcepts(IndirectCyclicConcept::class)
         fun getCyclicChildrenConcept(): List<IndirectCyclicConcept>
 
+        @Concept("IndirectCyclicConcept")
+        interface IndirectCyclicConcept {
+            @ChildConcepts(IndirectCyclicSubConcept::class)
+            fun getSubChildrenConcepts(): List<IndirectCyclicSubConcept>
+
+        }
+
+        @Concept("IndirectCyclicSubConcept")
+        interface IndirectCyclicSubConcept {
+            @ChildConcepts(IndirectCyclicConcept::class)
+            fun getChildrenConcepts(): List<IndirectCyclicConcept>
+
+        }
+
     }
 
-    @Concept("IndirectCyclicConcept")
-    interface IndirectCyclicConcept {
-        @ChildConcepts(IndirectCyclicSubConcept::class)
-        fun getSubChildrenConcepts(): List<IndirectCyclicSubConcept>
-
-    }
-
-    @Concept("IndirectCyclicSubConcept")
-    interface IndirectCyclicSubConcept {
-        @ChildConcepts(IndirectCyclicConcept::class)
-        fun getChildrenConcepts(): List<IndirectCyclicConcept>
-
-    }
 
     @Test
     fun `test multiple concepts in cyclic hierarchy throws exception`() {
@@ -458,10 +467,10 @@ class SchemaCreatorTest {
         @ChildConcepts(DuplicateRootConcept::class)
         fun getAnotherChildrenConcepts(): List<DuplicateRootConcept>
 
+        @Concept("DuplicateRootConcept")
+        interface DuplicateRootConcept
     }
 
-    @Concept("DuplicateRootConcept")
-    interface DuplicateRootConcept
 
     @Test
     fun `test with duplicate root concept`() {
