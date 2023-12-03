@@ -11,8 +11,15 @@ class MultipleSourcesParameterAccess(private val parameterSources: List<Paramete
     }
 
     override fun getParameter(name: String): String {
-        return getParameterMap()[name] ?: throw IllegalArgumentException("No value for parameter name $name.")
+        return getParameterOrNull(name) ?: throw IllegalArgumentException("No value for parameter name $name.")
+    }
 
+    override fun hasParameter(name: String): Boolean {
+        return getParameterOrNull(name) != null
+    }
+
+    private fun getParameterOrNull(name: String): String? {
+        return getParameterMap()[name]
     }
 
     private fun mergeMaps(listOfMaps: List<Map<String, String>>): Map<String, String> {

@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.engine.process
 
 import org.codeblessing.sourceamazing.api.process.DomainUnit
+import org.codeblessing.sourceamazing.engine.process.DomainUnitName.domainUnitName
 import org.codeblessing.sourceamazing.engine.process.datacollection.DomainUnitDataCollectionHelperImpl
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.engine.process.schema.DomainUnitSchemaHelperImpl
@@ -11,26 +12,25 @@ import kotlin.io.path.name
 class EngineProcess(private val processSession: ProcessSession) {
 
 
-
     fun runProcess() {
         processSession.loggerFacade.logUserInfo("SourceAmazing started...")
-        processSession.domainUnits.forEach { domainUnit -> processDomainUnit(domainUnit) }
+        DomainUnitFiltering.filteredDomainUnits(processSession).forEach { domainUnit -> processDomainUnit(domainUnit) }
         processSession.loggerFacade.logUserInfo("SourceAmazing finished.")
         processSession.loggerFacade.closeLoggerFacade()
     }
 
     internal fun processDomainUnit(domainUnit: DomainUnit<*, *>) {
-        val domainUnitDescription = domainUnit.javaClass.simpleName
+        val domainUnitName = domainUnit.domainUnitName()
         val loggerFacade = processSession.loggerFacade
         val schema = domainUnit.createSchema(DomainUnitSchemaHelperImpl())
-        loggerFacade.logDebug("$domainUnitDescription: Schema created (${schema.allRootConcepts().size} concept(s))")
+        loggerFacade.logDebug("$domainUnitName: Schema created (${schema.allRootConcepts().size} concept(s))")
         val conceptData = domainUnit.processDomainUnitInputData(processSession.parameterAccess, DomainUnitDataCollectionHelperImpl(processSession, schema))
 
-        loggerFacade.logDebug("$domainUnitDescription: Data collected (${conceptData.size} instance(s))")
+        loggerFacade.logDebug("$domainUnitName: Data collected (${conceptData.size} instance(s))")
 
         val conceptGraph = ConceptResolver.validateAndResolveConcepts(schema, conceptData)
 
-        loggerFacade.logDebug("$domainUnitDescription: Concepts graph created")
+        loggerFacade.logDebug("$domainUnitName: Concepts graph created")
 
 
         val targetFilesWithContent = domainUnit.processDomainUnitTargetFiles(
@@ -38,10 +38,10 @@ class EngineProcess(private val processSession: ProcessSession) {
             DomainUnitProcessTargetFilesDataHelperImpl(conceptGraph)
         )
 
-        loggerFacade.logUserInfo("$domainUnitDescription: Writing ${targetFilesWithContent.size} file(s)")
+        loggerFacade.logUserInfo("$domainUnitName: Writing ${targetFilesWithContent.size} file(s)")
 
         targetFilesWithContent.forEach { targetFileWithContent ->
-            loggerFacade.logUserInfo("$domainUnitDescription: Write file ${targetFileWithContent.targetFile.name}: ${targetFileWithContent.targetFile.normalize().absolutePathString()}")
+            loggerFacade.logUserInfo("$domainUnitName: Write file ${targetFileWithContent.targetFile.name}: ${targetFileWithContent.targetFile.normalize().absolutePathString()}")
             processSession.fileSystemAccess.writeFile(targetFileWithContent.targetFile, targetFileWithContent.fileContent.iterator())
         }
 
