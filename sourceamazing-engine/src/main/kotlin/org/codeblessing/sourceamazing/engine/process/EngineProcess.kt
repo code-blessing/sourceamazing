@@ -2,10 +2,10 @@ package org.codeblessing.sourceamazing.engine.process
 
 import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.engine.process.DomainUnitName.domainUnitName
-import org.codeblessing.sourceamazing.engine.process.datacollection.DomainUnitDataCollectionHelperImpl
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptResolver
-import org.codeblessing.sourceamazing.engine.process.schema.DomainUnitSchemaHelperImpl
-import org.codeblessing.sourceamazing.engine.process.templating.DomainUnitProcessTargetFilesDataHelperImpl
+import org.codeblessing.sourceamazing.engine.process.datacollection.domainunit.DomainUnitDataCollectionHelperImpl
+import org.codeblessing.sourceamazing.engine.process.schema.domainunit.DomainUnitSchemaHelperImpl
+import org.codeblessing.sourceamazing.engine.process.templating.domainunit.DomainUnitProcessTargetFilesDataHelperImpl
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.name
 
@@ -23,7 +23,7 @@ class EngineProcess(private val processSession: ProcessSession) {
         val domainUnitName = domainUnit.domainUnitName()
         val loggerFacade = processSession.loggerFacade
         val schema = domainUnit.createSchema(DomainUnitSchemaHelperImpl())
-        loggerFacade.logDebug("$domainUnitName: Schema created (${schema.allRootConcepts().size} concept(s))")
+        loggerFacade.logDebug("$domainUnitName: Schema created (${schema.allConcepts().size} concept(s))")
         val conceptData = domainUnit.processDomainUnitInputData(processSession.parameterAccess, DomainUnitDataCollectionHelperImpl(processSession, schema))
 
         loggerFacade.logDebug("$domainUnitName: Data collected (${conceptData.size} instance(s))")
@@ -44,7 +44,5 @@ class EngineProcess(private val processSession: ProcessSession) {
             loggerFacade.logUserInfo("$domainUnitName: Write file ${targetFileWithContent.targetFile.name}: ${targetFileWithContent.targetFile.normalize().absolutePathString()}")
             processSession.fileSystemAccess.writeFile(targetFileWithContent.targetFile, targetFileWithContent.fileContent.iterator())
         }
-
-
     }
 }

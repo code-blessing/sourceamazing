@@ -1,16 +1,17 @@
 package org.codeblessing.sourceamazing.api.process
 
+import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
 import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
 import org.codeblessing.sourceamazing.api.process.datacollection.DomainUnitDataCollectionHelper
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
-import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
 import org.codeblessing.sourceamazing.api.process.schema.DomainUnitSchemaHelper
 import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.api.process.templating.DomainUnitProcessTargetFilesHelper
 import org.codeblessing.sourceamazing.api.process.templating.TargetFileWithContent
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
+import kotlin.reflect.KClass
 
-abstract class DomainUnit<S: Any, I: Any>(private val schemaDefinitionClass: Class<S>, private val inputDefinitionClass: Class<I>) {
+abstract class DomainUnit<S: Any, I: Any>(private val schemaDefinitionClass: KClass<S>, private val inputDefinitionClass: KClass<I>) {
     fun createSchema(domainUnitSchemaHelper: DomainUnitSchemaHelper): SchemaAccess {
         return domainUnitSchemaHelper.createDomainUnitSchema(schemaDefinitionClass = schemaDefinitionClass)
     }

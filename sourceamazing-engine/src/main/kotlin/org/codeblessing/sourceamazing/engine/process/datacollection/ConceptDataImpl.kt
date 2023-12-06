@@ -10,44 +10,49 @@ class ConceptDataImpl(
     override val conceptName: ConceptName,
     override val conceptIdentifier: ConceptIdentifier,
 ): ConceptData {
-    private var mutableParentConceptIdentifier: ConceptIdentifier? = null
-    private val mutableFacets: MutableMap<FacetName, Any?> = mutableMapOf()
-    override val parentConceptIdentifier: ConceptIdentifier?
-        get() = mutableParentConceptIdentifier
-
-    override fun setParentConceptIdentifier(parentConceptIdentifier: ConceptIdentifier?): ConceptData {
-        this.mutableParentConceptIdentifier = parentConceptIdentifier
-        return this
-    }
-
+    private val mutableFacets: MutableMap<FacetName, MutableList<Any>> = mutableMapOf()
 
     override fun hasFacet(facetName: FacetName): Boolean {
         return mutableFacets.containsKey(facetName)
     }
 
-    override fun getFacet(facetName: FacetName): Any? {
-        return mutableFacets[facetName]
+    override fun getFacet(facetName: FacetName): List<Any> {
+        return mutableFacets[facetName] ?: emptyList()
     }
 
     override fun getFacetNames(): Set<FacetName> {
         return mutableFacets.keys
     }
 
-    override fun allFacets(): Map<FacetName, Any?> {
+    override fun allFacets(): Map<FacetName, List<Any>> {
         return mutableFacets.toMap()
     }
 
 
-    override fun addOrReplaceFacetValues(facetValues: Map<FacetName, Any?>): ConceptDataImpl {
-        facetValues.forEach { (facetName, facetValue) ->
-            mutableFacets[facetName] = facetValue
-        }
+    override fun replaceFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptDataImpl {
+        mutableFacets[facetName] = facetValues.toMutableList()
         return this
     }
 
 
-    override fun addOrReplaceFacetValue(facetName: FacetName, facetValue: Any?): ConceptDataImpl {
-        mutableFacets[facetName] = facetValue
+    override fun addFacetValue(facetName: FacetName, facetValue: Any): ConceptDataImpl {
+        assureFacetList(facetName).add(facetValue)
         return this
+    }
+
+    override fun addFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptData {
+        assureFacetList(facetName).addAll(facetValues)
+        return this
+    }
+
+    private fun assureFacetList(facetName: FacetName): MutableList<Any> {
+        val currentList = mutableFacets[facetName]
+        return currentList ?: createEmptyListForFacet(facetName)
+    }
+
+    private fun createEmptyListForFacet(facetName: FacetName): MutableList<Any> {
+        val list = mutableListOf<Any>()
+        mutableFacets[facetName] = list
+        return list
     }
 }

@@ -1,70 +1,15 @@
 package org.codeblessing.sourceamazing.engine.proxy
 
-import org.codeblessing.sourceamazing.api.process.datacollection.annotations.*
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
-import java.lang.reflect.Parameter
 
 object InvocationHandlerHelper {
 
-    private val parameterAnnotations: Set<Class<out Annotation>> = setOf(
-        ConceptBuilder::class.java,
-        ConceptIdentifierValue::class.java,
-        ParameterDefinedConceptName::class.java,
-        ParameterDefinedFacetName::class.java,
-        ValueOfParameterDefinedFacetName::class.java,
-        FacetValue::class.java,
-    )
-
-    fun handleObjectMethodsOrThrow(
-        invocationHandler: InvocationHandler,
-        method: Method?,
-        requiredMethodAnnotations: Collection<Class<out Annotation>>
-    ): Any {
-        if(method != null) {
-            if(method.name == ::toString.name) {
-                return invocationHandler.toString()
-            }
-            if(method.name == ::hashCode.name) {
-                return invocationHandler.hashCode()
-            }
-        }
-        throw IllegalStateException("Method $method not annotated. Use exactly one of this annotations: $requiredMethodAnnotations")
-    }
-
-    fun isMethodAnnotatedWithExactlyOneOf(method: Method, annotations: Collection<Class<out Annotation>>): Boolean {
-        return annotations.filter { annotation ->  isMethodAnnotatedWith(method, annotation) }.size == 1
-    }
-
-    fun isMethodAnnotatedWith(method: Method, annotation: Class<out Annotation>): Boolean {
-        return method.getAnnotation(annotation) != null
-    }
-
-    private fun isParamAnnotatedWith(parameter: Parameter, annotation: Class<out Annotation>): Boolean {
-        return parameter.getAnnotation(annotation) != null
-    }
-
-    private fun isParamAnnotatedWith(parameter: Parameter, annotations: Collection<Class<out Annotation>>): Boolean {
-        return annotations.any { annotation -> isParamAnnotatedWith(parameter, annotation) }
-    }
-
-    private fun isAllMethodParamsAnnotated(method: Method): Boolean {
-        return method.parameters.all { parameter -> isParamAnnotatedWith(parameter, parameterAnnotations) }
-    }
-
-    fun numberOfParamsAnnotatedWith(method: Method, annotation: Class<out Annotation>): Int {
-        return paramsAnnotatedWith(method, annotation).size
-    }
-
-    fun paramsAnnotatedWith(method: Method, annotation: Class<out Annotation>): List<Parameter> {
-        return method.parameters.filter { parameter -> isParamAnnotatedWith(parameter, annotation) }.toList()
-    }
-
-
-    fun validateAllMethodParamsAnnotated(method: Method) {
-        if(!isAllMethodParamsAnnotated(method)) {
-            throw IllegalStateException("Method $method has not all parameters annotated with a param annotation ($parameterAnnotations).")
-        }
+    fun validateInvocationArguments(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Method {
+        requiredProxy(proxyOrNull, methodOrNull)
+        val method: Method = validatedMethod(methodOrNull)
+        validatedArguments(methodOrNull, argsOrNull)
+        return method
     }
 
     fun validatedArguments(method: Method?, argsOrNull: Array<out Any>?): Array<out Any> {
@@ -78,7 +23,6 @@ object InvocationHandlerHelper {
 
         return args
     }
-
 
     fun validatedMethod(method: Method?): Method {
         if(method == null) {
@@ -96,4 +40,18 @@ object InvocationHandlerHelper {
         throw IllegalStateException("Method $method has no proxy defined.")
     }
 
+    fun handleObjectMethodsOrThrow(
+        invocationHandler: InvocationHandler,
+        method: Method?,
+    ): Any {
+        if(method != null) {
+            if(method.name == ::toString.name) {
+                return invocationHandler.toString()
+            }
+            if(method.name == ::hashCode.name) {
+                return invocationHandler.hashCode()
+            }
+        }
+        throw IllegalStateException("Method $method was not handled.")
+    }
 }

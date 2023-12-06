@@ -1,6 +1,8 @@
 package org.codeblessing.sourceamazing.api.process.schema.annotations
 
+import kotlin.reflect.KClass
+
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Concept(val conceptName: String, val minOccurrence: Int = 0, val maxOccurrence: Int = Int.MAX_VALUE)
+annotation class Concept(val facets: Array<KClass<*>>)

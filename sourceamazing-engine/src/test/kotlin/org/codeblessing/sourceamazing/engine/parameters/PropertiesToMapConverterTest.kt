@@ -1,9 +1,7 @@
 package org.codeblessing.sourceamazing.engine.parameters
 
-import org.codeblessing.sourceamazing.engine.parameters.PropertiesToMapConverter
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import java.util.*
 
 class PropertiesToMapConverterTest {

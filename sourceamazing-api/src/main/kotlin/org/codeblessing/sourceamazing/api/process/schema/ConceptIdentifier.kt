@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.api.rules.NameEnforcer
 import java.util.*
 
 
-class ConceptIdentifier private constructor(name: String): org.codeblessing.sourceamazing.api.ComparableId(name = name) {
+class ConceptIdentifier private constructor(name: String): ComparableId(name = name) {
 
     init {
         NameEnforcer.isValidIdentifierOrThrow(name)

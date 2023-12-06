@@ -15,10 +15,10 @@ class ConceptDataCollector: ExtensionDataCollector {
         return conceptData[conceptIdentifier] ?: throw IllegalArgumentException("No concept with concept id '$conceptIdentifier' found.")
     }
 
-    override fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier, parentConceptIdentifier: ConceptIdentifier?): ConceptData {
+    override fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         return conceptData.getOrPut(conceptIdentifier) {
             ConceptDataImpl(sequenceNumber++, conceptName, conceptIdentifier)
-        }.setParentConceptIdentifier(parentConceptIdentifier)
+        }
     }
 
     fun provideConceptData(): List<ConceptData> {

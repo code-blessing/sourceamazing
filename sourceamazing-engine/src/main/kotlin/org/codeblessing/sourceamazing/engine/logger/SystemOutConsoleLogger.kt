@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.engine.logger
 
-import java.util.logging.*
+import java.util.logging.LogRecord
+import java.util.logging.StreamHandler
 
 class SystemOutConsoleLogger: StreamHandler() {
 

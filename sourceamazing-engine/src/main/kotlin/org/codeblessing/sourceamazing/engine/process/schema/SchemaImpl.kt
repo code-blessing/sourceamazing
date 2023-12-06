@@ -20,14 +20,6 @@ data class SchemaImpl(
         return concepts.values.toSet()
     }
 
-    override fun allRootConcepts(): Set<ConceptSchema> {
-        return allConcepts().filter { it.isRootConcept }.toSet()
-    }
-
-    override fun allChildrenConcepts(concept: ConceptSchema): Set<ConceptSchema> {
-        return allConcepts().filter { it.parentConceptNames.contains(concept.conceptName) }.toSet()
-    }
-
     fun numberOfConcepts(): Int {
         return concepts.size
     }

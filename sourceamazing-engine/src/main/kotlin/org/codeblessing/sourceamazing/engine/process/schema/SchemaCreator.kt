@@ -1,328 +1,186 @@
 package org.codeblessing.sourceamazing.engine.process.schema
 
-import org.codeblessing.sourceamazing.api.process.schema.*
-import org.codeblessing.sourceamazing.api.process.schema.annotations.*
-import org.codeblessing.sourceamazing.api.process.schema.exceptions.MalformedSchemaException
-import java.lang.reflect.Method
-import kotlin.jvm.Throws
+import org.codeblessing.sourceamazing.api.process.schema.ConceptName
+import org.codeblessing.sourceamazing.api.process.schema.ConceptSchema
+import org.codeblessing.sourceamazing.api.process.schema.FacetName
+import org.codeblessing.sourceamazing.api.process.schema.FacetSchema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
+import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
+import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
+import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.query.ConceptQueryValidator
+import org.codeblessing.sourceamazing.engine.process.schema.query.SchemaQueryValidator
+import org.codeblessing.sourceamazing.engine.process.util.AnnotationUtil
 import kotlin.reflect.KClass
 
 object SchemaCreator {
+    private const val SCHEMA_CLASS_DESCRIPTION = "Schema Definition Class"
+    private const val CONCEPT_CLASS_DESCRIPTION = "Concept Class"
+    private const val FACET_CLASS_DESCRIPTION = "Facet Class"
 
     @Throws(MalformedSchemaException::class)
-    fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: Class<*>): SchemaImpl {
-        validateTypeAnnotation(annotation = Schema::class.java, classToInspect = schemaDefinitionClass)
+    fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: KClass<*>): SchemaImpl {
+        validateSchemaClassAnnotations(schemaDefinitionClass)
+        SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
 
-        if(hasClassAnnotation(annotation = Concept::class.java, classToInspect = schemaDefinitionClass)) {
-            throw MalformedSchemaException("Definition class '${schemaDefinitionClass.name}' " +
-                    "can not be a concept having an annotation of type '${Concept::class.java.name}'")
-        }
+        val conceptClasses = AnnotationUtil.getAnnotation(schemaDefinitionClass, Schema::class).concepts
+        validateConceptClassesAnnotations(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
+        val conceptNames = conceptClasses.map { ConceptName.of(it) }
+        conceptClasses.forEach { conceptClass ->
+            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(conceptClass)
+            val conceptName = ConceptName.of(conceptClass)
 
-        schemaDefinitionClass.methods.forEach { method ->
-            if(!supportForChildConceptMethod(concepts, schemaDefinitionClass, method, null)) {
-                throw MalformedSchemaException("Schema definition class '${schemaDefinitionClass.name}' can " +
-                        "only have methods annotated with the following " +
-                        "annotations: ${SchemaAnnotationConst.supportedSchemaAnnotations}. " +
-                        "Not valid for method '$method'.")
+            if(concepts.containsKey(conceptName)) {
+                raiseMalformedSchemaException(CONCEPT_CLASS_DESCRIPTION, "Concept '$conceptName' is already registered on schema '$schemaDefinitionClass'.")
             }
+
+            val facetClasses = AnnotationUtil.getAnnotation(conceptClass, Concept::class).facets
+            validateFacetClassesAnnotations(facetClasses)
+            val facets: MutableList<FacetSchema> = mutableListOf()
+            facetClasses.forEach { facetClass ->
+                val facetName = FacetName.of(facetClass)
+                if(facets.map { it.facetName }.contains(facetName)) {
+                    raiseMalformedSchemaException(FACET_CLASS_DESCRIPTION, "Facet '$facetName' is already registered for concept '$conceptName'.")
+                }
+                facets += createFacetSchema(conceptName, facetName, facetClass, conceptNames)
+            }
+            val conceptSchema = ConceptSchemaImpl(
+                conceptName = conceptName,
+                facets = facets
+            )
+            concepts[conceptName] = conceptSchema
+
         }
 
         return SchemaImpl(concepts)
     }
 
-    private fun validateChildConceptReturnTypeMethod(expectedReturnType: Class<*>, definitionClass: Class<*>, method: Method) {
-        if(method.returnType != expectedReturnType) {
-            throw MalformedSchemaException("The method '$method' on the definition class '${definitionClass.name}' " +
-                    "must return '${expectedReturnType}' but is returning '${method.returnType}'.")
-        }
+    private fun validateSchemaClassAnnotations(schemaDefinitionClass: KClass<*>) {
+        checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(Concept::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(Facet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
-    private fun validateAndAddConcept(concepts: MutableMap<ConceptName, ConceptSchema>, conceptClass: Class<*>, parentConceptName: ConceptName?) {
-        validateTypeAnnotation(annotation = Concept::class.java, classToInspect = conceptClass)
-        val conceptName = ConceptName.of(conceptClass.getAnnotation(Concept::class.java).conceptName)
-
-        validateConceptItselfNotPresentInUpperHierarchy(concepts, conceptName, parentConceptName)
-
-        val parentConceptSchema = parentConceptName?.let { concepts[parentConceptName] }
-        addConceptSchema(concepts, conceptName, conceptClass, parentConceptSchema)
-
-        val supportedConceptAnnotations = SchemaAnnotationConst.supportedConceptAnnotations
-
-        conceptClass.methods.forEach { method ->
-            if(!supportForChildConceptMethod(concepts, conceptClass, method, conceptName)
-                && !hasSupportedConceptAnnotation(method, supportedConceptAnnotations)) {
-                throw MalformedSchemaException(
-                    "Concept definition class '${conceptClass.name}' can " +
-                            "only have methods annotated with the following annotations: ${supportedConceptAnnotations}. " +
-                            "Not valid for method '$method'."
-                )
-            }
-        }
-    }
-
-    private fun validateConceptItselfNotPresentInUpperHierarchy(concepts: MutableMap<ConceptName, ConceptSchema>, conceptName: ConceptName, parentConceptName: ConceptName?) {
-        if(parentConceptName == null) {
-            // root concept
-            return
-        }
-
-        if(conceptName == parentConceptName) {
-            throw MalformedSchemaException("Concept '${conceptName.name}' can not be its own parent.")
-        }
-
-        val allHierarchicalBranches = allHierarchyPathsToRoot(concepts, parentConceptName)
-        allHierarchicalBranches.forEach { parentConceptHierarchy ->
-            if(parentConceptHierarchy.contains(conceptName)) {
-                throw MalformedSchemaException("There is a cyclic dependency with concept '${conceptName.name}'. " +
-                        "Parent concepts in a hierarchy must be all different concepts, but was $parentConceptHierarchy.")
-            }
-        }
-    }
-
-    private fun allHierarchyPathsToRoot(concepts: Map<ConceptName, ConceptSchema>, conceptName: ConceptName): Set<List<ConceptName>> {
-        val conceptSchema = concepts[conceptName] ?: throw IllegalStateException("Concept '${conceptName.name}' not found.")
-
-        val resultSet: MutableSet<List<ConceptName>> = mutableSetOf()
-        conceptSchema.parentConceptNames.forEach { parentConceptName ->
-            allHierarchyPathsToRoot(concepts, parentConceptName).forEach { allBranchesOfParent ->
-                resultSet.add(listOf(conceptName) + allBranchesOfParent)
-            }
-        }
-
-        if(resultSet.isEmpty()) {
-            // if it is a root concept, there is one branch from itself to the root
-            return setOf(listOf(conceptName))
-        }
-
-        return resultSet
-    }
-
-    private fun hasSupportedConceptAnnotation(method: Method, supportedConceptAnnotations: List<Class<out Annotation>>): Boolean {
-        return supportedConceptAnnotations.any { supportedAnnotation: Class<out Annotation> -> hasMethodAnnotation(supportedAnnotation, method) }
-    }
-
-    private fun supportForChildConceptMethod(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        definitionClass: Class<*>,
-        method: Method,
-        parentConceptName: ConceptName?
-    ): Boolean {
-        if(hasMethodAnnotation(ChildConcepts::class.java, method)) {
-            validateAndAddConceptForChildConceptsAnnotation(concepts, definitionClass, method, parentConceptName)
-            return true
-        } else if(hasMethodAnnotation(ChildConcept::class.java, method)) {
-            validateAndAddConceptForChildConceptAnnotation(concepts, definitionClass, method, parentConceptName)
-            return true
-        } else if(hasMethodAnnotation(ChildConceptsWithCommonBaseInterface::class.java, method)) {
-            validateAndAddConceptForChildConceptsWithCommonBaseInterfaceAnnotation(concepts, definitionClass, method, parentConceptName)
-            return true
-        } else if(hasMethodAnnotation(ChildConceptWithCommonBaseInterface::class.java, method)) {
-            validateAndAddConceptForChildConceptWithCommonBaseInterfaceAnnotation(concepts, definitionClass, method, parentConceptName)
-            return true
-        }
-        return false
-    }
-
-    private fun validateAndAddConceptForChildConceptAnnotation(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        definitionClass: Class<*>,
-        method: Method,
-        parentConceptName: ConceptName?
-    ) {
-        val conceptClass = method.getAnnotation(ChildConcept::class.java).conceptClass.java
-        validateChildConceptReturnTypeMethod(conceptClass, definitionClass, method)
-        validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
-    }
-
-    private fun validateAndAddConceptForChildConceptsAnnotation(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        definitionClass: Class<*>,
-        method: Method,
-        parentConceptName: ConceptName?
-    ) {
-        validateChildConceptReturnTypeMethod(List::class.java, definitionClass, method)
-        val conceptClass = method.getAnnotation(ChildConcepts::class.java).conceptClass.java
-        validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
-    }
-
-    private fun validateAndAddConceptForChildConceptWithCommonBaseInterfaceAnnotation(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        definitionClass: Class<*>,
-        method: Method,
-        parentConceptName: ConceptName?
-    ) {
-        val baseInterfaceClass = method.getAnnotation(ChildConceptWithCommonBaseInterface::class.java).baseInterfaceClass.java
-        validateChildConceptReturnTypeMethod(baseInterfaceClass, definitionClass, method)
-        val conceptClasses = method.getAnnotation(ChildConceptWithCommonBaseInterface::class.java).conceptClasses.map { it.java }
-        validateAndAddChildConceptWithCommonBaseClass(concepts, method, parentConceptName, conceptClasses, baseInterfaceClass)
-    }
-
-    private fun validateAndAddConceptForChildConceptsWithCommonBaseInterfaceAnnotation(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        definitionClass: Class<*>,
-        method: Method,
-        parentConceptName: ConceptName?
-    ) {
-        validateChildConceptReturnTypeMethod(List::class.java, definitionClass, method)
-        val baseInterfaceClass = method.getAnnotation(ChildConceptsWithCommonBaseInterface::class.java).baseInterfaceClass.java
-        val conceptClasses = method.getAnnotation(ChildConceptsWithCommonBaseInterface::class.java).conceptClasses.map { it.java }
-        validateAndAddChildConceptWithCommonBaseClass(concepts, method, parentConceptName, conceptClasses, baseInterfaceClass)
-    }
-
-    private fun validateAndAddChildConceptWithCommonBaseClass(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
-        method: Method,
-        parentConceptName: ConceptName?,
-        conceptClasses: List<Class<out Any>>,
-        baseInterfaceClass: Class<out Any>
-    ) {
+    private fun validateConceptClassesAnnotations(conceptClasses: Array<KClass<*>>) {
         conceptClasses.forEach { conceptClass ->
-            if(!isInheriting(conceptClass, baseInterfaceClass)) {
-                throw MalformedSchemaException("Class ${conceptClass.name} must inherit base class ${baseInterfaceClass.name} in method $method.")
-            }
-            validateAndAddConcept(concepts, conceptClass = conceptClass, parentConceptName = parentConceptName)
-        }
-
-    }
-
-    private fun isInheriting(subInterface: Class<*>, baseInterface: Class<*>): Boolean {
-        return allInterfaces(subInterface).contains(baseInterface)
-    }
-
-    private fun allInterfaces(clazz: Class<*>): Set<Class<*>> {
-        val interfaceCollector = mutableSetOf<Class<*>>()
-        collectInterfacesRecursive(interfaceCollector, clazz)
-        return interfaceCollector
-    }
-
-    private fun collectInterfacesRecursive(interfaceCollector: MutableSet<Class<*>>, clazz: Class<*>) {
-        clazz.interfaces.forEach { iface ->
-            if(!interfaceCollector.contains(iface)) {
-                interfaceCollector.add(iface)
-                collectInterfacesRecursive(interfaceCollector, iface)
-            }
+            checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(Schema::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(Facet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
-    private fun addConceptSchema(
-        concepts: MutableMap<ConceptName, ConceptSchema>,
+    private fun validateFacetClassesAnnotations(facetClasses: Array<KClass<*>>) {
+        facetClasses.forEach { facetClass ->
+            checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasAnnotation(Facet::class, facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(Schema::class, facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(Concept::class, facetClass, FACET_CLASS_DESCRIPTION)
+        }
+    }
+
+    private fun createFacetSchema(
         conceptName: ConceptName,
-        conceptClass: Class<*>,
-        parentConceptSchema: ConceptSchema?
-    ) {
-        val isRootConcept = parentConceptSchema == null
-        val alreadyExistingConcept = concepts[conceptName]
-        if(alreadyExistingConcept != null) {
-            val newParentConceptNames = if (parentConceptSchema != null) {
-                alreadyExistingConcept.parentConceptNames + parentConceptSchema.conceptName
-            } else {
-                alreadyExistingConcept.parentConceptNames
-            }
+        facetName: FacetName,
+        facetClass: KClass<*>,
+        conceptNames: List<ConceptName>
+    ): FacetSchema {
+        val facetType = AnnotationUtil.getAnnotation(facetClass, Facet::class).type
+        val minimumOccurrences = AnnotationUtil.getAnnotation(facetClass, Facet::class).minimumOccurrences
+        val maximumOccurrences = AnnotationUtil.getAnnotation(facetClass, Facet::class).maximumOccurrences
+        val enumerationType =  AnnotationUtil.getAnnotation(facetClass, Facet::class).enumerationClass
+        val referencedConcepts =  AnnotationUtil.getAnnotation(facetClass, Facet::class).referencedConcepts
+            .map { ConceptName.of(it) }.toSet()
 
-            concepts[conceptName] = ConceptSchemaImpl(
-                conceptName = conceptName,
-                conceptClass = conceptClass,
-                isRootConcept = isRootConcept || alreadyExistingConcept.isRootConcept,
-                parentConceptNames = newParentConceptNames,
-                facets = alreadyExistingConcept.facets,
-                minOccurrence = alreadyExistingConcept.minOccurrence,
-                maxOccurrence = alreadyExistingConcept.maxOccurrence,
-            )
-        } else {
-            val facets = gatherFacets(conceptClass)
-            val minOccurrence = conceptClass.getAnnotation(Concept::class.java).minOccurrence;
-            val maxOccurrence = conceptClass.getAnnotation(Concept::class.java).maxOccurrence;
-
-            val newParentConceptNames = if (parentConceptSchema != null) {
-                setOf(parentConceptSchema.conceptName)
-            } else {
-                emptySet()
-            }
-
-            concepts[conceptName] = ConceptSchemaImpl(
-                conceptName = conceptName,
-                conceptClass = conceptClass,
-                isRootConcept = isRootConcept,
-                parentConceptNames = newParentConceptNames,
-                facets = facets,
-                minOccurrence = minOccurrence,
-                maxOccurrence = maxOccurrence
-            )
-
+        if(facetType == FacetType.TEXT_ENUMERATION && !enumerationType.java.isEnum) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "is declared as type ${FacetType.TEXT_ENUMERATION} but the enumeration is not " +
+                    "defined or not a real enumeration class (was '$enumerationType').")
         }
+
+        if(facetType != FacetType.TEXT_ENUMERATION && enumerationType != Unit::class) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "has declared an enumeration class '$enumerationType' but the type of the facet " +
+                    "is '$facetType' instead of '${FacetType.TEXT_ENUMERATION}'.")
+        }
+
+        if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "is declared as type ${FacetType.REFERENCE} but the list of concept type is empty.")
+        }
+
+        if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "is not declared as type ${FacetType.REFERENCE} (is '${facetType}') but the list " +
+                    "of concept type is not empty (is '${referencedConcepts}').")
+        }
+
+        if(minimumOccurrences < 0 || maximumOccurrences < 0) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "has negative cardinalities. Only number greater/equal zero are allowed, " +
+                    "but was $minimumOccurrences/$maximumOccurrences.")
+        }
+
+        if(minimumOccurrences > maximumOccurrences) {
+            raiseMalformedSchemaException(
+                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                    "has a greater minimumOccurrences ($minimumOccurrences) " +
+                    "than the maximumOccurrences ($maximumOccurrences).")
+        }
+
+        referencedConcepts.forEach { referencedConcept ->
+            if(!conceptNames.contains(referencedConcept)) {
+                raiseMalformedSchemaException(
+                    FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                        "has an reference concept '${referencedConcept}' which is not a known concept " +
+                        "(known concepts are '${conceptNames}').")
+
+            }
+        }
+
+        return FacetSchemaImpl(
+            facetName = facetName,
+            facetType = facetType,
+            minimumOccurrences = minimumOccurrences,
+            maximumOccurrences = maximumOccurrences,
+            referencingConcepts = referencedConcepts,
+            enumerationType = enumerationType,
+        )
 
     }
 
-    private fun gatherFacets(conceptClass: Class<*>): List<FacetSchema> {
-        val facets = mutableListOf<FacetSchema>()
-        conceptClass.methods.forEach { method ->
-            val returnType = method.returnType.kotlin
-            if(hasMethodAnnotation(Facet::class.java, method)) {
-                val facetName = FacetName.of(method.getAnnotation(Facet::class.java).facetName)
-                val isMandatory = method.getAnnotation(Facet::class.java).mandatory
-                val facetType: FacetTypeEnum = FacetTypeEnum.matchingEnumByTypeClass(returnType)
-                    ?: throw MalformedSchemaException("Return type '$returnType' of method '$method' does not match any compatible facet types (${FacetTypeEnum.supportedTypes()}).")
-                val referencingConcept = FacetTypeEnum.referencedTypeConceptName(returnType)
-                val enumerationType = validatedEnumerationType(facetName, facetType, method)
-                val facet = FacetSchemaImpl(facetName, facetType, mandatory = isMandatory, referencingConcept = referencingConcept, enumerationType = enumerationType)
-                val alreadyExistingFacet = facets.firstOrNull { it.facetName == facetName }
-                if(alreadyExistingFacet == null) {
-                    facets.add(facet)
-                } else {
-                    if(alreadyExistingFacet != facet) {
-                        throw MalformedSchemaException("You try to define the facet '${facetName.name}' multiple " +
-                                "times but with different parameters. Facet $facet in method '$method' does not " +
-                                "match already existing facet $alreadyExistingFacet.")
-                    }
-                }
-            } else if(hasMethodAnnotation(ConceptId::class.java, method)) {
-                if(returnType != String::class && returnType != ConceptIdentifier::class) {
-                    throw MalformedSchemaException("The return type of a method with ${ConceptId::class.qualifiedName} " +
-                            "must be ${String::class.qualifiedName} or ${ConceptIdentifier::class.qualifiedName} " +
-                            "in method '$method'.")
-                }
-            }
+    private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
+        if(!classToInspect.java.isInterface) {
+            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must be an interface.")
         }
-        return facets
     }
 
-    private fun validatedEnumerationType(facetName: FacetName, facetType: FacetTypeEnum, method: Method): KClass<*>? {
-        if(facetType != FacetTypeEnum.TEXT_ENUMERATION) {
-            return null
-        }
-
-        val enumerationType = method.returnType.kotlin
-        val enumConstants = enumerationType.java.enumConstants
-            ?: throw MalformedSchemaException("You try to define the facet '${facetName.name}' " +
-                    "as enumeration but the return type of method '$method' is not an enum but '${enumerationType.qualifiedName}'.")
-
-        val enumValuesButNotEnum = enumConstants.filterNot { it is Enum<*> }
-        if(enumValuesButNotEnum.isNotEmpty()) {
-            throw MalformedSchemaException("You try to define the facet '${facetName.name}' " +
-                    "as enumeration but the following enum values [${enumValuesButNotEnum.joinToString(",")}] are not of " +
-                    "type ${Enum::class.qualifiedName} for method '$method'.")
-        }
-
-        return enumerationType;
-    }
-
-    private fun validateTypeAnnotation(annotation: Class<out Annotation>, classToInspect: Class<*>) {
-        if(!classToInspect.isInterface) {
-            throw MalformedSchemaException("Definition class '${classToInspect.name}' must be an interface.")
-        }
+    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
         if(!hasClassAnnotation(annotation, classToInspect)) {
-            throw MalformedSchemaException("Definition class '${classToInspect.name}' must have an annotation of type '${annotation.name}'")
+            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must have an annotation of type '${annotation.java.name}'")
         }
     }
 
-    private fun hasClassAnnotation(annotation: Class<out Annotation>, classToInspect: Class<*>): Boolean {
-        return classToInspect.getAnnotation(annotation) != null
+    private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
+        if(hasClassAnnotation(annotation, classToInspect)) {
+            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must not have an annotation of type '${annotation.java.name}'")
+        }
     }
 
-    private fun hasMethodAnnotation(annotation: Class<out Annotation>, methodToInspect: Method): Boolean {
-        return methodToInspect.getAnnotation(annotation) != null
+    private fun raiseMalformedSchemaException(classDescription: String, message: String): Nothing {
+        throw MalformedSchemaException("$classDescription: $message")
     }
 
+    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {
+        return classToInspect.java.getAnnotation(annotation.java) != null
+    }
 }

@@ -3,12 +3,7 @@ package org.codeblessing.sourceamazing.api.process.schema
 
 interface ConceptSchema {
     val conceptName: ConceptName
-    val conceptClass: Class<*>
-    val isRootConcept: Boolean
-    val parentConceptNames: Set<ConceptName>
     val facets: List<FacetSchema>
-    val minOccurrence: Int
-    val maxOccurrence: Int
 
     val facetNames: List<FacetName>
         get() = facets.map { it.facetName }.toList()

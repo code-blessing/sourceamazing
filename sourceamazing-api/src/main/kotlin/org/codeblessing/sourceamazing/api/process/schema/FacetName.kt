@@ -1,12 +1,13 @@
 package org.codeblessing.sourceamazing.api.process.schema
 
-import org.codeblessing.sourceamazing.api.NamedId
+import org.codeblessing.sourceamazing.api.ComparableClazzId
+import kotlin.reflect.KClass
 
-class FacetName private constructor(name: String): NamedId(name) {
+class FacetName private constructor(facet: KClass<*>): ComparableClazzId(facet) {
 
     companion object {
-        fun of(name: String): FacetName {
-            return FacetName(name)
+        fun of(facet: KClass<*>): FacetName {
+            return FacetName(facet)
         }
     }
 }

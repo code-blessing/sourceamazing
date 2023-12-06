@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.engine.parameters
 
-import java.util.Properties
+import java.util.*
 
 object PropertiesToMapConverter {
 

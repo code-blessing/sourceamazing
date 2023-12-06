@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.engine.extension
 
 import org.codeblessing.sourceamazing.api.extensions.ExtensionName
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionFromFilesExtension
 import org.codeblessing.sourceamazing.api.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.api.logger.LoggerFacade
 import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionFromFilesExtension
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
 import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import java.nio.file.Path
 
@@ -19,7 +19,7 @@ class ExtensionHolder(
 ): DataCollectionExtensionAccess {
 
     private val dataCollectionFromFilesExtensions: Map<ExtensionName, DataCollectionFromFilesExtension> =
-        org.codeblessing.sourceamazing.engine.extension.ExtensionFinder.findAllDataCollectionFromFilesExtensions()
+        ExtensionFinder.findAllDataCollectionFromFilesExtensions()
             .onEach { initializeDataCollectionExtension(it) }
             .associateBy { it.getExtensionName() }
 

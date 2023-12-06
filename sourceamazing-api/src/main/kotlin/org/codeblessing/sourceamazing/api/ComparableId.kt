@@ -8,7 +8,7 @@ abstract class ComparableId protected constructor(val name: String) {
         if(other == null) return false
         if(other::class != this::class) return false
 
-        if (other is org.codeblessing.sourceamazing.api.ComparableId) {
+        if (other is ComparableId) {
             return name == other.name
         }
         return false

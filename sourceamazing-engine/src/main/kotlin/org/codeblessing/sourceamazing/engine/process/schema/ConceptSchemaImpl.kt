@@ -7,10 +7,5 @@ import org.codeblessing.sourceamazing.api.process.schema.FacetSchema
 
 class ConceptSchemaImpl(
     override val conceptName: ConceptName,
-    override val conceptClass: Class<*>,
-    override val isRootConcept: Boolean,
-    override val parentConceptNames: Set<ConceptName>,
     override val facets: List<FacetSchema>,
-    override val minOccurrence: Int,
-    override val maxOccurrence: Int,
     ): ConceptSchema
