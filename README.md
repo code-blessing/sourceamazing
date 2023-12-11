@@ -97,11 +97,8 @@ and generate any kind of files with.
 ## Setup, Documentation and Examples
 
 If you are new to SourceAmazing, start with the step-by-step 
-documentation at [documentation/00-step-by-step-example.md](documentation/00-step-by-step-example.md).
-
-For a complete list of features, go to [documentation/features.md](documentation/features.md).
-
-A glossary with the most important definition can be found at [documentation/glossary.md](documentation/glossary.md).
+documentation at [Wiki](https://github.com/code-blessing/sourceamazing/wiki).
+There, you also find a complete list of features and a glossary with the most important definition.
 
 ## License
 
