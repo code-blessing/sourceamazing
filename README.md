@@ -49,20 +49,31 @@ facets (=attributes).
 That might look like this:
 
 ```
-@Concept("HtmlForm")
+@Concept(facets = [
+    HtmlFormConcept.FormHeadlineFacet::class,
+    HtmlFormConcept.FormFieldsFacet::class,
+])
 interface HtmlFormConcept {
 
-    @Facet("FormHeadline", mandatory = false)
+    @Facet(FacetType.TEXT, minimumOccurences=0)
+    interface FormHeadlineFacet
+
+    @Facet(FacetType.REFERENCE, minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
+    interface FormFieldsFacet
+
+    @QueryFacet(FormHeadline::class)
     fun getFormHeadline(): String?
 
-    @ChildConcepts(HtmlInputFieldConcept::class)
+    @QueryFacet(HtmlInputFieldConcept::class)
     fun getFieldsOfForm(): List<HtmlInputFieldConcept>
 }
 
-@Concept("HtmlInputField")
+@Concept(facets = [HtmlInputFieldConcept.FieldName::class])
 interface HtmlInputFieldConcept {
+    @Facet(FacetType.TEXT)
+    interface FieldName
 
-    @Facet("FieldName")
+    @QueryFacet(FieldName::class)
     fun getFieldName(): String
 
     ...
