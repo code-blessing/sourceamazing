@@ -1,11 +1,7 @@
 package org.codeblessing.sourceamazing.xmlschema.schemacreator
 
-import org.codeblessing.sourceamazing.api.process.schema.ConceptName
-import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.ConceptSchema
-import org.codeblessing.sourceamazing.api.process.schema.FacetTypeEnum
 import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
-import org.codeblessing.sourceamazing.engine.process.schema.FacetSchemaImpl
+import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -16,18 +12,24 @@ internal class XmlDomSchemaCreatorTest {
         <?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <xsd:schema xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" elementFormDefault="qualified" targetNamespace="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
             <!-- - - - - - - - -       CONCEPT IDENTIFIER ATTRIBUTE     - - - - - - - -->
-            <xsd:attributeGroup name="conceptIdentifier">
+            <xsd:attributeGroup name="conceptIdentifierAttributeGroup">
                 <xsd:attribute name="conceptIdentifier" type="xsd:ID"/>
             </xsd:attributeGroup>
-            <!-- - - - - - - - -       CONFIGURATION AND DEFINITIONS     - - - - - - - -->
+            <xsd:element name="conceptRef">
+                <xsd:complexType>
+                    <xsd:attribute name="conceptIdentifierReference" type="xsd:IDREF"/>
+                </xsd:complexType>
+            </xsd:element>
+            <!-- - - - - - - - -       DEFINITIONS     - - - - - - - -->
             <xsd:element name="sourceamazing">
                 <xsd:complexType>
-                    <xsd:sequence maxOccurs="1" minOccurs="1">
+                    <xsd:sequence>
                         <xsd:element name="definitions">
                             <xsd:complexType>
-                                <!-- - - - - - - - -       ROOT CONCEPTS     - - - - - - - -->
+                                <!-- - - - - - - - -       CONCEPTS     - - - - - - - -->
                                 <xsd:choice maxOccurs="unbounded" minOccurs="0">
-                                    <xsd:element name="testEntity" type="testEntityType"/>
+                                    <xsd:element ref="testEntityConcept"/>
+                                    <xsd:element ref="testEntityAttributeConcept"/>
                                 </xsd:choice>
                             </xsd:complexType>
                         </xsd:element>
@@ -35,25 +37,47 @@ internal class XmlDomSchemaCreatorTest {
                 </xsd:complexType>
             </xsd:element>
             <!-- - - - - - - - -       ALL CONCEPTS AS TYPES     - - - - - - - -->
-            <xsd:complexType name="testEntityType">
-                <xsd:choice maxOccurs="unbounded" minOccurs="0">
-                    <xsd:element name="testEntityAttribute" type="testEntityAttributeType"/>
-                </xsd:choice>
-                <xsd:attributeGroup ref="conceptIdentifier"/>
-                <xsd:attributeGroup ref="testEntityTestEntityName"/>
+            <!-- - - - - - - - -       Concept: testEntityConcept     - - - - - - - -->
+            <xsd:element name="testEntityConcept" type="TestEntityConceptType"/>
+            <xsd:complexType name="TestEntityConceptType">
+                <xsd:all>
+                    <!-- - - - - - - - -       Facet: TestEntityAttribute     - - - - - - - -->
+                    <xsd:element maxOccurs="1" minOccurs="0" name="testEntityAttribute">
+                        <xsd:complexType>
+                            <xsd:sequence maxOccurs="10" minOccurs="0">
+                                <xsd:choice maxOccurs="1" minOccurs="1">
+                                    <xsd:element name="testEntityAttributeConcept" type="TestEntityAttributeConceptType"/>
+                                    <xsd:element ref="conceptRef"/>
+                                </xsd:choice>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:all>
+                <xsd:attributeGroup ref="conceptIdentifierAttributeGroup"/>
+                <!-- - - - - - - - -       Facet: Name     - - - - - - - -->
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <!-- - - - - - - - -       Facet: KotlinModelClassname     - - - - - - - -->
+                <xsd:attribute name="kotlinModelClassname" type="xsd:string" use="required"/>
+                <!-- - - - - - - - -       Facet: KotlinModelPackage     - - - - - - - -->
+                <xsd:attribute name="kotlinModelPackage" type="xsd:string" use="required"/>
             </xsd:complexType>
-            <xsd:complexType name="testEntityAttributeType">
-                <xsd:choice maxOccurs="unbounded" minOccurs="0"/>
-                <xsd:attributeGroup ref="conceptIdentifier"/>
-                <xsd:attributeGroup ref="testEntityAttributeTestEntityAttributeName"/>
+            <!-- - - - - - - - -       Concept: testEntityAttributeConcept     - - - - - - - -->
+            <xsd:element name="testEntityAttributeConcept" type="TestEntityAttributeConceptType"/>
+            <xsd:complexType name="TestEntityAttributeConceptType">
+                <xsd:attributeGroup ref="conceptIdentifierAttributeGroup"/>
+                <!-- - - - - - - - -       Facet: Name     - - - - - - - -->
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <!-- - - - - - - - -       Facet: Type     - - - - - - - -->
+                <xsd:attribute name="type" use="required">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="TEXT"/>
+                            <xsd:enumeration value="NUMBER"/>
+                            <xsd:enumeration value="BOOLEAN"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
             </xsd:complexType>
-            <!-- - - - - - - - -       ALL ATTRIBUTES      - - - - - - - -->
-            <xsd:attributeGroup name="testEntityTestEntityName">
-                <xsd:attribute name="testEntityName" type="xsd:string"/>
-            </xsd:attributeGroup>
-            <xsd:attributeGroup name="testEntityAttributeTestEntityAttributeName">
-                <xsd:attribute name="testEntityAttributeName" type="xsd:string"/>
-            </xsd:attributeGroup>
         </xsd:schema>
 
     """.trimIndent()
@@ -61,39 +85,8 @@ internal class XmlDomSchemaCreatorTest {
 
     @Test
     fun testXmlDomSchemaCreator() {
-        val schema: SchemaAccess = createSchema()
+        val schema: SchemaAccess = XmlTestSchema.createSchema()
         val schemaContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)
         assertEquals(expectedXml, schemaContent)
     }
-
-    private val testEntityConceptName = ConceptName.of("TestEntity")
-    private val testEntityNameFacetName = FacetName.of("TestEntityName")
-
-    private val testEntityAttributeConceptName = ConceptName.of("TestEntityAttribute")
-    private val testEntityAttributeNameFacetName = FacetName.of("TestEntityAttributeName")
-
-    private fun createSchema(): SchemaAccess {
-        val testEntityConcept: ConceptSchema = SimpleConceptSchema(
-            conceptName = testEntityConceptName,
-            conceptClass = SimpleConceptSchema::class.java, // this is the wrong interface
-            isRootConcept = true,
-            parentConceptNames = emptySet(),
-            facets = listOf(
-                FacetSchemaImpl(testEntityNameFacetName, FacetTypeEnum.TEXT, mandatory = true, referencingConcept = null, enumerationType = null),
-            )
-        )
-
-        val testEntityAttributeConcept: ConceptSchema = SimpleConceptSchema(
-            conceptName = testEntityAttributeConceptName,
-            conceptClass = SimpleConceptSchema::class.java, // this is the wrong interface
-            isRootConcept = false,
-            parentConceptNames = setOf(testEntityConceptName),
-            facets = listOf(
-                FacetSchemaImpl(testEntityAttributeNameFacetName, FacetTypeEnum.TEXT, mandatory = true, referencingConcept = null, enumerationType = null),
-            )
-        )
-
-        return SimpleSchema(listOf(testEntityConcept, testEntityAttributeConcept))
-    }
-
 }

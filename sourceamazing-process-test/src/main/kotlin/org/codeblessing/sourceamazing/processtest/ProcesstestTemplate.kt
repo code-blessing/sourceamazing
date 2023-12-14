@@ -1,48 +1,66 @@
 package org.codeblessing.sourceamazing.processtest
 
-import org.codeblessing.sourceamazing.tools.StringIdentHelper.identForMarker
-import java.nio.file.Path
-import kotlin.io.path.absolutePathString
+import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 
 object ProcesstestTemplate {
 
-    private const val ident = "  "
+    fun formContent(form: FormSchema.FormConcept): String {
+        var content = ""
 
-    fun createExampleTemplate(targetFile: Path, entity: EntityConcept): String {
+        content += """<html>""" + "\n"
+        content += """  <form name="${form.getFormId()}">""" + "\n"
+        form.getFormControls().forEach { formControl ->
+            if(formControl is FormSchema.TextInputFormControlConcept) {
+                content += """    <label>${formControl.getFormControlDisplayName()}${if(formControl.isValueRequired()) "*" else ""}</label>""" + "\n"
+                content += """    <input type="text" name="${formControl.getFormControlName()}" />""" + "\n"
+                content += """    <!-- in form '${form.getFormId()}' (${form.getFormTitle()}) -->""" + "\n"
+            } else if (formControl is FormSchema.SelectDropdownFormControlConcept) {
+                content += """    <label>${formControl.getFormControlDisplayName()}${if(formControl.isValueRequired()) "*" else ""}</label>""" + "\n"
+                content += """    <select name="${formControl.getFormControlName()}" option="${formControl.getDefaultValue() ?: ""}">""" + "\n"
+                formControl.getSelectDropdownEntries()
+                    .forEach { optionEntry -> content += """      <option value="${optionEntry.getValue()}">${optionEntry.getDisplayValue()}</option>""" + "\n" }
+                content += """    </select>""" + "\n"
+            }
+        }
+        content += """  </form>""" + "\n"
+        content += """</html>"""
 
-        val entityAttributes = entity.getEntityAttributes()
-            .joinToString("\n") { createEntityAttributeSubTemplate(it) }
-
-        return """
-            Filename: ${targetFile.absolutePathString()}
-            ---------
-            
-            Entity name: ${entity.entityName()}
-            Entity alternative name: ${entity.entityAlternativeName()}
-            
-            Entity attributes:
-            {nestedIdent}$entityAttributes{nestedIdent} 
-            
-        """.identForMarker()
+        return content
     }
 
-    private fun createEntityAttributeSubTemplate(entityAttribute: EntityAttributeConcept): String {
-        return """
-            Entity Attribute name: ${entityAttribute.attributeName()}
-        """.replaceIndent(ident)
+    fun formsSummary(forms: List<FormSchema.FormConcept>): String {
+        var content = ""
+
+        forms.forEach { entity ->
+            content += """
+                    
+                    Form '${entity.getFormTitle()}':
+                    
+                    """.trimIndent()
+
+            entity.getFormControls().forEach { formControl ->
+                if(formControl is FormSchema.TextInputFormControlConcept) {
+                    content += """
+                        - Form-Control: Display Name: '${formControl.getFormControlDisplayName()}'
+                        
+                        """.trimIndent()
+                } else if (formControl is FormSchema.SelectDropdownFormControlConcept) {
+                    val options = formControl.getSelectDropdownEntries().joinToString { optionEntry -> "[${optionEntry.getValue()} -> '${optionEntry.getDisplayValue()}']" }
+                    content += """
+                        - Form-Control: Display Name: '${formControl.getFormControlDisplayName()}' (Default-Value: ${formControl.getDefaultValue()}) Options: $options
+                        
+                        """.trimIndent()
+                }
+            }
+
+            val listOfTextInputFormControlNames = entity.getFormControls().filterIsInstance<FormSchema.TextInputFormControlConcept>().joinToString { textInputFormControl -> textInputFormControl.getFormControlDisplayName() }
+            content += """
+                    Text Input Form Control Names: [$listOfTextInputFormControlNames]
+                    
+                """.trimIndent()
+
+        }
+
+        return content
     }
-
-    fun createExampleIndexTemplate(targetIndexFile: Path, entities: List<EntityConcept>): String {
-        val entityList = entities
-            .joinToString("\n") { it.entityName() }
-
-        return """
-            Filename: ${targetIndexFile.absolutePathString()}
-            ---------
-            
-            {nestedIdent}$entityList{nestedIdent} 
-            
-        """.identForMarker()
-    }
-
 }

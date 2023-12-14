@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<sourceamazing xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema ./example-sourceamazing-xml-schema.xsd">
+    <definitions>
+        <FormConcept formTitleFacet="City Survey">
+            <FormControlsFacet>
+                <TextInputFormControlConcept DisplayNameFacet="Firstname" ValueRequiredFacet="true" FormatHintFacet="PLAIN" />
+                <TextInputFormControlConcept DisplayNameFacet="Lastname" ValueRequiredFacet="true" FormatHintFacet="PLAIN" />
+                <SelectDropdownFormControlConcept DisplayNameFacet="Sex" ValueRequiredFacet="false" DefaultValueFacet="female">
+                    <SelectDropdownEntriesFacet>
+                        <SelectDropdownEntryConcept ValueFacet="male" DisplayValueFacet="Male" />
+                        <SelectDropdownEntryConcept ValueFacet="female" DisplayValueFacet="Female" />
+                    </SelectDropdownEntriesFacet>
+                </SelectDropdownFormControlConcept>
+                <SelectDropdownFormControlConcept DisplayNameFacet="Preferred Place" ValueRequiredFacet="false" DefaultValueFacet="forrest">
+                    <SelectDropdownEntriesFacet>
+                        <SelectDropdownEntryConceptReference referencedConcept="dropdownEntryForrest" />
+                        <SelectDropdownEntryConceptReference referencedConcept="dropdownEntryCity" />
+                    </SelectDropdownEntriesFacet>
+                </SelectDropdownFormControlConcept>
+                <TextInputFormControlConceptReference referencedConcept="Address" />
+            </FormControlsFacet>
+        </FormConcept>
+        <SelectDropdownEntryConcept conceptIdentifier="dropdownEntryForrest" ValueFacet="forrest" DisplayValueFacet="Walk in the forrest" />
+        <SelectDropdownEntryConcept conceptIdentifier="dropdownEntryCity" ValueFacet="city" DisplayValueFacet="Hang in the city" />
+
+        <TextInputFormControlConcept conceptIdentifier="Address" DisplayNameFacet="Address" ValueRequiredFacet="true" FormatHintFacet="PLAIN" />
+    </definitions>
+</sourceamazing>

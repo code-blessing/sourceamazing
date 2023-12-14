@@ -3,14 +3,46 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema ./schema/sourceamazing-xml-schema.xsd">
     <definitions>
-        <entity name="Person" alternativeName="PERSON">
-            <entityAttribute attributeName="firstname" attributeType="TEXT"/>
-            <entityAttribute attributeName="lastname" attributeType="TEXT"/>
-            <entityAttribute attributeName="nickname" attributeType="TEXT"/>
-        </entity>
-        <entity name="Address">
-            <entityAttribute attributeName="street" attributeType="TEXT"/>
-            <entityAttribute attributeName="zip" attributeType="NUMBER"/>
-        </entity>
+        <formConcept conceptIdentifier="CitySurvey" formTitle="City Survey">
+            <formControl>
+                <textInputFormControlConcept conceptIdentifier="Firstname" displayName="Firstname" valueRequired="true" formatHint="PLAIN">
+                    <label>
+                        <facetValue value="identity" />
+                    </label>
+                </textInputFormControlConcept>
+                <textInputFormControlConcept conceptIdentifier="Lastname" displayName="Lastname" valueRequired="true" formatHint="PLAIN" >
+                    <label>
+                        <facetValue value="identity" />
+                    </label>
+                </textInputFormControlConcept>
+                <selectDropdownFormControlConcept conceptIdentifier="Gender" displayName="Gender" valueRequired="false">
+                    <selectDropdownEntry>
+                        <selectDropdownEntryConcept value="male" displayValue="Male" />
+                        <selectDropdownEntryConcept value="female" displayValue="Female" />
+                    </selectDropdownEntry>
+                    <label>
+                        <facetValue value="identity" />
+                    </label>
+                </selectDropdownFormControlConcept>
+                <selectDropdownFormControlConcept conceptIdentifier="Places" displayName="Preferred Place" valueRequired="false" defaultValue="forrest">
+                    <selectDropdownEntry>
+                        <conceptRef conceptIdentifierReference="DropdownEntryForrest" />
+                        <conceptRef conceptIdentifierReference="DropdownEntryCity" />
+                    </selectDropdownEntry>
+                    <label>
+                        <facetValue value="preferences" />
+                        <facetValue value="hobbies" />
+                    </label>
+                </selectDropdownFormControlConcept>
+                <conceptRef conceptIdentifierReference="Address" />
+            </formControl>
+        </formConcept>
+        <selectDropdownEntryConcept conceptIdentifier="DropdownEntryForrest" value="forrest" displayValue="Walk in the forrest" />
+        <selectDropdownEntryConcept conceptIdentifier="DropdownEntryCity" value="city" displayValue="Hang in the city" />
+        <textInputFormControlConcept conceptIdentifier="Address" displayName="Address" valueRequired="true" formatHint="PLAIN" >
+            <label>
+                <facetValue value="identity" />
+            </label>
+        </textInputFormControlConcept>
     </definitions>
 </sourceamazing>

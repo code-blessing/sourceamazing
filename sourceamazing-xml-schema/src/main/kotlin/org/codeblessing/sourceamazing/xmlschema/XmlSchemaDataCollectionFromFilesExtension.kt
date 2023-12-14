@@ -1,11 +1,11 @@
 package org.codeblessing.sourceamazing.xmlschema
 
 import org.codeblessing.sourceamazing.api.extensions.ExtensionName
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionFromFilesExtension
 import org.codeblessing.sourceamazing.api.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.api.logger.LoggerFacade
 import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionFromFilesExtension
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
 import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.xmlschema.parser.SaxParserHandler
 import org.codeblessing.sourceamazing.xmlschema.schemacreator.XmlSchemaInitializer

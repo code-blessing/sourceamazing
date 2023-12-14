@@ -1,8 +1,7 @@
 package org.codeblessing.sourceamazing.tools
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 class StringIdentHelperTest {
 

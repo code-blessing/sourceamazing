@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" elementFormDefault="qualified" targetNamespace="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <!-- - - - - - - - -       CONCEPT IDENTIFIER ATTRIBUTE     - - - - - - - -->
+    <xsd:attributeGroup name="conceptIdentifier">
+        <xsd:attribute name="conceptIdentifier" type="xsd:ID"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="conceptIdentifierReference">
+        <xsd:attribute name="referencedConcept" type="xsd:IDREF"/>
+    </xsd:attributeGroup>
+    <!-- - - - - - - - -       CONFIGURATION AND DEFINITIONS     - - - - - - - -->
+    <xsd:element name="sourceamazing">
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="1" minOccurs="1">
+                <xsd:element name="definitions">
+                    <xsd:complexType>
+                        <!-- - - - - - - - -       ROOT CONCEPTS     - - - - - - - -->
+                        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element ref="FormConcept"/>
+                            <xsd:element ref="SelectDropdownFormControlConcept"/>
+                            <xsd:element ref="TextInputFormControlConcept" />
+                            <xsd:element ref="SelectDropdownEntryConcept"/>
+                        </xsd:choice>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <!-- - - - - - - - -       ALL CONCEPTS AS TYPES     - - - - - - - -->
+
+    <!-- FormConcept -->
+    <xsd:element name="FormConcept" type="FormConceptType" />
+    <xsd:element name="FormConceptReference" type="FormConceptReference" />
+    <xsd:complexType name="FormConceptReference">
+        <xsd:attributeGroup ref="conceptIdentifierReference"/>
+    </xsd:complexType>
+    <xsd:complexType name="FormConceptType">
+        <xsd:all>
+            <xsd:element ref="FormControlsFacet" minOccurs="0" />
+        </xsd:all>
+        <xsd:attributeGroup ref="conceptIdentifier"/>
+        <xsd:attributeGroup ref="FormConceptTypeFormTitle"/>
+    </xsd:complexType>
+    <xsd:element name="FormControlsFacet">
+        <xsd:complexType>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="SelectDropdownFormControlConcept"/>
+                <xsd:element ref="SelectDropdownFormControlConceptReference"/>
+                <xsd:element ref="TextInputFormControlConcept" />
+                <xsd:element ref="TextInputFormControlConceptReference" />
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:attributeGroup name="FormConceptTypeFormTitle">
+        <xsd:attribute name="formTitleFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+
+    <!-- TextInputFormControlConcept -->
+    <xsd:element name="TextInputFormControlConcept" type="TextInputFormControlConcept" />
+    <xsd:element name="TextInputFormControlConceptReference" type="TextInputFormControlConceptReference" />
+    <xsd:complexType name="TextInputFormControlConceptReference">
+        <xsd:attributeGroup ref="conceptIdentifierReference"/>
+    </xsd:complexType>
+    <xsd:complexType name="TextInputFormControlConcept">
+        <xsd:attributeGroup ref="conceptIdentifier"/>
+
+        <xsd:attributeGroup ref="TextInputFormControlConceptDisplayNameFacet"/>
+        <xsd:attributeGroup ref="TextInputFormControlConceptDisplayNameFacet"/>
+        <xsd:attributeGroup ref="TextInputFormControlConceptValueRequiredFacet"/>
+        <xsd:attributeGroup ref="TextInputFormControlConceptFormatHintFacet"/>
+    </xsd:complexType>
+    <xsd:attributeGroup name="TextInputFormControlConceptDisplayNameFacet">
+        <xsd:attribute name="DisplayNameFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="TextInputFormControlConceptValueRequiredFacet">
+        <xsd:attribute name="ValueRequiredFacet" type="xsd:boolean"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="TextInputFormControlConceptFormatHintFacet">
+        <xsd:attribute name="FormatHintFacet">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="PLAIN"/>
+                    <xsd:enumeration value="MONEY"/>
+                    <xsd:enumeration value="DATE"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+
+    <!-- SelectDropdownFormControlConcept -->
+    <xsd:element name="SelectDropdownFormControlConcept" type="SelectDropdownFormControlConcept" />
+    <xsd:element name="SelectDropdownFormControlConceptReference" type="SelectDropdownFormControlConceptReference" />
+    <xsd:complexType name="SelectDropdownFormControlConceptReference">
+        <xsd:attributeGroup ref="conceptIdentifierReference"/>
+    </xsd:complexType>
+    <xsd:complexType name="SelectDropdownFormControlConcept">
+        <xsd:all>
+            <xsd:element ref="SelectDropdownEntriesFacet" minOccurs="0" />
+        </xsd:all>
+        <xsd:attributeGroup ref="conceptIdentifier"/>
+        <xsd:attributeGroup ref="SelectDropdownEntryConceptDisplayNameFacet"/>
+        <xsd:attributeGroup ref="SelectDropdownEntryConceptValueRequiredFacet"/>
+        <xsd:attributeGroup ref="SelectDropdownEntryConceptDefaultValueFacet"/>
+    </xsd:complexType>
+    <xsd:element name="SelectDropdownEntriesFacet">
+        <xsd:complexType>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="SelectDropdownEntryConcept"/>
+                <xsd:element ref="SelectDropdownEntryConceptReference"/>
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:attributeGroup name="SelectDropdownEntryConceptDisplayNameFacet">
+        <xsd:attribute name="DisplayNameFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="SelectDropdownEntryConceptValueRequiredFacet">
+        <xsd:attribute name="ValueRequiredFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="SelectDropdownEntryConceptDefaultValueFacet">
+        <xsd:attribute name="DefaultValueFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+
+    <!-- SelectDropdownEntryConcept -->
+    <xsd:element name="SelectDropdownEntryConcept" type="SelectDropdownEntryConcept" />
+    <xsd:element name="SelectDropdownEntryConceptReference" type="SelectDropdownEntryConceptReference" />
+    <xsd:complexType name="SelectDropdownEntryConceptReference">
+        <xsd:attributeGroup ref="conceptIdentifierReference"/>
+    </xsd:complexType>
+    <xsd:complexType name="SelectDropdownEntryConcept">
+        <xsd:attributeGroup ref="conceptIdentifier"/>
+        <xsd:attributeGroup ref="SelectDropdownEntryConceptValueFacet"/>
+        <xsd:attributeGroup ref="SelectDropdownEntryConceptDisplayValueFacet"/>
+    </xsd:complexType>
+    <xsd:attributeGroup name="SelectDropdownEntryConceptValueFacet">
+        <xsd:attribute name="ValueFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="SelectDropdownEntryConceptDisplayValueFacet">
+        <xsd:attribute name="DisplayValueFacet" type="xsd:string"/>
+    </xsd:attributeGroup>
+</xsd:schema>

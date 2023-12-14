@@ -1,85 +1,56 @@
 package org.codeblessing.sourceamazing.processtest
 
-import org.codeblessing.sourceamazing.api.extensions.ExtensionName
-import org.codeblessing.sourceamazing.api.process.datacollection.defaults.DefaultConceptDataCollector
-import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.parameter.ParameterAccess
-import org.codeblessing.sourceamazing.api.process.DefaultDomainUnit
 import org.codeblessing.sourceamazing.api.process.DomainUnit
+import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
-import org.codeblessing.sourceamazing.processtest.dsl.ProcesstestConceptDataCollector
+import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
+import org.codeblessing.sourceamazing.processtest.formschema.FormData
+import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class ProcesstestDomainUnit: DomainUnit<ProcesstestDomainSchema, ProcesstestConceptDataCollector>(
-    schemaDefinitionClass = ProcesstestDomainSchema::class.java,
-    inputDefinitionClass = ProcesstestConceptDataCollector::class.java,
+class ProcesstestDomainUnit: DomainUnit<FormSchema, FormBuilder>(
+    schemaDefinitionClass = FormSchema::class,
+    inputDefinitionClass = FormBuilder::class,
 
 ) {
-    private val defaultDataCollectionExtensionName = ExtensionName.of("XmlSchemaInputExtension")
     private val defaultXmlPaths = setOf(Paths.get("input-data").resolve("input-data.xml"))
 
     companion object {
         val outputDirectory: Path = Paths.get("output-data")
     }
+
     override fun collectTargetFiles(
         parameterAccess: ParameterAccess,
-        schemaInstance: ProcesstestDomainSchema,
+        schemaInstance: FormSchema,
         targetFilesCollector: TargetFilesCollector
     ) {
         val basePath = outputDirectory
         schemaInstance
-            .getEntityConcepts()
-            .forEach { entity ->
-                val targetFile = basePath.resolve("${entity.entityName()}.example.txt")
-                val content = ProcesstestTemplate.createExampleTemplate(targetFile, entity)
-                targetFilesCollector.addFile(targetFile, content)
+            .getForms()
+            .forEach { form ->
+                val targetFile = basePath.resolve("${form.getFormId()}.html")
+                targetFilesCollector.addFile(targetFile, ProcesstestTemplate.formContent(form))
             }
 
-        val targetIndexFile = basePath.resolve("index.example.txt")
-        val content = ProcesstestTemplate.createExampleIndexTemplate(targetIndexFile, schemaInstance.getEntityConcepts())
-        targetFilesCollector.addFile(targetIndexFile, content)
+        targetFilesCollector.addFile(
+            basePath.resolve("forms-description.txt"),
+            ProcesstestTemplate.formsSummary(schemaInstance.getForms())
+        )
 
     }
 
     override fun collectInputData(
         parameterAccess: ParameterAccess,
         extensionAccess: DataCollectionExtensionAccess,
-        dataCollector: ProcesstestConceptDataCollector
+        dataCollector: FormBuilder
     ) {
         extensionAccess.collectWithDataCollectionFromFilesExtension(
-            extensionName = defaultDataCollectionExtensionName,
+            extensionName = ExtensionConstants.xmlSchemaExtensionName,
             inputFiles = defaultXmlPaths,
         )
 
-        val firstConceptIdentifier = ConceptIdentifier.of("MeinTestkonzept")
-        val meinTestkonzept = dataCollector
-            .newEntity(conceptIdentifier = firstConceptIdentifier)
-            .name(entityName = "MeinTestkonzept-Name")
-            .alternativeName(alternativeName = "MeinTestkonzeptli")
-
-        meinTestkonzept
-            .newEntityAttribute()
-            .attributeName(attributeName = "Anzahl")
-            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
-
-        meinTestkonzept
-            .newEntityAttribute()
-            .attributeName(attributeName = "Required")
-            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.BOOLEAN)
-
-
-        val secondConceptIdentifier = ConceptIdentifier.of("MeinZweitesTestkonzept")
-        val meinZweitesTestkonzept = dataCollector
-            .newEntity(conceptIdentifier = secondConceptIdentifier)
-            .name(entityName = "MeinZweitesTestkonzept-Name")
-            .alternativeName(alternativeName = "MeinTestkonzeptli 2")
-
-        meinZweitesTestkonzept
-            .newEntityAttribute()
-            .attributeName(attributeName = "Kilometer")
-            .attributeType(type = EntityAttributeConcept.AttributeTypeEnum.NUMBER)
-
+        FormData.collectFormData(dataCollector)
     }
 }

@@ -2,16 +2,16 @@ package org.codeblessing.sourceamazing.xmlschema.parser
 
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.FacetSchema
-import org.codeblessing.sourceamazing.api.process.schema.FacetTypeEnum
+import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 
 object XmlFacetValueConverter {
-    fun convertString(facetSchema: FacetSchema, attributeValue: String): Any? {
+    fun convertString(facetSchema: FacetSchema, attributeValue: String): Any {
         return when(facetSchema.facetType) {
-            FacetTypeEnum.TEXT -> attributeValue
-            FacetTypeEnum.NUMBER -> attributeValue.toLong()
-            FacetTypeEnum.BOOLEAN -> attributeValue.toBoolean()
-            FacetTypeEnum.REFERENCE -> ConceptIdentifier.of(attributeValue)
-            FacetTypeEnum.TEXT_ENUMERATION -> enumerationValue(facetSchema, attributeValue)
+            FacetType.TEXT -> attributeValue
+            FacetType.NUMBER -> attributeValue.toLong()
+            FacetType.BOOLEAN -> attributeValue.toBoolean()
+            FacetType.REFERENCE -> ConceptIdentifier.of(attributeValue)
+            FacetType.TEXT_ENUMERATION -> enumerationValue(facetSchema, attributeValue)
         }
     }
 
