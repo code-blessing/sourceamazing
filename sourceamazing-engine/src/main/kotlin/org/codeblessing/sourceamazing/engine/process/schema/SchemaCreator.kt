@@ -27,22 +27,32 @@ object SchemaCreator {
         validateConceptClassesAnnotations(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
+        val conceptSimpleNames: MutableSet<String> = mutableSetOf()
         val conceptNames = conceptClasses.map { ConceptName.of(it) }
         conceptClasses.forEach { conceptClass ->
             ConceptQueryValidator.validateAccessorMethodsOfConceptClass(conceptClass)
             val conceptName = ConceptName.of(conceptClass)
 
-            if(concepts.containsKey(conceptName)) {
-                throw DuplicateConceptMalformedSchemaException("Concept '$conceptName' is already registered on schema '${schemaDefinitionClass.longText()}'.")
+            if(conceptSimpleNames.contains(conceptName.simpleName())) {
+                throw DuplicateConceptMalformedSchemaException("There is already a concept registered " +
+                        "with name '${conceptName.simpleName()}' on schema '${schemaDefinitionClass.longText()}'. " +
+                        "Can not register concept class '${conceptClass}'.")
+            } else {
+                conceptSimpleNames.add(conceptName.simpleName())
             }
 
             val facetClasses = AnnotationUtil.getAnnotation(conceptClass, Concept::class).facets
             validateFacetClassesAnnotations(facetClasses)
             val facets: MutableList<FacetSchema> = mutableListOf()
+            val facetSimpleNames: MutableSet<String> = mutableSetOf()
             facetClasses.forEach { facetClass ->
                 val facetName = FacetName.of(facetClass)
-                if(facets.map { it.facetName }.contains(facetName)) {
-                    throw DuplicateFacetMalformedSchemaException("Facet '$facetName' is already registered for concept '$conceptName'.")
+                if(facetSimpleNames.contains(facetName.simpleName())) {
+                    throw DuplicateFacetMalformedSchemaException("There is already a facet registered " +
+                            "with name '${facetName.simpleName()}' on concept '$conceptName'. " +
+                            "Can not register facet class '${facetClass}'.")
+                } else {
+                    facetSimpleNames.add(facetName.simpleName())
                 }
                 facets += createFacetSchema(conceptName, facetName, facetClass, conceptNames)
             }
