@@ -8,7 +8,7 @@ object XmlFacetValueConverter {
     fun convertString(facetSchema: FacetSchema, attributeValue: String): Any {
         return when(facetSchema.facetType) {
             FacetType.TEXT -> attributeValue
-            FacetType.NUMBER -> attributeValue.toLong()
+            FacetType.NUMBER -> attributeValue.toInt()
             FacetType.BOOLEAN -> attributeValue.toBoolean()
             FacetType.REFERENCE -> ConceptIdentifier.of(attributeValue)
             FacetType.TEXT_ENUMERATION -> enumerationValue(facetSchema, attributeValue)
