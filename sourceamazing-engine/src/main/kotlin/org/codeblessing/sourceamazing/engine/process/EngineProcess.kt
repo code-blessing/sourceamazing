@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.engine.process.DomainUnitName.domainUnitName
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.engine.process.datacollection.domainunit.DomainUnitDataCollectionHelperImpl
-import org.codeblessing.sourceamazing.engine.process.datacollection.validation.exceptions.SchemaValidationException
 import org.codeblessing.sourceamazing.engine.process.schema.domainunit.DomainUnitSchemaHelperImpl
 import org.codeblessing.sourceamazing.engine.process.templating.domainunit.DomainUnitProcessTargetFilesDataHelperImpl
 import kotlin.io.path.absolutePathString

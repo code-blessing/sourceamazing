@@ -10,7 +10,6 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.*
 import org.codeblessing.sourceamazing.engine.process.schema.query.ConceptQueryValidator
 import org.codeblessing.sourceamazing.engine.process.schema.query.SchemaQueryValidator

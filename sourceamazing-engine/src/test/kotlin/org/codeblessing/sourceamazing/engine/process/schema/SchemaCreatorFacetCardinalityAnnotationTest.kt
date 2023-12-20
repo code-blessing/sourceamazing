@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
-import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongCardinalityMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
