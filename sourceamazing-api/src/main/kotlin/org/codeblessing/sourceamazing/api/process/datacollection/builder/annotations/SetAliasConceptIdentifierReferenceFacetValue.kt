@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * To declare default values for a certain facet, use
  * the following annotations:
  * * [SetFixedBooleanFacetValue] to add or replace a default boolean value.
- * * [SetFixedNumberFacetValue] to add or replace a default numeric value.
+ * * [SetFixedIntFacetValue] to add or replace a default numeric value.
  * * [SetFixedStringFacetValue] to add or replace a default string facet value.
  * * [SetFixedEnumFacetValue] to add or replace a default enumeration value.
  * * [SetAliasConceptIdentifierReferenceFacetValue] to add or replace a concept identifier
