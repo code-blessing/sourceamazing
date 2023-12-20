@@ -55,10 +55,10 @@ That might look like this:
 ])
 interface HtmlFormConcept {
 
-    @StringFacet(, minimumOccurences=0)
+    @StringFacet(minimumOccurences=0)
     interface FormHeadlineFacet
 
-    @ReferenceFacet(, minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
+    @ReferenceFacet(minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
     interface FormFieldsFacet
 
     @QueryFacet(FormHeadline::class)
@@ -70,7 +70,7 @@ interface HtmlFormConcept {
 
 @Concept(facets = [HtmlInputFieldConcept.FieldName::class])
 interface HtmlInputFieldConcept {
-    @StringFacet()
+    @StringFacet
     interface FieldName
 
     @QueryFacet(FieldName::class)
@@ -89,8 +89,10 @@ an XML schema to enter your definition data in one or multiple XML files.
                xsi:schemaLocation="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema ./schema/sourceamazing-xml-schema.xsd">
     <definitions>
         <htmlForm formHeadline="Address Form">
-            <htmlInputField fieldName="Firstname" required="true" maxFieldLength="40" />
-            <htmlInputField fieldName="Lastname" required="true" maxFieldLength="50" />
+            <formFieldsFacet>
+                <htmlInputField fieldName="Firstname" required="true" maxFieldLength="40" />
+                <htmlInputField fieldName="Lastname" required="true" maxFieldLength="50" />
+            </formFieldsFacet>
         </htmlForm>
         <htmlForm>
             ...
