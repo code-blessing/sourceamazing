@@ -208,7 +208,7 @@ object ConceptDataValidator {
         val actualClass = facetValue::class
         val isValidType = when(expectedFacetType) {
             FacetType.TEXT -> actualClass == String::class
-            FacetType.NUMBER -> actualClass == Long::class || actualClass == Int::class
+            FacetType.NUMBER -> actualClass == Int::class
             FacetType.BOOLEAN -> actualClass == Boolean::class
             FacetType.REFERENCE -> actualClass == ConceptIdentifier::class
             FacetType.TEXT_ENUMERATION -> isValidEnumValue(facetValue, facetSchema)
