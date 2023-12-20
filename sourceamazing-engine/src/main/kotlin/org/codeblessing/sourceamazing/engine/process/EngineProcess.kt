@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.engine.process.DomainUnitName.domainUnitName
 import org.codeblessing.sourceamazing.engine.process.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.engine.process.datacollection.domainunit.DomainUnitDataCollectionHelperImpl
+import org.codeblessing.sourceamazing.engine.process.datacollection.validation.exceptions.SchemaValidationException
 import org.codeblessing.sourceamazing.engine.process.schema.domainunit.DomainUnitSchemaHelperImpl
 import org.codeblessing.sourceamazing.engine.process.templating.domainunit.DomainUnitProcessTargetFilesDataHelperImpl
 import kotlin.io.path.absolutePathString
@@ -13,13 +14,17 @@ class EngineProcess(private val processSession: ProcessSession) {
 
 
     fun runProcess() {
-        processSession.loggerFacade.logUserInfo("SourceAmazing started...")
-        DomainUnitFiltering.filteredDomainUnits(processSession).forEach { domainUnit -> processDomainUnit(domainUnit) }
-        processSession.loggerFacade.logUserInfo("SourceAmazing finished.")
-        processSession.loggerFacade.closeLoggerFacade()
+        try {
+            processSession.loggerFacade.logUserInfo("SourceAmazing started...")
+            DomainUnitFiltering.filteredDomainUnits(processSession).forEach { domainUnit -> processDomainUnit(domainUnit) }
+        } finally {
+            processSession.loggerFacade.logUserInfo("SourceAmazing finished.")
+            processSession.loggerFacade.closeLoggerFacade()
+        }
+
     }
 
-    internal fun processDomainUnit(domainUnit: DomainUnit<*, *>) {
+    private fun processDomainUnit(domainUnit: DomainUnit<*, *>) {
         val domainUnitName = domainUnit.domainUnitName()
         val loggerFacade = processSession.loggerFacade
         val schema = domainUnit.createSchema(DomainUnitSchemaHelperImpl())
