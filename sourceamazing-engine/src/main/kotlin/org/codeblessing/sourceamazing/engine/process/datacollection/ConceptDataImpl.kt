@@ -50,11 +50,11 @@ class ConceptDataImpl(
             .map { (key, value) -> describeFacet(key, value) }
             .joinToString("\n")
 
-        return "${conceptName.clazz.java.simpleName}:${conceptIdentifier.name} {\n$facetDescription\n}"
+        return "${conceptName.simpleName()}:${conceptIdentifier.name} {\n$facetDescription\n}"
     }
 
     private fun describeFacet(key: FacetName, value: MutableList<Any>): String {
-        return "  ${key.clazz.simpleName}:[ ${value.joinToString(", ") { "'${it}'" }} ]"
+        return "  ${key.simpleName()}:[ ${value.joinToString(", ") { "'${it}'" }} ]"
     }
 
     private fun assureFacetList(facetName: FacetName): MutableList<Any> {

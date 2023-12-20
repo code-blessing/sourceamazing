@@ -185,11 +185,11 @@ object XmlDomSchemaCreator {
     }
 
     private fun ConceptSchema.conceptName(): String {
-        return conceptName.clazz.java.simpleName
+        return conceptName.simpleName()
     }
 
     private fun FacetSchema.facetName(): String {
-        return facetName.clazz.java.simpleName
+        return facetName.simpleName()
     }
 
 

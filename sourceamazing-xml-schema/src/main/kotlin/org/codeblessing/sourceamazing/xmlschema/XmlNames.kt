@@ -13,11 +13,11 @@ object XmlNames {
     const val CONCEPT_IDENTIFIER_REFERENCE_ATTRIBUTE_NAME = "conceptIdentifierReference"
 
     fun xmlConceptName(conceptName: ConceptName): String {
-        return CaseUtil.decapitalize(conceptName.clazz.java.simpleName)
+        return CaseUtil.decapitalize(conceptName.simpleName())
     }
 
     fun xmlFacetName(facetName: FacetName): String {
-        return CaseUtil.decapitalize(facetName.clazz.java.simpleName)
+        return CaseUtil.decapitalize(facetName.simpleName())
     }
 
     fun conceptFromXmlConceptName(xmlConceptName: String, schemaAccess: SchemaAccess): ConceptSchema? {
