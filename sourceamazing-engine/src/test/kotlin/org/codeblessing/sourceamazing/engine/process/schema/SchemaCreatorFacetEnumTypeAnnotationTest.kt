@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongTypeMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -88,7 +89,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test invalid enum type on facet should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithInvalidEnumFacet::class)
         }
     }
@@ -106,7 +107,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test enum facet with missing enum type should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithMissingEnumTypeOnFacet::class)
         }
     }
@@ -126,7 +127,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test non-enum type with a enum should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithNonEnumTypeButEnumFacet::class)
         }
     }

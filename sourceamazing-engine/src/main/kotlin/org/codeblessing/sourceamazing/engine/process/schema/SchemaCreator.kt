@@ -8,7 +8,10 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
-import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.longText
+import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.*
 import org.codeblessing.sourceamazing.engine.process.schema.query.ConceptQueryValidator
 import org.codeblessing.sourceamazing.engine.process.schema.query.SchemaQueryValidator
 import org.codeblessing.sourceamazing.engine.process.util.AnnotationUtil
@@ -34,7 +37,7 @@ object SchemaCreator {
             val conceptName = ConceptName.of(conceptClass)
 
             if(concepts.containsKey(conceptName)) {
-                raiseMalformedSchemaException(CONCEPT_CLASS_DESCRIPTION, "Concept '$conceptName' is already registered on schema '$schemaDefinitionClass'.")
+                throw DuplicateConceptMalformedSchemaException("Concept '$conceptName' is already registered on schema '${schemaDefinitionClass.longText()}'.")
             }
 
             val facetClasses = AnnotationUtil.getAnnotation(conceptClass, Concept::class).facets
@@ -43,7 +46,7 @@ object SchemaCreator {
             facetClasses.forEach { facetClass ->
                 val facetName = FacetName.of(facetClass)
                 if(facets.map { it.facetName }.contains(facetName)) {
-                    raiseMalformedSchemaException(FACET_CLASS_DESCRIPTION, "Facet '$facetName' is already registered for concept '$conceptName'.")
+                    throw DuplicateFacetMalformedSchemaException("Facet '$facetName' is already registered for concept '$conceptName'.")
                 }
                 facets += createFacetSchema(conceptName, facetName, facetClass, conceptNames)
             }
@@ -97,50 +100,50 @@ object SchemaCreator {
             .map { ConceptName.of(it) }.toSet()
 
         if(facetType == FacetType.TEXT_ENUMERATION && !enumerationType.java.isEnum) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
-                    "is declared as type ${FacetType.TEXT_ENUMERATION} but the enumeration is not " +
-                    "defined or not a real enumeration class (was '$enumerationType').")
+            throw WrongTypeMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
+                "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
+                "defined or not a real enumeration class (was '$enumerationType').")
         }
 
         if(facetType != FacetType.TEXT_ENUMERATION && enumerationType != Unit::class) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+            throw WrongTypeMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
                     "has declared an enumeration class '$enumerationType' but the type of the facet " +
                     "is '$facetType' instead of '${FacetType.TEXT_ENUMERATION}'.")
         }
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
-                    "is declared as type ${FacetType.REFERENCE} but the list of concept type is empty.")
+            throw WrongTypeMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
+                    "is declared as type '${FacetType.REFERENCE}' but the list of concept type is empty.")
         }
 
         if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
-                    "is not declared as type ${FacetType.REFERENCE} (is '${facetType}') but the list " +
+            throw WrongTypeMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
+                    "is not declared as type '${FacetType.REFERENCE}' (is '${facetType}') but the list " +
                     "of concept type is not empty (is '${referencedConcepts}').")
         }
 
         if(minimumOccurrences < 0 || maximumOccurrences < 0) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+            throw WrongCardinalityMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
                     "has negative cardinalities. Only number greater/equal zero are allowed, " +
                     "but was $minimumOccurrences/$maximumOccurrences.")
         }
 
         if(minimumOccurrences > maximumOccurrences) {
-            raiseMalformedSchemaException(
-                FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+            throw WrongCardinalityMalformedSchemaException(
+                "Facet '$facetName' on concept '$conceptName' " +
                     "has a greater minimumOccurrences ($minimumOccurrences) " +
                     "than the maximumOccurrences ($maximumOccurrences).")
         }
 
         referencedConcepts.forEach { referencedConcept ->
             if(!conceptNames.contains(referencedConcept)) {
-                raiseMalformedSchemaException(
-                    FACET_CLASS_DESCRIPTION, "Facet '$facetName' on concept '$conceptName' " +
+                throw WrongTypeMalformedSchemaException(
+                    "Facet '$facetName' on concept '$conceptName' " +
                         "has an reference concept '${referencedConcept}' which is not a known concept " +
                         "(known concepts are '${conceptNames}').")
 
@@ -160,24 +163,20 @@ object SchemaCreator {
 
     private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
         if(!classToInspect.java.isInterface) {
-            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must be an interface.")
+            throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must be an interface.")
         }
     }
 
     private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
         if(!hasClassAnnotation(annotation, classToInspect)) {
-            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must have an annotation of type '${annotation.java.name}'")
+            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
         }
     }
 
     private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
         if(hasClassAnnotation(annotation, classToInspect)) {
-            raiseMalformedSchemaException(classDescription, "'${classToInspect.java.name}' must not have an annotation of type '${annotation.java.name}'")
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must not have an annotation of type '${annotation.annotationText()}'.")
         }
-    }
-
-    private fun raiseMalformedSchemaException(classDescription: String, message: String): Nothing {
-        throw MalformedSchemaException("$classDescription: $message")
     }
 
     private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {

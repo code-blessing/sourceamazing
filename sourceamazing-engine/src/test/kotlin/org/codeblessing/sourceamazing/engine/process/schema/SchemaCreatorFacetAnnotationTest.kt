@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
-import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -22,7 +22,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an unannotated facet should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithUnannotatedFacetClass::class)
         }
     }
@@ -38,7 +38,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an non-interface facet should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithNonInterfaceFacetClass::class)
         }
     }
@@ -55,7 +55,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a schema annotation should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithFacetClassHavingSchemaAnnotation::class)
         }
     }
@@ -72,7 +72,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a concept annotation should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithFacetClassHavingConceptAnnotation::class)
         }
     }
@@ -91,7 +91,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test duplicate facet class within a concept should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(DuplicateFacetMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithDuplicateFacetClass::class)
         }
     }
