@@ -45,6 +45,18 @@ class ConceptDataImpl(
         return this
     }
 
+    override fun describe(): String {
+        val facetDescription = mutableFacets
+            .map { (key, value) -> describeFacet(key, value) }
+            .joinToString("\n")
+
+        return "${conceptName.clazz.java.simpleName}:${conceptIdentifier.name} {\n$facetDescription\n}"
+    }
+
+    private fun describeFacet(key: FacetName, value: MutableList<Any>): String {
+        return "  ${key.clazz.simpleName}:[ ${value.joinToString(", ") { "'${it}'" }} ]"
+    }
+
     private fun assureFacetList(facetName: FacetName): MutableList<Any> {
         val currentList = mutableFacets[facetName]
         return currentList ?: createEmptyListForFacet(facetName)

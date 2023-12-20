@@ -8,7 +8,9 @@ import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.engine.process.datacollection.MultipleSchemaValidationException
 import org.codeblessing.sourceamazing.engine.process.datacollection.validation.exceptions.*
+import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.engine.process.util.EnumUtil
+import kotlin.reflect.KClass
 
 object ConceptDataValidator {
 
@@ -90,14 +92,14 @@ object ConceptDataValidator {
 
     private fun validateForReferenceFacet(
         conceptSchema: ConceptSchema,
-        conceptData: ConceptData,
+        conceptDataEntry: ConceptData,
         conceptDataMap: Map<ConceptIdentifier, ConceptData>
     ): List<SchemaValidationException>? {
         val exceptionList = mutableListOf<SchemaValidationException>()
         conceptSchema.facets
             .filter { it.facetType == FacetType.REFERENCE }
             .forEach { referenceFacetSchema ->
-                val facetValues = conceptData.getFacet(referenceFacetSchema.facetName)
+                val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
                 val possibleConcepts = referenceFacetSchema.referencingConcepts
                 facetValues.forEach { facetValue ->
                     val referenceConceptIdentifier = facetValue as ConceptIdentifier
@@ -105,21 +107,23 @@ object ConceptDataValidator {
                     if(referencedConcept == null) {
                         exceptionList.add(
                             MissingReferencedConceptFacetValueException(
-                                "Facet '${referenceFacetSchema.facetName}' of concept identifier '${conceptData.conceptIdentifier.name}' " +
-                                "in concept '${conceptData.conceptName}' points to a reference that was not found. " +
+                                "Facet '${referenceFacetSchema.facetName}' of concept identifier '${conceptDataEntry.conceptIdentifier.name}' " +
+                                "in concept '${conceptDataEntry.conceptName}' points to a reference that was not found. " +
                                 "No concept with concept id $referenceConceptIdentifier. " +
-                                "Must be one of these concepts: ${possibleConcepts}."
+                                "Must be one of these concepts: ${possibleConcepts}. " +
+                                "\n${conceptDataEntry.describe()}"
                         )
                         )
                     } else if(!possibleConcepts.contains(referencedConcept.conceptName)) {
                         exceptionList.add(
                             WrongReferencedConceptFacetValueException(
                                 "Facet '${referenceFacetSchema.facetName}' of concept " +
-                                "identifier '${conceptData.conceptIdentifier.name}' in " +
-                                "concept '${conceptData.conceptName}' points " +
+                                "identifier '${conceptDataEntry.conceptIdentifier.name}' in " +
+                                "concept '${conceptDataEntry.conceptName}' points " +
                                 "to concept that is not permitted. " +
-                                "Referenced concept was '${referencedConcept.conceptName}'." +
-                                "Must be one of these concepts: ${possibleConcepts}."
+                                "Referenced concept was '${referencedConcept.conceptName}'. " +
+                                "Must be one of these concepts: ${possibleConcepts}. " +
+                                "\n${conceptDataEntry.describe()}"
                             )
                         )
 
@@ -137,7 +141,8 @@ object ConceptDataValidator {
         if(!schema.hasConceptName(conceptDataEntry.conceptName)) {
             return UnknownConceptException("The entry with the " +
                     "identifier '${conceptDataEntry.conceptIdentifier.name}' points to a " +
-                    "concept '${conceptDataEntry.conceptName}' that is not known.")
+                    "concept '${conceptDataEntry.conceptName}' that is not known. " +
+                    "\n${conceptDataEntry.describe()}")
         }
         return null
     }
@@ -149,23 +154,25 @@ object ConceptDataValidator {
         if(allConceptIdentifiers.contains(conceptDataEntry.conceptIdentifier)) {
             return DuplicateConceptIdentifierException("The identifier " +
                     "'${conceptDataEntry.conceptIdentifier.name}' (concept: '${conceptDataEntry.conceptName}') " +
-                    "occurred multiple times. A concept identifier must be unique.")
+                    "occurred multiple times. A concept identifier must be unique. " +
+                    "\n${conceptDataEntry.describe()}")
         }
         return null;
     }
 
     private fun validateForObsoletFacets(
         conceptSchema: ConceptSchema,
-        conceptData: ConceptData
+        conceptDataEntry: ConceptData
     ): UnknownFacetNameException? {
         // iterate through all entry facet values to find obsolet ones
-        conceptData.getFacetNames().forEach { facetName ->
+        conceptDataEntry.getFacetNames().forEach { facetName ->
             if(!conceptSchema.hasFacet(facetName)) {
                 return UnknownFacetNameException(
                             "Unknown facet name '${facetName}' found for " +
-                            "concept identifier '${conceptData.conceptIdentifier.name}' in " +
-                            "concept '${conceptData.conceptName}'." +
-                            "Known facets are: ${conceptSchema.facetNames}"
+                            "concept identifier '${conceptDataEntry.conceptIdentifier.name}' in " +
+                            "concept '${conceptDataEntry.conceptName}'. " +
+                            "Known facets are: ${conceptSchema.facetNames}. " +
+                            "\n${conceptDataEntry.describe()}"
                 )
             }
         }
@@ -174,43 +181,68 @@ object ConceptDataValidator {
 
     private fun validateForFacetType(
         conceptSchema: ConceptSchema,
-        conceptData: ConceptData
+        conceptDataEntry: ConceptData
     ): List<WrongTypeForFacetValueException>? {
         val exceptionList = mutableListOf<WrongTypeForFacetValueException>()
         conceptSchema.facets.forEach { facetSchema ->
-            if(conceptData.hasFacet(facetSchema.facetName)) {
-                val facetValues = conceptData.getFacet(facetSchema.facetName)
+            if(conceptDataEntry.hasFacet(facetSchema.facetName)) {
+                val facetValues = conceptDataEntry.getFacet(facetSchema.facetName)
                 val expectedFacetType = facetSchema.facetType
                 facetValues.forEach { facetValue ->
-                    val actualClass = facetValue::class
-                    val isValidType = when(expectedFacetType) {
-                        FacetType.TEXT -> actualClass == String::class
-                        FacetType.NUMBER -> actualClass == Long::class || actualClass == Int::class
-                        FacetType.BOOLEAN -> actualClass == Boolean::class
-                        FacetType.REFERENCE -> actualClass == ConceptIdentifier::class
-                        FacetType.TEXT_ENUMERATION -> isValidEnumValue(facetValue, facetSchema)
-                    }
-
-                    if(!isValidType) {
-                        exceptionList.add(
-                            WrongTypeForFacetValueException(
-                                "Facet '${facetSchema.facetName}' for " +
-                                "concept identifier '${conceptData.conceptIdentifier.name}' in " +
-                                "concept '${conceptData.conceptName}' has a wrong type. " +
-                                "A facet of type '$expectedFacetType' can not " +
-                                "have a value of type '$actualClass' ($facetValue)"
-                            )
-                        )
-                    }
+                    exceptionList.addAll(
+                        validateDataType(conceptDataEntry, facetSchema, expectedFacetType, facetValue)
+                    )
                 }
             }
         }
         return if(exceptionList.isEmpty()) null else exceptionList
     }
 
-    private fun isValidEnumValue(enumFacetValue: Any, facetSchema: FacetSchema): Boolean {
-        val enumerationType = facetSchema.enumerationType
+    private fun validateDataType(
+        conceptDataEntry: ConceptData,
+        facetSchema: FacetSchema,
+        expectedFacetType: FacetType,
+        facetValue: Any
+    ): List<WrongTypeForFacetValueException> {
+        val exceptionList = mutableListOf<WrongTypeForFacetValueException>()
+        val actualClass = facetValue::class
+        val isValidType = when(expectedFacetType) {
+            FacetType.TEXT -> actualClass == String::class
+            FacetType.NUMBER -> actualClass == Long::class || actualClass == Int::class
+            FacetType.BOOLEAN -> actualClass == Boolean::class
+            FacetType.REFERENCE -> actualClass == ConceptIdentifier::class
+            FacetType.TEXT_ENUMERATION -> isValidEnumValue(facetValue, facetSchema)
+        }
+
+        if(!isValidType) {
+            val msg = if(expectedFacetType == FacetType.TEXT_ENUMERATION && facetValue is String) {
+                "The facet value must be one of ${EnumUtil.enumConstantStringList(facetEnumType(facetSchema))} " +
+                        "but was '$facetValue' (${actualClass.longText()})."
+            } else {
+                "A facet of type '$expectedFacetType' can not " +
+                "have a value of type '${actualClass.longText()}' ($facetValue)."
+            }
+            exceptionList.add(
+                WrongTypeForFacetValueException(
+                    "Facet '${facetSchema.facetName}' for " +
+                            "concept identifier '${conceptDataEntry.conceptIdentifier.name}' in " +
+                            "concept '${conceptDataEntry.conceptName}' has a wrong type. " +
+                            "$msg " +
+                            "\n${conceptDataEntry.describe()}"
+                )
+            )
+        }
+
+        return exceptionList
+    }
+
+    private fun facetEnumType(facetSchema: FacetSchema): KClass<*> {
+        return facetSchema.enumerationType
             ?: throw IllegalStateException("EnumerationType was empty for facet schema $facetSchema")
+    }
+
+    private fun isValidEnumValue(enumFacetValue: Any, facetSchema: FacetSchema): Boolean {
+        val enumerationType = facetEnumType(facetSchema)
         return if(enumFacetValue is String) {
             EnumUtil.fromStringToEnum(enumFacetValue, enumerationType) != null
         } else {
@@ -220,21 +252,22 @@ object ConceptDataValidator {
 
     private fun validateForFacetCardinality(
         schemaConcept: ConceptSchema,
-        conceptData: ConceptData
+        conceptDataEntry: ConceptData
     ): List<WrongCardinalityForFacetValueException>? {
         val exceptionList = mutableListOf<WrongCardinalityForFacetValueException>()
         schemaConcept.facets.forEach { facetSchema ->
             val minimumOccurrences = facetSchema.minimumOccurrences
             val maximumOccurrences = facetSchema.maximumOccurrences
-            val numberOfFacetValues = conceptData.getFacet(facetSchema.facetName).size
+            val numberOfFacetValues = conceptDataEntry.getFacet(facetSchema.facetName).size
             if(numberOfFacetValues < minimumOccurrences) {
                 exceptionList.add(
                     WrongCardinalityForFacetValueException(
                         "Facet '${facetSchema.facetName}' for concept " +
-                        "identifier '${conceptData.conceptIdentifier.name}' in " +
-                        "concept '${conceptData.conceptName}' has a wrong cardinality. " +
+                        "identifier '${conceptDataEntry.conceptIdentifier.name}' in " +
+                        "concept '${conceptDataEntry.conceptName}' has a wrong cardinality. " +
                         "The facet must have in minimum $minimumOccurrences entries " +
-                        "but had ${numberOfFacetValues}."
+                        "but had ${numberOfFacetValues}. " +
+                        "\n${conceptDataEntry.describe()}"
                     )
                 )
             }
@@ -242,10 +275,11 @@ object ConceptDataValidator {
                 exceptionList.add(
                     WrongCardinalityForFacetValueException(
                         "Facet '${facetSchema.facetName}' for concept " +
-                        "identifier '${conceptData.conceptIdentifier.name}' in " +
-                        "concept '${conceptData.conceptName}' has a wrong cardinality. " +
+                        "identifier '${conceptDataEntry.conceptIdentifier.name}' in " +
+                        "concept '${conceptDataEntry.conceptName}' has a wrong cardinality. " +
                         "The facet must not have more than $maximumOccurrences entries " +
-                        "but had ${numberOfFacetValues}."
+                        "but had ${numberOfFacetValues}. " +
+                        "\n${conceptDataEntry.describe()}"
                 )
                 )
             }

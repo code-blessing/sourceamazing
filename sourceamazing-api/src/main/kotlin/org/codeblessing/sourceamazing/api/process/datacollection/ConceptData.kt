@@ -18,4 +18,6 @@ interface ConceptData {
     fun addFacetValue(facetName: FacetName, facetValue: Any): ConceptData
     fun addFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptData
 
+    fun describe(): String
+
 }
