@@ -243,7 +243,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     private interface DataCollectorWithUseOfUnknownAliasInDefaultIntegerFacetValueAnnotation {
         interface FacetClass
         @BuilderMethod
-        @SetFixedNumberFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = 42)
+        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = 42)
         fun doSomething()
     }
 

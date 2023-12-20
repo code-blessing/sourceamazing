@@ -65,7 +65,7 @@ class DataCollectorInvocationHandler(
                 newConceptAliases = newConceptAliases
             )
         }
-        AnnotationUtil.getAnnotations(method, SetFixedNumberFacetValue::class).forEach { defaultIntAnnotation ->
+        AnnotationUtil.getAnnotations(method, SetFixedIntFacetValue::class).forEach { defaultIntAnnotation ->
             updateConceptData(
                 conceptAlias = defaultIntAnnotation.conceptToModifyAlias,
                 facetClazz = defaultIntAnnotation.facetToModify,

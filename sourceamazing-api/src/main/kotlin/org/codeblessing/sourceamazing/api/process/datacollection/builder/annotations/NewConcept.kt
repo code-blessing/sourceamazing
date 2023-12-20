@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  *   * [SetAliasConceptIdentifierReferenceFacetValue]
  *   * [SetFacetValue]
  *   * [SetFixedEnumFacetValue], [SetFixedBooleanFacetValue],
- * [SetFixedNumberFacetValue], [SetFixedStringFacetValue],
+ * [SetFixedIntFacetValue], [SetFixedStringFacetValue],
  * [SetFixedEnumFacetValue], [SetAliasConceptIdentifierReferenceFacetValue]
  *
  * If you handle in a method only one new concept instance,

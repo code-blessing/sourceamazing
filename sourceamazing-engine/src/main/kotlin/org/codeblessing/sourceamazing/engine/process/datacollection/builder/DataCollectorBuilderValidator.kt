@@ -210,8 +210,8 @@ object DataCollectorBuilderValidator {
             annotationAndAliases.add(SetFixedEnumFacetValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetFixedNumberFacetValue::class).forEach { annotation ->
-            annotationAndAliases.add(SetFixedNumberFacetValue::class, annotation.conceptToModifyAlias)
+        AnnotationUtil.getAnnotations(method, SetFixedIntFacetValue::class).forEach { annotation ->
+            annotationAndAliases.add(SetFixedIntFacetValue::class, annotation.conceptToModifyAlias)
         }
 
         AnnotationUtil.getAnnotations(method, SetFixedStringFacetValue::class).forEach { annotation ->

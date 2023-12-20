@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
-annotation class SetFixedNumberFacetValue(
+annotation class SetFixedIntFacetValue(
     val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
     val facetToModify: KClass<*>,
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
