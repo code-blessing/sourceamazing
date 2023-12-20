@@ -24,4 +24,7 @@ abstract class ComparableClazzId protected constructor(val clazz: KClass<*>) {
         return clazz.java.simpleName
     }
 
+
+    fun simpleName(): String = this.clazz.java.simpleName
+
 }
