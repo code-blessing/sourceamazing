@@ -5,6 +5,9 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MissingAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.NotInterfaceMalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongAnnotationMalformedSchemaException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
@@ -16,7 +19,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test unannotated schema class should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(UnannotatedSchemaDefinitionClass::class)
         }
     }
@@ -26,29 +29,29 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test non-interface schema class should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(NonInterfaceSchemaDefinitionClass::class)
         }
     }
 
     @Schema(concepts = [])
     @Concept(facets = [])
-    private class SchemaDefinitionClassWithConceptAnnotation
+    private interface SchemaDefinitionClassWithConceptAnnotation
 
     @Test
     fun `test schema class with concept annotation should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaDefinitionClassWithConceptAnnotation::class)
         }
     }
 
     @Schema(concepts = [])
     @Facet(FacetType.TEXT)
-    private class SchemaDefinitionClassWithFacetAnnotation
+    private interface SchemaDefinitionClassWithFacetAnnotation
 
     @Test
     fun `test schema class with facet annotation should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaDefinitionClassWithFacetAnnotation::class)
         }
     }
@@ -62,7 +65,7 @@ class SchemaCreatorSchemaAnnotationTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithTwoSchemaAnnotationsInHierarchyClasses::class)
         }
     }

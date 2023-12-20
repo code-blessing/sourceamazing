@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongTypeMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -26,7 +27,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test concept having an empty reference facet should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEmptyReferenceFacet::class)
         }
     }
@@ -130,7 +131,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test reference facet to unknown concept should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithUnknownReferencedConceptFacet::class)
         }
     }
@@ -148,12 +149,12 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test reference facet with missing reference type should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithMissingReferenceTypeOnFacet::class)
         }
     }
 
-    @Schema(concepts = [SchemaWithConceptWithReferenceButNoReferenceFacet.ConceptClassWithReferenceFacet::class])
+    @Schema(concepts = [SchemaWithConceptWithReferenceToNonConceptClass.ConceptClassWithReferenceFacet::class])
     private interface SchemaWithConceptWithReferenceToNonConceptClass {
         @Concept(facets = [
             ConceptClassWithReferenceFacet.ReferenceFacetToNonConceptClass::class,
@@ -168,8 +169,8 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test reference facet to a non-concept class should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithReferenceButNoReferenceFacet::class)
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithReferenceToNonConceptClass::class)
         }
     }
 
@@ -192,7 +193,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test non-reference type with a reference list should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithReferenceButNoReferenceFacet::class)
         }
     }

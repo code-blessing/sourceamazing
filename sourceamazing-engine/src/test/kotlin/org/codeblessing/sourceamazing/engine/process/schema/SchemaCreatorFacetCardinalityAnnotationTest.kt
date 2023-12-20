@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongCardinalityMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -58,7 +59,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
 
     @Test
     fun `test negative cardinality on facet should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithNegativeCardinalityFacetsClasses::class)
         }
     }
@@ -74,7 +75,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
 
     @Test
     fun `test min cardinality is greater than maximum cardinality on facet should throw an exception`() {
-        Assertions.assertThrows(MalformedSchemaException::class.java) {
+        Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithSwappedCardinalityFacetClass::class)
         }
     }
