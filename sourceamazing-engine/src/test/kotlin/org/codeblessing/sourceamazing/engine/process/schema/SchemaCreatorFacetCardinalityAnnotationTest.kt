@@ -1,10 +1,7 @@
 package org.codeblessing.sourceamazing.engine.process.schema
 
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongCardinalityMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,11 +17,11 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
             ConceptClassWithFacets.NumberFacetClass::class,
         ])
         interface ConceptClassWithFacets {
-            @Facet(FacetType.TEXT, minimumOccurrences = 0, maximumOccurrences = 1)
+            @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
             interface TextFacetClass
-            @Facet(FacetType.BOOLEAN, minimumOccurrences = 1, maximumOccurrences = 1)
+            @BooleanFacet(minimumOccurrences = 1, maximumOccurrences = 1)
             interface BooleanFacetClass
-            @Facet(FacetType.NUMBER, minimumOccurrences = 2, maximumOccurrences = 5)
+            @IntFacet(minimumOccurrences = 2, maximumOccurrences = 5)
             interface NumberFacetClass
         }
     }
@@ -51,7 +48,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
     private interface SchemaWithConceptWithNegativeCardinalityFacetsClasses {
         @Concept(facets = [ConceptClassWithFacet.FacetClass::class])
         interface ConceptClassWithFacet {
-            @Facet(FacetType.TEXT, minimumOccurrences = -1, maximumOccurrences = 1)
+            @StringFacet(minimumOccurrences = -1, maximumOccurrences = 1)
             interface FacetClass
         }
     }
@@ -67,7 +64,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
     private interface SchemaWithConceptWithSwappedCardinalityFacetClass {
         @Concept(facets = [ConceptClassWithFacet.FacetClass::class])
         interface ConceptClassWithFacet {
-            @Facet(FacetType.TEXT, minimumOccurrences = 3, maximumOccurrences = 2)
+            @StringFacet(minimumOccurrences = 3, maximumOccurrences = 2)
             interface FacetClass
         }
     }

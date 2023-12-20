@@ -3,10 +3,7 @@ package org.codeblessing.sourceamazing.xmlschema
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.schema.SchemaCreator
 
 object XmlTestSchema {
@@ -38,16 +35,16 @@ object XmlTestSchema {
         TestEntityConcept.TestEntityAttribute::class,
     ])
     interface TestEntityConcept {
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface Name
 
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface KotlinModelClassname
 
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface KotlinModelPackage
 
-        @Facet(FacetType.REFERENCE, minimumOccurrences = 0, maximumOccurrences = 10, referencedConcepts = [TestEntityAttributeConcept::class])
+        @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 10, referencedConcepts = [TestEntityAttributeConcept::class])
         interface TestEntityAttribute
     }
 
@@ -56,10 +53,10 @@ object XmlTestSchema {
         TestEntityAttributeConcept.Type::class,
     ])
     interface TestEntityAttributeConcept {
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface Name
 
-        @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = AttributeTypeEnum::class)
+        @EnumFacet(enumerationClass = AttributeTypeEnum::class)
         interface Type
 
         enum class AttributeTypeEnum {

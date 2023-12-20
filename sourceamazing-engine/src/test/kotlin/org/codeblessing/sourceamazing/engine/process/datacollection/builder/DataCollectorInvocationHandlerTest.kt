@@ -3,10 +3,7 @@ package org.codeblessing.sourceamazing.engine.process.datacollection.builder
 import org.codeblessing.sourceamazing.api.process.datacollection.builder.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.engine.process.datacollection.builder.proxy.DataCollectorInvocationHandler
 import org.codeblessing.sourceamazing.engine.proxy.ProxyCreator
@@ -27,12 +24,11 @@ class DataCollectorInvocationHandlerTest {
         ])
         interface PersonConcept {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface PersonFirstnameFacet
-            @Facet(FacetType.NUMBER)
+            @IntFacet
             interface PersonAgeFacet
-            @Facet(
-                FacetType.REFERENCE,
+            @ReferenceFacet(
                 minimumOccurrences = 0,
                 maximumOccurrences = 10,
                 referencedConcepts = [SkillConcept::class])
@@ -44,8 +40,8 @@ class DataCollectorInvocationHandlerTest {
             SkillConcept.SkillStillEnjoyingFacet::class,
         ])
         interface SkillConcept {
-            @Facet(FacetType.TEXT) interface SkillDescriptionFacet
-            @Facet(FacetType.BOOLEAN) interface SkillStillEnjoyingFacet
+            @StringFacet interface SkillDescriptionFacet
+            @BooleanFacet interface SkillStillEnjoyingFacet
         }
     }
 

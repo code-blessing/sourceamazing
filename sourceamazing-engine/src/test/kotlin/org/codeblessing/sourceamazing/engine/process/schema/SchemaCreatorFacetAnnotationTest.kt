@@ -3,9 +3,9 @@ package org.codeblessing.sourceamazing.engine.process.schema
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
+import org.codeblessing.sourceamazing.api.process.schema.annotations.IntFacet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.StringFacet
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.DuplicateFacetMalformedSchemaException
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.NotInterfaceMalformedSchemaException
@@ -34,7 +34,7 @@ class SchemaCreatorFacetAnnotationTest {
     private interface SchemaAndConceptWithNonInterfaceFacetClass {
         @Concept(facets = [ConceptClassWithNonInterfaceFacet.NonInterfaceFacetClass::class])
         interface ConceptClassWithNonInterfaceFacet {
-            @Facet(FacetType.TEXT)
+            @StringFacet
             class NonInterfaceFacetClass
         }
     }
@@ -51,7 +51,7 @@ class SchemaCreatorFacetAnnotationTest {
         @Concept(facets = [ConceptClassWithSchemaAnnotatedFacet.SchemaAnnotatedFacetClass::class])
         interface ConceptClassWithSchemaAnnotatedFacet {
             @Schema(concepts = [])
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface SchemaAnnotatedFacetClass
         }
     }
@@ -63,12 +63,29 @@ class SchemaCreatorFacetAnnotationTest {
         }
     }
 
+    @Schema(concepts = [SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation.ConceptClassWithMultipleAnnotatedFacet::class])
+    private interface SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation {
+        @Concept(facets = [ConceptClassWithMultipleAnnotatedFacet.MultipleAnnotatedFacetClass::class])
+        interface ConceptClassWithMultipleAnnotatedFacet {
+            @StringFacet
+            @IntFacet
+            interface MultipleAnnotatedFacetClass
+        }
+    }
+
+    @Test
+    fun `test create facet with multiple facet annotations should throw an exception`() {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation::class)
+        }
+    }
+
     @Schema(concepts = [SchemaAndConceptWithFacetClassHavingConceptAnnotation.ConceptClassWithConceptAnnotatedFacet::class])
     private interface SchemaAndConceptWithFacetClassHavingConceptAnnotation {
         @Concept(facets = [ConceptClassWithConceptAnnotatedFacet.ConceptAnnotatedFacetClass::class])
         interface ConceptClassWithConceptAnnotatedFacet {
             @Concept(facets = [])
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface ConceptAnnotatedFacetClass
         }
     }
@@ -87,7 +104,7 @@ class SchemaCreatorFacetAnnotationTest {
             ConceptClassWithDuplicateFacets.OneTextFacetClass::class,
         ])
         interface ConceptClassWithDuplicateFacets {
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneTextFacetClass
         }
     }
@@ -103,7 +120,7 @@ class SchemaCreatorFacetAnnotationTest {
     private interface SchemaWithConceptWithTextFacetClass {
         @Concept(facets = [ConceptClassWithTextFacet.TextFacetClass::class])
         interface ConceptClassWithTextFacet {
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface TextFacetClass
         }
     }

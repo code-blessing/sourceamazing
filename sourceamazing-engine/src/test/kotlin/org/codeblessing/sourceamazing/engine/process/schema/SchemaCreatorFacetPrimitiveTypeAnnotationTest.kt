@@ -2,10 +2,7 @@ package org.codeblessing.sourceamazing.engine.process.schema
 
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -19,11 +16,11 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
             ConceptClassWithFacets.NumberFacetClass::class,
         ])
         interface ConceptClassWithFacets {
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface TextFacetClass
-            @Facet(FacetType.BOOLEAN)
+            @BooleanFacet
             interface BooleanFacetClass
-            @Facet(FacetType.NUMBER)
+            @IntFacet
             interface NumberFacetClass
         }
     }

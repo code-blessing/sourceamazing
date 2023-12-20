@@ -5,10 +5,7 @@ import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.api.process.datacollection.builder.annotations.*
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
@@ -45,11 +42,10 @@ class NestedConceptsTest {
         ])
         interface BusinessObjectConcept {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet()
             interface BusinessObjectName
 
-            @Facet(
-                FacetType.REFERENCE,
+            @ReferenceFacet(
                 minimumOccurrences = 0,
                 maximumOccurrences = 100,
                 referencedConcepts = [SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class]
@@ -67,7 +63,7 @@ class NestedConceptsTest {
         }
 
         sealed interface Field {
-            @Facet(FacetType.TEXT)
+            @StringFacet()
             interface FieldName
             @QueryFacet(FieldName::class)
             fun fieldName(): String
@@ -81,11 +77,10 @@ class NestedConceptsTest {
         ])
         interface SingleValueFieldConcept: Field {
 
-            @Facet(FacetType.BOOLEAN)
+            @BooleanFacet()
             interface Nullable
 
-            @Facet(
-                FacetType.REFERENCE,
+            @ReferenceFacet(
                 minimumOccurrences = 0,
                 maximumOccurrences = 100,
                 referencedConcepts = [BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class]
@@ -106,7 +101,7 @@ class NestedConceptsTest {
             CollectionValuesType::class,
         ])
         interface CollectionOfValuesFieldConcept: Field {
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = CollectionKindEnum::class)
+            @EnumFacet(enumerationClass = CollectionKindEnum::class)
             interface CollectionKind
 
             @QueryFacet(CollectionKind::class)
@@ -116,8 +111,7 @@ class NestedConceptsTest {
                 LIST, SET;
             }
 
-            @Facet(
-                FacetType.REFERENCE,
+            @ReferenceFacet(
                 minimumOccurrences = 0,
                 maximumOccurrences = 100,
                 referencedConcepts = [BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class]
@@ -134,7 +128,7 @@ class NestedConceptsTest {
             BuiltinType::class,
         ])
         interface BuiltinFieldTypeConcept: FieldType {
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = BuiltinTypeEnum::class)
+            @EnumFacet(enumerationClass = BuiltinTypeEnum::class)
             interface BuiltinType
 
             @QueryFacet(BuiltinType::class)
@@ -150,7 +144,7 @@ class NestedConceptsTest {
         ])
         interface ReferenceFieldTypeConcept: FieldType {
 
-            @Facet(FacetType.REFERENCE, referencedConcepts = [BusinessObjectConcept::class])
+            @ReferenceFacet(referencedConcepts = [BusinessObjectConcept::class])
             interface ReferencedBusinessObject
 
             @QueryFacet(ReferencedBusinessObject::class)

@@ -1,9 +1,6 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
@@ -24,10 +21,10 @@ interface FormSchema {
         FormConcept.FormControl::class,
     ])
     interface FormConcept {
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface FormTitle
 
-        @Facet(FacetType.REFERENCE,
+        @ReferenceFacet(
             minimumOccurrences = 1,
             maximumOccurrences = Int.MAX_VALUE,
             referencedConcepts = [TextInputFormControlConcept::class, SelectDropdownFormControlConcept::class])
@@ -45,13 +42,13 @@ interface FormSchema {
 
     interface FormControl {
 
-        @Facet(FacetType.TEXT)
+        @StringFacet
         interface DisplayName
 
-        @Facet(FacetType.BOOLEAN)
+        @BooleanFacet
         interface ValueRequired
 
-        @Facet(FacetType.TEXT,
+        @StringFacet(
             minimumOccurrences = 0,
             maximumOccurrences = 3,
         )
@@ -75,7 +72,7 @@ interface FormSchema {
         TextInputFormControlConcept.FormatHint::class,
     ])
     interface TextInputFormControlConcept: FormControl {
-        @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = TextInputFormatHint::class)
+        @EnumFacet(enumerationClass = TextInputFormatHint::class)
         interface FormatHint
 
         @QueryFacet(FormatHint::class)
@@ -98,10 +95,10 @@ interface FormSchema {
     ])
 
     interface SelectDropdownFormControlConcept: FormControl {
-        @Facet(FacetType.TEXT, minimumOccurrences = 0)
+        @StringFacet(minimumOccurrences = 0)
         interface DefaultValue
 
-        @Facet(FacetType.REFERENCE, minimumOccurrences = 1, maximumOccurrences = 5, referencedConcepts = [SelectDropdownEntryConcept::class])
+        @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 5, referencedConcepts = [SelectDropdownEntryConcept::class])
         interface SelectDropdownEntry
 
         @QueryFacet(DefaultValue::class)
@@ -117,9 +114,9 @@ interface FormSchema {
         SelectDropdownEntryConcept.DisplayValue::class,
     ])
     interface SelectDropdownEntryConcept {
-        @Facet(FacetType.TEXT)
+        @StringFacet()
         interface Value
-        @Facet(FacetType.TEXT)
+        @StringFacet()
         interface DisplayValue
 
         @QueryFacet(Value::class)

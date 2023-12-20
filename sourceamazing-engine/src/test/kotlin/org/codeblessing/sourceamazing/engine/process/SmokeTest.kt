@@ -5,10 +5,7 @@ import org.codeblessing.sourceamazing.api.process.DomainUnit
 import org.codeblessing.sourceamazing.api.process.datacollection.builder.annotations.*
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
@@ -33,9 +30,9 @@ class SmokeTest {
 
             enum class PersonSex { MALE, FEMALE }
 
-            @Facet(FacetType.TEXT) interface PersonFirstnameFacet
-            @Facet(FacetType.NUMBER) interface PersonAgeFacet
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = PersonSex::class) interface PersonSexFacet
+            @StringFacet() interface PersonFirstnameFacet
+            @IntFacet interface PersonAgeFacet
+            @EnumFacet(enumerationClass = PersonSex::class) interface PersonSexFacet
 
             @QueryConceptId
             fun getConceptId(): ConceptIdentifier
@@ -55,8 +52,8 @@ class SmokeTest {
             SkillConcept.SkillStillEnjoyingFacet::class,
         ])
         interface SkillConcept {
-            @Facet(FacetType.TEXT) interface SkillDescriptionFacet
-            @Facet(FacetType.BOOLEAN) interface SkillStillEnjoyingFacet
+            @StringFacet() interface SkillDescriptionFacet
+            @BooleanFacet() interface SkillStillEnjoyingFacet
 
             @QueryConceptId
             fun getSkillConceptIdentifier(): String
