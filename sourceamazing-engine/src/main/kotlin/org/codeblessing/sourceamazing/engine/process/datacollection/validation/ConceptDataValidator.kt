@@ -105,22 +105,22 @@ object ConceptDataValidator {
                     if(referencedConcept == null) {
                         exceptionList.add(
                             MissingReferencedConceptFacetValueException(
-                            concept = conceptData.conceptName,
-                            conceptIdentifier = conceptData.conceptIdentifier,
-                            facetName = referenceFacetSchema.facetName,
-                            reason = "No concept with concept id $referenceConceptIdentifier. " +
-                                    "Must be one of these concepts ${possibleConcepts}."
+                                "Facet '${referenceFacetSchema.facetName}' of concept identifier '${conceptData.conceptIdentifier.name}' " +
+                                "in concept '${conceptData.conceptName}' points to a reference that was not found. " +
+                                "No concept with concept id $referenceConceptIdentifier. " +
+                                "Must be one of these concepts: ${possibleConcepts}."
                         )
                         )
                     } else if(!possibleConcepts.contains(referencedConcept.conceptName)) {
                         exceptionList.add(
                             WrongReferencedConceptFacetValueException(
-                            concept = conceptData.conceptName,
-                            conceptIdentifier = conceptData.conceptIdentifier,
-                            facetName = referenceFacetSchema.facetName,
-                            reason = "Referenced concept was ${referencedConcept.conceptName}." +
-                                    "Must be one these concepts ${possibleConcepts}."
-                        )
+                                "Facet '${referenceFacetSchema.facetName}' of concept " +
+                                "identifier '${conceptData.conceptIdentifier.name}' in " +
+                                "concept '${conceptData.conceptName}' points " +
+                                "to concept that is not permitted. " +
+                                "Referenced concept was '${referencedConcept.conceptName}'." +
+                                "Must be one of these concepts: ${possibleConcepts}."
+                            )
                         )
 
                     }
@@ -135,7 +135,9 @@ object ConceptDataValidator {
         conceptDataEntry: ConceptData
     ): UnknownConceptException? {
         if(!schema.hasConceptName(conceptDataEntry.conceptName)) {
-            return UnknownConceptException(conceptDataEntry.conceptName, conceptDataEntry.conceptIdentifier)
+            return UnknownConceptException("The entry with the " +
+                    "identifier '${conceptDataEntry.conceptIdentifier.name}' points to a " +
+                    "concept '${conceptDataEntry.conceptName}' that is not known.")
         }
         return null
     }
@@ -145,7 +147,9 @@ object ConceptDataValidator {
         conceptDataEntry: ConceptData
     ): DuplicateConceptIdentifierException? {
         if(allConceptIdentifiers.contains(conceptDataEntry.conceptIdentifier)) {
-            return DuplicateConceptIdentifierException(conceptDataEntry.conceptName, conceptDataEntry.conceptIdentifier)
+            return DuplicateConceptIdentifierException("The identifier " +
+                    "'${conceptDataEntry.conceptIdentifier.name}' (concept: '${conceptDataEntry.conceptName}') " +
+                    "occurred multiple times. A concept identifier must be unique.")
         }
         return null;
     }
@@ -158,10 +162,9 @@ object ConceptDataValidator {
         conceptData.getFacetNames().forEach { facetName ->
             if(!conceptSchema.hasFacet(facetName)) {
                 return UnknownFacetNameException(
-                    concept = conceptData.conceptName,
-                    conceptIdentifier = conceptData.conceptIdentifier,
-                    facetName = facetName,
-                    reason = "Facet with facet name '${facetName}' is not known by the schema. " +
+                            "Unknown facet name '${facetName}' found for " +
+                            "concept identifier '${conceptData.conceptIdentifier.name}' in " +
+                            "concept '${conceptData.conceptName}'." +
                             "Known facets are: ${conceptSchema.facetNames}"
                 )
             }
@@ -191,10 +194,11 @@ object ConceptDataValidator {
                     if(!isValidType) {
                         exceptionList.add(
                             WrongTypeForFacetValueException(
-                                concept = conceptData.conceptName,
-                                conceptIdentifier = conceptData.conceptIdentifier,
-                                facetName = facetSchema.facetName,
-                                reason = "A facet of type '$expectedFacetType' can not have a value of type '$actualClass' ($facetValue)"
+                                "Facet '${facetSchema.facetName}' for " +
+                                "concept identifier '${conceptData.conceptIdentifier.name}' in " +
+                                "concept '${conceptData.conceptName}' has a wrong type. " +
+                                "A facet of type '$expectedFacetType' can not " +
+                                "have a value of type '$actualClass' ($facetValue)"
                             )
                         )
                     }
@@ -226,20 +230,22 @@ object ConceptDataValidator {
             if(numberOfFacetValues < minimumOccurrences) {
                 exceptionList.add(
                     WrongCardinalityForFacetValueException(
-                    concept = conceptData.conceptName,
-                    conceptIdentifier = conceptData.conceptIdentifier,
-                    facetName = facetSchema.facetName,
-                    reason = "The facet must have in minimum $minimumOccurrences entries but had ${numberOfFacetValues}."
-                )
+                        "Facet '${facetSchema.facetName}' for concept " +
+                        "identifier '${conceptData.conceptIdentifier.name}' in " +
+                        "concept '${conceptData.conceptName}' has a wrong cardinality. " +
+                        "The facet must have in minimum $minimumOccurrences entries " +
+                        "but had ${numberOfFacetValues}."
+                    )
                 )
             }
             if(numberOfFacetValues > maximumOccurrences) {
                 exceptionList.add(
                     WrongCardinalityForFacetValueException(
-                    concept = conceptData.conceptName,
-                    conceptIdentifier = conceptData.conceptIdentifier,
-                    facetName = facetSchema.facetName,
-                    reason = "The facet must not have more than $maximumOccurrences entries but had ${numberOfFacetValues}."
+                        "Facet '${facetSchema.facetName}' for concept " +
+                        "identifier '${conceptData.conceptIdentifier.name}' in " +
+                        "concept '${conceptData.conceptName}' has a wrong cardinality. " +
+                        "The facet must not have more than $maximumOccurrences entries " +
+                        "but had ${numberOfFacetValues}."
                 )
                 )
             }
