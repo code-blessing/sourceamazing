@@ -4,10 +4,7 @@ import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.ConceptSchema
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.api.process.schema.FacetSchema
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.engine.process.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.*
@@ -64,7 +61,11 @@ object SchemaCreator {
         checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasNotAnnotation(Concept::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(Facet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(StringFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(BooleanFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(IntFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(EnumFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNotAnnotation(ReferenceFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
     private fun validateConceptClassesAnnotations(conceptClasses: Array<KClass<*>>) {
@@ -72,14 +73,25 @@ object SchemaCreator {
             checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasNotAnnotation(Schema::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Facet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(StringFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(BooleanFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(IntFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(EnumFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(ReferenceFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
     private fun validateFacetClassesAnnotations(facetClasses: Array<KClass<*>>) {
         facetClasses.forEach { facetClass ->
             checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
-            checkHasAnnotation(Facet::class, facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasExactlyOneOfAnnotation(
+                StringFacet::class,
+                BooleanFacet::class,
+                IntFacet::class,
+                EnumFacet::class,
+                ReferenceFacet::class,
+                classToInspect = facetClass,
+                classDescription = FACET_CLASS_DESCRIPTION)
             checkHasNotAnnotation(Schema::class, facetClass, FACET_CLASS_DESCRIPTION)
             checkHasNotAnnotation(Concept::class, facetClass, FACET_CLASS_DESCRIPTION)
         }
@@ -91,61 +103,142 @@ object SchemaCreator {
         facetClass: KClass<*>,
         conceptNames: List<ConceptName>
     ): FacetSchema {
-        val facetType = AnnotationUtil.getAnnotation(facetClass, Facet::class).type
-        val minimumOccurrences = AnnotationUtil.getAnnotation(facetClass, Facet::class).minimumOccurrences
-        val maximumOccurrences = AnnotationUtil.getAnnotation(facetClass, Facet::class).maximumOccurrences
-        val enumerationType =  AnnotationUtil.getAnnotation(facetClass, Facet::class).enumerationClass
-        val referencedConcepts =  AnnotationUtil.getAnnotation(facetClass, Facet::class).referencedConcepts
+        val unvalidatedFacetSchema = createUnvalidatedFacetSchema(facetName, facetClass)
+        return validatedFacetSchema(unvalidatedFacetSchema, conceptName, conceptNames)
+    }
+
+    private class UnvalidatedFacetSchema private constructor(
+        val facetName: FacetName,
+        val facetType: FacetType,
+        val minimumOccurrences: Int,
+        val maximumOccurrences: Int,
+        val enumerationType: KClass<*>? = null,
+        val referencedConceptClasses: Array<KClass<*>> = emptyArray(),
+    ) {
+        constructor(facetName: FacetName, facetClass: StringFacet) : this(
+            facetName = facetName,
+            facetType = FacetType.TEXT,
+            minimumOccurrences = facetClass.minimumOccurrences,
+            maximumOccurrences = facetClass.maximumOccurrences,
+        )
+        constructor(facetName: FacetName, facetClass: BooleanFacet) : this(
+            facetName = facetName,
+            facetType = FacetType.BOOLEAN,
+            minimumOccurrences = facetClass.minimumOccurrences,
+            maximumOccurrences = facetClass.maximumOccurrences,
+        )
+        constructor(facetName: FacetName, facetClass: IntFacet) : this(
+            facetName = facetName,
+            facetType = FacetType.NUMBER,
+            minimumOccurrences = facetClass.minimumOccurrences,
+            maximumOccurrences = facetClass.maximumOccurrences,
+        )
+        constructor(facetName: FacetName, facetClass: EnumFacet) : this(
+            facetName = facetName,
+            facetType = FacetType.TEXT_ENUMERATION,
+            minimumOccurrences = facetClass.minimumOccurrences,
+            maximumOccurrences = facetClass.maximumOccurrences,
+            enumerationType = facetClass.enumerationClass,
+        )
+        constructor(facetName: FacetName, facetClass: ReferenceFacet) : this(
+            facetName = facetName,
+            facetType = FacetType.REFERENCE,
+            minimumOccurrences = facetClass.minimumOccurrences,
+            maximumOccurrences = facetClass.maximumOccurrences,
+            referencedConceptClasses = facetClass.referencedConcepts,
+        )
+    }
+
+
+    private fun createUnvalidatedFacetSchema(
+        facetName: FacetName,
+        facetClass: KClass<*>,
+    ): UnvalidatedFacetSchema {
+        return if(AnnotationUtil.hasAnnotation(facetClass, StringFacet::class)) {
+            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, StringFacet::class))
+        } else if(AnnotationUtil.hasAnnotation(facetClass, BooleanFacet::class)) {
+            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, BooleanFacet::class))
+        } else if(AnnotationUtil.hasAnnotation(facetClass, IntFacet::class)) {
+            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, IntFacet::class))
+        } else if(AnnotationUtil.hasAnnotation(facetClass, EnumFacet::class)) {
+            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, EnumFacet::class))
+        } else if(AnnotationUtil.hasAnnotation(facetClass, ReferenceFacet::class)) {
+            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, ReferenceFacet::class))
+        } else {
+            throw IllegalStateException("No supported facet type on $facetClass.")
+        }
+    }
+
+    private fun validatedFacetSchema(
+        facetSchema: UnvalidatedFacetSchema,
+        conceptName: ConceptName,
+        conceptNames: List<ConceptName>
+    ): FacetSchema {
+        val facetName: FacetName = facetSchema.facetName
+
+        val facetType = facetSchema.facetType
+        val minimumOccurrences = facetSchema.minimumOccurrences
+        val maximumOccurrences = facetSchema.maximumOccurrences
+        val enumerationType =  facetSchema.enumerationType ?: Unit::class
+        val referencedConcepts =  facetSchema.referencedConceptClasses
             .map { ConceptName.of(it) }.toSet()
+
 
         if(facetType == FacetType.TEXT_ENUMERATION && !enumerationType.java.isEnum) {
             throw WrongTypeMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
                 "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
-                "defined or not a real enumeration class (was '$enumerationType').")
+                "defined or not a real enumeration class (was '$enumerationType')."
+            )
         }
 
         if(facetType != FacetType.TEXT_ENUMERATION && enumerationType != Unit::class) {
             throw WrongTypeMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                    "has declared an enumeration class '$enumerationType' but the type of the facet " +
-                    "is '$facetType' instead of '${FacetType.TEXT_ENUMERATION}'.")
+                "has declared an enumeration class '$enumerationType' but the type of the facet " +
+                "is '$facetType' instead of '${FacetType.TEXT_ENUMERATION}'."
+            )
         }
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
             throw WrongTypeMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                    "is declared as type '${FacetType.REFERENCE}' but the list of concept type is empty.")
+                "is declared as type '${FacetType.REFERENCE}' " +
+                "but the list of concept type is empty."
+            )
         }
 
         if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
             throw WrongTypeMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                    "is not declared as type '${FacetType.REFERENCE}' (is '${facetType}') but the list " +
-                    "of concept type is not empty (is '${referencedConcepts}').")
+                "is not declared as type '${FacetType.REFERENCE}' (is '${facetType}') but the list " +
+                "of concept type is not empty (is '${referencedConcepts}')."
+            )
         }
 
         if(minimumOccurrences < 0 || maximumOccurrences < 0) {
             throw WrongCardinalityMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                    "has negative cardinalities. Only number greater/equal zero are allowed, " +
-                    "but was $minimumOccurrences/$maximumOccurrences.")
+                "has negative cardinalities. Only number greater/equal zero are allowed, " +
+                "but was $minimumOccurrences/$maximumOccurrences."
+            )
         }
 
         if(minimumOccurrences > maximumOccurrences) {
             throw WrongCardinalityMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                    "has a greater minimumOccurrences ($minimumOccurrences) " +
-                    "than the maximumOccurrences ($maximumOccurrences).")
+                "has a greater minimumOccurrences ($minimumOccurrences) " +
+                "than the maximumOccurrences ($maximumOccurrences)."
+            )
         }
 
         referencedConcepts.forEach { referencedConcept ->
             if(!conceptNames.contains(referencedConcept)) {
                 throw WrongTypeMalformedSchemaException(
                     "Facet '$facetName' on concept '$conceptName' " +
-                        "has an reference concept '${referencedConcept}' which is not a known concept " +
-                        "(known concepts are '${conceptNames}').")
-
+                    "has an reference concept '${referencedConcept}' which is not a known concept " +
+                    "(known concepts are '${conceptNames}')."
+                )
             }
         }
 
@@ -157,7 +250,6 @@ object SchemaCreator {
             referencingConcepts = referencedConcepts,
             enumerationType = enumerationType,
         )
-
     }
 
     private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
@@ -169,6 +261,16 @@ object SchemaCreator {
     private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
         if(!hasClassAnnotation(annotation, classToInspect)) {
             throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
+        }
+    }
+
+    private fun checkHasExactlyOneOfAnnotation(vararg annotations: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
+        val numberOfAnnotations = annotations.count { annotation -> hasClassAnnotation(annotation, classToInspect) }
+
+        if(numberOfAnnotations < 1) {
+            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must have one of the annotations ${annotations.joinToString { it.annotationText() }}.")
+        } else if(numberOfAnnotations > 1) {
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' can not have more than one of the annotations ${annotations.joinToString { it.annotationText() }}.")
         }
     }
 

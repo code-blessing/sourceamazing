@@ -1,9 +1,8 @@
 package org.codeblessing.sourceamazing.engine.process.schema.query
 
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.StringFacet
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
@@ -28,7 +27,7 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [OneConcept.OneFacet::class])
         interface OneConcept {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneFacet
 
             fun getFacetValue(): List<Any>
@@ -48,7 +47,7 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [OneConcept.OneFacet::class])
         interface OneConcept {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneFacet
 
             @QueryFacet(OneFacet::class)
@@ -83,10 +82,10 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [OneConcept.OneFacet::class])
         interface OneConcept {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneFacet
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface UnsupportedFacet
 
             @QueryFacet(UnsupportedFacet::class)
@@ -112,7 +111,7 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [OneConcept.OneFacet::class])
         interface OneConcept: CommonConceptInterface {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneFacet
 
             @QueryFacet(facetClass = OneFacet::class)
@@ -164,7 +163,7 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [OneConceptClass.OneFacet::class])
         interface OneConceptClass {
 
-            @Facet(FacetType.TEXT)
+            @StringFacet
             interface OneFacet
 
             @QueryFacet(facetClass = OneFacet::class)

@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.engine.process.schema
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
+import org.codeblessing.sourceamazing.api.process.schema.annotations.EnumFacet
 import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongTypeMalformedSchemaException
@@ -16,11 +16,11 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
     @Schema(concepts = [SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class])
     private interface SchemaWithConceptWithEmptyEnumFacet {
         @Concept(facets = [
-            ConceptClassWithEnumFacet.EnumFacet::class,
+            ConceptClassWithEnumFacet.MyEnumFacet::class,
         ])
         interface ConceptClassWithEnumFacet {
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = EmptyEnumeration::class)
-            interface EnumFacet
+            @EnumFacet(enumerationClass = EmptyEnumeration::class)
+            interface MyEnumFacet
         }
 
         enum class EmptyEnumeration
@@ -31,7 +31,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEmptyEnumFacet::class)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet.EnumFacet::class)
+        val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -43,11 +43,11 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
     @Schema(concepts = [SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class])
     private interface SchemaWithConceptWithEnumFacet {
         @Concept(facets = [
-            ConceptClassWithEnumFacet.EnumFacet::class,
+            ConceptClassWithEnumFacet.MyEnumFacet::class,
         ])
         interface ConceptClassWithEnumFacet {
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = SeasonEnumeration::class)
-            interface EnumFacet
+            @EnumFacet(enumerationClass = SeasonEnumeration::class)
+            interface MyEnumFacet
         }
 
         enum class SeasonEnumeration {
@@ -63,7 +63,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEnumFacet::class)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet.EnumFacet::class)
+        val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -81,7 +81,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
             ConceptClassWithEnumFacet.InvalidEnumFacet::class,
         ])
         interface ConceptClassWithEnumFacet {
-            @Facet(FacetType.TEXT_ENUMERATION, enumerationClass = String::class)
+            @EnumFacet(enumerationClass = String::class)
             interface InvalidEnumFacet
         }
     }
@@ -99,7 +99,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
             ConceptClassWithEnumFacet.MissingEnumTypeFacet::class,
         ])
         interface ConceptClassWithEnumFacet {
-            @Facet(FacetType.TEXT_ENUMERATION)
+            @EnumFacet(enumerationClass = Unit::class)
             interface MissingEnumTypeFacet
         }
     }
@@ -108,26 +108,6 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
     fun `test enum facet with missing enum type should throw an exception`() {
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithMissingEnumTypeOnFacet::class)
-        }
-    }
-
-    @Schema(concepts = [SchemaWithConceptWithNonEnumTypeButEnumFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithNonEnumTypeButEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.InvalidEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @Facet(FacetType.NUMBER, enumerationClass = AnotherEnumeration::class)
-            interface InvalidEnumFacet
-        }
-
-        enum class AnotherEnumeration { X,Y,Z }
-    }
-
-    @Test
-    fun `test non-enum type with a enum should throw an exception`() {
-        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithNonEnumTypeButEnumFacet::class)
         }
     }
 }

@@ -55,10 +55,10 @@ That might look like this:
 ])
 interface HtmlFormConcept {
 
-    @Facet(FacetType.TEXT, minimumOccurences=0)
+    @StringFacet(, minimumOccurences=0)
     interface FormHeadlineFacet
 
-    @Facet(FacetType.REFERENCE, minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
+    @ReferenceFacet(, minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
     interface FormFieldsFacet
 
     @QueryFacet(FormHeadline::class)
@@ -70,7 +70,7 @@ interface HtmlFormConcept {
 
 @Concept(facets = [HtmlInputFieldConcept.FieldName::class])
 interface HtmlInputFieldConcept {
-    @Facet(FacetType.TEXT)
+    @StringFacet()
     interface FieldName
 
     @QueryFacet(FieldName::class)

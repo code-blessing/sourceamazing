@@ -1,9 +1,8 @@
 package org.codeblessing.sourceamazing.engine.process.schema
 
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.StringFacet
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.WrongAnnotationMalformedSchemaException
@@ -45,7 +44,7 @@ class SchemaCreatorSchemaAnnotationTest {
     }
 
     @Schema(concepts = [])
-    @Facet(FacetType.TEXT)
+    @StringFacet
     private interface SchemaDefinitionClassWithFacetAnnotation
 
     @Test

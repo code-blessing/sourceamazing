@@ -3,10 +3,7 @@ package org.codeblessing.sourceamazing.engine.process.datacollection.validation
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.ConceptName
 import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Facet
-import org.codeblessing.sourceamazing.api.process.schema.annotations.FacetType
-import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
+import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.engine.process.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.engine.process.datacollection.validation.exceptions.*
 import org.codeblessing.sourceamazing.engine.process.schema.SchemaCreator
@@ -16,32 +13,32 @@ import kotlin.reflect.KClass
 
 class ConceptDataValidatorTest {
 
-    @Facet(FacetType.TEXT, minimumOccurrences = 0, maximumOccurrences = 1)
+    @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
     private interface OptionalTextFacetClass
     private val optionalTextFacetName = FacetName.of(OptionalTextFacetClass::class)
 
-    @Facet(FacetType.TEXT, minimumOccurrences = 1, maximumOccurrences = 1)
+    @StringFacet(minimumOccurrences = 1, maximumOccurrences = 1)
     private interface MandatoryTextFacetClass
     private val mandatoryTextFacetName = FacetName.of(MandatoryTextFacetClass::class)
 
-    @Facet(FacetType.BOOLEAN, minimumOccurrences = 1, maximumOccurrences = 1)
+    @BooleanFacet(minimumOccurrences = 1, maximumOccurrences = 1)
     private interface MandatoryBooleanFacetClass
     private val mandatoryBooleanFacetName = FacetName.of(MandatoryBooleanFacetClass::class)
 
-    @Facet(FacetType.NUMBER, minimumOccurrences = 0, maximumOccurrences = Int.MAX_VALUE)
+    @IntFacet(minimumOccurrences = 0, maximumOccurrences = Int.MAX_VALUE)
     private interface SomeNumbersFacetClass
     private val someNumbersFacetName = FacetName.of(SomeNumbersFacetClass::class)
 
-    @Facet(FacetType.TEXT_ENUMERATION, minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = MyEnumeration::class)
+    @EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = MyEnumeration::class)
     private interface SomeEnumsFacetClass
     private val someEnumsFacetName = FacetName.of(SomeEnumsFacetClass::class)
 
-    @Facet(FacetType.REFERENCE, minimumOccurrences = 0, maximumOccurrences = 2, referencedConcepts = [OtherConcept::class, OtherThanTheOtherConcept::class])
+    @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 2, referencedConcepts = [OtherConcept::class, OtherThanTheOtherConcept::class])
     private interface OptionalReferenceToMultipleConceptsFacetClass
     private val optionalRefToMultipleConceptsFacetName = FacetName.of(
         OptionalReferenceToMultipleConceptsFacetClass::class)
 
-    @Facet(FacetType.REFERENCE, minimumOccurrences = 1, maximumOccurrences = 1, referencedConcepts = [OtherConcept::class])
+    @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 1, referencedConcepts = [OtherConcept::class])
     private interface MandatoryReferenceToOtherConceptFacetClass
     private val mandatoryRefToOneConceptFacetName = FacetName.of(MandatoryReferenceToOtherConceptFacetClass::class)
 
@@ -53,7 +50,7 @@ class ConceptDataValidatorTest {
     ])
     interface OtherConcept
 
-    @Facet(FacetType.TEXT, minimumOccurrences = 0, maximumOccurrences = 1)
+    @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
     private interface OtherConceptTextFacetClass
     private val otherConceptTextFacetName = FacetName.of(OtherConceptTextFacetClass::class)
 
