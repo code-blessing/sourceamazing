@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * help of the [declareConceptAlias]:
  *
  * To set the concept identifier of a concept instance:
- *   * [SetRandomConceptIdentifier]
+ *   * [SetRandomConceptIdentifierValue]
  *   * [SetConceptIdentifierValue]
  *
  * To change facet values of a concept of a concept instance:

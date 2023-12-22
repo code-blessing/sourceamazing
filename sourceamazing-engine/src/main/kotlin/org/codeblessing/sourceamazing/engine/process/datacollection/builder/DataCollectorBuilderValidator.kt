@@ -117,7 +117,7 @@ object DataCollectorBuilderValidator {
             throw DataCollectorBuilderMethodSyntaxException(method, "The concept with alias " +
                     "$conceptAliasesWithoutConceptIdDeclaration have no corresponding " +
                     "concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
-                    "or ${SetRandomConceptIdentifier::class.annotationText()} to define " +
+                    "or ${SetRandomConceptIdentifierValue::class.annotationText()} to define " +
                     "a concept identifier. $defaultAliasHint"
             )
         }
@@ -126,7 +126,7 @@ object DataCollectorBuilderValidator {
     private fun collectAliasesWithConceptIdentifierDeclaration(method: Method): Set<String> {
         val conceptAliasesWithConceptIdDeclaration: MutableSet<String> = mutableSetOf()
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifier::class).forEach { annotation ->
+        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { annotation ->
             conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
         }
 
@@ -140,12 +140,12 @@ object DataCollectorBuilderValidator {
 
     private fun validateNoDuplicateConceptIdentifierDeclaration(method: Method) {
         val usedConceptAliasToSetConceptIdentifier: MutableSet<String> = mutableSetOf()
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifier::class).forEach { autoRandomConceptIdAnnotation ->
+        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { autoRandomConceptIdAnnotation ->
             val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
 
             if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
                 throw DataCollectorBuilderMethodSyntaxException(method, "The alias '$conceptAlias' used " +
-                        "with the annotation ${SetRandomConceptIdentifier::class.annotationText()} " +
+                        "with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()} " +
                         "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
                 )
             } else {
@@ -198,8 +198,8 @@ object DataCollectorBuilderValidator {
     private fun collectAllUsedAliases(method: Method): AnnotationAndAliases {
         val annotationAndAliases = AnnotationAndAliases()
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifier::class).forEach { annotation ->
-            annotationAndAliases.add(SetRandomConceptIdentifier::class, annotation.conceptToModifyAlias)
+        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { annotation ->
+            annotationAndAliases.add(SetRandomConceptIdentifierValue::class, annotation.conceptToModifyAlias)
         }
 
         AnnotationUtil.getAnnotations(method, SetFixedBooleanFacetValue::class).forEach { annotation ->
