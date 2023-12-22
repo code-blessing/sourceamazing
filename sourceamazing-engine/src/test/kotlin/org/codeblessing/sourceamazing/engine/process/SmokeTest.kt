@@ -6,9 +6,9 @@ import org.codeblessing.sourceamazing.api.process.datacollection.builder.annotat
 import org.codeblessing.sourceamazing.api.process.datacollection.extensions.DataCollectionExtensionAccess
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.annotations.*
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
 import org.codeblessing.sourceamazing.engine.process.SmokeTest.SmokeTestSchema.PersonConcept.PersonSex
 import org.junit.jupiter.api.Assertions
@@ -34,16 +34,16 @@ class SmokeTest {
             @IntFacet interface PersonAgeFacet
             @EnumFacet(enumerationClass = PersonSex::class) interface PersonSexFacet
 
-            @QueryConceptId
+            @QueryConceptIdentifierValue
             fun getConceptId(): ConceptIdentifier
 
-            @QueryFacet(PersonFirstnameFacet::class)
+            @QueryFacetValue(PersonFirstnameFacet::class)
             fun getFirstname(): String
 
-            @QueryFacet(PersonAgeFacet::class)
+            @QueryFacetValue(PersonAgeFacet::class)
             fun getAge(): Int
 
-            @QueryFacet(PersonSexFacet::class)
+            @QueryFacetValue(PersonSexFacet::class)
             fun getSex(): PersonSex
 
         }
@@ -55,13 +55,13 @@ class SmokeTest {
             @StringFacet() interface SkillDescriptionFacet
             @BooleanFacet() interface SkillStillEnjoyingFacet
 
-            @QueryConceptId
+            @QueryConceptIdentifierValue
             fun getSkillConceptIdentifier(): String
 
-            @QueryFacet(SkillDescriptionFacet::class)
+            @QueryFacetValue(SkillDescriptionFacet::class)
             fun getSkillDescription(): String
 
-            @QueryFacet(SkillStillEnjoyingFacet::class)
+            @QueryFacetValue(SkillStillEnjoyingFacet::class)
             fun isStillFullyEnjoyingAboutThatSkill(): Boolean
 
         }

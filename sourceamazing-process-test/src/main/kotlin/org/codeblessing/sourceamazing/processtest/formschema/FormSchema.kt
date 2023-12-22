@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
 import org.codeblessing.sourceamazing.api.process.schema.annotations.*
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacetValue
 
 @Schema(concepts = [
     FormSchema.FormConcept::class,
@@ -30,13 +30,13 @@ interface FormSchema {
             referencedConcepts = [TextInputFormControlConcept::class, SelectDropdownFormControlConcept::class])
         interface FormControl
 
-        @QueryConceptId
+        @QueryConceptIdentifierValue
         fun getFormId(): String
 
-        @QueryFacet(FormTitle::class)
+        @QueryFacetValue(FormTitle::class)
         fun getFormTitle(): String
 
-        @QueryFacet(FormControl::class)
+        @QueryFacetValue(FormControl::class)
         fun getFormControls(): List<FormSchema.FormControl>
     }
 
@@ -55,13 +55,13 @@ interface FormSchema {
         interface Label
 
 
-        @QueryConceptId
+        @QueryConceptIdentifierValue
         fun getFormControlName(): String
 
-        @QueryFacet(DisplayName::class)
+        @QueryFacetValue(DisplayName::class)
         fun getFormControlDisplayName(): String
 
-        @QueryFacet(ValueRequired::class)
+        @QueryFacetValue(ValueRequired::class)
         fun isValueRequired(): Boolean
     }
 
@@ -75,7 +75,7 @@ interface FormSchema {
         @EnumFacet(enumerationClass = TextInputFormatHint::class)
         interface FormatHint
 
-        @QueryFacet(FormatHint::class)
+        @QueryFacetValue(FormatHint::class)
         fun getFormatHint(): TextInputFormatHint
 
         enum class TextInputFormatHint(val hint: String) {
@@ -101,10 +101,10 @@ interface FormSchema {
         @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 5, referencedConcepts = [SelectDropdownEntryConcept::class])
         interface SelectDropdownEntry
 
-        @QueryFacet(DefaultValue::class)
+        @QueryFacetValue(DefaultValue::class)
         fun getDefaultValue(): String?
 
-        @QueryFacet(SelectDropdownEntry::class)
+        @QueryFacetValue(SelectDropdownEntry::class)
         fun getSelectDropdownEntries(): List<SelectDropdownEntryConcept>
 
     }
@@ -119,10 +119,10 @@ interface FormSchema {
         @StringFacet()
         interface DisplayValue
 
-        @QueryFacet(Value::class)
+        @QueryFacetValue(Value::class)
         fun getValue(): String
 
-        @QueryFacet(DisplayValue::class)
+        @QueryFacetValue(DisplayValue::class)
         fun getDisplayValue(): String
     }
 }

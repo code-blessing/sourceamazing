@@ -7,7 +7,7 @@ import org.codeblessing.sourceamazing.api.process.datacollection.extensions.Data
 import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
 import org.codeblessing.sourceamazing.api.process.schema.annotations.*
 import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.api.process.templating.TargetFilesCollector
 import org.codeblessing.sourceamazing.engine.process.NestedConceptsTest.NestedConceptsSchema.BuiltinFieldTypeConcept.BuiltinType
 import org.codeblessing.sourceamazing.engine.process.NestedConceptsTest.NestedConceptsSchema.BuiltinFieldTypeConcept.BuiltinTypeEnum
@@ -53,11 +53,11 @@ class NestedConceptsTest {
             interface BusinessObjectFields
 
 
-            @QueryFacet(BusinessObjectName::class)
+            @QueryFacetValue(BusinessObjectName::class)
             fun name(): String
 
 
-            @QueryFacet(BusinessObjectFields::class)
+            @QueryFacetValue(BusinessObjectFields::class)
             fun fields(): List<Field>
 
         }
@@ -65,7 +65,7 @@ class NestedConceptsTest {
         sealed interface Field {
             @StringFacet()
             interface FieldName
-            @QueryFacet(FieldName::class)
+            @QueryFacetValue(FieldName::class)
             fun fieldName(): String
 
         }
@@ -87,10 +87,10 @@ class NestedConceptsTest {
             )
             interface SingleValueType
 
-            @QueryFacet(Nullable::class)
+            @QueryFacetValue(Nullable::class)
             fun nullable(): Boolean
 
-            @QueryFacet(SingleValueType::class)
+            @QueryFacetValue(SingleValueType::class)
             fun singleValueType(): FieldType
 
         }
@@ -104,7 +104,7 @@ class NestedConceptsTest {
             @EnumFacet(enumerationClass = CollectionKindEnum::class)
             interface CollectionKind
 
-            @QueryFacet(CollectionKind::class)
+            @QueryFacetValue(CollectionKind::class)
             fun collectionKind(): CollectionKindEnum
 
             enum class CollectionKindEnum {
@@ -118,7 +118,7 @@ class NestedConceptsTest {
             )
             interface CollectionValuesType
 
-            @QueryFacet(CollectionValuesType::class)
+            @QueryFacetValue(CollectionValuesType::class)
             fun collectionValuesType(): FieldType
         }
 
@@ -131,7 +131,7 @@ class NestedConceptsTest {
             @EnumFacet(enumerationClass = BuiltinTypeEnum::class)
             interface BuiltinType
 
-            @QueryFacet(BuiltinType::class)
+            @QueryFacetValue(BuiltinType::class)
             fun builtinType(): BuiltinTypeEnum
 
             enum class BuiltinTypeEnum {
@@ -147,7 +147,7 @@ class NestedConceptsTest {
             @ReferenceFacet(referencedConcepts = [BusinessObjectConcept::class])
             interface ReferencedBusinessObject
 
-            @QueryFacet(ReferencedBusinessObject::class)
+            @QueryFacetValue(ReferencedBusinessObject::class)
             fun referencedBusinessObject(): BusinessObjectConcept
         }
     }

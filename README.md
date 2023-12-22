@@ -61,10 +61,10 @@ interface HtmlFormConcept {
     @ReferenceFacet(minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[HtmlInputFieldConcept::class])
     interface FormFieldsFacet
 
-    @QueryFacet(FormHeadline::class)
+    @QueryFacetValue(FormHeadline::class)
     fun getFormHeadline(): String?
 
-    @QueryFacet(HtmlInputFieldConcept::class)
+    @QueryFacetValue(HtmlInputFieldConcept::class)
     fun getFieldsOfForm(): List<HtmlInputFieldConcept>
 }
 
@@ -73,7 +73,7 @@ interface HtmlInputFieldConcept {
     @StringFacet
     interface FieldName
 
-    @QueryFacet(FieldName::class)
+    @QueryFacetValue(FieldName::class)
     fun getFieldName(): String
 
     ...
