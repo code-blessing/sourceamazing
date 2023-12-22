@@ -46,7 +46,7 @@ interface FormBuilder {
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")
-        @SetRandomConceptIdentifier("dropdownEntry")
+        @SetRandomConceptIdentifierValue("dropdownEntry")
         @SetAliasConceptIdentifierReferenceFacetValue("selectDropdown", FormSchema.SelectDropdownFormControlConcept.SelectDropdownEntry::class, referencedConceptAlias = "dropdownEntry")
         fun setValue(
             @SetFacetValue("dropdownEntry", FormSchema.SelectDropdownEntryConcept.Value::class) value: String,

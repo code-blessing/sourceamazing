@@ -130,7 +130,7 @@ class DataCollectorInvocationHandler(
             newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept)
         }
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifier::class).forEach { autoRandomConceptIdentifierAnnotation ->
+        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { autoRandomConceptIdentifierAnnotation ->
             val conceptAlias = autoRandomConceptIdentifierAnnotation.conceptToModifyAlias
             val conceptName = newConceptsByAlias[conceptAlias]
                 ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")

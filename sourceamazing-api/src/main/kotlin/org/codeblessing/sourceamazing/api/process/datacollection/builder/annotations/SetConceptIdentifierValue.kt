@@ -10,7 +10,7 @@ package org.codeblessing.sourceamazing.api.process.datacollection.builder.annota
  * and declared in [NewConcept.declareConceptAlias].
  *
  * To declare a random concept identifier, use
- * the [SetRandomConceptIdentifier] annotation instead.
+ * the [SetRandomConceptIdentifierValue] annotation instead.
  *
  * @property conceptToModifyAlias
  * The alias of the concept to which this new concept identifier is assigned to.

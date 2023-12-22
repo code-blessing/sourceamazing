@@ -35,7 +35,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
         @BuilderMethod
         @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
-        @SetRandomConceptIdentifier(conceptToModifyAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
 
@@ -53,8 +53,8 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
         @BuilderMethod
         @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
-        @SetRandomConceptIdentifier(conceptToModifyAlias = "foo")
-        @SetRandomConceptIdentifier(conceptToModifyAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
 
@@ -110,7 +110,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
         @BuilderMethod
         @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
-        @SetRandomConceptIdentifier(conceptToModifyAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier
         )
@@ -127,7 +127,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInAutoRandomConceptIdentifier {
         @BuilderMethod
-        @SetRandomConceptIdentifier(conceptToModifyAlias = "unknown")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "unknown")
         fun doSomething()
     }
 
