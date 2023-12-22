@@ -3,8 +3,8 @@ package org.codeblessing.sourceamazing.engine.process.schema.query
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Concept
 import org.codeblessing.sourceamazing.api.process.schema.annotations.Schema
 import org.codeblessing.sourceamazing.api.process.schema.annotations.StringFacet
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptId
-import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacet
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.api.process.schema.query.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.engine.process.schema.exceptions.MalformedSchemaException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -50,7 +50,7 @@ class ConceptQueryValidatorTest {
             @StringFacet
             interface OneFacet
 
-            @QueryFacet(OneFacet::class)
+            @QueryFacetValue(OneFacet::class)
             fun getFacetValue(): List<Any>
         }
     }
@@ -65,8 +65,8 @@ class ConceptQueryValidatorTest {
         @Concept(facets = [])
         interface OneConcept {
 
-            @QueryConceptId
-            fun getConceptId(): QueryConceptId
+            @QueryConceptIdentifierValue
+            fun getConceptId(): QueryConceptIdentifierValue
         }
     }
 
@@ -88,7 +88,7 @@ class ConceptQueryValidatorTest {
             @StringFacet
             interface UnsupportedFacet
 
-            @QueryFacet(UnsupportedFacet::class)
+            @QueryFacetValue(UnsupportedFacet::class)
             fun getFacetValue(): List<Any>
         }
     }
@@ -114,40 +114,40 @@ class ConceptQueryValidatorTest {
             @StringFacet
             interface OneFacet
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsAsListOfAny(): List<Any>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsOfListOfConcreteConceptClass(): List<OneConcept>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsOfListWithACommonBaseInterface(): List<CommonConceptInterface>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsAsSetOfAny(): Set<Any>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsOfSetOfConcreteConceptClass(): Set<OneConcept>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsOfSetWithACommonBaseInterface(): Set<CommonConceptInterface>
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsAsAny(): Any
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsConcreteConceptClass(): OneConcept
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsWithACommonBaseInterface(): CommonConceptInterface
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsAsAnyNullable(): Any?
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsConcreteConceptClassNullable(): OneConcept?
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsWithACommonBaseInterfaceNullable(): CommonConceptInterface?
         }
     }
@@ -166,7 +166,7 @@ class ConceptQueryValidatorTest {
             @StringFacet
             interface OneFacet
 
-            @QueryFacet(facetClass = OneFacet::class)
+            @QueryFacetValue(facetClass = OneFacet::class)
             fun getMyConceptsAsListOfAny(myParam: Int): List<Any>
         }
     }

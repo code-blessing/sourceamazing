@@ -5,4 +5,4 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class QueryFacet(val facetClass: KClass<*>)
+annotation class QueryFacetValue(val facetClass: KClass<*>)
