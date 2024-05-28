@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.api.process.datacollection.builder.annotations.*
-import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
+import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 @Builder
 interface FormBuilder {

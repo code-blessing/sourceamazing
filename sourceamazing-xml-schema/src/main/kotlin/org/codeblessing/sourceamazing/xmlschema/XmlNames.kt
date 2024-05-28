@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.xmlschema
 
-import org.codeblessing.sourceamazing.api.process.schema.*
-import org.codeblessing.sourceamazing.tools.CaseUtil
+import org.codeblessing.sourceamazing.schema.*
+import org.codeblessing.sourceamazing.xmlschema.tools.CaseUtil
 
 object XmlNames {
 

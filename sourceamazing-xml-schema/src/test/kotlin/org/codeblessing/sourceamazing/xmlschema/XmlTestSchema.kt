@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.xmlschema
 
-import org.codeblessing.sourceamazing.api.process.schema.ConceptName
-import org.codeblessing.sourceamazing.api.process.schema.FacetName
-import org.codeblessing.sourceamazing.api.process.schema.SchemaAccess
-import org.codeblessing.sourceamazing.api.process.schema.annotations.*
-import org.codeblessing.sourceamazing.engine.process.schema.SchemaCreator
+import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 
 object XmlTestSchema {
 
