@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.processtest
 
-import org.codeblessing.sourceamazing.api.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import java.io.Closeable
 import java.io.InputStream
 import java.io.StringWriter

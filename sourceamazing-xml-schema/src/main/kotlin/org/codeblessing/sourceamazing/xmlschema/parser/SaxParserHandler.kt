@@ -1,10 +1,11 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
-import org.codeblessing.sourceamazing.api.filesystem.FileSystemAccess
-import org.codeblessing.sourceamazing.api.logger.LoggerFacade
-import org.codeblessing.sourceamazing.api.process.datacollection.ConceptData
-import org.codeblessing.sourceamazing.api.process.datacollection.extensions.ExtensionDataCollector
-import org.codeblessing.sourceamazing.api.process.schema.*
+import org.codeblessing.sourceamazing.schema.*
+import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import org.codeblessing.sourceamazing.xmlschema.XmlNames
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
@@ -17,7 +18,7 @@ import java.util.*
 
 class SaxParserHandler(
     private val schema: SchemaAccess,
-    private val dataCollector: ExtensionDataCollector,
+    private val dataCollector: ConceptDataCollector,
     private val placeholders: Map<String, String>,
     private val schemaFileDirectory: Path,
     private val fileSystemAccess: FileSystemAccess,
@@ -94,7 +95,7 @@ class SaxParserHandler(
     private fun declareNewConcept(newConceptSchema: ConceptSchema, xmlAttributes: List<XmlAttribute>): XmlStackElement {
         val newConceptIdentifier = extractXmlAttributeValue(XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME, xmlAttributes)
             ?.let { ConceptIdentifier.of(it) }
-            ?: ConceptIdentifier.random()
+            ?: ConceptIdentifierUtil.random(newConceptSchema.conceptName)
         if(getCurrentXmlStackElement() != null) {
             addRawValueToCurrentFacet(newConceptIdentifier.name)
         }

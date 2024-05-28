@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.api.process.schema.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 object FormData {
 
