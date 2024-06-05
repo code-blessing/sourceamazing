@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
-import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
-import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
+import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

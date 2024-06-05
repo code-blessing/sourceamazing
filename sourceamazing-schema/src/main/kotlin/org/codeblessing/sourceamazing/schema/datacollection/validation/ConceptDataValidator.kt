@@ -1,11 +1,7 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
-import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.ConceptSchema
-import org.codeblessing.sourceamazing.schema.FacetSchema
-import org.codeblessing.sourceamazing.schema.SchemaAccess
-import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleSchemaValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.*
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText

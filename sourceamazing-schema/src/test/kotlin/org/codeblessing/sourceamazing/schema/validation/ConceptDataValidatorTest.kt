@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.validation
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator

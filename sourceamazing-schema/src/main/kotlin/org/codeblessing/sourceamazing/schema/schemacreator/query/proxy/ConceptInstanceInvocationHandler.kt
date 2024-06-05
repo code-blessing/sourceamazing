@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
 
-import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
-import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
+import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
+import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
 import java.lang.reflect.InvocationHandler

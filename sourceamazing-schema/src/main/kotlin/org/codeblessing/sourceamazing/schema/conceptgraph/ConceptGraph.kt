@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.conceptgraph
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 class ConceptGraph(
     private val concepts: Map<ConceptIdentifier, ConceptNode>,

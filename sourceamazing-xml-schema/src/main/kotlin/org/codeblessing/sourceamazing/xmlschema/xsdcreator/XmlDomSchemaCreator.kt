@@ -2,8 +2,8 @@ package org.codeblessing.sourceamazing.xmlschema.xsdcreator
 
 import org.codeblessing.sourceamazing.schema.ConceptSchema
 import org.codeblessing.sourceamazing.schema.FacetSchema
-import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.xmlschema.XmlNames
 import org.w3c.dom.Document
 import org.w3c.dom.Element

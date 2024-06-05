@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.builder.proxy.DataCollectorInvocationHandler
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
-import org.codeblessing.sourceamazing.builder.proxy.DataCollectorInvocationHandler
+import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
