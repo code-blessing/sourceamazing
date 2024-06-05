@@ -1,14 +1,14 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
-import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
-import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.schema.api.SchemaProcessorApi
-import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
-import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
+import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
+import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
+import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.proxy.SchemaInstanceInvocationHandler
 import kotlin.reflect.KClass

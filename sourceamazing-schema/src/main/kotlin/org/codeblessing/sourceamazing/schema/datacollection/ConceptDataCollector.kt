@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.ConceptData
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 class ConceptDataCollector {
 

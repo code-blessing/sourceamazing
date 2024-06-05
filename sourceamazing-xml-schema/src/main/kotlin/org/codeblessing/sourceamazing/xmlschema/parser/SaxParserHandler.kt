@@ -2,9 +2,9 @@ package org.codeblessing.sourceamazing.xmlschema.parser
 
 import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import org.codeblessing.sourceamazing.xmlschema.XmlNames
 import org.xml.sax.Attributes

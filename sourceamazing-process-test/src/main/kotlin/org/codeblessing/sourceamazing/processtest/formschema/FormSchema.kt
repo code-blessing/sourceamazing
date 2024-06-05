@@ -1,9 +1,6 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
 import org.codeblessing.sourceamazing.schema.api.annotations.*
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 
 @Schema(concepts = [
     FormSchema.FormConcept::class,

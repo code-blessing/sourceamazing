@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

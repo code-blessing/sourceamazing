@@ -1,13 +1,13 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
-import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
+import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
