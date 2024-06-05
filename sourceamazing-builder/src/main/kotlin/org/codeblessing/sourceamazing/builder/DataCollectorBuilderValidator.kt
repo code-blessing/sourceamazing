@@ -34,6 +34,20 @@ object DataCollectorBuilderValidator {
             method.parameters.forEachIndexed { index, methodParameter ->
                 val isLastParameter = index == (method.parameterCount - 1)
 
+                if(AnnotationUtil.hasAnnotation(methodParameter, IgnoreNullFacetValue::class)) {
+
+                    if(AnnotationUtil.hasAnnotation(methodParameter, SetConceptIdentifierValue::class)) {
+                        throw DataCollectorBuilderMethodSyntaxException(method, "A parameter setting the" +
+                                "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
+                                "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time.")
+                    }
+
+                    if(AnnotationUtil.hasAnnotation(methodParameter, InjectBuilder::class)) {
+                        throw DataCollectorBuilderMethodSyntaxException(method, "A parameter with ${InjectBuilder::class.annotationText()} " +
+                                "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time.")
+                    }
+                }
+
                 if(!isLastParameter) {
                     if(AnnotationUtil.hasAnnotation(methodParameter, InjectBuilder::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "Only the last parameter of the method " +

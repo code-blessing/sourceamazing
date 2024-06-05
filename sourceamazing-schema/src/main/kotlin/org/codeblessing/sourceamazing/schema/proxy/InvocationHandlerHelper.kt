@@ -5,14 +5,14 @@ import java.lang.reflect.Method
 
 object InvocationHandlerHelper {
 
-    fun validateInvocationArguments(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Method {
+    fun validateInvocationArguments(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any?>?): Method {
         requiredProxy(proxyOrNull, methodOrNull)
         val method: Method = validatedMethod(methodOrNull)
         validatedArguments(methodOrNull, argsOrNull)
         return method
     }
 
-    fun validatedArguments(method: Method?, argsOrNull: Array<out Any>?): Array<out Any> {
+    fun validatedArguments(method: Method?, argsOrNull: Array<out Any?>?): Array<out Any?> {
         val args = argsOrNull ?: emptyArray()
 
         val parameterCount = validatedMethod(method).parameterCount

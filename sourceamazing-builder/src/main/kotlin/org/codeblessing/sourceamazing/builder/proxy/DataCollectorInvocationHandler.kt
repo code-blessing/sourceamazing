@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
@@ -19,10 +20,10 @@ class DataCollectorInvocationHandler(
     private val superiorAliases: Map<String, ConceptIdentifier>
 ): InvocationHandler  {
 
-    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
+    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any?>?): Any? {
         val proxy: Any = InvocationHandlerHelper.requiredProxy(proxyOrNull, methodOrNull)
         val method: Method = InvocationHandlerHelper.validatedMethod(methodOrNull)
-        val args: Array<out Any> = InvocationHandlerHelper.validatedArguments(methodOrNull, argsOrNull)
+        val args: Array<out Any?> = InvocationHandlerHelper.validatedArguments(methodOrNull, argsOrNull)
 
         if(AnnotationUtil.hasAnnotation(method, BuilderMethod::class)) {
             val myAliases = updateConceptDataCollector(method, args)
@@ -39,7 +40,7 @@ class DataCollectorInvocationHandler(
         return InvocationHandlerHelper.handleObjectMethodsOrThrow(this, method)
     }
 
-    private fun updateConceptDataCollector(method: Method, args: Array<out Any>): Map<String, ConceptIdentifier> {
+    private fun updateConceptDataCollector(method: Method, args: Array<out Any?>): Map<String, ConceptIdentifier> {
         val newConceptAliasData: Map<String, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(method, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
@@ -98,6 +99,17 @@ class DataCollectorInvocationHandler(
 
         val paramsWithValues = MethodUtil.methodParamsWithValues(method, args)
         paramsWithValues.forEach { (_, param, argumentValue) ->
+            if(!AnnotationUtil.hasAnnotation(param, SetFacetValue::class)) {
+                return@forEach
+            }
+            if(argumentValue==null) {
+                if(AnnotationUtil.hasAnnotation(param, IgnoreNullFacetValue::class)) {
+                    return@forEach // skip null values silently
+                } else {
+                    throw IllegalArgumentException("Can not pass null values for parameter '${param.name}' " +
+                            "on method $method. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'")
+                }
+            }
 
             AnnotationUtil.getAnnotations(param, SetFacetValue::class).forEach { facetValueAnnotation ->
                 updateConceptData(
@@ -121,7 +133,7 @@ class DataCollectorInvocationHandler(
         ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    private fun collectNewAliases(method: Method, args: Array<out Any>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
+    private fun collectNewAliases(method: Method, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
         val paramsWithValues = MethodUtil.methodParamsWithValues(method, args)
 
         val newConceptsByAlias: MutableMap<String, ConceptName> = mutableMapOf()
@@ -144,6 +156,9 @@ class DataCollectorInvocationHandler(
                 val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias
                 val conceptName = newConceptsByAlias[conceptAlias]
                     ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $method")
+                if(argumentValue == null) {
+                    throw IllegalArgumentException("Can not pass null value as concept identifier argument for parameter '${methodParam.name}' on method $method")
+                }
                 val conceptIdentifier = argumentValue as ConceptIdentifier
                 newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
             }
@@ -181,7 +196,7 @@ class DataCollectorInvocationHandler(
 
     private fun injectBuilderToParamMethod(
         method: Method,
-        args: Array<out Any>,
+        args: Array<out Any?>,
         builder: Any
     ) {
         val conceptBuilderFunctionParameter = getBuilderParameter(method, args)
@@ -206,14 +221,16 @@ class DataCollectorInvocationHandler(
     }
 
 
-    private fun getBuilderParameter(method: Method, args: Array<out Any>): Any? {
+    private fun getBuilderParameter(method: Method, args: Array<out Any?>): Any? {
         for ((index, parameter) in method.parameters.withIndex()) {
             if(AnnotationUtil.hasAnnotation(parameter, InjectBuilder::class)) {
-                return args[index]
+                val builderToInject = args[index]
+                return builderToInject
+                    ?: throw IllegalStateException(
+                        "Parameter with Annotation ${InjectBuilder::class} found but was null on method: $method",
+                        )
             }
         }
         return null;
     }
-
-
 }
