@@ -161,7 +161,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         interface FacetClass
         @BuilderMethod
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class) id: ConceptIdentifier
+            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class) value: String
         )
     }
 

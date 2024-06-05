@@ -5,7 +5,7 @@ import java.lang.reflect.Parameter
 
 object MethodUtil {
 
-    fun methodParamsWithValues(method: Method, args: Array<out Any>): List<Triple<Int, Parameter, Any>> {
+    fun methodParamsWithValues(method: Method, args: Array<out Any?>): List<Triple<Int, Parameter, Any?>> {
         require(method.parameterCount == args.size) {
             "Method $method parameter number (${method.parameterCount} and argument number (${args.size}) not matching."
         }

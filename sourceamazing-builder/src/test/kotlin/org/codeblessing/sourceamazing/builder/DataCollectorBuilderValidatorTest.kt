@@ -213,6 +213,46 @@ class DataCollectorBuilderValidatorTest {
     }
 
     @Builder
+    private interface DataCollectorMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValue {
+        interface MyConceptClass
+
+        @BuilderMethod
+        @NewConcept(MyConceptClass::class)
+        fun doSomething(
+            @IgnoreNullFacetValue @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
+        )
+    }
+
+    @Test
+    fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method should throw an error`() {
+        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+            DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
+                DataCollectorMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValue::class)
+        }
+    }
+
+    @Builder
+    private interface DataCollectorMethodParamWithInjectBuilderAndIgnoreNullFacetValue {
+        interface MyConceptClass
+
+        @BuilderMethod
+        @NewConcept(MyConceptClass::class)
+        fun doSomething(
+            @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
+            @IgnoreNullFacetValue @InjectBuilder builder: EmptyBuilder.() -> Unit,
+        )
+    }
+
+    @Test
+    fun `test IgnoreNullFacetValue annotation and InjectBuilder annotation on same method should throw an error`() {
+        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+            DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
+                DataCollectorMethodParamWithInjectBuilderAndIgnoreNullFacetValue::class)
+        }
+    }
+
+
+    @Builder
     private interface DataCollectorWithIllegalConceptIdClass {
 
         @BuilderMethod
