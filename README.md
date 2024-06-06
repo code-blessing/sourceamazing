@@ -242,9 +242,7 @@ Of course, you can mix as many different XML data imports and Builders/DSL impor
 
 ## Setup, Documentation and Examples
 
-If you are new to SourceAmazing, start with the step-by-step 
-documentation at [Wiki](https://github.com/code-blessing/sourceamazing/wiki).
-There, you also find a complete list of features and a glossary with the most important definition.
+If you are new to SourceAmazing, start with the step-by-step documentation at [Wiki](https://github.com/code-blessing/sourceamazing/wiki).
 
 ## License
 
