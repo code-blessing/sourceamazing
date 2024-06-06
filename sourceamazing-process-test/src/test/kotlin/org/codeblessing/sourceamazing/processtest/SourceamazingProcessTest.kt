@@ -135,7 +135,7 @@ class SourceamazingProcessTest {
     private val parameterMap: Map<String, String> = emptyMap()
 
     @Test
-    fun `run test domainUnit`() {
+    fun `run test to import data from xml files and builder`() {
         val fileSystemAccess = StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
