@@ -12,7 +12,6 @@ import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
-import kotlin.io.path.name
 
 object XmlSchemaDataReader {
 
@@ -27,13 +26,8 @@ object XmlSchemaDataReader {
         schemaAccess: SchemaAccess,
         dataCollector: ConceptDataCollector
     ) {
-        val xmlDefinitionDirectory: Path = xmlFile.parent
-        val xmlDefinitionFilename = xmlFile.name
-        val xmlDefinitionFile = xmlDefinitionDirectory.resolve(xmlDefinitionFilename)
-        val schemaDirectory = XmlSchemaInitializer.createSchemaDirectory(xmlDefinitionDirectory, fileSystemAccess)
-
-        XmlSchemaInitializer.initializeXmlSchemaFile(schemaDirectory, schemaAccess, fileSystemAccess)
-
+        val xmlParentDirectory = FileDirUtil.getDirectoryFromFile(xmlFile)
+        val sourceAmazingSchemaXsd = XmlSchemaInitializer.initializeXmlSchemaFile(xmlFile, schemaAccess, fileSystemAccess)
 
         val factory: SAXParserFactory = SAXParserFactory.newInstance()
         factory.isNamespaceAware = true
@@ -42,9 +36,8 @@ object XmlSchemaDataReader {
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false)
 
-        val sourceamazingSchemaXsd = xmlDefinitionFile.parent.resolve("schema").resolve("sourceamazing-xml-schema.xsd")
         val sources = listOf(
-            StreamSource(fileSystemAccess.fileAsInputStream(sourceamazingSchemaXsd))
+            StreamSource(fileSystemAccess.fileAsInputStream(sourceAmazingSchemaXsd))
         )
 
         val schemaFactory: SchemaFactory = SchemaFactory.newInstance(SCHEMA_LANGUAGE)
@@ -52,9 +45,9 @@ object XmlSchemaDataReader {
 
         val saxParser: SAXParser = factory.newSAXParser()
 
-        val saxParserHandler = SaxParserHandler(schemaAccess, dataCollector, placeholders, xmlDefinitionDirectory, fileSystemAccess, loggerFacade)
+        val saxParserHandler = SaxParserHandler(schemaAccess, dataCollector, placeholders, xmlParentDirectory, fileSystemAccess, loggerFacade)
 
-        fileSystemAccess.fileAsInputStream(xmlDefinitionFile).use {
+        fileSystemAccess.fileAsInputStream(xmlFile).use {
             saxParser.parse(it, saxParserHandler)
         }
     }
