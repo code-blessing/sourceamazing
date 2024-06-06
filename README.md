@@ -160,9 +160,10 @@ Here an example XML file with some written phonebook data:
 </sourceamazing>
 
 ```
-The employees written in the XML file(s) is read and provided 
-dynamically as implementations of the kotlin/java interfaces. You can 
-access this data model in your Java/Kotlin application.
+The employees written in the XML file(s) are read and provided in kotlin/java 
+dynamically as implementations of the handwritten interfaces. You can 
+access this data model in your Java/Kotlin application by using the methods 
+annotated with @Query... (QueryFacetValue, @QueryConcepts, ...)
 
 ### Write data as Kotlin Builders or DSLs
 
@@ -174,6 +175,16 @@ using the annotations provided to declare, what the builder methods have
 to do, when they are called.
 
 ```kotlin
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+
+
 @Builder
 interface EmployeePhonebookBuilder {
   
@@ -182,7 +193,7 @@ interface EmployeePhonebookBuilder {
     @SetRandomConceptIdentifierValue("theEmployee") // every concept instance needs a mandatory concept identifier, set a random one
     @WithNewBuilder(PhoneNumberBuilder::class) // define what this method will return
     fun addEmployee(
-        @SetFacetValue("theEmployee", Employee.EmployeeName::class) name: String
+        @SetFacetValue("theEmployee", Employee.EmployeeName::class) @IgnoreNullFacetValue employeeName: String? // the employeeName is not mandatory, so declare that null values are ok
     ): PhoneNumberBuilder
 }
 
@@ -202,7 +213,7 @@ interface PhoneNumberBuilder {
 }
 ```
 
-Now as the builder syntax is declared, we can use those interfaces and write some phonebook entries:
+Now as the builder syntax is declared, we can use those interfaces and write some phonebook entries using the builders:
 
 ```kotlin
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
@@ -227,7 +238,7 @@ fun readPhonebookData() {
 }
 
 ```
-Of course, you can mix XML data imports and as many different Builders/DSL imports as you like. 
+Of course, you can mix as many different XML data imports and Builders/DSL imports as you like. 
 
 ## Setup, Documentation and Examples
 
