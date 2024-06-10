@@ -11,8 +11,8 @@ class BuilderProcessor(): BuilderProcessorApi {
 
     override fun <I : Any> withBuilder(schemaContext: SchemaContext, inputDefinitionClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
         DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(inputDefinitionClass)
-        val schemaMemento = schemaContext.toRevealedSchemaContext()
-        val builderImplementation: I = ProxyCreator.createProxy(inputDefinitionClass, DataCollectorInvocationHandler(schemaMemento.conceptDataCollector, emptyMap()))
+        val schemaContextImplementation = schemaContext.toRevealedSchemaContext()
+        val builderImplementation: I = ProxyCreator.createProxy(inputDefinitionClass, DataCollectorInvocationHandler(schemaContextImplementation.conceptDataCollector, emptyMap()))
         builderUsage(builderImplementation)
     }
 }
