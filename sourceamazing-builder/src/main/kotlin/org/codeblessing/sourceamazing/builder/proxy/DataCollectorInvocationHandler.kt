@@ -177,12 +177,20 @@ class DataCollectorInvocationHandler(
         val conceptId: ConceptIdentifier = conceptIdByAlias(conceptAlias, newConceptAliases)
         val conceptData = conceptDataCollector.existingConceptData(conceptId)
         val facetName = FacetName.of(facetClazz)
-        val facetValues = if(value is List<*>) value.filterNotNull()  else listOf(value)
+        val facetValues = facetValues(value)
         when(facetModificationRule) {
             FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)
             FacetModificationRule.REPLACE -> conceptData.replaceFacetValues(facetName, facetValues)
         }
+    }
 
+    private fun facetValues(value: Any): List<Any> {
+        return when(value) {
+            is List<*> -> value.filterNotNull()
+            is Set<*> -> value.filterNotNull().toList()
+            is Array<*> -> value.filterNotNull().toList()
+            else -> listOf(value)
+        }
     }
 
     private fun createNewBuilderProxy(

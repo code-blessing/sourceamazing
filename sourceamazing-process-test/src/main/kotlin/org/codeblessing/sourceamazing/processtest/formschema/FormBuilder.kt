@@ -50,6 +50,22 @@ interface FormBuilder {
         fun addLabel(
             @SetFacetValue("formControl", FormSchema.FormControl.Label::class) label: String,
         ): FormControlBuilder
+
+        @BuilderMethod
+        fun addLabels(
+            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: List<String>,
+        ): FormControlBuilder
+
+        @BuilderMethod
+        fun addLabels(
+            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: Array<String>,
+        ): FormControlBuilder
+
+        @BuilderMethod
+        fun addVariableAmountOfLabels(
+            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) vararg labels: String,
+        ): FormControlBuilder
+
     }
 
 

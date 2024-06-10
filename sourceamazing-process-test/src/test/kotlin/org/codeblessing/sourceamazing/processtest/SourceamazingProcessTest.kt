@@ -77,7 +77,7 @@ class SourceamazingProcessTest {
         Form 'Employee Work Preferences':
         - Form-Control: Display Name: 'Firstname', Labels: [names, person-info]'
         - Form-Control: Display Name: 'Lastname', Labels: [names, person-info]'
-        - Form-Control: Display Name: 'Birthday', Labels: [person-info]'
+        - Form-Control: Display Name: 'Birthday', Labels: [person-info, birthday, Birthday, BIRTHDAY, b-day]'
         - Form-Control: Display Name: 'Workplace Preference', Labels: [] (Default-Value: company) Options: [home -> 'Home Office'], [company -> 'Company Office']
         Text Input Form Control Names: [Firstname, Lastname, Birthday]
         
