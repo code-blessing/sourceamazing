@@ -47,7 +47,7 @@ interface FormSchema {
 
         @StringFacet(
             minimumOccurrences = 0,
-            maximumOccurrences = 3,
+            maximumOccurrences = 5,
         )
         interface Label
 

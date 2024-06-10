@@ -27,8 +27,7 @@ object FormData {
                 valueRequired = true,
                 formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.PLAIN,
             )
-            .addLabel("names")
-            .addLabel("person-info")
+            .addLabels(listOf("names", "person-info"))
         employeePreferencesForm
             .addTextInputFormControl(
                 conceptIdentifier = ConceptIdentifier.of("EmployeeBirthday"),
@@ -37,6 +36,9 @@ object FormData {
                 formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.DATE,
             )
             .addLabel("person-info")
+            .addLabels(arrayOf("birthday", "Birthday", "BIRTHDAY"))
+            .addVariableAmountOfLabels()
+            .addVariableAmountOfLabels("b-day")
 
         employeePreferencesForm
             .addSelectDropdownFormControl(
