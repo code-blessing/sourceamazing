@@ -60,6 +60,9 @@ interface FormSchema {
 
         @QueryFacetValue(ValueRequired::class)
         fun isValueRequired(): Boolean
+
+        @QueryFacetValue(Label::class)
+        fun getLabels(): List<String>
     }
 
     @Concept(facets = [

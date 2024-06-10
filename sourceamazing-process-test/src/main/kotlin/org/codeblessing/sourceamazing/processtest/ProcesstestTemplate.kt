@@ -39,15 +39,17 @@ object ProcesstestTemplate {
                     """.trimIndent()
 
             entity.getFormControls().forEach { formControl ->
+                val formControlSummary = "Form-Control: Display Name: '${formControl.getFormControlDisplayName()}', Labels: [${formControl.getLabels().joinToString()}]"
+
                 if(formControl is FormSchema.TextInputFormControlConcept) {
                     content += """
-                        - Form-Control: Display Name: '${formControl.getFormControlDisplayName()}'
+                        - $formControlSummary'
                         
                         """.trimIndent()
                 } else if (formControl is FormSchema.SelectDropdownFormControlConcept) {
                     val options = formControl.getSelectDropdownEntries().joinToString { optionEntry -> "[${optionEntry.getValue()} -> '${optionEntry.getDisplayValue()}']" }
                     content += """
-                        - Form-Control: Display Name: '${formControl.getFormControlDisplayName()}' (Default-Value: ${formControl.getDefaultValue()}) Options: $options
+                        - $formControlSummary (Default-Value: ${formControl.getDefaultValue()}) Options: $options
                         
                         """.trimIndent()
                 }

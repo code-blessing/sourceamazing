@@ -18,18 +18,25 @@ object FormData {
                 valueRequired = true,
                 formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.PLAIN,
             )
+            .addLabel("names")
+            .addLabel("person-info")
+        employeePreferencesForm
             .addTextInputFormControl(
                 conceptIdentifier = ConceptIdentifier.of("EmployeeLastname"),
                 displayName = "Lastname",
                 valueRequired = true,
                 formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.PLAIN,
             )
+            .addLabel("names")
+            .addLabel("person-info")
+        employeePreferencesForm
             .addTextInputFormControl(
                 conceptIdentifier = ConceptIdentifier.of("EmployeeBirthday"),
                 displayName = "Birthday",
                 valueRequired = false,
                 formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.DATE,
             )
+            .addLabel("person-info")
 
         employeePreferencesForm
             .addSelectDropdownFormControl(

@@ -67,18 +67,18 @@ class SourceamazingProcessTest {
     private val expectedSummaryTemplateOutput = """
 
         Form 'City Survey':
-        - Form-Control: Display Name: 'Firstname'
-        - Form-Control: Display Name: 'Lastname'
-        - Form-Control: Display Name: 'Gender' (Default-Value: null) Options: [male -> 'Male'], [female -> 'Female']
-        - Form-Control: Display Name: 'Preferred Place' (Default-Value: forrest) Options: [forrest -> 'Walk in the forrest'], [city -> 'Hang in the city']
-        - Form-Control: Display Name: 'Address'
+        - Form-Control: Display Name: 'Firstname', Labels: [identity]'
+        - Form-Control: Display Name: 'Lastname', Labels: [identity]'
+        - Form-Control: Display Name: 'Gender', Labels: [identity] (Default-Value: null) Options: [male -> 'Male'], [female -> 'Female']
+        - Form-Control: Display Name: 'Preferred Place', Labels: [preferences, hobbies] (Default-Value: forrest) Options: [forrest -> 'Walk in the forrest'], [city -> 'Hang in the city']
+        - Form-Control: Display Name: 'Address', Labels: [identity]'
         Text Input Form Control Names: [Firstname, Lastname, Address]
         
         Form 'Employee Work Preferences':
-        - Form-Control: Display Name: 'Firstname'
-        - Form-Control: Display Name: 'Lastname'
-        - Form-Control: Display Name: 'Birthday'
-        - Form-Control: Display Name: 'Workplace Preference' (Default-Value: company) Options: [home -> 'Home Office'], [company -> 'Company Office']
+        - Form-Control: Display Name: 'Firstname', Labels: [names, person-info]'
+        - Form-Control: Display Name: 'Lastname', Labels: [names, person-info]'
+        - Form-Control: Display Name: 'Birthday', Labels: [person-info]'
+        - Form-Control: Display Name: 'Workplace Preference', Labels: [] (Default-Value: company) Options: [home -> 'Home Office'], [company -> 'Company Office']
         Text Input Form Control Names: [Firstname, Lastname, Birthday]
         
     """.trimIndent()
