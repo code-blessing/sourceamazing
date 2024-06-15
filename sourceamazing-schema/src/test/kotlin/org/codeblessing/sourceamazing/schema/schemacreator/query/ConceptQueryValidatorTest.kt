@@ -1,8 +1,10 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class ConceptQueryValidatorTest {
@@ -62,7 +64,7 @@ class ConceptQueryValidatorTest {
         interface OneConcept {
 
             @QueryConceptIdentifierValue
-            fun getConceptId(): QueryConceptIdentifierValue
+            fun getConceptId(): ConceptIdentifier
         }
     }
 
@@ -172,6 +174,28 @@ class ConceptQueryValidatorTest {
     fun `test concept with method having parameters should throw an exception`() {
         assertThrows(MalformedSchemaException::class.java) {
             ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithFacetMethodHavingParameter.OneConceptClass::class)
+        }
+    }
+
+    @Schema(concepts = [ SchemaWithFacetMethodHavingParameter.OneConceptClass::class ])
+    private interface SchemaWithWrongQueryMethodReturnType {
+
+        @Concept(facets = [OneConceptClass.OneFacet::class])
+        interface OneConceptClass {
+
+            @StringFacet
+            interface OneFacet
+
+            @QueryFacetValue(facetClass = OneFacet::class)
+            fun getMyConceptsAsListOfAny(): Int
+        }
+    }
+
+    @Test
+    @Disabled("Currently, this can't be validated properly for generic return types like list of strings etc.")
+    fun `test concept with wrong return type in query method should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithWrongQueryMethodReturnType.OneConceptClass::class)
         }
     }
 
