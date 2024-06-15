@@ -1,12 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    `maven-dependency-repository`
     application
 }
-
-repositories {
-    mavenCentral()
-}
-
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
@@ -22,8 +18,6 @@ dependencies {
     testImplementation(projects.sourceamazingSchema)
     testImplementation(libs.junit.jupiter)
 }
-
-
 
 tasks.named<Test>("test") {
     useJUnitPlatform()

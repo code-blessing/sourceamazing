@@ -1,12 +1,8 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
+    `maven-dependency-repository`
 }
-
-repositories {
-    mavenCentral()
-}
-
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
@@ -15,8 +11,6 @@ dependencies {
 
     testImplementation(libs.junit.jupiter)
 }
-
-
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
