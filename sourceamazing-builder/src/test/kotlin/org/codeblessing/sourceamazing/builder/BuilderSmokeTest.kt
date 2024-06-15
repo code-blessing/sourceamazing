@@ -2,10 +2,25 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.BuilderSmokeTest.SmokeTestSchema.PersonConcept.PersonSex
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -71,7 +86,7 @@ class BuilderSmokeTest {
     }
 
     @Builder
-    interface SmokeTestDataCollectorRootBuilder {
+    interface SmokeTestRootBuilder {
 
         // Builder style
         @BuilderMethod
@@ -96,6 +111,7 @@ class BuilderSmokeTest {
         @ExpectedAliasFromSuperiorBuilder
         interface PersonConceptBuilder {
 
+            @Suppress("UNUSED")
             @BuilderMethod
             fun firstname(
                 @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
@@ -108,7 +124,7 @@ class BuilderSmokeTest {
 
             @BuilderMethod
             fun sex(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class)  sex: String,
+                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class)  sex: PersonSex,
             ): PersonConceptBuilder
 
             @BuilderMethod
@@ -140,6 +156,7 @@ class BuilderSmokeTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "skill")
         interface SkillConceptBuilder {
 
+            @Suppress("UNUSED")
             @BuilderMethod
             fun descriptionAndStillEnjoying(
                 @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = SmokeTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
@@ -169,12 +186,12 @@ class BuilderSmokeTest {
 
 
         val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, SmokeTestDataCollectorRootBuilder::class) { dataCollector ->
+            BuilderApi.withBuilder(schemaContext, SmokeTestRootBuilder::class) { builder ->
                 // add some data in DSL style
-                dataCollector
+                builder
                     .newPerson(jamesConceptIdentifier) {
                         firstnameAndAge(firstname = "James", age = 18)
-                        sex(PersonSex.MALE.toString())
+                        sex(PersonSex.MALE)
                         skill(cookingConceptIdentifier) {
                             description("Cooking for Dinner")
                             stillEnjoying(true)
@@ -186,7 +203,7 @@ class BuilderSmokeTest {
                     }
 
                 // add some data in builder style
-                val linda = dataCollector
+                val linda = builder
                     .newPerson(lindaConceptIdentifier, firstname = "Linda", sex = PersonSex.FEMALE)
                     .age(29)
                 linda.skill(judoConceptIdentifier)

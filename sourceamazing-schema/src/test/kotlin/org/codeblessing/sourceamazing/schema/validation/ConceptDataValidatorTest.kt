@@ -3,10 +3,20 @@ package org.codeblessing.sourceamazing.schema.validation
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.*
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownConceptException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownFacetNameException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -22,29 +32,16 @@ class ConceptDataValidatorTest {
     private interface MandatoryTextFacetClass
     private val mandatoryTextFacetName = FacetName.of(MandatoryTextFacetClass::class)
 
-    @BooleanFacet(minimumOccurrences = 1, maximumOccurrences = 1)
-    private interface MandatoryBooleanFacetClass
-    private val mandatoryBooleanFacetName = FacetName.of(MandatoryBooleanFacetClass::class)
-
-    @IntFacet(minimumOccurrences = 0, maximumOccurrences = Int.MAX_VALUE)
-    private interface SomeNumbersFacetClass
-    private val someNumbersFacetName = FacetName.of(SomeNumbersFacetClass::class)
-
     @EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = MyEnumeration::class)
     private interface SomeEnumsFacetClass
     private val someEnumsFacetName = FacetName.of(SomeEnumsFacetClass::class)
-
-    @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 2, referencedConcepts = [OtherConcept::class, OtherThanTheOtherConcept::class])
-    private interface OptionalReferenceToMultipleConceptsFacetClass
-    private val optionalRefToMultipleConceptsFacetName = FacetName.of(
-        OptionalReferenceToMultipleConceptsFacetClass::class)
 
     @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 1, referencedConcepts = [OtherConcept::class])
     private interface MandatoryReferenceToOtherConceptFacetClass
     private val mandatoryRefToOneConceptFacetName = FacetName.of(MandatoryReferenceToOtherConceptFacetClass::class)
 
-    enum class MyEnumeration { X,Y,Z }
-    enum class OtherEnumeration { X,Y,Z }
+    enum class MyEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
+    enum class OtherEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
 
     @Concept(facets = [
         OtherConceptTextFacetClass::class,
@@ -53,8 +50,6 @@ class ConceptDataValidatorTest {
 
     @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
     private interface OtherConceptTextFacetClass
-    private val otherConceptTextFacetName = FacetName.of(OtherConceptTextFacetClass::class)
-
 
     @Concept(facets = [])
     interface OtherThanTheOtherConcept
@@ -222,8 +217,7 @@ class ConceptDataValidatorTest {
         @Concept(facets = [
             MandatoryReferenceToOtherConceptFacetClass::class,
         ])
-        interface ConceptClassWithFacets {
-        }
+        interface ConceptClassWithFacets
 
     }
 
