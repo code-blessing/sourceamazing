@@ -9,6 +9,8 @@ repositories {
 
 
 dependencies {
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib") // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+
     implementation(project(":sourceamazing-schema-api"))
     implementation(project(":sourceamazing-schema"))
     implementation(project(":sourceamazing-xml-schema-api"))
