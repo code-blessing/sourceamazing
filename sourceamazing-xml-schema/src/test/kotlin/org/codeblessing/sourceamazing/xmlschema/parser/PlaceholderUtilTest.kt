@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class PlaceholderUtilTest {
     private val placeholders = mapOf(
@@ -68,8 +68,7 @@ internal class PlaceholderUtilTest {
 
     @Test
     fun `should throw exception if placeholders could not be replaced`() {
-        assertThrows(IllegalArgumentException::class.java
-        ) { -> PlaceholderUtil.replacePlaceholders("A @{inexistentPlaceholder}.", placeholders) }
+        assertThrows<IllegalArgumentException> { -> PlaceholderUtil.replacePlaceholders("A @{inexistentPlaceholder}.", placeholders) }
     }
 
     @Test

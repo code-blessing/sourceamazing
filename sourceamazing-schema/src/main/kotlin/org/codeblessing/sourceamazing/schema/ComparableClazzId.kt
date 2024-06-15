@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema
 
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import kotlin.reflect.KClass
 
 
@@ -21,10 +22,10 @@ abstract class ComparableClazzId protected constructor(val clazz: KClass<*>) {
     }
 
     override fun toString(): String {
-        return clazz.java.simpleName
+        return clazz.shortText()
     }
 
 
-    fun simpleName(): String = this.clazz.java.simpleName
+    fun simpleName(): String = this.clazz.shortText()
 
 }

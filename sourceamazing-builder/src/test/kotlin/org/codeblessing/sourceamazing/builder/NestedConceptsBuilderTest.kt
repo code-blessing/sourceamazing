@@ -4,16 +4,34 @@ import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedCo
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BuiltinFieldTypeConcept.BuiltinTypeEnum
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BusinessObjectConcept.BusinessObjectFields
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BusinessObjectConcept.BusinessObjectName
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.*
+import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionKind
+import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionKindEnum
+import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionValuesType
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.Field.FieldName
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.ReferenceFieldTypeConcept.ReferencedBusinessObject
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.SingleValueFieldConcept.Nullable
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.SingleValueFieldConcept.SingleValueType
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -83,6 +101,7 @@ class NestedConceptsBuilderTest {
             )
             interface SingleValueType
 
+            @Suppress("UNUSED")
             @QueryFacetValue(Nullable::class)
             fun nullable(): Boolean
 
@@ -149,7 +168,7 @@ class NestedConceptsBuilderTest {
     }
 
     @Builder
-    private interface NestedObjectsDataCollector {
+    private interface NestedObjectsBuilder {
 
         @BuilderMethod
         @WithNewBuilder(builderClass = BusinessObjectConceptBuilder::class)
@@ -237,8 +256,8 @@ class NestedConceptsBuilderTest {
         val personBo =  ConceptIdentifier.of("Person")
 
         val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(schemaDefinitionClass = NestedConceptsSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, NestedObjectsDataCollector::class) { dataCollector ->
-                dataCollector.newBusinessObject(personBo, "the person business object") {
+            BuilderApi.withBuilder(schemaContext, NestedObjectsBuilder::class) { builder ->
+                builder.newBusinessObject(personBo, "the person business object") {
                     addSingleValueField("firstname") {
                         builtinType(BuiltinTypeEnum.STRING)
                     }

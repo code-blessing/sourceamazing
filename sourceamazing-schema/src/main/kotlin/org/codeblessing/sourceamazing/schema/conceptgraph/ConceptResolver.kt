@@ -1,15 +1,18 @@
 package org.codeblessing.sourceamazing.schema.conceptgraph
 
-import org.codeblessing.sourceamazing.schema.*
+import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.FacetSchema
+import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
-import org.codeblessing.sourceamazing.schema.util.EnumUtil
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException
 import kotlin.reflect.KClass
 
 object ConceptResolver {
 
-    @Throws(SchemaValidationException::class)
+    @Throws(DataValidationException::class)
     fun validateAndResolveConcepts(schema: SchemaAccess, conceptDataEntries: List<ConceptData>): ConceptGraph {
         val validatedDataEntries = ConceptDataValidator.validateEntries(schema, conceptDataEntries)
         val conceptNodeMap: Map<ConceptIdentifier, MutableConceptNode> = createConceptNodeMap(schema, validatedDataEntries)
@@ -24,7 +27,11 @@ object ConceptResolver {
 
         // 1. Phase: Create entry without facet values
         conceptDataEntries.forEach { (conceptIdentifier, conceptData) ->
-            conceptNodeMap[conceptIdentifier] = MutableConceptNode(conceptData.sequenceNumber, conceptData.conceptName, conceptData.conceptIdentifier)
+            conceptNodeMap[conceptIdentifier] = MutableConceptNode(
+                sequenceNumber = conceptData.sequenceNumber,
+                conceptName = conceptData.conceptName,
+                conceptIdentifier = conceptData.conceptIdentifier,
+            )
         }
 
         // 2. Phase: Fill in facet values and connect with/resolve other referenced concept instances
@@ -61,12 +68,21 @@ object ConceptResolver {
         val enumerationType = facetSchema.enumerationType
             ?: throw IllegalStateException("Facet ${facetSchema.facetName} has no enumerationType.")
         return conceptData.getFacet(facetSchema.facetName)
-            .map { value -> if(value is String) fromStringToEnum(value, enumerationType) else value }
+            .map { value -> transformEnumFacetValue(enumerationType, value) }
     }
 
-    private fun fromStringToEnum(enumStringValue: String, enumerationType: KClass<*>): Any {
-        return EnumUtil.fromStringToEnum(enumStringValue, enumerationType)
-            ?: throw IllegalStateException("Could not convert enum value '$enumStringValue' to enum constants of $enumerationType")
+    private fun transformEnumFacetValue(enumerationType: KClass<*>, value: Any): Enum<*> {
+        if(value is String) {
+            val enumConstants = enumerationType.java.enumConstants
+            return enumerationType.java.enumConstants.filterIsInstance<Enum<*>>().firstOrNull {
+                it.name == value
+            } ?: throw IllegalStateException("Could not convert enum value '$value' to enum constants $enumConstants of $enumerationType")
+        }
+        if(value is Enum<*>) {
+            return value
+        }
+
+        throw IllegalStateException("Could not convert enum value '$value' to enum constants of $enumerationType")
     }
 
     private fun transformReferenceFacetValues(
@@ -75,7 +91,7 @@ object ConceptResolver {
         conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>
     ): List<Any> {
         return conceptData.getFacet(facetName)
-            .filterIsInstance(ConceptIdentifier::class.java)
+            .filterIsInstance<ConceptIdentifier>()
             .map { referencingConceptIdentifier ->
                 conceptNodeMap[referencingConceptIdentifier]
                     ?: throw IllegalStateException("Could not resolve reference to $referencingConceptIdentifier from $${conceptData.conceptIdentifier}. ")

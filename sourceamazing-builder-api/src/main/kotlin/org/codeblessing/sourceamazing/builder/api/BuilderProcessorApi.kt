@@ -5,5 +5,5 @@ import kotlin.reflect.KClass
 
 interface BuilderProcessorApi {
 
-    fun <I : Any> withBuilder(schemaContext: SchemaContext, inputDefinitionClass: KClass<I>, builderUsage: (builder: I) -> Unit)
+    fun <B : Any> withBuilder(schemaContext: SchemaContext, builderClass: KClass<B>, builderUsage: (builder: B) -> Unit)
 }

@@ -1,6 +1,14 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 @Builder
@@ -41,10 +49,7 @@ interface FormBuilder {
         ): SelectDropdownEntryConceptBuilder
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
-
-    interface FormControlBuilder {
+    interface FormControlBuilderMethods {
 
         @BuilderMethod
         fun addLabel(
@@ -68,10 +73,14 @@ interface FormBuilder {
 
     }
 
+    @Builder
+    @ExpectedAliasFromSuperiorBuilder("formControl")
+    interface FormControlBuilder: FormControlBuilderMethods
+
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("formControl")
-    interface SelectDropdownEntryConceptBuilder: FormControlBuilder {
+    interface SelectDropdownEntryConceptBuilder: FormControlBuilderMethods {
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")
