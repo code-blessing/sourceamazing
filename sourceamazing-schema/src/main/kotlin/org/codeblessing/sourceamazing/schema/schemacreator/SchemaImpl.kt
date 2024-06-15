@@ -2,6 +2,8 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.ConceptSchema
+import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.FacetSchema
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 
 data class SchemaImpl(
@@ -22,5 +24,16 @@ data class SchemaImpl(
 
     fun numberOfConcepts(): Int {
         return concepts.size
+    }
+
+    override fun facetByFacetName(facetName: FacetName): FacetSchema? {
+        for (concept in concepts.values) {
+            for (facet in concept.facets) {
+                if(facet.facetName == facetName) {
+                    return facet
+                }
+            }
+        }
+        return null
     }
 }

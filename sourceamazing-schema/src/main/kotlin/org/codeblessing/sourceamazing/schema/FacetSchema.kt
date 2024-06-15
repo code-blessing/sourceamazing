@@ -10,5 +10,5 @@ interface FacetSchema {
     val maximumOccurrences: Int
     val referencingConcepts: Set<ConceptName>
     val enumerationType: KClass<*>?
-    fun enumerationValues(): List<Enum<*>>
+    val enumerationValues: List<Enum<*>>
 }
