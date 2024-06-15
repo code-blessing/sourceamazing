@@ -9,11 +9,7 @@ repositories {
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
-
-    testImplementation(libs.junit.jupiter)
 }
-
-
 
 tasks.named<Test>("test") {
     useJUnitPlatform()

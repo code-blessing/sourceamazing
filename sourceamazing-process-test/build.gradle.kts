@@ -20,13 +20,7 @@ dependencies {
     // to run an end-to-end test in junit, we need access to the sourceamazing-schema class
     // directly to bypass calling the main function
     testImplementation(projects.sourceamazingSchema)
-
-
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.junit.jupiter)
-    testImplementation(libs.hamcrest)
-
 }
 
 
