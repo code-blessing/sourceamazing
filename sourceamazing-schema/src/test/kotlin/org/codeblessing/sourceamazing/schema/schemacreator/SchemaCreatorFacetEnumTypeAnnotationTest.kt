@@ -36,7 +36,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(0, enumFacetSchema.enumerationValues().size)
+        assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
 
@@ -68,11 +68,11 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(4, enumFacetSchema.enumerationValues().size)
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues()[0])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues()[1])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues()[2])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues()[3])
+        assertEquals(4, enumFacetSchema.enumerationValues.size)
+        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues[0])
+        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues[1])
+        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues[2])
+        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues[3])
     }
 
     @Schema(concepts = [SchemaWithConceptWithInvalidEnumFacet.ConceptClassWithEnumFacet::class])

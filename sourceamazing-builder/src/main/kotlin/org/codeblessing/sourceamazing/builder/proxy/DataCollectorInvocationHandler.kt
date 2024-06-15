@@ -1,16 +1,32 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
+import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
+import org.codeblessing.sourceamazing.schema.toConceptName
+import org.codeblessing.sourceamazing.schema.toFacetName
+import org.codeblessing.sourceamazing.schema.type.findAnnotations
+import org.codeblessing.sourceamazing.schema.type.getAnnotation
+import org.codeblessing.sourceamazing.schema.type.hasAnnotation
+import org.codeblessing.sourceamazing.schema.type.methodParamsWithValues
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
-import org.codeblessing.sourceamazing.schema.util.MethodUtil
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
@@ -20,15 +36,15 @@ class DataCollectorInvocationHandler(
     private val superiorAliases: Map<String, ConceptIdentifier>
 ): InvocationHandler  {
 
-    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any?>?): Any? {
+    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any?>?): Any {
         val proxy: Any = InvocationHandlerHelper.requiredProxy(proxyOrNull, methodOrNull)
         val method: Method = InvocationHandlerHelper.validatedMethod(methodOrNull)
         val args: Array<out Any?> = InvocationHandlerHelper.validatedArguments(methodOrNull, argsOrNull)
 
-        if(AnnotationUtil.hasAnnotation(method, BuilderMethod::class)) {
+        if(method.hasAnnotation<BuilderMethod>()){
             val myAliases = updateConceptDataCollector(method, args)
 
-            val builderForNextStep: Any = if(AnnotationUtil.hasAnnotation(method, WithNewBuilder::class)) {
+            val builderForNextStep: Any = if(method.hasAnnotation<WithNewBuilder>()) {
                 createNewBuilderProxy(method, conceptDataCollector, myAliases)
             } else {
                 proxy // use same builder
@@ -49,7 +65,7 @@ class DataCollectorInvocationHandler(
 
         val newConceptAliases: Map<String, ConceptIdentifier> = newConceptAliasData.mapValues { it.value.second }
 
-        AnnotationUtil.getAnnotations(method, SetFixedBooleanFacetValue::class).forEach { defaultBooleanAnnotation ->
+        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { defaultBooleanAnnotation ->
             updateConceptData(
                 conceptAlias = defaultBooleanAnnotation.conceptToModifyAlias,
                 facetClazz = defaultBooleanAnnotation.facetToModify,
@@ -58,7 +74,7 @@ class DataCollectorInvocationHandler(
                 newConceptAliases = newConceptAliases
             )
         }
-        AnnotationUtil.getAnnotations(method, SetFixedEnumFacetValue::class).forEach { defaultEnumAnnotation ->
+        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { defaultEnumAnnotation ->
             updateConceptData(
                 conceptAlias = defaultEnumAnnotation.conceptToModifyAlias,
                 facetClazz = defaultEnumAnnotation.facetToModify,
@@ -67,7 +83,7 @@ class DataCollectorInvocationHandler(
                 newConceptAliases = newConceptAliases
             )
         }
-        AnnotationUtil.getAnnotations(method, SetFixedIntFacetValue::class).forEach { defaultIntAnnotation ->
+        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { defaultIntAnnotation ->
             updateConceptData(
                 conceptAlias = defaultIntAnnotation.conceptToModifyAlias,
                 facetClazz = defaultIntAnnotation.facetToModify,
@@ -76,7 +92,7 @@ class DataCollectorInvocationHandler(
                 newConceptAliases = newConceptAliases
             )
         }
-        AnnotationUtil.getAnnotations(method, SetFixedStringFacetValue::class).forEach { defaultStringAnnotation ->
+        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { defaultStringAnnotation ->
             updateConceptData(
                 conceptAlias = defaultStringAnnotation.conceptToModifyAlias,
                 facetClazz = defaultStringAnnotation.facetToModify,
@@ -85,7 +101,7 @@ class DataCollectorInvocationHandler(
                 newConceptAliases = newConceptAliases
             )
         }
-        AnnotationUtil.getAnnotations(method, SetAliasConceptIdentifierReferenceFacetValue::class).forEach { referenceValueAnnotation ->
+        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { referenceValueAnnotation ->
             val referenceConceptId = conceptIdByAlias(referenceValueAnnotation.referencedConceptAlias, newConceptAliases)
 
             updateConceptData(
@@ -97,13 +113,14 @@ class DataCollectorInvocationHandler(
             )
         }
 
-        val paramsWithValues = MethodUtil.methodParamsWithValues(method, args)
+        val paramsWithValues = method.methodParamsWithValues(args)
         paramsWithValues.forEach { (_, param, argumentValue) ->
-            if(!AnnotationUtil.hasAnnotation(param, SetFacetValue::class)) {
+
+            if(!param.hasAnnotation<SetFacetValue>()) {
                 return@forEach
             }
             if(argumentValue==null) {
-                if(AnnotationUtil.hasAnnotation(param, IgnoreNullFacetValue::class)) {
+                if(param.hasAnnotation<IgnoreNullFacetValue>()) {
                     return@forEach // skip null values silently
                 } else {
                     throw IllegalArgumentException("Can not pass null values for parameter '${param.name}' " +
@@ -111,7 +128,7 @@ class DataCollectorInvocationHandler(
                 }
             }
 
-            AnnotationUtil.getAnnotations(param, SetFacetValue::class).forEach { facetValueAnnotation ->
+            param.findAnnotations<SetFacetValue>().forEach { facetValueAnnotation ->
                 updateConceptData(
                     conceptAlias = facetValueAnnotation.conceptToModifyAlias,
                     facetClazz = facetValueAnnotation.facetToModify,
@@ -122,9 +139,6 @@ class DataCollectorInvocationHandler(
             }
         }
 
-
-
-
         return newConceptAliases
     }
 
@@ -134,25 +148,26 @@ class DataCollectorInvocationHandler(
     }
 
     private fun collectNewAliases(method: Method, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
-        val paramsWithValues = MethodUtil.methodParamsWithValues(method, args)
+        val paramsWithArgumentValues = method.methodParamsWithValues(args)
 
         val newConceptsByAlias: MutableMap<String, ConceptName> = mutableMapOf()
         val newConceptsIdentifierByAlias: MutableMap<String, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
 
-        AnnotationUtil.getAnnotations(method, NewConcept::class).forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept)
+        method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
+            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = newConceptAnnotation.concept.toConceptName()
         }
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { autoRandomConceptIdentifierAnnotation ->
+        method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { autoRandomConceptIdentifierAnnotation ->
             val conceptAlias = autoRandomConceptIdentifierAnnotation.conceptToModifyAlias
             val conceptName = newConceptsByAlias[conceptAlias]
                 ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
             val conceptIdentifier = ConceptIdentifierUtil.random(conceptName)
             newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
+
         }
 
-        paramsWithValues.forEach { (_, methodParam, argumentValue) ->
-            AnnotationUtil.getAnnotations(methodParam, SetConceptIdentifierValue::class).forEach { conceptIdentifierValueAnnotation ->
+        paramsWithArgumentValues.forEach { (_, methodParam, argumentValue) ->
+            methodParam.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdentifierValueAnnotation ->
                 val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias
                 val conceptName = newConceptsByAlias[conceptAlias]
                     ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $method")
@@ -176,7 +191,7 @@ class DataCollectorInvocationHandler(
     ) {
         val conceptId: ConceptIdentifier = conceptIdByAlias(conceptAlias, newConceptAliases)
         val conceptData = conceptDataCollector.existingConceptData(conceptId)
-        val facetName = FacetName.of(facetClazz)
+        val facetName = facetClazz.toFacetName()
         val facetValues = facetValues(value)
         when(facetModificationRule) {
             FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)
@@ -222,8 +237,8 @@ class DataCollectorInvocationHandler(
     }
 
     private fun getBuilderClazz(method: Method): KClass<*> {
-        if(AnnotationUtil.hasAnnotation(method, WithNewBuilder::class)) {
-            return AnnotationUtil.getAnnotation(method, WithNewBuilder::class).builderClass
+        if(method.hasAnnotation<WithNewBuilder>()) {
+            return method.getAnnotation<WithNewBuilder>().builderClass
         }
         throw IllegalStateException("No Annotation ${WithNewBuilder::class} found on method: $method")
     }
@@ -231,7 +246,7 @@ class DataCollectorInvocationHandler(
 
     private fun getBuilderParameter(method: Method, args: Array<out Any?>): Any? {
         for ((index, parameter) in method.parameters.withIndex()) {
-            if(AnnotationUtil.hasAnnotation(parameter, InjectBuilder::class)) {
+            if(parameter.hasAnnotation<InjectBuilder>()) {
                 val builderToInject = args[index]
                 return builderToInject
                     ?: throw IllegalStateException(
@@ -239,6 +254,6 @@ class DataCollectorInvocationHandler(
                         )
             }
         }
-        return null;
+        return null
     }
 }

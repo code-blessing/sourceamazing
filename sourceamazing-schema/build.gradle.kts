@@ -7,6 +7,8 @@ plugins {
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
 
+    implementation(libs.kotlin.reflect)
+
     testImplementation(libs.junit.jupiter)
 }
 

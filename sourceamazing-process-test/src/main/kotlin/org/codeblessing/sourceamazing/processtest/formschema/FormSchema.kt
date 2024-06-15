@@ -1,6 +1,14 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 
 @Schema(concepts = [
     FormSchema.FormConcept::class,
@@ -76,11 +84,12 @@ interface FormSchema {
         interface FormatHint
 
         @QueryFacetValue(FormatHint::class)
+        @Suppress("UNUSED")
         fun getFormatHint(): TextInputFormatHint
 
-        enum class TextInputFormatHint(val hint: String) {
+        enum class TextInputFormatHint(@Suppress("UNUSED") val hint: String) {
             PLAIN(""),
-            MONEY("12.30"),
+            @Suppress("UNUSED") MONEY("12.30"),
             DATE("31.12.2023"),
         }
 

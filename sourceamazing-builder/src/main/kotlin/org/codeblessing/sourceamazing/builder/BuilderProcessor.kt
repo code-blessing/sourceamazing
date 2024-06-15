@@ -9,10 +9,10 @@ import kotlin.reflect.KClass
 
 class BuilderProcessor(): BuilderProcessorApi {
 
-    override fun <I : Any> withBuilder(schemaContext: SchemaContext, inputDefinitionClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
-        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(inputDefinitionClass)
+    override fun <I : Any> withBuilder(schemaContext: SchemaContext, builderClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
+        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(builderClass)
         val schemaContextImplementation = schemaContext.toRevealedSchemaContext()
-        val builderImplementation: I = ProxyCreator.createProxy(inputDefinitionClass, DataCollectorInvocationHandler(schemaContextImplementation.conceptDataCollector, emptyMap()))
+        val builderImplementation: I = ProxyCreator.createProxy(builderClass, DataCollectorInvocationHandler(schemaContextImplementation.conceptDataCollector, emptyMap()))
         builderUsage(builderImplementation)
     }
 }

@@ -2,10 +2,25 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.BuilderSmokeTest.SmokeTestSchema.PersonConcept.PersonSex
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

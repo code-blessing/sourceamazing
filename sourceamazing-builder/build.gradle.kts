@@ -13,6 +13,8 @@ dependencies {
     implementation(projects.sourceamazingBuilderApi)
     implementation(projects.sourceamazingSchema)
 
+    implementation(libs.kotlin.reflect)
+
     testImplementation(libs.junit.jupiter)
 }
 

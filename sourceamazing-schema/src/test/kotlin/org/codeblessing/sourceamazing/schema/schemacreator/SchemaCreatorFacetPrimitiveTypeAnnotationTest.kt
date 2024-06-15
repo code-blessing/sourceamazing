@@ -3,8 +3,13 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
@@ -46,13 +51,13 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
         assertEquals(FacetType.BOOLEAN, conceptSchema.facets[1].facetType)
         assertEquals(FacetType.NUMBER, conceptSchema.facets[2].facetType)
 
-        assertEquals(Unit::class, conceptSchema.facets[0].enumerationType)
-        assertEquals(Unit::class, conceptSchema.facets[1].enumerationType)
-        assertEquals(Unit::class, conceptSchema.facets[2].enumerationType)
+        assertNull(conceptSchema.facets[0].enumerationType)
+        assertNull(conceptSchema.facets[1].enumerationType)
+        assertNull(conceptSchema.facets[2].enumerationType)
 
-        assertEquals(0, conceptSchema.facets[0].enumerationValues().size)
-        assertEquals(0, conceptSchema.facets[1].enumerationValues().size)
-        assertEquals(0, conceptSchema.facets[2].enumerationValues().size)
+        assertEquals(0, conceptSchema.facets[0].enumerationValues.size)
+        assertEquals(0, conceptSchema.facets[1].enumerationValues.size)
+        assertEquals(0, conceptSchema.facets[2].enumerationValues.size)
 
     }
 }

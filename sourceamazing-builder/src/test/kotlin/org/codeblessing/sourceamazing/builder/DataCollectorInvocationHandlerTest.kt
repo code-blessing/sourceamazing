@@ -1,10 +1,23 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.builder.proxy.DataCollectorInvocationHandler
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.junit.jupiter.api.Assertions

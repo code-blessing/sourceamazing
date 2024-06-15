@@ -1,8 +1,22 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -10,13 +24,24 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     // Do not validate for duplicate assignment on the same facet and concept, as this can
     // be a useful case when adding values to a facet (instead of replacing values).
 
+    @Schema(concepts = [MyConcept::class])
+    private interface MySchema
+
+    @Concept(facets = [MyFacet::class])
+    private interface MyConcept
+
+    @StringFacet
+    private interface MyFacet
+
+    // tests
+
     @Builder
     private interface DataCollectorWithDuplicateAliasForNewConcept {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
 
@@ -31,10 +56,9 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Builder
     @ExpectedAliasFromSuperiorBuilder("foo")
     private interface DataCollectorWithDuplicateAliasImportedFromSuperiorForNewConcept {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
@@ -49,17 +73,16 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithDuplicateAliasForRandomConceptIdentifier {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
 
     @Test
-    fun `test duplicate alias for AutoRandomConceptIdentifier annotation should throw an error`() {
+    fun `test duplicate alias for SetRandomConceptIdentifierValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithDuplicateAliasForRandomConceptIdentifier::class)
@@ -68,10 +91,9 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithDuplicateAliasForManuallySetConceptIdentifier {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier2: ConceptIdentifier,
@@ -88,10 +110,9 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithoutConceptIdentifierForAlias {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething()
     }
 
@@ -106,10 +127,9 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithDuplicateMixedConceptIdentifier {
-        interface MyConceptClass
 
         @BuilderMethod
-        @NewConcept(MyConceptClass::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier
@@ -117,7 +137,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     }
 
     @Test
-    fun `test duplicate alias for AutoRandomConceptIdentifier and ConceptIdentifier annotation should throw an error`() {
+    fun `test duplicate alias with SetRandomConceptIdentifierValue and SetConceptIdentifierValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithDuplicateMixedConceptIdentifier::class)
@@ -132,7 +152,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     }
 
     @Test
-    fun `test use of unknown alias on AutoRandomConceptIdentifier annotation should throw an error`() {
+    fun `test use of unknown alias on SetRandomConceptIdentifierValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInAutoRandomConceptIdentifier::class)
@@ -148,7 +168,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     }
 
     @Test
-    fun `test use of unknown alias on ConceptIdentifierValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetConceptIdentifierValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInConceptIdentifierValueAnnotation::class)
@@ -158,15 +178,14 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInFacetValueAnnotation {
 
-        interface FacetClass
         @BuilderMethod
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class) value: String
+            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class) value: String
         )
     }
 
     @Test
-    fun `test use of unknown alias on FacetValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInFacetValueAnnotation::class)
@@ -176,14 +195,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Builder
     @ExpectedAliasFromSuperiorBuilder("known")
     private interface DataCollectorWithUseOfUnknownAliasInLinkFacetAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, referencedConceptAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class, referencedConceptAlias = "known")
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias in property conceptToModifyAlias on the ReferenceFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias in property conceptToModifyAlias on the SetAliasConceptIdentifierReferenceFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInLinkFacetAnnotation::class)
@@ -193,14 +211,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Builder
     @ExpectedAliasFromSuperiorBuilder("known")
     private interface DataCollectorWithUseOfUnknownAliasInLinkFacetReferenceAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "known", facetToModify = FacetClass::class, referencedConceptAlias = "unknown")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "known", facetToModify = MyFacet::class, referencedConceptAlias = "unknown")
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias in property referencedConceptAlias on ReferenceFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias in property referencedConceptAlias on SetAliasConceptIdentifierReferenceFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInLinkFacetReferenceAnnotation::class)
@@ -209,14 +226,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInDefaultStringFacetValueAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = "foo")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class, value = "foo")
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias on DefaultStringFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetFixedStringFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInDefaultStringFacetValueAnnotation::class)
@@ -225,14 +241,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInDefaultBooleanFacetValueAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetFixedBooleanFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = false)
+        @SetFixedBooleanFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class, value = false)
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias on DefaultBooleanFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetFixedBooleanFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInDefaultBooleanFacetValueAnnotation::class)
@@ -241,14 +256,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInDefaultIntegerFacetValueAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = 42)
+        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class, value = 42)
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias on DefaultIntFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetFixedIntFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInDefaultIntegerFacetValueAnnotation::class)
@@ -257,14 +271,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Builder
     private interface DataCollectorWithUseOfUnknownAliasInDefaultEnumFacetValueAnnotation {
-        interface FacetClass
         @BuilderMethod
-        @SetFixedEnumFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = "BAR")
+        @SetFixedEnumFacetValue(conceptToModifyAlias = "unknown", facetToModify = MyFacet::class, value = "BAR")
         fun doSomething()
     }
 
     @Test
-    fun `test use of unknown alias on DefaultEnumFacetValue annotation should throw an error`() {
+    fun `test use of unknown alias on SetFixedEnumFacetValue annotation should throw an error`() {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
                 DataCollectorWithUseOfUnknownAliasInDefaultEnumFacetValueAnnotation::class)
@@ -276,15 +289,14 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @ExpectedAliasFromSuperiorBuilder(conceptAlias = "known")
     @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
     private interface DataCollectorMissingAnAliasButExpectsItFromParentBuilder {
-        interface FacetClass
         @BuilderMethod
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "known", facetToModify = FacetClass::class) value: String,
+            @SetFacetValue(conceptToModifyAlias = "known", facetToModify = MyFacet::class) value: String,
         )
     }
 
     @Test
-    fun `test use of alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder should return without exceptions`() {
+    fun `test use of alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder annotation should return without exceptions`() {
         DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(
             DataCollectorMissingAnAliasButExpectsItFromParentBuilder::class)
     }

@@ -1,7 +1,11 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals

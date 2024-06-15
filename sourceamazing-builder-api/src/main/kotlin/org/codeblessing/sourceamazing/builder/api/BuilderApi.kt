@@ -6,12 +6,12 @@ import kotlin.reflect.KClass
 
 object BuilderApi {
 
-    fun <I : Any> withBuilder(schemaContext: SchemaContext, inputDefinitionClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
+    fun <B : Any> withBuilder(schemaContext: SchemaContext, builderClass: KClass<B>, builderUsage: (builder: B) -> Unit) {
         val builderProcessorApis: ServiceLoader<BuilderProcessorApi> = ServiceLoader.load(BuilderProcessorApi::class.java)
 
         val builderProcessorApi = requireNotNull(builderProcessorApis.firstOrNull()) {
             "Could not find an implementation of the interface '${BuilderProcessorApi::class}'."
         }
-        builderProcessorApi.withBuilder(schemaContext, inputDefinitionClass, builderUsage)
+        builderProcessorApi.withBuilder(schemaContext, builderClass, builderUsage)
     }
 }

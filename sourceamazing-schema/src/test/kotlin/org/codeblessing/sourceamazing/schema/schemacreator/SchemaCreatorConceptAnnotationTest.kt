@@ -3,7 +3,11 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.*
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled

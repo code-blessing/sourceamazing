@@ -1,7 +1,11 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
-import org.codeblessing.sourceamazing.schema.*
-import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.ConceptSchema
+import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.FacetSchema
+import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
@@ -13,7 +17,6 @@ import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
 import org.xml.sax.ext.DefaultHandler2
 import java.nio.file.Path
-import java.util.*
 
 
 class SaxParserHandler(

@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.builder.exceptions
 
-import java.lang.reflect.Method
+import kotlin.reflect.KFunction
 
-class DataCollectorBuilderMethodSyntaxException(method: Method, msg: String)
+class DataCollectorBuilderMethodSyntaxException(method: KFunction<*>, msg: String)
     : DataCollectorBuilderException("$msg\n Method: $method")
