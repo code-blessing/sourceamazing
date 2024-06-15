@@ -10,5 +10,3 @@ tmp
 sourceamazing-process-test/input-data/schema/*
 sourceamazing-process-test/output-data/*
 
-examples/html-form-example/input-data/schema/*
-examples/html-form-example/WebContent/*
