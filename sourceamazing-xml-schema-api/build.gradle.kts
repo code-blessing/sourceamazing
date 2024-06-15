@@ -1,10 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
-}
-
-repositories {
-    mavenCentral()
+    `maven-dependency-repository`
 }
 
 dependencies {
