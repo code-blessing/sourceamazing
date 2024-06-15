@@ -14,9 +14,6 @@ dependencies {
     implementation(projects.sourceamazingSchema)
 
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.junit.jupiter)
-    testImplementation(libs.hamcrest)
 }
 
 

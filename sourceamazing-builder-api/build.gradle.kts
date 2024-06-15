@@ -9,8 +9,6 @@ repositories {
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
-
-    testImplementation(libs.junit.jupiter)
 }
 
 
