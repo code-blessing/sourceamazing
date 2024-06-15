@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.schema
 
-import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
 
-abstract class ComparableClazzId protected constructor(val clazz: KClass<*>) {
+abstract class ComparableClazzId protected constructor(val clazz: ClassMirrorInterface) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -21,10 +21,10 @@ abstract class ComparableClazzId protected constructor(val clazz: KClass<*>) {
     }
 
     override fun toString(): String {
-        return clazz.java.simpleName
+        return clazz.shortText()
     }
 
 
-    fun simpleName(): String = this.clazz.java.simpleName
+    fun simpleName(): String = this.clazz.shortText()
 
 }

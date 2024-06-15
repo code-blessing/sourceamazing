@@ -1,40 +1,33 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetCardinalityAnnotationTest {
 
-    @Schema(concepts = [SchemaWithConceptWithCorrectCardinalityFacetsClasses.ConceptClassWithFacets::class])
-    private interface SchemaWithConceptWithCorrectCardinalityFacetsClasses {
-        @Concept(facets = [
-            ConceptClassWithFacets.TextFacetClass::class,
-            ConceptClassWithFacets.BooleanFacetClass::class,
-            ConceptClassWithFacets.NumberFacetClass::class,
-        ])
-        interface ConceptClassWithFacets {
-            @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
-            interface TextFacetClass
-            @BooleanFacet(minimumOccurrences = 1, maximumOccurrences = 1)
-            interface BooleanFacetClass
-            @IntFacet(minimumOccurrences = 2, maximumOccurrences = 5)
-            interface NumberFacetClass
-        }
-    }
-
     @Test
     fun `test concept having three facets with correct cardinalities`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(
-            SchemaWithConceptWithCorrectCardinalityFacetsClasses::class
-        )
-        val conceptSchema = schema.conceptByConceptName(
-            ConceptName.of(
-            SchemaWithConceptWithCorrectCardinalityFacetsClasses.ConceptClassWithFacets::class))
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  0, maximumOccurrences = 1))
+                }
+                facet {
+                    withAnnotationOnFacet(BooleanFacetAnnotationMirror(minimumOccurrences =  1, maximumOccurrences = 1))
+                }
+                facet {
+                    withAnnotationOnFacet(IntFacetAnnotationMirror(minimumOccurrences =  2, maximumOccurrences = 5))
+                }
+            }
+        }
 
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val conceptSchema = schema.allConcepts().first()
         assertEquals(0, conceptSchema.facets[0].minimumOccurrences)
         assertEquals(1, conceptSchema.facets[0].maximumOccurrences)
 
@@ -46,35 +39,33 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
     }
 
 
-    @Schema(concepts = [SchemaWithConceptWithNegativeCardinalityFacetsClasses.ConceptClassWithFacet::class])
-    private interface SchemaWithConceptWithNegativeCardinalityFacetsClasses {
-        @Concept(facets = [ConceptClassWithFacet.FacetClass::class])
-        interface ConceptClassWithFacet {
-            @StringFacet(minimumOccurrences = -1, maximumOccurrences = 1)
-            interface FacetClass
-        }
-    }
-
     @Test
     fun `test negative cardinality on facet should throw an exception`() {
-        Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithNegativeCardinalityFacetsClasses::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  -1, maximumOccurrences = 1))
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaWithConceptWithSwappedCardinalityFacetClass.ConceptClassWithFacet::class])
-    private interface SchemaWithConceptWithSwappedCardinalityFacetClass {
-        @Concept(facets = [ConceptClassWithFacet.FacetClass::class])
-        interface ConceptClassWithFacet {
-            @StringFacet(minimumOccurrences = 3, maximumOccurrences = 2)
-            interface FacetClass
+        Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test min cardinality is greater than maximum cardinality on facet should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  3, maximumOccurrences = 2))
+                }
+            }
+        }
+
         Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithSwappedCardinalityFacetClass::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 

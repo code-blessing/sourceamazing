@@ -1,0 +1,4 @@
+package org.codeblessing.sourceamazing.schema.typemirror
+
+
+interface TypeParameterTypeMirrorInterface: TypeMirrorInterface

@@ -1,11 +1,14 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    `java-test-fixtures`
     `sourceamazing-publishing`
     `maven-dependency-repository`
 }
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
+
+    implementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
 }

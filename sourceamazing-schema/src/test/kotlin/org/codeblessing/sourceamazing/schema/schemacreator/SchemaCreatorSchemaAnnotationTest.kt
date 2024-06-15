@@ -1,11 +1,10 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
@@ -13,69 +12,106 @@ import org.junit.jupiter.api.Test
 
 class SchemaCreatorSchemaAnnotationTest {
 
-    private interface UnannotatedSchemaDefinitionClass
-
     @Test
     fun `test unannotated schema class should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+            // nothing to do
+        }
+
+
         assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(UnannotatedSchemaDefinitionClass::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
-
-    @Schema(concepts = [])
-    private class NonInterfaceSchemaDefinitionClass
 
     @Test
-    fun `test non-interface schema class should throw an exception`() {
+    fun `test schema interface as class should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            setSchemaIsClass()
+        }
+
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(NonInterfaceSchemaDefinitionClass::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
-    @Schema(concepts = [])
-    @Concept(facets = [])
-    private interface SchemaDefinitionClassWithConceptAnnotation
+    @Test
+    fun `test schema interface as enum class should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            setSchemaIsEnum()
+        }
+
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
+    }
+
+    @Test
+    fun `test schema interface as annotation interface should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            setSchemaIsAnnotation()
+        }
+
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
+    }
+
+    @Test
+    fun `test schema interface as object class interface should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            setSchemaIsObjectClass()
+        }
+
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
+    }
 
     @Test
     fun `test schema class with concept annotation should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            withAnnotationOnSchema(ConceptAnnotationMirror(emptyList()))
+        }
+
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaDefinitionClassWithConceptAnnotation::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
-
-    @Schema(concepts = [])
-    @StringFacet
-    private interface SchemaDefinitionClassWithFacetAnnotation
 
     @Test
     fun `test schema class with facet annotation should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            withAnnotationOnSchema(StringFacetAnnotationMirror())
+        }
+
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaDefinitionClassWithFacetAnnotation::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
-
-    @Schema(concepts = [])
-    private interface ParentSchemaWithTwoSchemaAnnotationsInHierarchyClasses
-    @Schema(concepts = [])
-    private interface SchemaWithTwoSchemaAnnotationsInHierarchyClasses:
-        ParentSchemaWithTwoSchemaAnnotationsInHierarchyClasses
 
     @Test
     @Disabled("Not prevented currently")
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
+        val parentSchemaMirror = FakeSchemaMirrorDsl.schema {
+            // parent schema
+        }
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            withSuperClassMirror(parentSchemaMirror)
+            // child schema
+        }
+
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithTwoSchemaAnnotationsInHierarchyClasses::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
-
-    @Schema(concepts = [])
-    private interface EmptySchemaDefinitionClass
-
     @Test
-    fun `test create an empty schema from an empty schema interface`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(EmptySchemaDefinitionClass::class)
+    fun `test create an empty schema from an empty schema interface without throwing an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            // empty schema without concepts
+        }
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         assertEquals(0, schema.numberOfConcepts())
     }
-
 }

@@ -9,22 +9,31 @@ import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
+import kotlin.reflect.KClass
 
-object XmlTestSchema {
+object XmlTestSchemaCreator {
 
-    val testEntityConceptName = ConceptName.of(TestEntityConcept::class)
-    val testEntityNameFacetName = FacetName.of(TestEntityConcept.Name::class)
-    val testEntityKotlinModelClassnameFacetName = FacetName.of(TestEntityConcept.KotlinModelClassname::class)
-    val testEntityKotlinModelPackageFacetName = FacetName.of(TestEntityConcept.KotlinModelPackage::class)
-    val testEntityAttributeConceptName = ConceptName.of(TestEntityAttributeConcept::class)
-    val testEntityAttributeNameFacetName = FacetName.of(TestEntityAttributeConcept.Name::class)
-    val testEntityAttributeTypeFacetName = FacetName.of(TestEntityAttributeConcept.Type::class)
+    val testEntityConceptName = TestEntityConcept::class.toConceptName()
+    val testEntityNameFacetName = TestEntityConcept.Name::class.toFacetName()
+    val testEntityKotlinModelClassnameFacetName = TestEntityConcept.KotlinModelClassname::class.toFacetName()
+    val testEntityKotlinModelPackageFacetName = TestEntityConcept.KotlinModelPackage::class.toFacetName()
+    val testEntityAttributeConceptName = TestEntityAttributeConcept::class.toConceptName()
+    val testEntityAttributeNameFacetName = TestEntityAttributeConcept.Name::class.toFacetName()
+    val testEntityAttributeTypeFacetName = TestEntityAttributeConcept.Type::class.toFacetName()
 
 
     fun createSchema(): SchemaAccess {
         return SchemaCreator.createSchemaFromSchemaDefinitionClass(XmlTestSchema::class)
     }
 
+    private fun KClass<*>.toFacetName(): FacetName {
+        return FacetName.of(MirrorFactory.convertToClassMirror(this))
+    }
+
+    private fun KClass<*>.toConceptName(): ConceptName {
+        return ConceptName.of(MirrorFactory.convertToClassMirror(this))
+    }
 
     @Schema(concepts = [
         TestEntityConcept::class,

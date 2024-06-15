@@ -1,12 +1,22 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
-import org.codeblessing.sourceamazing.schema.*
+import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.ConceptSchema
+import org.codeblessing.sourceamazing.schema.FacetSchema
+import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleSchemaValidationException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.*
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownConceptException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownFacetNameException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.util.EnumUtil
-import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
 object ConceptDataValidator {
 
@@ -212,7 +222,7 @@ object ConceptDataValidator {
 
         if(!isValidType) {
             val msg = if(expectedFacetType == FacetType.TEXT_ENUMERATION && facetValue is String) {
-                "The facet value must be one of ${EnumUtil.enumConstantStringList(facetEnumType(facetSchema))} " +
+                "The facet value must be one of ${facetEnumType(facetSchema).enumValues} " +
                         "but was '$facetValue' (${actualClass.longText()})."
             } else {
                 "A facet of type '$expectedFacetType' can not " +
@@ -232,17 +242,17 @@ object ConceptDataValidator {
         return exceptionList
     }
 
-    private fun facetEnumType(facetSchema: FacetSchema): KClass<*> {
+    private fun facetEnumType(facetSchema: FacetSchema): ClassMirrorInterface {
         return facetSchema.enumerationType
             ?: throw IllegalStateException("EnumerationType was empty for facet schema $facetSchema")
     }
 
     private fun isValidEnumValue(enumFacetValue: Any, facetSchema: FacetSchema): Boolean {
         val enumerationType = facetEnumType(facetSchema)
-        return if(enumFacetValue is String) {
-            EnumUtil.fromStringToEnum(enumFacetValue, enumerationType) != null
-        } else {
-            EnumUtil.isEnumerationType(enumFacetValue, enumerationType)
+        return when(enumFacetValue) {
+            is String -> enumerationType.enumValues.contains(enumFacetValue)
+            is Enum<*> -> enumerationType.enumValues.contains(enumFacetValue.name)
+            else -> false
         }
     }
 

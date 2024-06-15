@@ -7,7 +7,17 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.*
 import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryValidator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
-import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
+import org.codeblessing.sourceamazing.schema.typemirror.AbstractFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
+import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 import kotlin.reflect.KClass
 
 object SchemaCreator {
@@ -17,10 +27,16 @@ object SchemaCreator {
 
     @Throws(MalformedSchemaException::class)
     fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: KClass<*>): SchemaImpl {
+        return createSchemaFromSchemaClassMirror(MirrorFactory.convertToClassMirror(schemaDefinitionClass))
+    }
+
+
+    @Throws(MalformedSchemaException::class)
+    internal fun createSchemaFromSchemaClassMirror(schemaDefinitionClass: ClassMirrorInterface): SchemaImpl {
         validateSchemaClassAnnotations(schemaDefinitionClass)
         SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
 
-        val conceptClasses = AnnotationUtil.getAnnotation(schemaDefinitionClass, Schema::class).concepts
+        val conceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors()
         validateConceptClassesAnnotations(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
@@ -38,7 +54,7 @@ object SchemaCreator {
                 conceptSimpleNames.add(conceptName.simpleName())
             }
 
-            val facetClasses = AnnotationUtil.getAnnotation(conceptClass, Concept::class).facets
+            val facetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors()
             validateFacetClassesAnnotations(facetClasses)
             val facets: MutableList<FacetSchema> = mutableListOf()
             val facetSimpleNames: MutableSet<String> = mutableSetOf()
@@ -64,50 +80,49 @@ object SchemaCreator {
         return SchemaImpl(concepts)
     }
 
-    private fun validateSchemaClassAnnotations(schemaDefinitionClass: KClass<*>) {
+
+    private fun validateSchemaClassAnnotations(schemaDefinitionClass: ClassMirrorInterface) {
         checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(Concept::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(StringFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(BooleanFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(IntFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(EnumFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(ReferenceFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasOnlyAnnotation(listOf(Schema::class), schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
-    private fun validateConceptClassesAnnotations(conceptClasses: Array<KClass<*>>) {
+    private fun validateConceptClassesAnnotations(conceptClasses: List<ClassMirrorInterface>) {
         conceptClasses.forEach { conceptClass ->
             checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasOnlyAnnotation(listOf(Concept::class), conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Schema::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(StringFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(BooleanFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(IntFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(EnumFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(ReferenceFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
-    private fun validateFacetClassesAnnotations(facetClasses: Array<KClass<*>>) {
+    private fun validateFacetClassesAnnotations(facetClasses: Collection<ClassMirrorInterface>) {
         facetClasses.forEach { facetClass ->
             checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasExactlyOneOfAnnotation(
+                annotations = listOf(
+                    StringFacet::class,
+                    BooleanFacet::class,
+                    IntFacet::class,
+                    EnumFacet::class,
+                    ReferenceFacet::class,
+                ),
+                classToInspect = facetClass,
+                classDescription = FACET_CLASS_DESCRIPTION)
+
+            checkHasOnlyAnnotation(listOf(
                 StringFacet::class,
                 BooleanFacet::class,
                 IntFacet::class,
                 EnumFacet::class,
                 ReferenceFacet::class,
-                classToInspect = facetClass,
-                classDescription = FACET_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Schema::class, facetClass, FACET_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Concept::class, facetClass, FACET_CLASS_DESCRIPTION)
+            ), facetClass, FACET_CLASS_DESCRIPTION)
         }
     }
 
     private fun createFacetSchema(
         conceptName: ConceptName,
         facetName: FacetName,
-        facetClass: KClass<*>,
+        facetClass: ClassMirrorInterface,
         conceptNames: List<ConceptName>
     ): FacetSchema {
         val unvalidatedFacetSchema = createUnvalidatedFacetSchema(facetName, facetClass)
@@ -119,61 +134,40 @@ object SchemaCreator {
         val facetType: FacetType,
         val minimumOccurrences: Int,
         val maximumOccurrences: Int,
-        val enumerationType: KClass<*>? = null,
-        val referencedConceptClasses: Array<KClass<*>> = emptyArray(),
+        val enumerationType: ClassMirrorInterface?,
+        val referencedConceptClasses: List<ClassMirrorInterface>,
     ) {
-        constructor(facetName: FacetName, facetClass: StringFacet) : this(
+        constructor(facetName: FacetName, facetClass: AbstractFacetAnnotationMirror) : this(
             facetName = facetName,
-            facetType = FacetType.TEXT,
+            facetType = facetClass.facetType,
             minimumOccurrences = facetClass.minimumOccurrences,
             maximumOccurrences = facetClass.maximumOccurrences,
-        )
-        constructor(facetName: FacetName, facetClass: BooleanFacet) : this(
-            facetName = facetName,
-            facetType = FacetType.BOOLEAN,
-            minimumOccurrences = facetClass.minimumOccurrences,
-            maximumOccurrences = facetClass.maximumOccurrences,
-        )
-        constructor(facetName: FacetName, facetClass: IntFacet) : this(
-            facetName = facetName,
-            facetType = FacetType.NUMBER,
-            minimumOccurrences = facetClass.minimumOccurrences,
-            maximumOccurrences = facetClass.maximumOccurrences,
-        )
-        constructor(facetName: FacetName, facetClass: EnumFacet) : this(
-            facetName = facetName,
-            facetType = FacetType.TEXT_ENUMERATION,
-            minimumOccurrences = facetClass.minimumOccurrences,
-            maximumOccurrences = facetClass.maximumOccurrences,
-            enumerationType = facetClass.enumerationClass,
-        )
-        constructor(facetName: FacetName, facetClass: ReferenceFacet) : this(
-            facetName = facetName,
-            facetType = FacetType.REFERENCE,
-            minimumOccurrences = facetClass.minimumOccurrences,
-            maximumOccurrences = facetClass.maximumOccurrences,
-            referencedConceptClasses = facetClass.referencedConcepts,
+            enumerationType = if(facetClass is EnumFacetAnnotationMirror) facetClass.enumerationClass.provideMirror() else null,
+            referencedConceptClasses = if(facetClass is ReferenceFacetAnnotationMirror) facetClass.referencedConcepts.provideClassMirrors() else emptyList(),
         )
     }
 
 
     private fun createUnvalidatedFacetSchema(
         facetName: FacetName,
-        facetClass: KClass<*>,
+        facetClass: ClassMirrorInterface,
     ): UnvalidatedFacetSchema {
-        return if(AnnotationUtil.hasAnnotation(facetClass, StringFacet::class)) {
-            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, StringFacet::class))
-        } else if(AnnotationUtil.hasAnnotation(facetClass, BooleanFacet::class)) {
-            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, BooleanFacet::class))
-        } else if(AnnotationUtil.hasAnnotation(facetClass, IntFacet::class)) {
-            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, IntFacet::class))
-        } else if(AnnotationUtil.hasAnnotation(facetClass, EnumFacet::class)) {
-            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, EnumFacet::class))
-        } else if(AnnotationUtil.hasAnnotation(facetClass, ReferenceFacet::class)) {
-            UnvalidatedFacetSchema(facetName, AnnotationUtil.getAnnotation(facetClass, ReferenceFacet::class))
-        } else {
-            throw IllegalStateException("No supported facet type on $facetClass.")
-        }
+        val possibleFacetClasses: Map<KClass<out Annotation>, KClass<out AbstractFacetAnnotationMirror>> = mapOf(
+            StringFacet::class to StringFacetAnnotationMirror::class,
+            BooleanFacet::class to BooleanFacetAnnotationMirror::class,
+            IntFacet::class to IntFacetAnnotationMirror::class,
+            EnumFacet::class to EnumFacetAnnotationMirror::class,
+            ReferenceFacet::class to ReferenceFacetAnnotationMirror::class,
+        )
+        return possibleFacetClasses
+            .filter { facetAnnotation ->
+                facetClass.hasAnnotation(facetAnnotation.key)
+            }
+            .map { facetAnnotation ->
+                UnvalidatedFacetSchema(facetName, facetClass.getAnnotationMirror(facetAnnotation.value))
+            }
+            .firstOrNull()
+            ?: throw IllegalStateException("No supported facet type on $facetClass.")
     }
 
     private fun validatedFacetSchema(
@@ -186,26 +180,19 @@ object SchemaCreator {
         val facetType = facetSchema.facetType
         val minimumOccurrences = facetSchema.minimumOccurrences
         val maximumOccurrences = facetSchema.maximumOccurrences
-        val enumerationType =  facetSchema.enumerationType ?: Unit::class
+        val enumerationType =  facetSchema.enumerationType
         val referencedConcepts =  facetSchema.referencedConceptClasses
             .map { ConceptName.of(it) }.toSet()
 
 
-        if(facetType == FacetType.TEXT_ENUMERATION && !enumerationType.java.isEnum) {
+        if(facetType == FacetType.TEXT_ENUMERATION && (enumerationType == null || !enumerationType.isEnum)) {
             throw WrongTypeMalformedSchemaException(
                 "Facet '$facetName' on concept '$conceptName' " +
-                "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
-                "defined or not a real enumeration class (was '$enumerationType')."
+                        "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
+                        "defined or not a real enumeration class (was '$enumerationType')."
             )
         }
 
-        if(facetType != FacetType.TEXT_ENUMERATION && enumerationType != Unit::class) {
-            throw WrongTypeMalformedSchemaException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                "has declared an enumeration class '$enumerationType' but the type of the facet " +
-                "is '$facetType' instead of '${FacetType.TEXT_ENUMERATION}'."
-            )
-        }
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
             throw WrongTypeMalformedSchemaException(
@@ -249,7 +236,7 @@ object SchemaCreator {
             }
         }
 
-        return org.codeblessing.sourceamazing.schema.schemacreator.FacetSchemaImpl(
+        return FacetSchemaImpl(
             facetName = facetName,
             facetType = facetType,
             minimumOccurrences = minimumOccurrences,
@@ -259,35 +246,49 @@ object SchemaCreator {
         )
     }
 
-    private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.java.isInterface) {
-            throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must be an interface.")
+    private fun checkIsInterface(classToInspect: ClassMirrorInterface, classDescription: String) {
+        if(!classToInspect.isInterface || classToInspect.isAnnotation) {
+            throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.longText()}' must be an interface.")
         }
     }
 
-    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
-        if(!hasClassAnnotation(annotation, classToInspect)) {
-            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
+    private fun checkHasOnlyAnnotation(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: ClassMirrorInterface, classDescription: String) {
+        classToInspect.annotations
+            .filter { it.isAnnotationFromSourceAmazing() }
+            .forEach { annotationOnClass ->
+                if(!permittedAnnotations.any { annotationOnClass.isAnnotation(it) }) {
+                    throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have annotation of type '${annotationOnClass.annotationClass.longText()}'.")
+                }
+            }
+    }
+
+    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String, maxRepeatable: Int = 1) {
+        if(!classToInspect.hasAnnotation(annotation)) {
+            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
+        }
+
+        if(classToInspect.numberOfAnnotation(annotation) > maxRepeatable) {
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have more than $maxRepeatable annotation of type '${annotation.annotationText()}'.")
         }
     }
 
-    private fun checkHasExactlyOneOfAnnotation(vararg annotations: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
+    private fun checkHasExactlyOneOfAnnotation(annotations: List<KClass<out Annotation>>, classToInspect: ClassMirrorInterface, classDescription: String) {
         val numberOfAnnotations = annotations.count { annotation -> hasClassAnnotation(annotation, classToInspect) }
 
         if(numberOfAnnotations < 1) {
-            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must have one of the annotations ${annotations.joinToString { it.annotationText() }}.")
+            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have one of the annotations ${annotations.joinToString { it.annotationText() }}.")
         } else if(numberOfAnnotations > 1) {
-            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' can not have more than one of the annotations ${annotations.joinToString { it.annotationText() }}.")
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have more than one of the annotations ${annotations.joinToString { it.annotationText() }}.")
         }
     }
 
-    private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
+    private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
         if(hasClassAnnotation(annotation, classToInspect)) {
-            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must not have an annotation of type '${annotation.annotationText()}'.")
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must not have an annotation of type '${annotation.annotationText()}'.")
         }
     }
 
-    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {
-        return classToInspect.java.getAnnotation(annotation.java) != null
+    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface): Boolean {
+        return classToInspect.hasAnnotation(annotation)
     }
 }

@@ -1,113 +1,92 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetEnumTypeAnnotationTest {
 
-    @Schema(concepts = [SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithEmptyEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MyEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = EmptyEnumeration::class)
-            interface MyEnumFacet
-        }
-
-        enum class EmptyEnumeration
-    }
-
     @Test
     fun `test concept having an empty enumeration facet should not throw an exception`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEmptyEnumFacet::class)
+        val emptyEnumerationClassMirror = CommonFakeMirrors.namedEnumClassMirror("MyEnum")
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withFacetClassName("MyEnumFacet")
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = emptyEnumerationClassMirror))
+                }
+            }
+        }
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
-        val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
-        assertEquals(enumFacetName, enumFacetSchema.facetName)
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+
+        val conceptSchema = schema.allConcepts().first()
+        val enumFacetSchema = conceptSchema.facets.first()
+        assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(0, enumFacetSchema.enumerationValues().size)
-    }
-
-
-    @Schema(concepts = [SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MyEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = SeasonEnumeration::class)
-            interface MyEnumFacet
-        }
-
-        enum class SeasonEnumeration {
-            WINTER,
-            SPRING,
-            SUMMER,
-            FALL,
-        }
+        assertNotNull(enumFacetSchema.enumerationType)
+        assertEquals("MyEnum", requireNotNull(enumFacetSchema.enumerationType).className)
+        assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
     @Test
     fun `test concept having a enumeration facet`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEnumFacet::class)
-
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
-        val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
-        assertEquals(enumFacetName, enumFacetSchema.facetName)
-        assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(4, enumFacetSchema.enumerationValues().size)
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues()[0])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues()[1])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues()[2])
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues()[3])
-    }
-
-    @Schema(concepts = [SchemaWithConceptWithInvalidEnumFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithInvalidEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.InvalidEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = String::class)
-            interface InvalidEnumFacet
+        val seasonEnumerationClassMirror = CommonFakeMirrors.namedEnumClassMirror("MySeasonEnum", "WINTER", "SPRING", "SUMMER", "FALL")
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withFacetClassName("MyEnumFacet")
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = seasonEnumerationClassMirror))
+                }
+            }
         }
+
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+
+
+        val conceptSchema = schema.allConcepts().first()
+        val enumFacetSchema = conceptSchema.facets.first()
+        assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
+        assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
+        assertEquals("MySeasonEnum", requireNotNull(enumFacetSchema.enumerationType).className)
+        assertEquals(4, enumFacetSchema.enumerationValues.size)
+        assertEquals("WINTER", enumFacetSchema.enumerationValues[0])
+        assertEquals("SPRING", enumFacetSchema.enumerationValues[1])
+        assertEquals("SUMMER", enumFacetSchema.enumerationValues[2])
+        assertEquals("FALL", enumFacetSchema.enumerationValues[3])
     }
 
     @Test
     fun `test invalid enum type on facet should throw an exception`() {
-        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithInvalidEnumFacet::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.stringClassMirror()))
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaWithConceptWithMissingEnumTypeOnFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithMissingEnumTypeOnFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MissingEnumTypeFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = Unit::class)
-            interface MissingEnumTypeFacet
+        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test enum facet with missing enum type should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.unitClassMirror()))
+                }
+            }
+        }
+
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithMissingEnumTypeOnFacet::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 }

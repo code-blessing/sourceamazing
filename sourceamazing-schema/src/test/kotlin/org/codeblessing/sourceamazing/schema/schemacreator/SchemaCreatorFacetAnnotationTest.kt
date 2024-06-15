@@ -1,138 +1,135 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
-import org.junit.jupiter.api.Assertions.*
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetAnnotationTest {
 
-    @Schema(concepts = [SchemaAndConceptWithUnannotatedFacetClass.ConceptClassWithUnannotatedFacet::class])
-    private interface SchemaAndConceptWithUnannotatedFacetClass {
-        @Concept(facets = [ConceptClassWithUnannotatedFacet.UnannotatedFacetClass::class])
-        interface ConceptClassWithUnannotatedFacet {
-            interface UnannotatedFacetClass
-        }
-    }
-
     @Test
     fun `test create a concept with an unannotated facet should throw an exception`() {
-        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithUnannotatedFacetClass::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    // no facet annotation
+                }
+            }
         }
-    }
-
-    @Schema(concepts = [SchemaAndConceptWithNonInterfaceFacetClass.ConceptClassWithNonInterfaceFacet::class])
-    private interface SchemaAndConceptWithNonInterfaceFacetClass {
-        @Concept(facets = [ConceptClassWithNonInterfaceFacet.NonInterfaceFacetClass::class])
-        interface ConceptClassWithNonInterfaceFacet {
-            @StringFacet
-            class NonInterfaceFacetClass
+        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test create a concept with an non-interface facet should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithNonInterfaceFacetClass::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    setFacetIsNotInterface()
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaAndConceptWithFacetClassHavingSchemaAnnotation.ConceptClassWithSchemaAnnotatedFacet::class])
-    private interface SchemaAndConceptWithFacetClassHavingSchemaAnnotation {
-        @Concept(facets = [ConceptClassWithSchemaAnnotatedFacet.SchemaAnnotatedFacetClass::class])
-        interface ConceptClassWithSchemaAnnotatedFacet {
-            @Schema(concepts = [])
-            @StringFacet
-            interface SchemaAnnotatedFacetClass
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test create facet class with a schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithFacetClassHavingSchemaAnnotation::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(SchemaAnnotationMirror(emptyList()))
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation.ConceptClassWithMultipleAnnotatedFacet::class])
-    private interface SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation {
-        @Concept(facets = [ConceptClassWithMultipleAnnotatedFacet.MultipleAnnotatedFacetClass::class])
-        interface ConceptClassWithMultipleAnnotatedFacet {
-            @StringFacet
-            @IntFacet
-            interface MultipleAnnotatedFacetClass
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test create facet with multiple facet annotations should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(
-                SchemaAndConceptWithFacetClassHavingMultipleFacetAnnotation::class
-            )
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(IntFacetAnnotationMirror())
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaAndConceptWithFacetClassHavingConceptAnnotation.ConceptClassWithConceptAnnotatedFacet::class])
-    private interface SchemaAndConceptWithFacetClassHavingConceptAnnotation {
-        @Concept(facets = [ConceptClassWithConceptAnnotatedFacet.ConceptAnnotatedFacetClass::class])
-        interface ConceptClassWithConceptAnnotatedFacet {
-            @Concept(facets = [])
-            @StringFacet
-            interface ConceptAnnotatedFacetClass
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test create facet class with a concept annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithFacetClassHavingConceptAnnotation::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(ConceptAnnotationMirror(emptyList()))
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaAndConceptWithDuplicateFacetClass.ConceptClassWithDuplicateFacets::class])
-    private interface SchemaAndConceptWithDuplicateFacetClass {
-        @Concept(facets = [
-            ConceptClassWithDuplicateFacets.OneTextFacetClass::class,
-            ConceptClassWithDuplicateFacets.OneTextFacetClass::class,
-        ])
-        interface ConceptClassWithDuplicateFacets {
-            @StringFacet
-            interface OneTextFacetClass
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test duplicate facet class within a concept should throw an exception`() {
-        assertThrows(DuplicateFacetMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaAndConceptWithDuplicateFacetClass::class)
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept(addConceptAnnotationWithAllFacets = false) {
+                val facetClassMirror = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+                withAnnotationOnConcept(ConceptAnnotationMirror(listOf(facetClassMirror, facetClassMirror)))
+            }
         }
-    }
-
-    @Schema(concepts = [SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet::class])
-    private interface SchemaWithConceptWithTextFacetClass {
-        @Concept(facets = [ConceptClassWithTextFacet.TextFacetClass::class])
-        interface ConceptClassWithTextFacet {
-            @StringFacet
-            interface TextFacetClass
+        assertThrows(DuplicateFacetMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test create an schema with concept class having a text facet`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithTextFacetClass::class)
+        val conceptClassName = "MyConceptClassWithTextFacet"
+        val facetClassName = "MyTextFacet"
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept {
+                withConceptClassName(conceptClassName)
+                facet {
+                    withFacetClassName(facetClassName)
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+            }
+        }
+
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
-        val concept = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet::class))
-        assertTrue(concept.hasFacet(FacetName.of(SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet.TextFacetClass::class)))
+        val concept = schema.allConcepts().first()
+        assertEquals(conceptClassName, concept.conceptName.clazz.className)
+        assertEquals(1, concept.facetNames.size)
+        val facet = concept.facets.first()
+        assertEquals(FacetType.TEXT, facet.facetType)
+        assertEquals(facetClassName, facet.facetName.clazz.className)
     }
 
 }

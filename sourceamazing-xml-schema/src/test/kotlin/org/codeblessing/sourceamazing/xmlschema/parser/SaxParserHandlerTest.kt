@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
-import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
+import org.codeblessing.sourceamazing.xmlschema.XmlTestSchemaCreator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
@@ -58,22 +58,22 @@ internal class SaxParserHandlerTest {
         assertEquals(6, conceptDataList.size)
 
         val personRootNode = conceptDataList[0]
-        assertEquals(XmlTestSchema.testEntityConceptName, personRootNode.conceptName)
-        assertEquals("Person", personRootNode.getFacet(XmlTestSchema.testEntityNameFacetName).firstOrNull())
-        assertEquals("FirstTest", personRootNode.getFacet(XmlTestSchema.testEntityKotlinModelClassnameFacetName).firstOrNull())
-        assertEquals("org.codeblessing.sourceamazing.entities", personRootNode.getFacet(XmlTestSchema.testEntityKotlinModelPackageFacetName).firstOrNull())
+        assertEquals(XmlTestSchemaCreator.testEntityConceptName, personRootNode.conceptName)
+        assertEquals("Person", personRootNode.getFacet(XmlTestSchemaCreator.testEntityNameFacetName).firstOrNull())
+        assertEquals("FirstTest", personRootNode.getFacet(XmlTestSchemaCreator.testEntityKotlinModelClassnameFacetName).firstOrNull())
+        assertEquals("org.codeblessing.sourceamazing.entities", personRootNode.getFacet(XmlTestSchemaCreator.testEntityKotlinModelPackageFacetName).firstOrNull())
         val firstnameNode = conceptDataList[1]
-        assertEquals(XmlTestSchema.testEntityAttributeConceptName, firstnameNode.conceptName)
-        assertEquals("firstname", firstnameNode.getFacet(XmlTestSchema.testEntityAttributeNameFacetName).firstOrNull())
-        assertEquals(XmlTestSchema.TestEntityAttributeConcept.AttributeTypeEnum.TEXT, firstnameNode.getFacet(XmlTestSchema.testEntityAttributeTypeFacetName).firstOrNull())
+        assertEquals(XmlTestSchemaCreator.testEntityAttributeConceptName, firstnameNode.conceptName)
+        assertEquals("firstname", firstnameNode.getFacet(XmlTestSchemaCreator.testEntityAttributeNameFacetName).firstOrNull())
+        assertEquals(XmlTestSchemaCreator.TestEntityAttributeConcept.AttributeTypeEnum.TEXT.name, firstnameNode.getFacet(XmlTestSchemaCreator.testEntityAttributeTypeFacetName).firstOrNull())
         val addressRootNode = conceptDataList[3]
-        assertEquals(XmlTestSchema.testEntityConceptName, addressRootNode.conceptName)
-        assertEquals("Address", addressRootNode.getFacet(XmlTestSchema.testEntityNameFacetName).firstOrNull())
-        assertEquals("org.codeblessing.sourceamazing.entities", addressRootNode.getFacet(XmlTestSchema.testEntityKotlinModelPackageFacetName).firstOrNull())
+        assertEquals(XmlTestSchemaCreator.testEntityConceptName, addressRootNode.conceptName)
+        assertEquals("Address", addressRootNode.getFacet(XmlTestSchemaCreator.testEntityNameFacetName).firstOrNull())
+        assertEquals("org.codeblessing.sourceamazing.entities", addressRootNode.getFacet(XmlTestSchemaCreator.testEntityKotlinModelPackageFacetName).firstOrNull())
     }
 
     private fun createSchema(): SchemaAccess {
-        return XmlTestSchema.createSchema()
+        return XmlTestSchemaCreator.createSchema()
     }
 }
 
