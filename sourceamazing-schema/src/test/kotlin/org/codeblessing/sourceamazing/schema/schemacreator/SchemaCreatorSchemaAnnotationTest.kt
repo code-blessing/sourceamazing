@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
+import kotlin.reflect.KClass
 
 class SchemaCreatorSchemaAnnotationTest {
 
@@ -25,10 +28,27 @@ class SchemaCreatorSchemaAnnotationTest {
     @Schema(concepts = [])
     private class NonInterfaceSchemaDefinitionClass
 
-    @Test
-    fun `test non-interface schema class should throw an exception`() {
+    @Schema(concepts = [])
+    private enum class NonInterfaceSchemaDefinitionEnumClass
+
+    @Schema(concepts = [])
+    private object NonInterfaceSchemaDefinitionObject
+
+    @Schema(concepts = [])
+    private annotation class NonInterfaceSchemaDefinitionAnnotationClass
+
+
+
+    @ParameterizedTest()
+    @ValueSource(classes = [
+        NonInterfaceSchemaDefinitionClass::class,
+        NonInterfaceSchemaDefinitionEnumClass::class,
+        NonInterfaceSchemaDefinitionObject::class,
+        NonInterfaceSchemaDefinitionAnnotationClass::class,
+    ])
+    fun `test non-interface schema class should throw an exception`(nonInterfaceClass: Class<*>) {
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(NonInterfaceSchemaDefinitionClass::class)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(nonInterfaceClass.kotlin)
         }
     }
 
@@ -73,7 +93,7 @@ class SchemaCreatorSchemaAnnotationTest {
     private interface EmptySchemaDefinitionClass
 
     @Test
-    fun `test create an empty schema from an empty schema interface`() {
+    fun `test create an empty schema from an empty schema interface without throwing an exception`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(EmptySchemaDefinitionClass::class)
         assertEquals(0, schema.numberOfConcepts())
     }

@@ -260,7 +260,7 @@ object SchemaCreator {
     }
 
     private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.java.isInterface) {
+        if(!classToInspect.java.isInterface || classToInspect.java.isAnnotation) {
             throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.java.longText()}' must be an interface.")
         }
     }
