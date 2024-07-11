@@ -10,17 +10,24 @@ import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import java.lang.reflect.Method
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.javaType
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.jvm.jvmName
 
 object KotlinReflectionMirrorFactory: MirrorFactoryApi {
 
     override fun convertToMirrorHierarchy(clazz: KClass<*>): ClassMirror {
         return createClassMirror(clazz)
+    }
+
+    override fun convertToMirrorHierarchy(method: Method): MethodMirror {
+        TODO("Not yet implemented")
     }
 
     /**
@@ -40,6 +47,7 @@ object KotlinReflectionMirrorFactory: MirrorFactoryApi {
             className = clazz.simpleName ?: clazz.jvmName,
             isInterface = clazz.java.isInterface,
             isAnnotation = clazz.java.isAnnotation,
+            isEnum = clazz.java.isEnum,
             annotations = createAnnotationList(clazz.annotations),
             methods = createMethodList(clazz),
             propertiesNames = clazz.memberProperties.map { it.name }
@@ -70,9 +78,9 @@ object KotlinReflectionMirrorFactory: MirrorFactoryApi {
     }
 
     private fun createParameterMirror(parameter: KParameter): ParameterMirror {
+        // TODO what is with createAnnotationList(parameter.annotations)
         return ParameterMirror(
             name = parameter.name,
-            annotations = createAnnotationList(parameter.annotations),
             type = createTypeMirror(parameter.type),
         )
     }
@@ -81,15 +89,17 @@ object KotlinReflectionMirrorFactory: MirrorFactoryApi {
     private fun createTypeMirror(type: KType): TypeMirror {
         return TypeMirror(
             annotations = createAnnotationList(type.annotations),
+            classMirror = createClassMirror(type.jvmErasure), // TODO correct?
+            nullable = type.isMarkedNullable
 
         )
     }
 
     private fun createSchemaAnnotationMirror(schemaAnnotation: Schema): SchemaAnnotationMirror {
-        return SchemaAnnotationMirror(schemaAnnotation)
+        return SchemaAnnotationMirror(schemaAnnotation.concepts.map { createClassMirror(it) })
     }
 
     private fun createConceptAnnotationMirror(conceptAnnotation: Concept): ConceptAnnotationMirror {
-        return ConceptAnnotationMirror(conceptAnnotation)
+        return ConceptAnnotationMirror(conceptAnnotation.facets.map { createClassMirror(it) })
     }
 }

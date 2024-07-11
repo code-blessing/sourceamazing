@@ -2,5 +2,7 @@ package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 
-class ConceptAnnotationMirror(conceptAnnotation: Concept) : AnnotationMirror {
-}
+/**
+ * Represents a [Concept] annotation.
+ */
+class ConceptAnnotationMirror(val facets: Collection<ClassMirror>) : AnnotationMirror

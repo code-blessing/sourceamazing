@@ -7,8 +7,10 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import kotlin.reflect.KClass
 
 class DataCollectorInvocationHandlerTest {
 
@@ -201,10 +203,11 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun checkAssertions(conceptDataCollector: ConceptDataCollector) {
-        val personFirstnameFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class)
-        val personAgeFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonAgeFacet::class)
-        val personSkillReferenceFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonSkillsReference::class)
-        val skillDescriptionFacet = FacetName.of(DataCollectorTestSchema.SkillConcept.SkillDescriptionFacet::class)
+
+        val personFirstnameFacet = DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class.toFacetName()
+        val personAgeFacet = DataCollectorTestSchema.PersonConcept.PersonAgeFacet::class.toFacetName()
+        val personSkillReferenceFacet = DataCollectorTestSchema.PersonConcept.PersonSkillsReference::class.toFacetName()
+        val skillDescriptionFacet = DataCollectorTestSchema.SkillConcept.SkillDescriptionFacet::class.toFacetName()
 
         val conceptDataList = conceptDataCollector.provideConceptData()
         Assertions.assertEquals(5, conceptDataList.size)
@@ -224,6 +227,10 @@ class DataCollectorInvocationHandlerTest {
             .single { it.conceptIdentifier == judoConceptIdentifier }
 
         Assertions.assertEquals("Judo", judo.getFacet(skillDescriptionFacet).single())
+    }
+
+    private fun KClass<*>.toFacetName(): FacetName {
+        return FacetName.of(MirrorFactory.convertToClassMirror(this))
     }
 
     private fun createDataCollector(): ConceptDataCollector {

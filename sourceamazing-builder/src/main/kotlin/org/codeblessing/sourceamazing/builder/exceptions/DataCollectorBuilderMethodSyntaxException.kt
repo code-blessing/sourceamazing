@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.builder.exceptions
 
-import java.lang.reflect.Method
+import org.codeblessing.sourceamazing.schema.typemirror.MethodMirror
 
-class DataCollectorBuilderMethodSyntaxException(method: Method, msg: String)
+class DataCollectorBuilderMethodSyntaxException(method: MethodMirror, msg: String)
     : DataCollectorBuilderException("$msg\n Method: $method")

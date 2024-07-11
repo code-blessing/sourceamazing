@@ -1,3 +1,3 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-sealed interface AnnotationMirror
+interface AnnotationMirror

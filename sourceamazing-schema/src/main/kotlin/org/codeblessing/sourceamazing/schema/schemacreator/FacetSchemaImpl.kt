@@ -12,10 +12,10 @@ data class FacetSchemaImpl(
     override val minimumOccurrences: Int,
     override val maximumOccurrences: Int,
     override val referencingConcepts: Set<ConceptName>,
-    override val enumerationType: KClass<*>
+    override val enumerationType: KClass<*>?
 ) : FacetSchema {
     override fun enumerationValues(): List<Enum<*>> {
-        if(enumerationType == Unit::class) {
+        if(enumerationType == null) {
             return emptyList()
         }
         return enumerationType.java.enumConstants.filterIsInstance(Enum::class.java)

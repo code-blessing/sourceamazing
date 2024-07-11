@@ -1,201 +1,210 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class ConceptQueryValidatorTest {
 
-    @Schema(concepts = [ SchemaWithoutAccessorMethods.ConceptWithoutAccessorMethods::class])
-    private interface SchemaWithoutAccessorMethods {
-        @Concept(facets = [])
-        interface ConceptWithoutAccessorMethods
-    }
-
     @Test
     fun `test concept without accessor method should return without exception`() {
-        ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithoutAccessorMethods.ConceptWithoutAccessorMethods::class)
-    }
-
-    @Schema(concepts = [ SchemaWithUnannotatedAccessorMethods.OneConcept::class ])
-    private interface SchemaWithUnannotatedAccessorMethods {
-        @Concept(facets = [OneConcept.OneFacet::class])
-        interface OneConcept {
-
-            @StringFacet
-            interface OneFacet
-
-            fun getFacetValue(): List<Any>
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                // concept without facets and accessors
+            }
         }
+
+        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
     }
 
     @Test
     fun `test concept with a unannotated method should throw an exception`() {
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+
+                method {
+                    withMethodName("getFacetValue")
+                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                }
+            }
+        }
+
         assertThrows(MalformedSchemaException::class.java) {
-            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithUnannotatedAccessorMethods.OneConcept::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
-
-    @Schema(concepts = [ SchemaWithValidAnnotatedAccessorMethods.OneConcept::class ])
-    private interface SchemaWithValidAnnotatedAccessorMethods {
-        @Concept(facets = [OneConcept.OneFacet::class])
-        interface OneConcept {
-
-            @StringFacet
-            interface OneFacet
-
-            @QueryFacetValue(OneFacet::class)
-            fun getFacetValue(): List<Any>
-        }
-    }
 
     @Test
     fun `test concept with a valid annotated method should return without exception`() {
-        ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithValidAnnotatedAccessorMethods.OneConcept::class)
-    }
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                val facetInterfaceMirror = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
 
-    @Schema(concepts = [ SchemaWithValidConceptIdAccessorAnnotatedAccessorMethods.OneConcept::class ])
-    private interface SchemaWithValidConceptIdAccessorAnnotatedAccessorMethods {
-        @Concept(facets = [])
-        interface OneConcept {
-
-            @QueryConceptIdentifierValue
-            fun getConceptId(): ConceptIdentifier
+                method {
+                    withMethodName("getFacetValue")
+                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(facetInterfaceMirror))
+                }
+            }
         }
+
+        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
     }
 
     @Test
     fun `test concept with a valid annotated concept id accessor method should return without exception`() {
-        ConceptQueryValidator.validateAccessorMethodsOfConceptClass(
-            SchemaWithValidConceptIdAccessorAnnotatedAccessorMethods.OneConcept::class
-        )
-    }
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
 
-
-    @Schema(concepts = [ ConceptWithUnsupportedFacet.OneConcept::class ])
-    private interface ConceptWithUnsupportedFacet {
-        @Concept(facets = [OneConcept.OneFacet::class])
-        interface OneConcept {
-
-            @StringFacet
-            interface OneFacet
-
-            @StringFacet
-            interface UnsupportedFacet
-
-            @QueryFacetValue(UnsupportedFacet::class)
-            fun getFacetValue(): List<Any>
+                method {
+                    withMethodName("getConceptId")
+                    withReturnType(CommonMirrors.conceptIdentifierClassMirror())
+                    withAnnotationOnMethod(QueryConceptIdentifierValueAnnotationMirror())
+                }
+            }
         }
+
+        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
     }
 
     @Test
     fun `test concept with a unsupported facet class should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
-            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(ConceptWithUnsupportedFacet.OneConcept::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept(addConceptAnnotationWithAllFacets = false) {
+                val declaredFacet = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+
+                val undeclaredFacet = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+
+                method {
+                    withMethodName("getFacetValue")
+                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(undeclaredFacet))
+                }
+
+                withAnnotationOnConcept(ConceptAnnotationMirror(listOf(declaredFacet)))
+            }
         }
-    }
 
-    @Schema(concepts = [ SchemaWithConceptWithValidFacets.OneConcept::class, SchemaWithConceptWithValidFacets.AnotherConcept::class ])
-    private interface SchemaWithConceptWithValidFacets {
-        interface CommonConceptInterface
-
-        @Concept(facets = [])
-        interface AnotherConcept: CommonConceptInterface
-
-
-        @Concept(facets = [OneConcept.OneFacet::class])
-        interface OneConcept: CommonConceptInterface {
-
-            @StringFacet
-            interface OneFacet
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsListOfAny(): List<Any>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsOfListOfConcreteConceptClass(): List<OneConcept>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsOfListWithACommonBaseInterface(): List<CommonConceptInterface>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsSetOfAny(): Set<Any>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsOfSetOfConcreteConceptClass(): Set<OneConcept>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsOfSetWithACommonBaseInterface(): Set<CommonConceptInterface>
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsAny(): Any
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsConcreteConceptClass(): OneConcept
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsWithACommonBaseInterface(): CommonConceptInterface
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsAnyNullable(): Any?
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsConcreteConceptClassNullable(): OneConcept?
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsWithACommonBaseInterfaceNullable(): CommonConceptInterface?
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     fun `test concept with valid return types should return without exception`() {
-        ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithConceptWithValidFacets.OneConcept::class)
-    }
+        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val schemaMirror = SchemaMirrorDsl.schema {
+            val anotherConcept = concept {
+                withSuperClassMirror(commonInterface)
+            }
+            concept {
+                val oneFacet = facet {
+                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(commonInterface)))
+                }
 
-    @Schema(concepts = [ SchemaWithFacetMethodHavingParameter.OneConceptClass::class ])
-    private interface SchemaWithFacetMethodHavingParameter {
-
-        @Concept(facets = [OneConceptClass.OneFacet::class])
-        interface OneConceptClass {
-
-            @StringFacet
-            interface OneFacet
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsListOfAny(myParam: Int): List<Any>
+                val returnTypes = mapOf(
+                    "Any" to CommonMirrors.anyClassMirror(),
+                    "OtherConcept" to anotherConcept,
+                    "CommonConceptInterface" to commonInterface,
+                )
+                for ((text, returnType) in returnTypes) {
+                    method {
+                        withMethodName("getConceptAs$text")
+                        withReturnType(returnType, nullable = false)
+                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                    }
+                }
+                for ((text, returnType) in returnTypes) {
+                    method {
+                        withMethodName("getConceptAsNullable$text")
+                        withReturnType(returnType, nullable = true)
+                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                    }
+                }
+                for ((text, returnType) in returnTypes) {
+                    method {
+                        withMethodName("getConceptAsListOf$text")
+                        withReturnType(CommonMirrors.listOfMirror(returnType))
+                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                    }
+                }
+                for ((text, returnType) in returnTypes) {
+                    method {
+                        withMethodName("getConceptAsSetOf$text")
+                        withReturnType(CommonMirrors.setOfMirror(returnType))
+                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                    }
+                }
+            }
         }
+
+        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
     }
 
     @Test
     fun `test concept with method having parameters should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
-            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithFacetMethodHavingParameter.OneConceptClass::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                val oneFacet = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+
+                method {
+                    withMethodName("myMethodWithParameter")
+                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withParameter("myParam", CommonMirrors.intClassMirror(), nullable = false)
+                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                }
+            }
         }
-    }
 
-    @Schema(concepts = [ SchemaWithFacetMethodHavingParameter.OneConceptClass::class ])
-    private interface SchemaWithWrongQueryMethodReturnType {
-
-        @Concept(facets = [OneConceptClass.OneFacet::class])
-        interface OneConceptClass {
-
-            @StringFacet
-            interface OneFacet
-
-            @QueryFacetValue(facetClass = OneFacet::class)
-            fun getMyConceptsAsListOfAny(): Int
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
     @Test
     @Disabled("Currently, this can't be validated properly for generic return types like list of strings etc.")
     fun `test concept with wrong return type in query method should throw an exception`() {
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                val stringFacet = facet {
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                }
+
+                method {
+                    withMethodName("myIntReturningMethod")
+                    withReturnType(CommonMirrors.intClassMirror(), nullable = false)
+                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(stringFacet))
+                }
+            }
+        }
+
         assertThrows(MalformedSchemaException::class.java) {
-            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(SchemaWithWrongQueryMethodReturnType.OneConceptClass::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 

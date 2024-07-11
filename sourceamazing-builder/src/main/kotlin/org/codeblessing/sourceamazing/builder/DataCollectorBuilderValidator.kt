@@ -3,67 +3,83 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderException
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.builder.typemirror.BuilderAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.BuilderMethodAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.ExpectedAliasFromSuperiorBuilderAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.IgnoreNullFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.InjectBuilderAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetConceptIdentifierValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetFixedBooleanFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetFixedEnumFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetFixedIntFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetFixedStringFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentifierValueAnnotationMirror
+import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.MethodMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
-import java.lang.reflect.Method
-import java.lang.reflect.Parameter
 import kotlin.reflect.KClass
 
 object DataCollectorBuilderValidator {
     @Throws(DataCollectorBuilderException::class, DataCollectorBuilderMethodSyntaxException::class)
-    fun validateAccessorMethodsOfDataCollector(dataCollectorClass: KClass<*>) {
-        val allBuilders = mutableSetOf<KClass<*>>()
+    fun validateAccessorMethodsOfDataCollector(dataCollectorClass: ClassMirror) {
+        val allBuilders = mutableSetOf<ClassMirror>()
         collectBuilderClassesRecursively(allBuilders, dataCollectorClass)
         allBuilders.forEach { builderClass -> validateBuilderClassStructure(builderClass) }
         allBuilders.forEach { builderClass -> validateBuilderMethodSyntax(builderClass) }
     }
 
-    private fun validateBuilderClassStructure(builderClass: KClass<*>) {
+    private fun validateBuilderClassStructure(builderClass: ClassMirror) {
         checkHasBuilderAnnotationOnClassAndIsInterface(builderClass)
 
-        builderClass.java.methods.forEach { method ->
-            if(!AnnotationUtil.hasAnnotation(method, BuilderMethod::class)) {
+        builderClass.methods.forEach { method ->
+            if(!method.hasAnnotationMirror(BuilderMethodAnnotationMirror::class)) {
                 throw DataCollectorBuilderMethodSyntaxException(method, "The method is missing " +
                         "the annotation ${BuilderMethod::class.annotationText()}. " +
                         "This annotation must be on every builder method.")
             }
 
             method.parameters.forEachIndexed { index, methodParameter ->
-                val isLastParameter = index == (method.parameterCount - 1)
+                val isLastParameter = index == (method.parameters.size - 1)
 
-                if(AnnotationUtil.hasAnnotation(methodParameter, IgnoreNullFacetValue::class)) {
+                if(methodParameter.hasAnnotationMirror(IgnoreNullFacetValueAnnotationMirror::class)) {
 
-                    if(AnnotationUtil.hasAnnotation(methodParameter, SetConceptIdentifierValue::class)) {
+                    if(methodParameter.hasAnnotationMirror(SetConceptIdentifierValueAnnotationMirror::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "A parameter setting the" +
                                 "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
                                 "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time.")
                     }
 
-                    if(AnnotationUtil.hasAnnotation(methodParameter, InjectBuilder::class)) {
+                    if(methodParameter.hasAnnotationMirror(InjectBuilderAnnotationMirror::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "A parameter with ${InjectBuilder::class.annotationText()} " +
                                 "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time.")
                     }
                 }
 
                 if(!isLastParameter) {
-                    if(AnnotationUtil.hasAnnotation(methodParameter, InjectBuilder::class)) {
+                    if(methodParameter.hasAnnotationMirror(InjectBuilderAnnotationMirror::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "Only the last parameter of the method " +
                                 "can have the annotation ${InjectBuilder::class.annotationText()}.")
                     }
 
-                    if(!AnnotationUtil.hasAnnotation(methodParameter, SetConceptIdentifierValue::class)
-                        && !AnnotationUtil.hasAnnotation(methodParameter, SetFacetValue::class)) {
+                    if(!methodParameter.hasAnnotationMirror(SetConceptIdentifierValueAnnotationMirror::class)
+                        && !methodParameter.hasAnnotationMirror(SetFacetValueAnnotationMirror::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "A parameter of the method " +
                                 "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
                                 "or ${SetFacetValue::class.annotationText()}")
                     }
                 } else {
-                    if(!AnnotationUtil.hasAnnotation(methodParameter, SetConceptIdentifierValue::class)
-                        && !AnnotationUtil.hasAnnotation(methodParameter, SetFacetValue::class)
-                        && !AnnotationUtil.hasAnnotation(methodParameter, InjectBuilder::class)) {
+                    if(!methodParameter.hasAnnotationMirror(SetConceptIdentifierValueAnnotationMirror::class)
+                        && !methodParameter.hasAnnotationMirror(SetFacetValueAnnotationMirror::class)
+                        && !methodParameter.hasAnnotationMirror(InjectBuilderAnnotationMirror::class)) {
                         throw DataCollectorBuilderMethodSyntaxException(method, "The last parameter of the method " +
                                 "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
                                 "or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}")
@@ -73,18 +89,17 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun importedAliasFromSuperiorBuilder(builderClass: KClass<*>): Set<String> {
-        return AnnotationUtil
-            .getAnnotations(builderClass, ExpectedAliasFromSuperiorBuilder::class)
+    private fun importedAliasFromSuperiorBuilder(builderClass: ClassMirror): Set<String> {
+        return builderClass.annotations
+            .filterIsInstance<ExpectedAliasFromSuperiorBuilderAnnotationMirror>()
             .map { it.conceptAlias }
             .toSet()
-
     }
 
-    private fun validateAndCollectNewAliases(method: Method, importedConceptAliases: Set<String>): Set<String> {
+    private fun validateAndCollectNewAliases(method: MethodMirror, importedConceptAliases: Set<String>): Set<String> {
         val newConceptAliases: MutableSet<String> = mutableSetOf()
 
-        AnnotationUtil.getAnnotations(method, NewConcept::class).forEach { newConceptAnnotation ->
+        method.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
             val conceptAlias = newConceptAnnotation.declareConceptAlias
             val conceptClazz = newConceptAnnotation.concept
 
@@ -104,9 +119,9 @@ object DataCollectorBuilderValidator {
     }
 
 
-    private fun validateBuilderMethodSyntax(builderClass: KClass<*>) {
-        builderClass.java.methods
-            .filter { AnnotationUtil.hasAnnotation(it, BuilderMethod::class) }
+    private fun validateBuilderMethodSyntax(builderClass: ClassMirror) {
+        builderClass.methods
+            .filter { method -> method.hasAnnotationMirror(BuilderMethodAnnotationMirror::class) }
             .forEach { method ->
                 val importedConceptAliases = importedAliasFromSuperiorBuilder(builderClass)
                 val newConceptAliases: Set<String> = validateAndCollectNewAliases(method, importedConceptAliases)
@@ -120,7 +135,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun validateNoMissingConceptIdentifierDeclaration(method: Method, newConceptAliases: Set<String>) {
+    private fun validateNoMissingConceptIdentifierDeclaration(method: MethodMirror, newConceptAliases: Set<String>) {
         val conceptAliasesWithConceptIdDeclaration: Set<String> = collectAliasesWithConceptIdentifierDeclaration(method)
         val conceptAliasesWithoutConceptIdDeclaration = newConceptAliases - conceptAliasesWithConceptIdDeclaration
 
@@ -137,24 +152,24 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun collectAliasesWithConceptIdentifierDeclaration(method: Method): Set<String> {
+    private fun collectAliasesWithConceptIdentifierDeclaration(method: MethodMirror): Set<String> {
         val conceptAliasesWithConceptIdDeclaration: MutableSet<String> = mutableSetOf()
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
             conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
         }
 
         method.parameters.forEach { methodParameter ->
-            AnnotationUtil.getAnnotations(methodParameter, SetConceptIdentifierValue::class).forEach { annotation ->
+            method.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
                 conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
             }
         }
         return conceptAliasesWithConceptIdDeclaration
     }
 
-    private fun validateNoDuplicateConceptIdentifierDeclaration(method: Method) {
+    private fun validateNoDuplicateConceptIdentifierDeclaration(method: MethodMirror) {
         val usedConceptAliasToSetConceptIdentifier: MutableSet<String> = mutableSetOf()
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { autoRandomConceptIdAnnotation ->
+        method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { autoRandomConceptIdAnnotation ->
             val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
 
             if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
@@ -168,7 +183,7 @@ object DataCollectorBuilderValidator {
         }
 
         method.parameters.forEach { parameter ->
-            AnnotationUtil.getAnnotations(parameter, SetConceptIdentifierValue::class).forEach { conceptIdValueAnnotation ->
+            parameter.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdValueAnnotation ->
                 val conceptAlias = conceptIdValueAnnotation.conceptToModifyAlias
                 if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
                     throw DataCollectorBuilderMethodSyntaxException(method, "The alias '$conceptAlias' used " +
@@ -182,7 +197,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun validateUsedAliases(method: Method, knownConceptAlias: Set<String>) {
+    private fun validateUsedAliases(method: MethodMirror, knownConceptAlias: Set<String>) {
         val usedAliasesPerAnnotation = collectAllUsedAliases(method)
         usedAliasesPerAnnotation.forEach { (annotationClazz, conceptAliases) ->
             conceptAliases.forEach { conceptAlias ->
@@ -209,81 +224,80 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun collectAllUsedAliases(method: Method): AnnotationAndAliases {
+    private fun collectAllUsedAliases(method: MethodMirror): AnnotationAndAliases {
         val annotationAndAliases = AnnotationAndAliases()
 
-        AnnotationUtil.getAnnotations(method, SetRandomConceptIdentifierValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetRandomConceptIdentifierValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetFixedBooleanFacetValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetFixedBooleanFacetValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetFixedBooleanFacetValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetFixedEnumFacetValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetFixedEnumFacetValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetFixedEnumFacetValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetFixedIntFacetValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetFixedIntFacetValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetFixedIntFacetValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetFixedStringFacetValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetFixedStringFacetValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetFixedStringFacetValue::class, annotation.conceptToModifyAlias)
         }
 
-        AnnotationUtil.getAnnotations(method, SetAliasConceptIdentifierReferenceFacetValue::class).forEach { annotation ->
+        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror>().forEach { annotation ->
             annotationAndAliases.add(SetAliasConceptIdentifierReferenceFacetValue::class, annotation.conceptToModifyAlias)
             annotationAndAliases.add(SetAliasConceptIdentifierReferenceFacetValue::class, annotation.referencedConceptAlias)
         }
 
         method.parameters.forEach { methodParameter ->
-            AnnotationUtil.getAnnotations(methodParameter, SetConceptIdentifierValue::class).forEach { annotation ->
+            method.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
                 annotationAndAliases.add(SetConceptIdentifierValue::class, annotation.conceptToModifyAlias)
             }
         }
 
         method.parameters.forEach { methodParameter ->
-            AnnotationUtil.getAnnotations(methodParameter, SetFacetValue::class).forEach { annotation ->
+            method.annotations.filterIsInstance<SetFacetValueAnnotationMirror>().forEach { annotation ->
                 annotationAndAliases.add(SetFacetValue::class, annotation.conceptToModifyAlias)
             }
         }
         return annotationAndAliases
     }
 
-    private fun validateCorrectConceptIdentifierType(method: Method, methodParameter: Parameter) {
-        if(AnnotationUtil.hasAnnotation(methodParameter, SetConceptIdentifierValue::class)) {
-            if(methodParameter.type != ConceptIdentifier::class.java) {
+    private fun validateCorrectConceptIdentifierType(method: MethodMirror, methodParameter: ParameterMirror) {
+        if(methodParameter.hasAnnotationMirror(SetConceptIdentifierValueAnnotationMirror::class)) {
+            if(!methodParameter.type.classMirror.isClass(ConceptIdentifier::class)) {
                 throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
                         "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
-                        "must be of type '${ConceptIdentifier::class.shortText()}' but was '${methodParameter.type.longText()}'")
+                        "must be of type '${ConceptIdentifier::class.shortText()}' but was '${methodParameter.type.classMirror.longText()}'")
             }
         }
     }
 
 
-    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<KClass<*>>, builderClass: KClass<*>) {
+    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<ClassMirror>, builderClass: ClassMirror) {
         checkHasBuilderAnnotationOnClassAndIsInterface(builderClass)
 
         // avoid infinite recursion
         if(!collectedBuilders.contains(builderClass)) {
             collectedBuilders.add(builderClass)
-            builderClass.java.methods.forEach { method ->
-                if(AnnotationUtil.hasAnnotation(method, WithNewBuilder::class)) {
-                    val nestedBuilderClass = AnnotationUtil.getAnnotation(method, WithNewBuilder::class).builderClass
+            builderClass.methods.forEach { method ->
+                if(method.hasAnnotationMirror(WithNewBuilderAnnotationMirror::class)) {
+                    val nestedBuilderClass = method.getAnnotationMirror(WithNewBuilderAnnotationMirror::class).builderClass
                     collectBuilderClassesRecursively(collectedBuilders, nestedBuilderClass)
                 }
-
             }
         }
     }
 
-    private fun checkHasBuilderAnnotationOnClassAndIsInterface(builderClass: KClass<*>) {
-        if(!builderClass.java.isInterface) {
+    private fun checkHasBuilderAnnotationOnClassAndIsInterface(builderClass: ClassMirror) {
+        if(!builderClass.isInterface) {
             throw DataCollectorBuilderException("The builder class must be an interface: ${builderClass.longText()}")
         }
 
-        if(!AnnotationUtil.hasAnnotation(builderClass, Builder::class)) {
+        if(!builderClass.hasAnnotationMirror(BuilderAnnotationMirror::class)) {
             throw DataCollectorBuilderException("The following class is missing the " +
                     "annotation ${Builder::class.annotationText()}: ${builderClass.longText()}")
         }

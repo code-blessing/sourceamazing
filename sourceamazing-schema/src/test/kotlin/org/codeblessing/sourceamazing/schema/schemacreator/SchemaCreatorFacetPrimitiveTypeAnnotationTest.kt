@@ -1,46 +1,42 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.*
+import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
 
-    @Schema(concepts = [SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets::class])
-    private interface SchemaWithConceptWithPrimitiveFacetClasses {
-        @Concept(facets = [
-            ConceptClassWithFacets.TextFacetClass::class,
-            ConceptClassWithFacets.BooleanFacetClass::class,
-            ConceptClassWithFacets.NumberFacetClass::class,
-        ])
-        interface ConceptClassWithFacets {
-            @StringFacet
-            interface TextFacetClass
-            @BooleanFacet
-            interface BooleanFacetClass
-            @IntFacet
-            interface NumberFacetClass
-        }
-    }
-
     @Test
     fun `test concept having three primitive type facet`() {
-        val schema =
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithPrimitiveFacetClasses::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                facet {
+                    facetMirror.withClassName("TextFacetClass")
+                    facetMirror.withAnnotation(StringFacetAnnotationMirror())
+                }
+                facet {
+                    facetMirror.withClassName("BooleanFacetClass")
+                    facetMirror.withAnnotation(BooleanFacetAnnotationMirror())
+                }
+                facet {
+                    facetMirror.withClassName("NumberFacetClass")
+                    facetMirror.withAnnotation(IntFacetAnnotationMirror())
+                }
+            }
+        }
+
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets::class))
+        val conceptSchema = schema.allConcepts().first()
         assertEquals(3, conceptSchema.facets.size)
 
-        val textFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.TextFacetClass::class)
-        val booleanFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.BooleanFacetClass::class)
-        val numberFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.NumberFacetClass::class)
-
-        assertEquals(textFacetName, conceptSchema.facets[0].facetName)
-        assertEquals(booleanFacetName, conceptSchema.facets[1].facetName)
-        assertEquals(numberFacetName, conceptSchema.facets[2].facetName)
+        assertEquals("TextFacetClass", conceptSchema.facets[0].facetName.simpleName())
+        assertEquals("BooleanFacetClass", conceptSchema.facets[1].facetName.simpleName())
+        assertEquals("NumberFacetClass", conceptSchema.facets[2].facetName.simpleName())
 
         assertEquals(FacetType.TEXT, conceptSchema.facets[0].facetType)
         assertEquals(FacetType.BOOLEAN, conceptSchema.facets[1].facetType)

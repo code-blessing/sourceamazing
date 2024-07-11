@@ -1,11 +1,11 @@
 package org.codeblessing.sourceamazing.schema
 
-import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 
-class FacetName private constructor(facet: KClass<*>): ComparableClazzId(facet) {
+class FacetName private constructor(facet: ClassMirror): ComparableClazzId(facet) {
 
     companion object {
-        fun of(facet: KClass<*>): FacetName {
+        fun of(facet: ClassMirror): FacetName {
             return FacetName(facet)
         }
     }

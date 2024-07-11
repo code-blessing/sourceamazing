@@ -24,7 +24,11 @@ object ConceptResolver {
 
         // 1. Phase: Create entry without facet values
         conceptDataEntries.forEach { (conceptIdentifier, conceptData) ->
-            conceptNodeMap[conceptIdentifier] = MutableConceptNode(conceptData.sequenceNumber, conceptData.conceptName, conceptData.conceptIdentifier)
+            conceptNodeMap[conceptIdentifier] = MutableConceptNode(
+                sequenceNumber = conceptData.sequenceNumber,
+                conceptName = conceptData.conceptName,
+                conceptIdentifier = conceptData.conceptIdentifier,
+            )
         }
 
         // 2. Phase: Fill in facet values and connect with/resolve other referenced concept instances

@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.typemirror.kotlinreflection.KotlinReflectionMirrorFactory
+import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
 /**
@@ -24,4 +25,14 @@ object MirrorFactory {
     fun convertToClassMirror(clazz: KClass<*>): ClassMirror {
         return factoryImplementation.convertToMirrorHierarchy(clazz)
     }
+
+    fun convertToMethodMirror(method: Method): MethodMirror {
+        return factoryImplementation.convertToMirrorHierarchy(method)
+    }
+
+    fun ClassMirror.convertToKClass(): KClass<*> {
+        println("Convert $this to class")
+        TODO("Use reflection to get the class from classname and package name")
+    }
+
 }

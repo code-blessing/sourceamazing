@@ -2,8 +2,13 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.*
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
@@ -11,95 +16,85 @@ import org.junit.jupiter.api.Test
 
 class SchemaCreatorConceptAnnotationTest {
 
-    @Schema(concepts = [SchemaWithUnannotatedConceptClass.UnannotatedConceptClass::class])
-    private interface SchemaWithUnannotatedConceptClass {
-        interface UnannotatedConceptClass
-    }
-
     @Test
     fun `test unannotated concept class should throw an exception`() {
-        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithUnannotatedConceptClass::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept(addConceptAnnotationWithAllFacets = false) {
+                // concept without concept annotation
+            }
         }
-    }
-
-    @Schema(concepts = [SchemaWithNonInterfaceConceptClass.NonInterfaceConceptClass::class])
-    private interface SchemaWithNonInterfaceConceptClass {
-
-        @Concept(facets = [])
-        class NonInterfaceConceptClass
+        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
     }
 
     @Test
     fun `test non-interface concept class should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithNonInterfaceConceptClass::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                setConceptIsClass()
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaWithConceptClassHavingSchemaAnnotation.ConceptClassWithSchemaAnnotation::class])
-    private interface SchemaWithConceptClassHavingSchemaAnnotation {
-
-        @Concept(facets = [])
-        @Schema(concepts = [])
-        interface ConceptClassWithSchemaAnnotation
+        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
     }
 
     @Test
     fun `test create concept class with a schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptClassHavingSchemaAnnotation::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                withAnnotationOnConcept(SchemaAnnotationMirror(emptyList()))
+            }
         }
-    }
 
-    @Schema(concepts = [SchemaWithConceptClassHavingFacetAnnotation.ConceptClassWithFacetAnnotation::class])
-    private interface SchemaWithConceptClassHavingFacetAnnotation {
-
-        @Concept(facets = [])
-        @StringFacet
-        interface ConceptClassWithFacetAnnotation
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
     }
 
     @Test
     fun `test concept class with a facet annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptClassHavingFacetAnnotation::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                withAnnotationOnConcept(StringFacetAnnotationMirror())
+            }
         }
-    }
-
-    @Schema(concepts = [
-        SchemaWithDuplicateConceptClasses.DuplicateConceptClass::class,
-        SchemaWithDuplicateConceptClasses.DuplicateConceptClass::class,
-    ])
-    private interface SchemaWithDuplicateConceptClasses {
-
-        @Concept(facets = [])
-        interface DuplicateConceptClass
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
     }
 
     @Test
     fun `test duplicate concept classes should throw an exception`() {
-        assertThrows(DuplicateConceptMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithDuplicateConceptClasses::class)
+        val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+            val conceptClassMirror = concept {
+                // a concept
+            }
+            withAnnotationOnSchema(SchemaAnnotationMirror(listOf(conceptClassMirror, conceptClassMirror)))
         }
-    }
-
-    @Schema(concepts = [
-        SchemaWithTwoConceptAnnotationsInHierarchyClasses.ChildConceptClass::class,
-    ])
-    private interface SchemaWithTwoConceptAnnotationsInHierarchyClasses {
-
-        @Concept(facets = [])
-        interface ParentConceptClass
-        @Concept(facets = [])
-        interface ChildConceptClass: ParentConceptClass
+        assertThrows(DuplicateConceptMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
     }
 
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
+        val schemaMirror = SchemaMirrorDsl.schema {
+            val parentConcept = concept {
+                // parentConcept
+            }
+            concept {
+                // childConcept
+
+                withSuperClassMirror(parentConcept)
+            }
+        }
+
         assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithTwoConceptAnnotationsInHierarchyClasses::class)
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
 
@@ -112,7 +107,13 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test create an schema with an empty concept class`() {
-        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithEmptyConceptClass::class)
+        val schemaMirror = SchemaMirrorDsl.schema {
+            concept {
+                // empty concept class
+            }
+        }
+
+        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
     }
 
