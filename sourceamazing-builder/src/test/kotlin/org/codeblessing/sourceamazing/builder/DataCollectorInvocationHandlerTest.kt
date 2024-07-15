@@ -141,7 +141,7 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun createDataCollectorProxy(conceptDataCollector: ConceptDataCollector): DataCollectorRoot {
-        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(DataCollectorRoot::class)
+        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(MirrorFactory.convertToClassMirror(DataCollectorRoot::class))
         return ProxyCreator.createProxy(
             DataCollectorRoot::class,
             DataCollectorInvocationHandler(conceptDataCollector, emptyMap())

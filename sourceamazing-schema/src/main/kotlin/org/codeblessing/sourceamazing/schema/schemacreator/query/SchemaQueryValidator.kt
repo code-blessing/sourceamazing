@@ -1,20 +1,20 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQueryMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
 
 object SchemaQueryValidator {
     @Throws(MalformedSchemaException::class)
     fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: ClassMirror) {
-        val possibleSchemaConceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.toSet()
+        val possibleSchemaConceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors().toSet()
         schemaDefinitionClass.methods.forEach { method ->
-            val queryConceptClasses = method.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.concepts
+            val queryConceptClasses = method.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.concepts?.provideClassMirrors()
                 ?: throw WrongConceptQueryMalformedSchemaException("The method is missing " +
                         "the annotation ${QueryConcepts::class.shortText()}. Method: $method")
 

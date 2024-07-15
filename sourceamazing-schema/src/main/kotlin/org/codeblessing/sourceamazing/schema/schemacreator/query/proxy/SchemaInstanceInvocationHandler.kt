@@ -21,7 +21,7 @@ class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): I
 
         methodMirror.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.let {
             val conceptClasses = it.concepts
-            val conceptNamesToQuery = conceptClasses.map { ConceptName.of(it) }.toSet()
+            val conceptNamesToQuery = conceptClasses.map { ConceptName.of(it.provideClassMirror()) }.toSet()
             val conceptNodes = conceptGraph.conceptsByConceptNames(conceptNamesToQuery)
             val proxyList = conceptNodes.map { conceptNode ->
                 ProxyCreator.createProxy(

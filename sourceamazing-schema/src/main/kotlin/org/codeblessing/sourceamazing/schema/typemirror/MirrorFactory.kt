@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.typemirror.kotlinreflection.KotlinReflectionMirrorFactory
+import org.codeblessing.sourceamazing.schema.typemirror.reflection.JavaReflectionMirrorFactory
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
  * and don't have to be tested.
  */
 object MirrorFactory {
-    private val factoryImplementation: MirrorFactoryApi = KotlinReflectionMirrorFactory
+    private val factoryImplementation: MirrorFactoryApi = JavaReflectionMirrorFactory
 
     fun convertToClassMirror(clazz: KClass<*>): ClassMirror {
         return factoryImplementation.convertToMirrorHierarchy(clazz)

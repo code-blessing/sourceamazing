@@ -10,12 +10,13 @@ import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
 
 object ConceptQueryValidator {
     @Throws(MalformedSchemaException::class)
     fun validateAccessorMethodsOfConceptClass(conceptClass: ClassMirror) {
 
-        val possibleFacetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.toSet()
+        val possibleFacetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors().toSet()
         conceptClass.methods.forEach { method ->
             if(method.parameters.isNotEmpty()) {
                 throw WrongFacetQueryMalformedSchemaException("The method has arguments/parameters " +
@@ -25,7 +26,7 @@ object ConceptQueryValidator {
 
             val queryFacetValueAnnotationMirror = method.getAnnotationMirrorOrNull(QueryFacetValueAnnotationMirror::class)
             if(queryFacetValueAnnotationMirror != null) {
-                val queryFacetValueClass = queryFacetValueAnnotationMirror.facetClass
+                val queryFacetValueClass = queryFacetValueAnnotationMirror.facetClass.provideClassMirror()
                 if(!possibleFacetClasses.contains(queryFacetValueClass)) {
                     throw WrongFacetQueryMalformedSchemaException("The method has a invalid " +
                             "facet class ${queryFacetValueClass.shortText()}. Valid facet classes " +

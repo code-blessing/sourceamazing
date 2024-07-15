@@ -10,9 +10,12 @@ import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
  * Represents a [SetFixedEnumFacetValue] annotation.
  */
 class SetFixedEnumFacetValueAnnotationMirror(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    val facetToModify: ClassMirror,
-    val facetModificationRule: FacetModificationRule,
+    conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
+    facetToModify: ClassMirror,
+    facetModificationRule: FacetModificationRule,
     val value: String, // TODO Might be a Enum value
-) : AnnotationMirror
-
+) : AbstractSetFixedFacetValueAnnotationMirror(
+    conceptToModifyAlias = conceptToModifyAlias,
+    facetToModify = facetToModify,
+    facetModificationRule = facetModificationRule
+)

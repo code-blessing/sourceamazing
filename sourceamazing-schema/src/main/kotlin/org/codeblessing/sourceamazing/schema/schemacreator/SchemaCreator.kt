@@ -17,7 +17,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToK
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
+import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
 import kotlin.reflect.KClass
 
 object SchemaCreator {
@@ -36,7 +36,7 @@ object SchemaCreator {
         validateSchemaClassAnnotations(schemaDefinitionClass)
         SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
 
-        val conceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts
+        val conceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors()
         validateConceptClassesAnnotations(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
@@ -54,7 +54,7 @@ object SchemaCreator {
                 conceptSimpleNames.add(conceptName.simpleName())
             }
 
-            val facetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets
+            val facetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors()
             validateFacetClassesAnnotations(facetClasses)
             val facets: MutableList<FacetSchema> = mutableListOf()
             val facetSimpleNames: MutableSet<String> = mutableSetOf()
@@ -144,8 +144,8 @@ object SchemaCreator {
             facetType = facetClass.facetType,
             minimumOccurrences = facetClass.minimumOccurrences,
             maximumOccurrences = facetClass.maximumOccurrences,
-            enumerationType = if(facetClass is EnumFacetAnnotationMirror) facetClass.enumerationClass else null,
-            referencedConceptClasses = if(facetClass is ReferenceFacetAnnotationMirror) facetClass.referencedConcepts else emptyList(),
+            enumerationType = if(facetClass is EnumFacetAnnotationMirror) facetClass.enumerationClass.provideClassMirror() else null,
+            referencedConceptClasses = if(facetClass is ReferenceFacetAnnotationMirror) facetClass.referencedConcepts.provideClassMirrors() else emptyList(),
         )
     }
 

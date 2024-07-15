@@ -10,9 +10,12 @@ import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
  * Represents a [SetFixedIntFacetValue] annotation.
  */
 class SetFixedIntFacetValueAnnotationMirror(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    val facetToModify: ClassMirror,
-    val facetModificationRule: FacetModificationRule,
+    conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
+    facetToModify: ClassMirror,
+    facetModificationRule: FacetModificationRule,
     val value: Int,
-) : AnnotationMirror
-
+) : AbstractSetFixedFacetValueAnnotationMirror(
+    conceptToModifyAlias = conceptToModifyAlias,
+    facetToModify = facetToModify,
+    facetModificationRule = facetModificationRule
+)

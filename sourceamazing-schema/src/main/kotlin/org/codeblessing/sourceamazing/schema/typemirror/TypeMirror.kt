@@ -1,7 +1,9 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
+import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+
 data class TypeMirror(
-    val classMirror: ClassMirror,
+    val classMirror: ClassMirrorProvider,
     val annotations: List<AnnotationMirror> = emptyList(),
     val nullable: Boolean = false,
 ) {

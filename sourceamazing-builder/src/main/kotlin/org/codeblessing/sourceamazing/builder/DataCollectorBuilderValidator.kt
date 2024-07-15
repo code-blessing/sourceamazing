@@ -101,7 +101,7 @@ object DataCollectorBuilderValidator {
 
         method.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
             val conceptAlias = newConceptAnnotation.declareConceptAlias
-            val conceptClazz = newConceptAnnotation.concept
+            val conceptClazz = newConceptAnnotation.concept.provideClassMirror()
 
             if(newConceptAliases.contains(conceptAlias) || importedConceptAliases.contains(conceptAlias)) {
                 val allAlreadyUsedConceptAliases = newConceptAliases + importedConceptAliases
@@ -268,10 +268,11 @@ object DataCollectorBuilderValidator {
 
     private fun validateCorrectConceptIdentifierType(method: MethodMirror, methodParameter: ParameterMirror) {
         if(methodParameter.hasAnnotationMirror(SetConceptIdentifierValueAnnotationMirror::class)) {
-            if(!methodParameter.type.classMirror.isClass(ConceptIdentifier::class)) {
+            val classMirror = methodParameter.type.classMirror.provideClassMirror()
+            if(!classMirror.isClass(ConceptIdentifier::class)) {
                 throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
                         "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
-                        "must be of type '${ConceptIdentifier::class.shortText()}' but was '${methodParameter.type.classMirror.longText()}'")
+                        "must be of type '${ConceptIdentifier::class.shortText()}' but was '${classMirror.longText()}'")
             }
         }
     }
@@ -285,7 +286,7 @@ object DataCollectorBuilderValidator {
             collectedBuilders.add(builderClass)
             builderClass.methods.forEach { method ->
                 if(method.hasAnnotationMirror(WithNewBuilderAnnotationMirror::class)) {
-                    val nestedBuilderClass = method.getAnnotationMirror(WithNewBuilderAnnotationMirror::class).builderClass
+                    val nestedBuilderClass = method.getAnnotationMirror(WithNewBuilderAnnotationMirror::class).builderClass.provideClassMirror()
                     collectBuilderClassesRecursively(collectedBuilders, nestedBuilderClass)
                 }
             }

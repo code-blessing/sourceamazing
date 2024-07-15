@@ -1,11 +1,11 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
+import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
 import kotlin.reflect.KClass
 
 
 data class ClassMirror(
-    val className: String,
-    val packageName: String = "",
+    val classQualifier: ClassQualifierMirror,
     val isInterface: Boolean = false,
     val isClass: Boolean = true,
     val isObjectClass: Boolean = false,
@@ -14,27 +14,32 @@ data class ClassMirror(
     override val annotations: List<AnnotationMirror> = emptyList(),
     val methods: List<MethodMirror> = emptyList(),
     val propertiesNames: List<String> = emptyList(),
-    val typeParameters: List<ClassMirror> = emptyList(),
-    val superClasses: List<ClassMirror> = emptyList(),
+    val typeParameters: List<ClassMirrorProvider> = emptyList(),
+    val superClasses: List<ClassMirrorProvider> = emptyList(),
     val enumValues: List<String> = emptyList(),
-): AbstractMirror() {
+): AbstractMirror(), ClassMirrorProvider {
 
     companion object {
-        fun classMirror(className: String = "UnnamedClass"): ClassMirror{
+        fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror{
             return ClassMirror(
-                className = className
+                classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
             )
         }
-        fun interfaceMirror(className: String = "UnnamedInterface"): ClassMirror {
-            return classMirror(className).setIsInterface()
+        fun interfaceMirror(className: String = "UnnamedInterface", packageName: String = ""): ClassMirror {
+            return classMirror(className = className, packageName = packageName).setIsInterface()
         }
-        fun enumMirror(className: String = "UnnamedEnum", vararg enumValues: String): ClassMirror{
+        fun enumMirror(className: String = "UnnamedEnum", packageName: String = "", vararg enumValues: String): ClassMirror{
             return ClassMirror(
-                className = className,
+                classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
                 enumValues = enumValues.toList()
             ).setIsEnum()
         }
     }
+
+    val className: String = classQualifier.className
+    val packageName: String = classQualifier.packageName
+
+    override fun provideClassMirror(): ClassMirror = this
 
     fun isClass(clazz: KClass<*>): Boolean {
         return false // TODO implement
@@ -63,13 +68,13 @@ data class ClassMirror(
 
     fun withClassName(className: String): ClassMirror {
         return this.copy(
-            className = className
+            classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
         )
     }
 
     fun withPackage(packageName: String): ClassMirror {
         return this.copy(
-            packageName = packageName
+            classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
         )
     }
 

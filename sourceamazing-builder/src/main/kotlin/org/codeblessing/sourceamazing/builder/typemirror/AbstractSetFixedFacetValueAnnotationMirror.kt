@@ -2,17 +2,12 @@ package org.codeblessing.sourceamazing.builder.typemirror
 
 import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
 
-/**
- * Represents a [SetAliasConceptIdentifierReferenceFacetValue] annotation.
- */
-class SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror(
+abstract class AbstractSetFixedFacetValueAnnotationMirror(
     val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
     val facetToModify: ClassMirrorProvider,
     val facetModificationRule: FacetModificationRule,
-    val referencedConceptAlias: String,
 ) : AnnotationMirror
 

@@ -67,7 +67,7 @@ class DataCollectorInvocationHandler(
         methodMirror.annotations.filterIsInstance<SetFixedBooleanFacetValueAnnotationMirror>().forEach { defaultBooleanAnnotation ->
             updateConceptData(
                 conceptAlias = defaultBooleanAnnotation.conceptToModifyAlias,
-                facetClazz = defaultBooleanAnnotation.facetToModify,
+                facetClazz = defaultBooleanAnnotation.facetToModify.provideClassMirror(),
                 value = defaultBooleanAnnotation.value,
                 facetModificationRule = defaultBooleanAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
@@ -76,7 +76,7 @@ class DataCollectorInvocationHandler(
         methodMirror.annotations.filterIsInstance<SetFixedEnumFacetValueAnnotationMirror>().forEach { defaultEnumAnnotation ->
             updateConceptData(
                 conceptAlias = defaultEnumAnnotation.conceptToModifyAlias,
-                facetClazz = defaultEnumAnnotation.facetToModify,
+                facetClazz = defaultEnumAnnotation.facetToModify.provideClassMirror(),
                 value = defaultEnumAnnotation.value,
                 facetModificationRule = defaultEnumAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
@@ -85,7 +85,7 @@ class DataCollectorInvocationHandler(
         methodMirror.annotations.filterIsInstance<SetFixedIntFacetValueAnnotationMirror>().forEach { defaultIntAnnotation ->
             updateConceptData(
                 conceptAlias = defaultIntAnnotation.conceptToModifyAlias,
-                facetClazz = defaultIntAnnotation.facetToModify,
+                facetClazz = defaultIntAnnotation.facetToModify.provideClassMirror(),
                 value = defaultIntAnnotation.value,
                 facetModificationRule = defaultIntAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
@@ -94,7 +94,7 @@ class DataCollectorInvocationHandler(
         methodMirror.annotations.filterIsInstance<SetFixedStringFacetValueAnnotationMirror>().forEach { defaultStringAnnotation ->
             updateConceptData(
                 conceptAlias = defaultStringAnnotation.conceptToModifyAlias,
-                facetClazz = defaultStringAnnotation.facetToModify,
+                facetClazz = defaultStringAnnotation.facetToModify.provideClassMirror(),
                 value = defaultStringAnnotation.value,
                 facetModificationRule = defaultStringAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
@@ -105,7 +105,7 @@ class DataCollectorInvocationHandler(
 
             updateConceptData(
                 conceptAlias = referenceValueAnnotation.conceptToModifyAlias,
-                facetClazz = referenceValueAnnotation.facetToModify,
+                facetClazz = referenceValueAnnotation.facetToModify.provideClassMirror(),
                 value = referenceConceptId,
                 facetModificationRule = referenceValueAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
@@ -130,7 +130,7 @@ class DataCollectorInvocationHandler(
             param.annotations.filterIsInstance<SetFacetValueAnnotationMirror>().forEach { facetValueAnnotation ->
                 updateConceptData(
                     conceptAlias = facetValueAnnotation.conceptToModifyAlias,
-                    facetClazz = facetValueAnnotation.facetToModify,
+                    facetClazz = facetValueAnnotation.facetToModify.provideClassMirror(),
                     value = argumentValue,
                     facetModificationRule = facetValueAnnotation.facetModificationRule,
                     newConceptAliases = newConceptAliases
@@ -153,7 +153,7 @@ class DataCollectorInvocationHandler(
         val newConceptsIdentifierByAlias: MutableMap<String, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
 
         methodMirror.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept)
+            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept.provideClassMirror())
         }
 
         methodMirror.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { autoRandomConceptIdentifierAnnotation ->

@@ -25,7 +25,7 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): In
         val methodMirror = MirrorFactory.convertToMethodMirror(method)
 
         methodMirror.getAnnotationMirrorOrNull(QueryFacetValueAnnotationMirror::class)?.let {
-            val facetClass = it.facetClass
+            val facetClass = it.facetClass.provideClassMirror()
             val facetNameToQuery = FacetName.of(facetClass)
             val facetValues = conceptNode.facetValues[facetNameToQuery] ?: throw IllegalStateException("Facet values not found for facet ${facetClass}.")
 
