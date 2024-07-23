@@ -32,7 +32,7 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         // TODO This check is currently not possible
         //  assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(0, enumFacetSchema.enumerationValues().size)
+        assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
     @Test
@@ -56,17 +56,17 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         // TODO This check is currently not possible
         //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationType)
-        assertEquals(4, enumFacetSchema.enumerationValues().size)
+        assertEquals(4, enumFacetSchema.enumerationValues.size)
 
         // TODO This check is currently not possible
-        //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues()[0])
-        //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues()[1])
-        //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues()[2])
-        //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues()[3])
-        assertEquals("WINTER", enumFacetSchema.enumerationValues()[0])
-        assertEquals("SPRING", enumFacetSchema.enumerationValues()[1])
-        assertEquals("SUMMER", enumFacetSchema.enumerationValues()[2])
-        assertEquals("FALL", enumFacetSchema.enumerationValues()[3])
+//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues[0])
+//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues[1])
+//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues[2])
+//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues[3])
+        assertEquals("WINTER", enumFacetSchema.enumerationValues[0])
+        assertEquals("SPRING", enumFacetSchema.enumerationValues[1])
+        assertEquals("SUMMER", enumFacetSchema.enumerationValues[2])
+        assertEquals("FALL", enumFacetSchema.enumerationValues[3])
     }
 
     @Test

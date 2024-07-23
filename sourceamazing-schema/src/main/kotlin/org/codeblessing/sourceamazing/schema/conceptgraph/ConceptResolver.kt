@@ -4,6 +4,9 @@ import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
 import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 
@@ -68,8 +71,9 @@ object ConceptResolver {
             .map { value -> if(value is String) fromStringToEnum(value, enumerationType) else value }
     }
 
-    private fun fromStringToEnum(enumStringValue: String, enumerationType: KClass<*>): Any {
-        return EnumUtil.fromStringToEnum(enumStringValue, enumerationType)
+    private fun fromStringToEnum(enumStringValue: String, enumerationType: ClassMirror): Any {
+        val enumerationTypeClass: KClass<*> = enumerationType.convertToKClass()
+        return EnumUtil.fromStringToEnum(enumStringValue, enumerationTypeClass)
             ?: throw IllegalStateException("Could not convert enum value '$enumStringValue' to enum constants of $enumerationType")
     }
 

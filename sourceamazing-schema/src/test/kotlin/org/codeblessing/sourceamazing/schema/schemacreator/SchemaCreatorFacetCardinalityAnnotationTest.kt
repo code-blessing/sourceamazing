@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror

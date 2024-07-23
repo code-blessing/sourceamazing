@@ -1,17 +1,18 @@
 package org.codeblessing.sourceamazing.schema.typemirror.reflection
 
-import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.MethodMirror
-import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactoryApi
-import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
-import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassQualifierMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactoryApi
+import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ReturnMirror
+import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.TypeMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -26,10 +27,10 @@ import kotlin.reflect.jvm.kotlinFunction
 object JavaReflectionMirrorFactory: MirrorFactoryApi {
 
     override fun convertToMirrorHierarchy(clazz: KClass<*>): ClassMirror {
-        return createClassMirrorProvider(clazz).provideClassMirror()
+        return createClassMirrorProvider(clazz).provideMirror()
     }
 
-    override fun convertToMirrorHierarchy(method: Method): MethodMirror {
+    override fun convertToMirrorHierarchy(method: Method): FunctionMirror {
         val kotlinFunction = requireNotNull(method.kotlinFunction) {
             "Method $method can not be converted to a kotlin function"
         }
@@ -38,8 +39,8 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
 
     private class ClassQualifierMirrorProvider(
         private val clazz: KClass<*>,
-    ): ClassMirrorProvider {
-        override fun provideClassMirror(): ClassMirror {
+    ): MirrorProvider<ClassMirror> {
+        override fun provideMirror(): ClassMirror {
             return ClassMirror(
                 classQualifier = createClassQualifier(clazz),
                 isInterface = clazz.java.isInterface,
@@ -52,7 +53,7 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         }
     }
 
-    private fun createClassMirrorProvider(clazz: KClass<*>): ClassMirrorProvider {
+    private fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirror> {
         return ClassQualifierMirrorProvider(clazz)
     }
 
@@ -83,32 +84,42 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
             }
     }
 
-    private fun createMethodList(clazz: KClass<*>): List<MethodMirror> {
+    private fun createMethodList(clazz: KClass<*>): List<FunctionMirror> {
         return clazz.memberFunctions.map { memberFunction -> createMethodMirror(memberFunction) }
     }
 
-    private fun createMethodMirror(memberFunction: KFunction<*>): MethodMirror {
-        return MethodMirror(
-            methodName = memberFunction.name,
+    private fun createMethodMirror(memberFunction: KFunction<*>): FunctionMirror {
+        return FunctionMirror(
+            functionName = memberFunction.name,
             annotations = createAnnotationList(memberFunction.annotations),
-            parameters = memberFunction.parameters.map { parameter -> createParameterMirror(parameter) },
-            returnType = createTypeMirror(memberFunction.returnType),
+            parameters = memberFunction.parameters.map(this::createParameterMirror),
+            returnType = createReturnMirror(memberFunction.returnType),
+            receiverParameterType = memberFunction.parameters
+                .filter { it.kind == KParameter.Kind.EXTENSION_RECEIVER }
+                .map(this::createParameterMirror)
+                .firstOrNull()
         )
     }
 
     private fun createParameterMirror(parameter: KParameter): ParameterMirror {
-        // TODO what is with createAnnotationList(parameter.annotations)
         return ParameterMirror(
             name = parameter.name,
             type = createTypeMirror(parameter.type),
+            annotations = createAnnotationList(parameter.annotations),
+        )
+    }
+
+    private fun createReturnMirror(type: KType): ReturnMirror {
+        return ReturnMirror(
+            type = createTypeMirror(type),
+            annotations = createAnnotationList(type.annotations)
         )
     }
 
 
     private fun createTypeMirror(type: KType): TypeMirror {
         return TypeMirror(
-            annotations = createAnnotationList(type.annotations),
-            classMirror = createClassMirrorProvider(type.jvmErasure), // TODO correct?
+            signatureMirror = createClassMirrorProvider(type.jvmErasure), // TODO correct?
             nullable = type.isMarkedNullable
 
         )

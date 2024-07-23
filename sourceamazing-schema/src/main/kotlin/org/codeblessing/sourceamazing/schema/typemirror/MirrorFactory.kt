@@ -26,7 +26,7 @@ object MirrorFactory {
         return factoryImplementation.convertToMirrorHierarchy(clazz)
     }
 
-    fun convertToMethodMirror(method: Method): MethodMirror {
+    fun convertToMethodMirror(method: Method): FunctionMirror {
         return factoryImplementation.convertToMirrorHierarchy(method)
     }
 

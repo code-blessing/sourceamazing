@@ -2,17 +2,18 @@ package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
  * Represents a [EnumFacet] annotation.
  */
 class EnumFacetAnnotationMirror(
-    val enumerationClass: ClassMirrorProvider,
+    val enumerationClass: MirrorProvider<ClassMirror>,
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(
-    facetType = FacetType.TEXT_ENUMERATION,
+    EnumFacet::class,
     minimumOccurrences = minimumOccurrences,
     maximumOccurrences = maximumOccurrences,
+    facetType = FacetType.TEXT_ENUMERATION,
 )

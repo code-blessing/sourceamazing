@@ -10,7 +10,8 @@ class IntFacetAnnotationMirror(
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(
-    facetType = FacetType.NUMBER,
+    IntFacet::class,
     minimumOccurrences = minimumOccurrences,
     maximumOccurrences = maximumOccurrences,
+    facetType = FacetType.NUMBER,
 )

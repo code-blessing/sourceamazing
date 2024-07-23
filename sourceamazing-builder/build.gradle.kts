@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
+    testImplementation(testFixtures(projects.sourceamazingSchema))
 }
 
 

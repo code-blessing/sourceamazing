@@ -3,11 +3,14 @@ package org.codeblessing.sourceamazing.builder.typemirror
 import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
+import kotlin.reflect.KClass
 
 abstract class AbstractSetFixedFacetValueAnnotationMirror(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    val facetToModify: ClassMirrorProvider,
+    annotationClass: KClass<out Annotation>,
+    val conceptToModifyAlias: String,
+    val facetToModify: MirrorProvider<ClassMirror>,
     val facetModificationRule: FacetModificationRule,
-) : AnnotationMirror
+) : AnnotationMirror(annotationClass)
 

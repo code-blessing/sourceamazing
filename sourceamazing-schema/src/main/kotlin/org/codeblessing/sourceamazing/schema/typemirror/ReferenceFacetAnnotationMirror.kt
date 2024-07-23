@@ -2,17 +2,18 @@ package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
  * Represents a [ReferenceFacet] annotation.
  */
 class ReferenceFacetAnnotationMirror(
-    val referencedConcepts: List<ClassMirrorProvider>,
+    val referencedConcepts: List<MirrorProvider<ClassMirror>>,
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(
-    facetType = FacetType.REFERENCE,
+    ReferenceFacet::class,
     minimumOccurrences = minimumOccurrences,
     maximumOccurrences = maximumOccurrences,
+    facetType = FacetType.REFERENCE,
 )

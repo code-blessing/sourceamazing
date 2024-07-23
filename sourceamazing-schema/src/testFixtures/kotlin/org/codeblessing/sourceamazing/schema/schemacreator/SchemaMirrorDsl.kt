@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors.DEFAULT
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.MethodMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.TypeMirror
 
@@ -56,13 +56,13 @@ object SchemaMirrorDsl {
             return conceptClassMirror
         }
 
-        private val schemaMethodMirrors: MutableList<MethodMirror> = mutableListOf()
+        private val schemaFunctionMirrors: MutableList<FunctionMirror> = mutableListOf()
 
-        fun method(methodConfiguration: MethodDsl.() -> Unit): MethodMirror {
-            val methodDsl = MethodDsl("Method${schemaMethodMirrors.size}")
+        fun method(methodConfiguration: MethodDsl.() -> Unit): FunctionMirror {
+            val methodDsl = MethodDsl("Method${schemaFunctionMirrors.size}")
             methodConfiguration.invoke(methodDsl)
             val methodMirror = methodDsl.buildMethodMirror()
-            schemaMethodMirrors.add(methodMirror)
+            schemaFunctionMirrors.add(methodMirror)
             return methodMirror
         }
 
@@ -80,7 +80,7 @@ object SchemaMirrorDsl {
             .interfaceMirror(conceptClassName)
             .withPackage(DEFAULT_PACKAGE_NAME)
         private val conceptFacetClassMirrors: MutableList<ClassMirror> = mutableListOf()
-        private val conceptMethodMirrors: MutableList<MethodMirror> = mutableListOf()
+        private val conceptFunctionMirrors: MutableList<FunctionMirror> = mutableListOf()
 
         fun setConceptIsClass() {
             conceptMirror = conceptMirror.setIsClass()
@@ -108,11 +108,11 @@ object SchemaMirrorDsl {
             return facetClassMirror
         }
 
-        fun method(methodConfiguration: MethodDsl.() -> Unit): MethodMirror {
-            val methodDsl = MethodDsl("Method${conceptMethodMirrors.size}")
+        fun method(methodConfiguration: MethodDsl.() -> Unit): FunctionMirror {
+            val methodDsl = MethodDsl("Method${conceptFunctionMirrors.size}")
             methodConfiguration.invoke(methodDsl)
             val methodMirror = methodDsl.buildMethodMirror()
-            conceptMethodMirrors.add(methodMirror)
+            conceptFunctionMirrors.add(methodMirror)
             return methodMirror
         }
 
@@ -128,18 +128,18 @@ object SchemaMirrorDsl {
 
     @SchemaDslMarker
     class MethodDsl(methodName: String) {
-        private var methodMirror: MethodMirror = MethodMirror.methodMirror(methodName)
+        private var functionMirror: FunctionMirror = FunctionMirror.methodMirror(methodName)
 
         fun withMethodName(methodName: String) {
-            methodMirror = methodMirror.withMethodName(methodName)
+            functionMirror = functionMirror.withMethodName(methodName)
         }
 
         fun withReturnType(returnType: TypeMirror) {
-            methodMirror = methodMirror.withReturnType(returnType)
+            functionMirror = functionMirror.withReturnType(returnType)
         }
 
         fun withReturnType(returnType: ClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
-            methodMirror = methodMirror.withReturnType(
+            functionMirror = functionMirror.withReturnType(
                 returnClass = returnType,
                 nullable = nullable,
                 returnTypeAnnotations = parameterAnnotations
@@ -147,7 +147,7 @@ object SchemaMirrorDsl {
         }
 
         fun withParameter(parameterName: String, parameterClassMirror: ClassMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
-            methodMirror = methodMirror.withParameter(
+            functionMirror = functionMirror.withParameter(
                 parameterName = parameterName,
                 parameterClass = parameterClassMirror,
                 nullable = nullable,
@@ -156,12 +156,12 @@ object SchemaMirrorDsl {
         }
 
         fun withAnnotationOnMethod(annotation: AnnotationMirror) {
-            methodMirror = methodMirror.withAnnotation(annotation)
+            functionMirror = functionMirror.withAnnotation(annotation)
         }
 
 
-        fun buildMethodMirror(): MethodMirror {
-            return methodMirror
+        fun buildMethodMirror(): FunctionMirror {
+            return functionMirror
         }
     }
 
@@ -199,10 +199,10 @@ object SchemaMirrorDsl {
         return schemaDsl.buildSchemaMirror(addSchemaAnnotationWithAllConcepts)
     }
 
-    fun concept(configuration: ConceptDsl.() -> Unit): ClassMirror {
+    fun concept(addConceptAnnotationWithAllFacets: Boolean = true, configuration: ConceptDsl.() -> Unit): ClassMirror {
         val conceptBuilder = ConceptDsl("Concept")
         configuration.invoke(conceptBuilder)
-        return conceptBuilder.buildConceptMirror()
+        return conceptBuilder.buildConceptMirror(addConceptAnnotationWithAllFacets = addConceptAnnotationWithAllFacets)
     }
 
 }

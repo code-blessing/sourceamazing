@@ -1,10 +1,13 @@
 package org.codeblessing.sourceamazing.builder.typemirror
 
+import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
  * Represents a [NewConcept] annotation.
  */
-class NewConceptAnnotationMirror(val concept: ClassMirrorProvider, val declareConceptAlias: String) : AnnotationMirror
+class NewConceptAnnotationMirror(val concept: MirrorProvider<ClassMirror>, val declareConceptAlias: String = DEFAULT_CONCEPT_ALIAS)
+    : AnnotationMirror(annotationClass = NewConcept::class)

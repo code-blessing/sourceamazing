@@ -6,4 +6,5 @@ import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 /**
  * Represents a [SetRandomConceptIdentifierValue] annotation.
  */
-class SetRandomConceptIdentifierValueAnnotationMirror(val conceptToModifyAlias: String) : AnnotationMirror
+class SetRandomConceptIdentifierValueAnnotationMirror(val conceptToModifyAlias: String)
+    : AnnotationMirror(annotationClass = SetRandomConceptIdentifierValue::class)

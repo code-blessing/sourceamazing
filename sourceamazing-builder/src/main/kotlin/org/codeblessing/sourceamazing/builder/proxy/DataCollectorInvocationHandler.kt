@@ -1,8 +1,6 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.builder.typemirror.BuilderMethodAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.IgnoreNullFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetConceptIdentifierValueAnnotationMirror
@@ -20,7 +18,7 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.MethodMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
@@ -40,10 +38,10 @@ class DataCollectorInvocationHandler(
 
         val methodMirror = MirrorFactory.convertToMethodMirror(method)
 
-        if(methodMirror.hasAnnotationMirror(BuilderMethodAnnotationMirror::class)){
+        if(methodMirror.hasAnnotation(BuilderMethod::class)){
             val myAliases = updateConceptDataCollector(methodMirror, args)
 
-            val builderForNextStep: Any = if(methodMirror.hasAnnotationMirror(BuilderMethodAnnotationMirror::class)) {
+            val builderForNextStep: Any = if(methodMirror.hasAnnotation(BuilderMethod::class)) {
                 createNewBuilderProxy(method, conceptDataCollector, myAliases)
             } else {
                 proxy // use same builder
@@ -55,8 +53,8 @@ class DataCollectorInvocationHandler(
         return InvocationHandlerHelper.handleObjectMethodsOrThrow(this, method)
     }
 
-    private fun updateConceptDataCollector(methodMirror: MethodMirror, args: Array<out Any?>): Map<String, ConceptIdentifier> {
-        val newConceptAliasData: Map<String, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(methodMirror, args)
+    private fun updateConceptDataCollector(functionMirror: FunctionMirror, args: Array<out Any?>): Map<String, ConceptIdentifier> {
+        val newConceptAliasData: Map<String, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(functionMirror, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
             conceptDataCollector.existingOrNewConceptData(conceptName, conceptIdentifier)
@@ -64,73 +62,73 @@ class DataCollectorInvocationHandler(
 
         val newConceptAliases: Map<String, ConceptIdentifier> = newConceptAliasData.mapValues { it.value.second }
 
-        methodMirror.annotations.filterIsInstance<SetFixedBooleanFacetValueAnnotationMirror>().forEach { defaultBooleanAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetFixedBooleanFacetValueAnnotationMirror>().forEach { defaultBooleanAnnotation ->
             updateConceptData(
                 conceptAlias = defaultBooleanAnnotation.conceptToModifyAlias,
-                facetClazz = defaultBooleanAnnotation.facetToModify.provideClassMirror(),
+                facetClazz = defaultBooleanAnnotation.facetToModify.provideMirror(),
                 value = defaultBooleanAnnotation.value,
                 facetModificationRule = defaultBooleanAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
             )
         }
-        methodMirror.annotations.filterIsInstance<SetFixedEnumFacetValueAnnotationMirror>().forEach { defaultEnumAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetFixedEnumFacetValueAnnotationMirror>().forEach { defaultEnumAnnotation ->
             updateConceptData(
                 conceptAlias = defaultEnumAnnotation.conceptToModifyAlias,
-                facetClazz = defaultEnumAnnotation.facetToModify.provideClassMirror(),
+                facetClazz = defaultEnumAnnotation.facetToModify.provideMirror(),
                 value = defaultEnumAnnotation.value,
                 facetModificationRule = defaultEnumAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
             )
         }
-        methodMirror.annotations.filterIsInstance<SetFixedIntFacetValueAnnotationMirror>().forEach { defaultIntAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetFixedIntFacetValueAnnotationMirror>().forEach { defaultIntAnnotation ->
             updateConceptData(
                 conceptAlias = defaultIntAnnotation.conceptToModifyAlias,
-                facetClazz = defaultIntAnnotation.facetToModify.provideClassMirror(),
+                facetClazz = defaultIntAnnotation.facetToModify.provideMirror(),
                 value = defaultIntAnnotation.value,
                 facetModificationRule = defaultIntAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
             )
         }
-        methodMirror.annotations.filterIsInstance<SetFixedStringFacetValueAnnotationMirror>().forEach { defaultStringAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetFixedStringFacetValueAnnotationMirror>().forEach { defaultStringAnnotation ->
             updateConceptData(
                 conceptAlias = defaultStringAnnotation.conceptToModifyAlias,
-                facetClazz = defaultStringAnnotation.facetToModify.provideClassMirror(),
+                facetClazz = defaultStringAnnotation.facetToModify.provideMirror(),
                 value = defaultStringAnnotation.value,
                 facetModificationRule = defaultStringAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
             )
         }
-        methodMirror.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror>().forEach { referenceValueAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror>().forEach { referenceValueAnnotation ->
             val referenceConceptId = conceptIdByAlias(referenceValueAnnotation.referencedConceptAlias, newConceptAliases)
 
             updateConceptData(
                 conceptAlias = referenceValueAnnotation.conceptToModifyAlias,
-                facetClazz = referenceValueAnnotation.facetToModify.provideClassMirror(),
+                facetClazz = referenceValueAnnotation.facetToModify.provideMirror(),
                 value = referenceConceptId,
                 facetModificationRule = referenceValueAnnotation.facetModificationRule,
                 newConceptAliases = newConceptAliases
             )
         }
 
-        val paramsWithValues = methodMirror.withMethodArguments(args)
+        val paramsWithValues = functionMirror.withMethodArguments(args)
         paramsWithValues.forEach { (_, param, argumentValue) ->
 
-            if(!param.hasAnnotationMirror(SetFacetValueAnnotationMirror::class)) {
+            if(!param.hasAnnotation(SetFacetValue::class)) {
                 return@forEach
             }
             if(argumentValue==null) {
-                if(param.hasAnnotationMirror(IgnoreNullFacetValueAnnotationMirror::class)) {
+                if(param.hasAnnotation(IgnoreNullFacetValue::class)) {
                     return@forEach // skip null values silently
                 } else {
                     throw IllegalArgumentException("Can not pass null values for parameter '${param.name}' " +
-                            "on method $methodMirror. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'")
+                            "on method $functionMirror. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'")
                 }
             }
 
             param.annotations.filterIsInstance<SetFacetValueAnnotationMirror>().forEach { facetValueAnnotation ->
                 updateConceptData(
                     conceptAlias = facetValueAnnotation.conceptToModifyAlias,
-                    facetClazz = facetValueAnnotation.facetToModify.provideClassMirror(),
+                    facetClazz = facetValueAnnotation.facetToModify.provideMirror(),
                     value = argumentValue,
                     facetModificationRule = facetValueAnnotation.facetModificationRule,
                     newConceptAliases = newConceptAliases
@@ -146,32 +144,32 @@ class DataCollectorInvocationHandler(
         ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    private fun collectNewAliases(methodMirror: MethodMirror, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
-        val paramsWithArgumentValues = methodMirror.withMethodArguments(args)
+    private fun collectNewAliases(functionMirror: FunctionMirror, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
+        val paramsWithArgumentValues = functionMirror.withMethodArguments(args)
 
         val newConceptsByAlias: MutableMap<String, ConceptName> = mutableMapOf()
         val newConceptsIdentifierByAlias: MutableMap<String, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
 
-        methodMirror.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept.provideClassMirror())
+        functionMirror.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
+            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept.provideMirror())
         }
 
-        methodMirror.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { autoRandomConceptIdentifierAnnotation ->
+        functionMirror.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { autoRandomConceptIdentifierAnnotation ->
             val conceptAlias = autoRandomConceptIdentifierAnnotation.conceptToModifyAlias
             val conceptName = newConceptsByAlias[conceptAlias]
-                ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $methodMirror")
+                ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $functionMirror")
             val conceptIdentifier = ConceptIdentifierUtil.random(conceptName)
             newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
 
         }
 
         paramsWithArgumentValues.forEach { (_, methodParam, argumentValue) ->
-            methodMirror.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdentifierValueAnnotation ->
+            functionMirror.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdentifierValueAnnotation ->
                 val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias
                 val conceptName = newConceptsByAlias[conceptAlias]
-                    ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $methodMirror")
+                    ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $functionMirror")
                 if(argumentValue == null) {
-                    throw IllegalArgumentException("Can not pass null value as concept identifier argument for parameter '${methodParam.name}' on method $methodMirror")
+                    throw IllegalArgumentException("Can not pass null value as concept identifier argument for parameter '${methodParam.name}' on method $functionMirror")
                 }
                 val conceptIdentifier = argumentValue as ConceptIdentifier
                 newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)

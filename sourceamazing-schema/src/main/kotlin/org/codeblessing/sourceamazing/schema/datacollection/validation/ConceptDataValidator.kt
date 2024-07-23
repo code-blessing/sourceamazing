@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleSchemaValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.*
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
 import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 
@@ -233,7 +234,7 @@ object ConceptDataValidator {
     }
 
     private fun facetEnumType(facetSchema: FacetSchema): KClass<*> {
-        return facetSchema.enumerationType
+        return facetSchema.enumerationType?.convertToKClass()
             ?: throw IllegalStateException("EnumerationType was empty for facet schema $facetSchema")
     }
 

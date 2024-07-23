@@ -6,4 +6,5 @@ import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 /**
  * Represents a [ExpectedAliasFromSuperiorBuilder] annotation.
  */
-class ExpectedAliasFromSuperiorBuilderAnnotationMirror(val conceptAlias: String) : AnnotationMirror
+class ExpectedAliasFromSuperiorBuilderAnnotationMirror(val conceptAlias: String)
+    : AnnotationMirror(annotationClass = ExpectedAliasFromSuperiorBuilder::class)

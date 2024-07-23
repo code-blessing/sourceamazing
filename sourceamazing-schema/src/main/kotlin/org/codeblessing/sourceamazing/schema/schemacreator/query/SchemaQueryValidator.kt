@@ -7,7 +7,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConce
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object SchemaQueryValidator {
     @Throws(MalformedSchemaException::class)

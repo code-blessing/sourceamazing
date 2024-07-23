@@ -10,7 +10,8 @@ class BooleanFacetAnnotationMirror(
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(
-    facetType = FacetType.BOOLEAN,
+    BooleanFacet::class,
     minimumOccurrences = minimumOccurrences,
     maximumOccurrences = maximumOccurrences,
+    facetType = FacetType.BOOLEAN,
 )

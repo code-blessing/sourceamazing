@@ -6,5 +6,5 @@ import kotlin.reflect.KClass
 interface MirrorFactoryApi {
     fun convertToMirrorHierarchy(clazz: KClass<*>): ClassMirror
 
-    fun convertToMirrorHierarchy(method: Method): MethodMirror
+    fun convertToMirrorHierarchy(method: Method): FunctionMirror
 }

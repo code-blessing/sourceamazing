@@ -5,4 +5,5 @@ import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentif
 /**
  * Represents a [QueryConceptIdentifierValue] annotation.
  */
-class QueryConceptIdentifierValueAnnotationMirror : AnnotationMirror
+class QueryConceptIdentifierValueAnnotationMirror
+    : AnnotationMirror(annotationClass = QueryConceptIdentifierValue::class)

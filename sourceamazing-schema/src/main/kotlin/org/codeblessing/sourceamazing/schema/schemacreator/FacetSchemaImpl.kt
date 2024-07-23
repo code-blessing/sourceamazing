@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetSchema
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import kotlin.reflect.KClass
 
 data class FacetSchemaImpl(
@@ -12,13 +13,7 @@ data class FacetSchemaImpl(
     override val minimumOccurrences: Int,
     override val maximumOccurrences: Int,
     override val referencingConcepts: Set<ConceptName>,
-    override val enumerationType: KClass<*>?
+    override val enumerationType: ClassMirror?
 ) : FacetSchema {
-    override fun enumerationValues(): List<Enum<*>> {
-        if(enumerationType == null) {
-            return emptyList()
-        }
-        return enumerationType.java.enumConstants.filterIsInstance(Enum::class.java)
-
-    }
+    override val enumerationValues: List<String> = enumerationType?.enumValues ?: emptyList()
 }

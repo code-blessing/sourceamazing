@@ -8,9 +8,8 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedS
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongFacetQueryMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object ConceptQueryValidator {
     @Throws(MalformedSchemaException::class)
@@ -26,13 +25,13 @@ object ConceptQueryValidator {
 
             val queryFacetValueAnnotationMirror = method.getAnnotationMirrorOrNull(QueryFacetValueAnnotationMirror::class)
             if(queryFacetValueAnnotationMirror != null) {
-                val queryFacetValueClass = queryFacetValueAnnotationMirror.facetClass.provideClassMirror()
+                val queryFacetValueClass = queryFacetValueAnnotationMirror.facetClass.provideMirror()
                 if(!possibleFacetClasses.contains(queryFacetValueClass)) {
                     throw WrongFacetQueryMalformedSchemaException("The method has a invalid " +
                             "facet class ${queryFacetValueClass.shortText()}. Valid facet classes " +
                             "are ${possibleFacetClasses.map { it.shortText() }}. Method: $method")
                 }
-            } else if(!method.hasAnnotationMirror(QueryConceptIdentifierValueAnnotationMirror::class)) {
+            } else if(!method.hasAnnotation(QueryConceptIdentifierValue::class)) {
                 throw WrongFacetQueryMalformedSchemaException("The method is missing " +
                         "one of the annotations ${QueryFacetValue::class.shortText()} " +
                         "or ${QueryConceptIdentifierValue::class.shortText()}. Method: $method")

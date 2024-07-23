@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
  * Represents a [Concept] annotation.
  */
-class ConceptAnnotationMirror(val facets: List<ClassMirrorProvider>) : AnnotationMirror
+class ConceptAnnotationMirror(val facets: List<MirrorProvider<ClassMirror>>)
+    : AnnotationMirror(annotationClass = Concept::class)

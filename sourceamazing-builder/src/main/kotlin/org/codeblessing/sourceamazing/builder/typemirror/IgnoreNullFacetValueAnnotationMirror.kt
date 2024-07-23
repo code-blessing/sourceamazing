@@ -6,4 +6,4 @@ import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 /**
  * Represents a [IgnoreNullFacetValue] annotation.
  */
-class IgnoreNullFacetValueAnnotationMirror() : AnnotationMirror
+class IgnoreNullFacetValueAnnotationMirror() : AnnotationMirror(annotationClass = IgnoreNullFacetValue::class)

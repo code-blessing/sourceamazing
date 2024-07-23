@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProvider
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import kotlin.reflect.KClass
 
 
@@ -12,12 +12,12 @@ data class ClassMirror(
     val isAnnotation: Boolean = false,
     val isEnum: Boolean = false,
     override val annotations: List<AnnotationMirror> = emptyList(),
-    val methods: List<MethodMirror> = emptyList(),
+    val methods: List<FunctionMirror> = emptyList(),
     val propertiesNames: List<String> = emptyList(),
-    val typeParameters: List<ClassMirrorProvider> = emptyList(),
-    val superClasses: List<ClassMirrorProvider> = emptyList(),
+    val typeParameters: List<MirrorProvider<ClassMirror>> = emptyList(),
+    val superClasses: List<MirrorProvider<ClassMirror>> = emptyList(),
     val enumValues: List<String> = emptyList(),
-): AbstractMirror(), ClassMirrorProvider {
+): AbstractMirror(), MirrorProvider<ClassMirror>, SignatureMirror {
 
     companion object {
         fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror{
@@ -38,8 +38,13 @@ data class ClassMirror(
 
     val className: String = classQualifier.className
     val packageName: String = classQualifier.packageName
+    val fullQualifiedName: String = if(packageName.isNotEmpty()) "$packageName.$className" else className
 
-    override fun provideClassMirror(): ClassMirror = this
+    override fun provideMirror(): ClassMirror = this
+
+    override fun longText(): String = fullQualifiedName
+
+    override fun shortText(): String = className
 
     fun isClass(clazz: KClass<*>): Boolean {
         return false // TODO implement
@@ -112,7 +117,7 @@ data class ClassMirror(
         )
     }
 
-    fun withMethod(method: MethodMirror): ClassMirror {
+    fun withMethod(method: FunctionMirror): ClassMirror {
         return this.copy(
             methods = this.methods + method
         )

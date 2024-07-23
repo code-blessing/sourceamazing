@@ -1,7 +1,6 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
@@ -46,9 +45,9 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
         assertEquals(Unit::class, conceptSchema.facets[1].enumerationType)
         assertEquals(Unit::class, conceptSchema.facets[2].enumerationType)
 
-        assertEquals(0, conceptSchema.facets[0].enumerationValues().size)
-        assertEquals(0, conceptSchema.facets[1].enumerationValues().size)
-        assertEquals(0, conceptSchema.facets[2].enumerationValues().size)
+        assertEquals(0, conceptSchema.facets[0].enumerationValues.size)
+        assertEquals(0, conceptSchema.facets[1].enumerationValues.size)
+        assertEquals(0, conceptSchema.facets[2].enumerationValues.size)
 
     }
 }

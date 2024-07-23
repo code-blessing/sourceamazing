@@ -17,7 +17,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToK
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.provider.ClassMirrorProviderHelper.provideClassMirrors
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 import kotlin.reflect.KClass
 
 object SchemaCreator {
@@ -144,7 +144,7 @@ object SchemaCreator {
             facetType = facetClass.facetType,
             minimumOccurrences = facetClass.minimumOccurrences,
             maximumOccurrences = facetClass.maximumOccurrences,
-            enumerationType = if(facetClass is EnumFacetAnnotationMirror) facetClass.enumerationClass.provideClassMirror() else null,
+            enumerationType = if(facetClass is EnumFacetAnnotationMirror) facetClass.enumerationClass.provideMirror() else null,
             referencedConceptClasses = if(facetClass is ReferenceFacetAnnotationMirror) facetClass.referencedConcepts.provideClassMirrors() else emptyList(),
         )
     }
@@ -154,20 +154,19 @@ object SchemaCreator {
         facetName: FacetName,
         facetClass: ClassMirror,
     ): UnvalidatedFacetSchema {
-        val possibleFacetClasses: List<KClass<out AbstractFacetAnnotationMirror>> = listOf(
-            StringFacetAnnotationMirror::class,
-            BooleanFacetAnnotationMirror::class,
-            IntFacetAnnotationMirror::class,
-            EnumFacetAnnotationMirror::class,
-            ReferenceFacetAnnotationMirror::class,
+        val possibleFacetClasses: Map<KClass<out Annotation>, KClass<out AbstractFacetAnnotationMirror>> = mapOf(
+            StringFacet::class to StringFacetAnnotationMirror::class,
+            BooleanFacet::class to BooleanFacetAnnotationMirror::class,
+            IntFacet::class to IntFacetAnnotationMirror::class,
+            EnumFacet::class to EnumFacetAnnotationMirror::class,
+            ReferenceFacet::class to ReferenceFacetAnnotationMirror::class,
         )
-
         return possibleFacetClasses
-            .filter { facetAnnotationMirror ->
-                facetClass.hasAnnotationMirror(facetAnnotationMirror)
+            .filter { facetAnnotation ->
+                facetClass.hasAnnotation(facetAnnotation.key)
             }
-            .map { facetAnnotationMirror ->
-                UnvalidatedFacetSchema(facetName, facetClass.getAnnotationMirror(facetAnnotationMirror))
+            .map { facetAnnotation ->
+                UnvalidatedFacetSchema(facetName, facetClass.getAnnotationMirror(facetAnnotation.value))
             }
             .firstOrNull()
             ?: throw IllegalStateException("No supported facet type on $facetClass.")
@@ -245,7 +244,7 @@ object SchemaCreator {
             minimumOccurrences = minimumOccurrences,
             maximumOccurrences = maximumOccurrences,
             referencingConcepts = referencedConcepts,
-            enumerationType = enumerationType?.convertToKClass(),
+            enumerationType = enumerationType,
         )
     }
 

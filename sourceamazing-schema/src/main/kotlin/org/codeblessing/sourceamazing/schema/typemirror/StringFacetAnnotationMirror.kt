@@ -9,7 +9,8 @@ import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 class StringFacetAnnotationMirror(minimumOccurrences: Int = 1,
                                   maximumOccurrences: Int = 1,
     ) : AbstractFacetAnnotationMirror(
-    facetType = FacetType.TEXT,
+    StringFacet::class,
     minimumOccurrences = minimumOccurrences,
     maximumOccurrences = maximumOccurrences,
+    facetType = FacetType.TEXT,
 )

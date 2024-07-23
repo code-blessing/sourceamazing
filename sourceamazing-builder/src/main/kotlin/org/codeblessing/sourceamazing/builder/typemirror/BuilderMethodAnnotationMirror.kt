@@ -6,4 +6,4 @@ import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 /**
  * Represents a [BuilderMethod] annotation.
  */
-class BuilderMethodAnnotationMirror() : AnnotationMirror
+class BuilderMethodAnnotationMirror() : AnnotationMirror(annotationClass = BuilderMethod::class)

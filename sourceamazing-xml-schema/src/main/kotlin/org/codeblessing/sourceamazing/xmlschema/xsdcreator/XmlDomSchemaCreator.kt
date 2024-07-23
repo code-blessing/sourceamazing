@@ -172,9 +172,9 @@ object XmlDomSchemaCreator {
                 val simpleType = createAndAttachXsdElement(document, attributeElement, "simpleType")
                 val restriction = createAndAttachXsdElement(document, simpleType, "restriction")
                 setElementXsdAttribute(restriction, "base", "$xsdNamespacePrefix:string")
-                facetSchema.enumerationValues().forEach { enumerationValue ->
+                facetSchema.enumerationValues.forEach { enumerationValue ->
                     val enumerationValueElement = createAndAttachXsdElement(document, restriction, "enumeration")
-                    setElementXsdAttribute(enumerationValueElement, XmlNames.FACET_SIMPLE_VALUE_ATTRIBUTE_NAME, enumerationValue.name)
+                    setElementXsdAttribute(enumerationValueElement, XmlNames.FACET_SIMPLE_VALUE_ATTRIBUTE_NAME, enumerationValue)
                 }
             }
             FacetType.TEXT -> setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:string")

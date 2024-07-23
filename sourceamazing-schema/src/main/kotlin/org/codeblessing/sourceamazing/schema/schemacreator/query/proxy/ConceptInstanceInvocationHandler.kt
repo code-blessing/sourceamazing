@@ -2,17 +2,13 @@ package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
 
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -25,7 +21,7 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): In
         val methodMirror = MirrorFactory.convertToMethodMirror(method)
 
         methodMirror.getAnnotationMirrorOrNull(QueryFacetValueAnnotationMirror::class)?.let {
-            val facetClass = it.facetClass.provideClassMirror()
+            val facetClass = it.facetClass.provideMirror()
             val facetNameToQuery = FacetName.of(facetClass)
             val facetValues = conceptNode.facetValues[facetNameToQuery] ?: throw IllegalStateException("Facet values not found for facet ${facetClass}.")
 
