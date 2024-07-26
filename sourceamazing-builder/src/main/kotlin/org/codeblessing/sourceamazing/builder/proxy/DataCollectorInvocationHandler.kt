@@ -18,7 +18,9 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
@@ -53,7 +55,7 @@ class DataCollectorInvocationHandler(
         return InvocationHandlerHelper.handleObjectMethodsOrThrow(this, method)
     }
 
-    private fun updateConceptDataCollector(functionMirror: FunctionMirror, args: Array<out Any?>): Map<String, ConceptIdentifier> {
+    private fun updateConceptDataCollector(functionMirror: FunctionMirrorInterface, args: Array<out Any?>): Map<String, ConceptIdentifier> {
         val newConceptAliasData: Map<String, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(functionMirror, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
@@ -144,7 +146,7 @@ class DataCollectorInvocationHandler(
         ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    private fun collectNewAliases(functionMirror: FunctionMirror, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
+    private fun collectNewAliases(functionMirror: FunctionMirrorInterface, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
         val paramsWithArgumentValues = functionMirror.withMethodArguments(args)
 
         val newConceptsByAlias: MutableMap<String, ConceptName> = mutableMapOf()
@@ -181,7 +183,7 @@ class DataCollectorInvocationHandler(
 
     private fun updateConceptData(
         conceptAlias: String,
-        facetClazz: ClassMirror,
+        facetClazz: ClassMirrorInterface,
         value: Any,
         facetModificationRule: FacetModificationRule,
         newConceptAliases: Map<String, ConceptIdentifier>

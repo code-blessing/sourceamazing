@@ -1,11 +1,12 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
-class FacetName private constructor(facet: ClassMirror): ComparableClazzId(facet) {
+class FacetName private constructor(facet: ClassMirrorInterface): ComparableClazzId(facet) {
 
     companion object {
-        fun of(facet: ClassMirror): FacetName {
+        fun of(facet: ClassMirrorInterface): FacetName {
             return FacetName(facet)
         }
     }

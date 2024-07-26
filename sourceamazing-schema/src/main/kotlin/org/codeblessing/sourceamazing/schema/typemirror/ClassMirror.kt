@@ -5,15 +5,15 @@ import kotlin.reflect.KClass
 
 
 data class ClassMirror(
-    val classQualifier: ClassQualifierMirror,
-    val classKind: ClassKind = ClassKind.REGULAR_CLASS,
+    override val classQualifier: ClassQualifierMirror,
+    override val classKind: ClassKind = ClassKind.REGULAR_CLASS,
     override val annotations: List<AnnotationMirror> = emptyList(),
-    val methods: List<FunctionMirror> = emptyList(),
-    val propertiesNames: List<String> = emptyList(),
-    val typeParameters: List<MirrorProvider<ClassMirror>> = emptyList(),
-    val superClasses: List<MirrorProvider<ClassMirror>> = emptyList(),
-    val enumValues: List<String> = emptyList(),
-): AbstractMirror(), MirrorProvider<ClassMirror>, SignatureMirror {
+    override val methods: List<FunctionMirror> = emptyList(),
+    override val propertiesNames: List<String> = emptyList(),
+    override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
+    override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
+    override val enumValues: List<String> = emptyList(),
+): AbstractMirror(), ClassMirrorInterface {
 
     companion object {
         fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror{
@@ -31,20 +31,6 @@ data class ClassMirror(
             ).setIsEnum()
         }
     }
-
-    val className: String = classQualifier.className
-    val packageName: String = classQualifier.packageName
-    val fullQualifiedName: String = if(packageName.isNotEmpty()) "$packageName.$className" else className
-
-
-    val isInterface: Boolean = classKind == ClassKind.INTERFACE
-    val isClass: Boolean = classKind == ClassKind.REGULAR_CLASS
-    val isObjectClass: Boolean = classKind == ClassKind.OBJECT_CLASS
-    val isAnnotation: Boolean = classKind == ClassKind.ANNOTATION
-    val isEnum: Boolean = classKind == ClassKind.ENUM_CLASS
-    val isDataClass: Boolean = classKind == ClassKind.DATA_CLASS
-
-    override fun provideMirror(): ClassMirror = this
 
     override fun longText(): String = fullQualifiedName
 

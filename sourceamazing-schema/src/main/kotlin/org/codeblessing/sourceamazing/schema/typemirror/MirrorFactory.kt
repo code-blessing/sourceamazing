@@ -22,15 +22,15 @@ import kotlin.reflect.KClass
 object MirrorFactory {
     private val factoryImplementation: MirrorFactoryApi = JavaReflectionMirrorFactory
 
-    fun convertToClassMirror(clazz: KClass<*>): ClassMirror {
+    fun convertToClassMirror(clazz: KClass<*>): ClassMirrorInterface {
         return factoryImplementation.convertToMirrorHierarchy(clazz)
     }
 
-    fun convertToMethodMirror(method: Method): FunctionMirror {
+    fun convertToMethodMirror(method: Method): FunctionMirrorInterface {
         return factoryImplementation.convertToMirrorHierarchy(method)
     }
 
-    fun ClassMirror.convertToKClass(): KClass<*> {
+    fun ClassMirrorInterface.convertToKClass(): KClass<*> {
         println("Convert $this to class")
         TODO("Use reflection to get the class from classname and package name")
     }

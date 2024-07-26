@@ -6,13 +6,15 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
  * Represents a [SetFixedIntFacetValue] annotation.
  */
 class SetFixedIntFacetValueAnnotationMirror(
     conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    facetToModify: ClassMirror,
+    facetToModify: MirrorProvider<ClassMirrorInterface>,
     facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
     val value: Int,
 ) : AbstractSetFixedFacetValueAnnotationMirror(

@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
 
-abstract class ComparableClazzId protected constructor(val clazz: ClassMirror) {
+abstract class ComparableClazzId protected constructor(val clazz: ClassMirrorInterface) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

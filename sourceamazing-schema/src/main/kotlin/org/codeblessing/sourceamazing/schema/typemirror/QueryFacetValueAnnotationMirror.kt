@@ -6,5 +6,5 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 /**
  * Represents a [QueryFacetValue] annotation.
  */
-class QueryFacetValueAnnotationMirror(val facetClass: MirrorProvider<ClassMirror>)
+class QueryFacetValueAnnotationMirror(val facetClass: MirrorProvider<ClassMirrorInterface>)
     : AnnotationMirror(annotationClass = QueryFacetValue::class)

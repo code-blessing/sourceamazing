@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_AL
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 /**
@@ -11,7 +12,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
  */
 class SetFixedBooleanFacetValueAnnotationMirror(
     conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    facetToModify: MirrorProvider<ClassMirror>,
+    facetToModify: MirrorProvider<ClassMirrorInterface>,
     facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
     val value: Boolean,
 ) : AbstractSetFixedFacetValueAnnotationMirror(

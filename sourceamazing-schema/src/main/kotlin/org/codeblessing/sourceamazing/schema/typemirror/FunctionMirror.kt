@@ -3,13 +3,13 @@ package org.codeblessing.sourceamazing.schema.typemirror
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
 data class FunctionMirror (
-    val functionName: String?,
+    override val functionName: String?,
     override val annotations: List<AnnotationMirror> = emptyList(),
-    val receiverParameterType: ParameterMirror? = null,
-    val instanceParameterType: ParameterMirror? = null,
-    val parameters: List<ParameterMirror> = emptyList(),
-    val returnType: ReturnMirror? = null,
-): AbstractMirror(), MirrorProvider<FunctionMirror>, SignatureMirror {
+    override val receiverParameterType: ParameterMirror? = null,
+    override val instanceParameterType: ParameterMirror? = null,
+    override val parameters: List<ParameterMirror> = emptyList(),
+    override val returnType: ReturnMirror? = null,
+): AbstractMirror(), FunctionMirrorInterface {
 
     companion object {
         fun methodMirror(methodName: String = "UnnamedMethod"): FunctionMirror{
@@ -29,15 +29,6 @@ data class FunctionMirror (
     override fun longText(): String = functionName ?: "<anonymousMethod>" // TODO fqn
 
     override fun shortText(): String  = functionName ?: "<anonymousMethod>"
-
-    fun withMethodArguments(args: Array<out Any?>): List<ParameterMirrorWithArgument> {
-        require(args.size == parameters.size) {
-            "Argument size (${args.size}) must match size of ${parameters.size}"
-        }
-        return parameters
-            .mapIndexed { index, parameterMirror -> parameterMirror.withArgument(index, args[index]) }
-    }
-
 
     fun withAnnotation(annotation: AnnotationMirror): FunctionMirror {
         return this.copy(

@@ -6,5 +6,5 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 /**
  * Represents a [QueryConcepts] annotation.
  */
-class QueryConceptsAnnotationMirror(val concepts: List<MirrorProvider<ClassMirror>>)
+class QueryConceptsAnnotationMirror(val concepts: List<MirrorProvider<ClassMirrorInterface>>)
     : AnnotationMirror(annotationClass = QueryConcepts::class)

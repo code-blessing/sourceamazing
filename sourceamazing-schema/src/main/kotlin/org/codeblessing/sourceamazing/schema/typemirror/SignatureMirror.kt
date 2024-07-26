@@ -14,6 +14,8 @@ sealed interface SignatureMirror {
         return when (this) {
             is FunctionMirror -> this
             is ClassMirror -> this
+            is ClassMirrorInterface -> this
+            is FunctionMirrorInterface -> this
         }
     }
 }

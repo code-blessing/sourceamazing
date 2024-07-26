@@ -6,13 +6,14 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQueryMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object SchemaQueryValidator {
     @Throws(MalformedSchemaException::class)
-    fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: ClassMirror) {
+    fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: ClassMirrorInterface) {
         val possibleSchemaConceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors().toSet()
         schemaDefinitionClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
             val queryConceptClasses = method.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.concepts?.provideClassMirrors()

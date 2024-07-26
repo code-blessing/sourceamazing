@@ -9,6 +9,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryVali
 import org.codeblessing.sourceamazing.schema.typemirror.AbstractFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
@@ -32,7 +33,7 @@ object SchemaCreator {
 
 
     @Throws(MalformedSchemaException::class)
-    internal fun createSchemaFromSchemaClassMirror(schemaDefinitionClass: ClassMirror): SchemaImpl {
+    internal fun createSchemaFromSchemaClassMirror(schemaDefinitionClass: ClassMirrorInterface): SchemaImpl {
         validateSchemaClassAnnotations(schemaDefinitionClass)
         SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
 
@@ -81,7 +82,7 @@ object SchemaCreator {
     }
 
 
-    private fun validateSchemaClassAnnotations(schemaDefinitionClass: ClassMirror) {
+    private fun validateSchemaClassAnnotations(schemaDefinitionClass: ClassMirrorInterface) {
         checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasNotAnnotation(Concept::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
@@ -92,7 +93,7 @@ object SchemaCreator {
         checkHasNotAnnotation(ReferenceFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
-    private fun validateConceptClassesAnnotations(conceptClasses: List<ClassMirror>) {
+    private fun validateConceptClassesAnnotations(conceptClasses: List<ClassMirrorInterface>) {
         conceptClasses.forEach { conceptClass ->
             checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
@@ -105,7 +106,7 @@ object SchemaCreator {
         }
     }
 
-    private fun validateFacetClassesAnnotations(facetClasses: Collection<ClassMirror>) {
+    private fun validateFacetClassesAnnotations(facetClasses: Collection<ClassMirrorInterface>) {
         facetClasses.forEach { facetClass ->
             checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasExactlyOneOfAnnotation(
@@ -124,7 +125,7 @@ object SchemaCreator {
     private fun createFacetSchema(
         conceptName: ConceptName,
         facetName: FacetName,
-        facetClass: ClassMirror,
+        facetClass: ClassMirrorInterface,
         conceptNames: List<ConceptName>
     ): FacetSchema {
         val unvalidatedFacetSchema = createUnvalidatedFacetSchema(facetName, facetClass)
@@ -136,8 +137,8 @@ object SchemaCreator {
         val facetType: FacetType,
         val minimumOccurrences: Int,
         val maximumOccurrences: Int,
-        val enumerationType: ClassMirror?,
-        val referencedConceptClasses: List<ClassMirror>,
+        val enumerationType: ClassMirrorInterface?,
+        val referencedConceptClasses: List<ClassMirrorInterface>,
     ) {
         constructor(facetName: FacetName, facetClass: AbstractFacetAnnotationMirror) : this(
             facetName = facetName,
@@ -152,7 +153,7 @@ object SchemaCreator {
 
     private fun createUnvalidatedFacetSchema(
         facetName: FacetName,
-        facetClass: ClassMirror,
+        facetClass: ClassMirrorInterface,
     ): UnvalidatedFacetSchema {
         val possibleFacetClasses: Map<KClass<out Annotation>, KClass<out AbstractFacetAnnotationMirror>> = mapOf(
             StringFacet::class to StringFacetAnnotationMirror::class,
@@ -248,19 +249,19 @@ object SchemaCreator {
         )
     }
 
-    private fun checkIsInterface(classToInspect: ClassMirror, classDescription: String) {
+    private fun checkIsInterface(classToInspect: ClassMirrorInterface, classDescription: String) {
         if(!classToInspect.isInterface || classToInspect.isAnnotation) {
             throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.longText()}' must be an interface.")
         }
     }
 
-    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirror, classDescription: String) {
+    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
         if(!classToInspect.hasAnnotation(annotation)) {
             throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
         }
     }
 
-    private fun checkHasExactlyOneOfAnnotation(vararg annotations: KClass<out Annotation>, classToInspect: ClassMirror, classDescription: String) {
+    private fun checkHasExactlyOneOfAnnotation(vararg annotations: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
         val numberOfAnnotations = annotations.count { annotation -> hasClassAnnotation(annotation, classToInspect) }
 
         if(numberOfAnnotations < 1) {
@@ -270,13 +271,13 @@ object SchemaCreator {
         }
     }
 
-    private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirror, classDescription: String) {
+    private fun checkHasNotAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
         if(hasClassAnnotation(annotation, classToInspect)) {
             throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must not have an annotation of type '${annotation.annotationText()}'.")
         }
     }
 
-    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirror): Boolean {
+    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface): Boolean {
         return classToInspect.hasAnnotation(annotation)
     }
 }

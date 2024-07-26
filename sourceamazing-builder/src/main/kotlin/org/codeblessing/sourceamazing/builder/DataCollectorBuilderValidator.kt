@@ -19,20 +19,23 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
 import kotlin.reflect.KClass
 
 object DataCollectorBuilderValidator {
     @Throws(DataCollectorBuilderException::class, DataCollectorBuilderMethodSyntaxException::class)
-    fun validateAccessorMethodsOfDataCollector(dataCollectorClass: ClassMirror) {
-        val allBuilders = mutableSetOf<ClassMirror>()
+    fun validateAccessorMethodsOfDataCollector(dataCollectorClass: ClassMirrorInterface) {
+        val allBuilders = mutableSetOf<ClassMirrorInterface>()
         collectBuilderClassesRecursively(allBuilders, dataCollectorClass)
         allBuilders.forEach { builderClass -> validateBuilderClassStructure(builderClass) }
         allBuilders.forEach { builderClass -> validateBuilderMethodSyntax(builderClass) }
     }
 
-    private fun validateBuilderClassStructure(builderClass: ClassMirror) {
+    private fun validateBuilderClassStructure(builderClass: ClassMirrorInterface) {
         checkHasBuilderAnnotationOnClassAndIsInterface(builderClass)
 
         builderClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
@@ -84,7 +87,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun importedAliasFromSuperiorBuilder(builderClass: ClassMirror): Set<String> {
+    private fun importedAliasFromSuperiorBuilder(builderClass: ClassMirrorInterface): Set<String> {
         return builderClass.annotations
             .filterIsInstance<ExpectedAliasFromSuperiorBuilderAnnotationMirror>()
             .map { it.conceptAlias }
@@ -114,7 +117,7 @@ object DataCollectorBuilderValidator {
     }
 
 
-    private fun validateBuilderMethodSyntax(builderClass: ClassMirror) {
+    private fun validateBuilderMethodSyntax(builderClass: ClassMirrorInterface) {
         builderClass.methods
             .filter(TypeHelper::isNotFromKotlinAnyClass)
             .filter { method -> method.hasAnnotation(BuilderMethod::class) }
@@ -156,7 +159,7 @@ object DataCollectorBuilderValidator {
         }
 
         method.parameters.forEach { methodParameter ->
-            method.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
+            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
                 conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
             }
         }
@@ -265,12 +268,12 @@ object DataCollectorBuilderValidator {
     private fun validateCorrectConceptIdentifierType(method: FunctionMirror, methodParameter: ParameterMirror) {
         if(methodParameter.hasAnnotation(SetConceptIdentifierValue::class)) {
             when(val signatureMirror = methodParameter.type.signatureMirror.provideMirror()) {
-                is ClassMirror -> if(!signatureMirror.isClass(ConceptIdentifier::class)) {
+                is ClassMirrorInterface -> if(!signatureMirror.isClass(MirrorFactory.convertToClassMirror(ConceptIdentifier::class))) {
                     throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
                             "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
                             "must be of type '${ConceptIdentifier::class.shortText()}' but was '${signatureMirror.longText()}'")
                 }
-                is FunctionMirror -> throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
+                is FunctionMirrorInterface -> throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
                         "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
                         "can not be a function but was '${signatureMirror.longText()}'")
             }
@@ -278,7 +281,7 @@ object DataCollectorBuilderValidator {
     }
 
 
-    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<ClassMirror>, builderClass: ClassMirror) {
+    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<ClassMirrorInterface>, builderClass: ClassMirrorInterface) {
         checkHasBuilderAnnotationOnClassAndIsInterface(builderClass)
 
         // avoid infinite recursion
@@ -293,7 +296,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun checkHasBuilderAnnotationOnClassAndIsInterface(builderClass: ClassMirror) {
+    private fun checkHasBuilderAnnotationOnClassAndIsInterface(builderClass: ClassMirrorInterface) {
         if(!builderClass.isInterface) {
             throw DataCollectorBuilderException("The builder class must be an interface: ${builderClass.longText()}")
         }

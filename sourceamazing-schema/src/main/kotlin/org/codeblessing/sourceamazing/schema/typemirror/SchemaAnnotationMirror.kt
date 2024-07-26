@@ -6,5 +6,5 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 /**
  * Represents a [Schema] annotation.
  */
-data class SchemaAnnotationMirror(val concepts: List<MirrorProvider<ClassMirror>>)
+data class SchemaAnnotationMirror(val concepts: List<MirrorProvider<ClassMirrorInterface>>)
     : AnnotationMirror(annotationClass = Schema::class)

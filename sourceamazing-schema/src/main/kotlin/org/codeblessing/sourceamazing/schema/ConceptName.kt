@@ -1,11 +1,12 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
-class ConceptName private constructor(concept: ClassMirror): ComparableClazzId(concept) {
+class ConceptName private constructor(concept: ClassMirrorInterface): ComparableClazzId(concept) {
 
     companion object {
-        fun of(concept: ClassMirror): ConceptName {
+        fun of(concept: ClassMirrorInterface): ConceptName {
             return ConceptName(concept)
         }
     }

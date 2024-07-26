@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassKind
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ClassQualifierMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
@@ -27,7 +28,7 @@ import kotlin.reflect.jvm.kotlinFunction
 
 object JavaReflectionMirrorFactory: MirrorFactoryApi {
 
-    override fun convertToMirrorHierarchy(clazz: KClass<*>): ClassMirror {
+    override fun convertToMirrorHierarchy(clazz: KClass<*>): ClassMirrorInterface {
         return createClassMirrorProvider(clazz).provideMirror()
     }
 
@@ -40,7 +41,7 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
 
     private data class ClassQualifierMirrorProvider(
         private val clazz: KClass<*>,
-    ): MirrorProvider<ClassMirror> {
+    ): MirrorProvider<ClassMirrorInterface> {
         override fun provideMirror(): ClassMirror {
             return ClassMirror(
                 classQualifier = createClassQualifier(clazz),
@@ -64,7 +65,7 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         }
     }
 
-    private fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirror> {
+    private fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirrorInterface> {
         return ClassQualifierMirrorProvider(clazz)
     }
 

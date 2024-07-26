@@ -8,13 +8,14 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongFacetQueryMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object ConceptQueryValidator {
     @Throws(MalformedSchemaException::class)
-    fun validateAccessorMethodsOfConceptClass(conceptClass: ClassMirror) {
+    fun validateAccessorMethodsOfConceptClass(conceptClass: ClassMirrorInterface) {
 
         val possibleFacetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors().toSet()
         conceptClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->

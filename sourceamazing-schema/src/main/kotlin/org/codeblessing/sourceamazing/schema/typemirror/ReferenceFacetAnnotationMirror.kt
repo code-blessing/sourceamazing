@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
  * Represents a [ReferenceFacet] annotation.
  */
 class ReferenceFacetAnnotationMirror(
-    val referencedConcepts: List<MirrorProvider<ClassMirror>>,
+    val referencedConcepts: List<MirrorProvider<ClassMirrorInterface>>,
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(

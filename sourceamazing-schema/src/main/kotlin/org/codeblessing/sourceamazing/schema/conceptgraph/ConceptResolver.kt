@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
 import org.codeblessing.sourceamazing.schema.util.EnumUtil
@@ -68,13 +69,18 @@ object ConceptResolver {
         val enumerationType = facetSchema.enumerationType
             ?: throw IllegalStateException("Facet ${facetSchema.facetName} has no enumerationType.")
         return conceptData.getFacet(facetSchema.facetName)
-            .map { value -> if(value is String) fromStringToEnum(value, enumerationType) else value }
+            .map { value -> transformEnumFacetValue(enumerationType, value) }
     }
 
-    private fun fromStringToEnum(enumStringValue: String, enumerationType: ClassMirror): Any {
-        val enumerationTypeClass: KClass<*> = enumerationType.convertToKClass()
-        return EnumUtil.fromStringToEnum(enumStringValue, enumerationTypeClass)
-            ?: throw IllegalStateException("Could not convert enum value '$enumStringValue' to enum constants of $enumerationType")
+    private fun transformEnumFacetValue(enumerationType: ClassMirrorInterface, value: Any): Any {
+        if(value is String) {
+            return value
+        }
+        if(value is Enum<*>) {
+            return value.name
+        }
+
+        throw IllegalStateException("Could not convert enum value '$value' to enum constants of $enumerationType")
     }
 
     private fun transformReferenceFacetValues(

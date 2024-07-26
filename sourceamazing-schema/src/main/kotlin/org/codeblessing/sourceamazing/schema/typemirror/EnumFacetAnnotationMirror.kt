@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
  * Represents a [EnumFacet] annotation.
  */
 class EnumFacetAnnotationMirror(
-    val enumerationClass: MirrorProvider<ClassMirror>,
+    val enumerationClass: MirrorProvider<ClassMirrorInterface>,
     minimumOccurrences: Int = 1,
     maximumOccurrences: Int = 1,
 ) : AbstractFacetAnnotationMirror(
