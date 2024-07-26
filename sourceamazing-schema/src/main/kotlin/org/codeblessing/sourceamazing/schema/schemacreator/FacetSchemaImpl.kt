@@ -4,9 +4,7 @@ import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetSchema
 import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import kotlin.reflect.KClass
 
 data class FacetSchemaImpl(
     override val facetName: FacetName,

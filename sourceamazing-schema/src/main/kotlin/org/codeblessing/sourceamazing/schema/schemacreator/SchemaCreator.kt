@@ -8,13 +8,11 @@ import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryVal
 import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
 import org.codeblessing.sourceamazing.schema.typemirror.AbstractFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
-import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror

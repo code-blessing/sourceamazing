@@ -16,7 +16,7 @@ data class ClassMirror(
 ): AbstractMirror(), ClassMirrorInterface {
 
     companion object {
-        fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror{
+        fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror {
             return ClassMirror(
                 classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
             )
@@ -24,20 +24,12 @@ data class ClassMirror(
         fun interfaceMirror(className: String = "UnnamedInterface", packageName: String = ""): ClassMirror {
             return classMirror(className = className, packageName = packageName).setIsInterface()
         }
-        fun enumMirror(className: String = "UnnamedEnum", packageName: String = "", vararg enumValues: String): ClassMirror{
+        fun enumMirror(className: String = "UnnamedEnum", packageName: String = "", vararg enumValues: String): ClassMirror {
             return ClassMirror(
                 classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
                 enumValues = enumValues.toList()
             ).setIsEnum()
         }
-    }
-
-    override fun longText(): String = fullQualifiedName
-
-    override fun shortText(): String = className
-
-    fun isClass(clazz: KClass<*>): Boolean {
-        return false // TODO implement
     }
 
     fun setIsEnum(): ClassMirror {
@@ -51,7 +43,6 @@ data class ClassMirror(
             classKind = ClassKind.ANNOTATION,
         )
     }
-
 
     fun withAnnotation(annotation: AnnotationMirror): ClassMirror {
         return this.copy(

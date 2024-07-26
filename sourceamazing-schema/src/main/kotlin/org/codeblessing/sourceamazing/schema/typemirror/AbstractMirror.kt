@@ -6,10 +6,6 @@ abstract class AbstractMirror(
 ){
     abstract val annotations: List<AnnotationMirror>
 
-    abstract fun longText(): String
-
-    abstract fun shortText(): String
-
     fun hasAnnotation(annotation: KClass<out Annotation>): Boolean {
         return annotations.any { it.isAnnotation(annotation) }
     }

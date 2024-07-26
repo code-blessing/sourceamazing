@@ -17,9 +17,7 @@ import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.util.AnnotationUtil

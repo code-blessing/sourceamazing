@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
-
 data class FunctionMirror (
     override val functionName: String?,
     override val annotations: List<AnnotationMirror> = emptyList(),
@@ -12,23 +10,17 @@ data class FunctionMirror (
 ): AbstractMirror(), FunctionMirrorInterface {
 
     companion object {
-        fun methodMirror(methodName: String = "UnnamedMethod"): FunctionMirror{
+        fun methodMirror(methodName: String = "UnnamedMethod"): FunctionMirror {
             return FunctionMirror(
                 functionName = methodName
             )
         }
-        fun anonymousFunctionMirror(): FunctionMirror{
+        fun anonymousFunctionMirror(): FunctionMirror {
             return FunctionMirror(
                 functionName = null,
             )
         }
     }
-
-    override fun provideMirror(): FunctionMirror = this
-
-    override fun longText(): String = functionName ?: "<anonymousMethod>" // TODO fqn
-
-    override fun shortText(): String  = functionName ?: "<anonymousMethod>"
 
     fun withAnnotation(annotation: AnnotationMirror): FunctionMirror {
         return this.copy(

@@ -4,12 +4,7 @@ import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
-import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
-import org.codeblessing.sourceamazing.schema.util.EnumUtil
-import kotlin.reflect.KClass
 
 object ConceptResolver {
 

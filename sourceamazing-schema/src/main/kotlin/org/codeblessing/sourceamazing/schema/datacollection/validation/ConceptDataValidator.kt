@@ -1,15 +1,22 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
-import org.codeblessing.sourceamazing.schema.*
+import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.ConceptSchema
+import org.codeblessing.sourceamazing.schema.FacetSchema
+import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleSchemaValidationException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.*
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownConceptException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownFacetNameException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory.convertToKClass
-import org.codeblessing.sourceamazing.schema.util.EnumUtil
-import kotlin.reflect.KClass
 
 object ConceptDataValidator {
 

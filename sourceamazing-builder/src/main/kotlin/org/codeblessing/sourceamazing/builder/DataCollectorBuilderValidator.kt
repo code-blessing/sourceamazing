@@ -1,6 +1,20 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
+import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderException
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.typemirror.ExpectedAliasFromSuperiorBuilderAnnotationMirror
@@ -18,12 +32,10 @@ import org.codeblessing.sourceamazing.schema.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
-import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import kotlin.reflect.KClass
 
 object DataCollectorBuilderValidator {
@@ -94,7 +106,7 @@ object DataCollectorBuilderValidator {
             .toSet()
     }
 
-    private fun validateAndCollectNewAliases(method: FunctionMirror, importedConceptAliases: Set<String>): Set<String> {
+    private fun validateAndCollectNewAliases(method: FunctionMirrorInterface, importedConceptAliases: Set<String>): Set<String> {
         val newConceptAliases: MutableSet<String> = mutableSetOf()
 
         method.annotations.filterIsInstance<NewConceptAnnotationMirror>().forEach { newConceptAnnotation ->
@@ -134,7 +146,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun validateNoMissingConceptIdentifierDeclaration(method: FunctionMirror, newConceptAliases: Set<String>) {
+    private fun validateNoMissingConceptIdentifierDeclaration(method: FunctionMirrorInterface, newConceptAliases: Set<String>) {
         val conceptAliasesWithConceptIdDeclaration: Set<String> = collectAliasesWithConceptIdentifierDeclaration(method)
         val conceptAliasesWithoutConceptIdDeclaration = newConceptAliases - conceptAliasesWithConceptIdDeclaration
 
@@ -151,7 +163,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun collectAliasesWithConceptIdentifierDeclaration(method: FunctionMirror): Set<String> {
+    private fun collectAliasesWithConceptIdentifierDeclaration(method: FunctionMirrorInterface): Set<String> {
         val conceptAliasesWithConceptIdDeclaration: MutableSet<String> = mutableSetOf()
 
         method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
@@ -166,7 +178,7 @@ object DataCollectorBuilderValidator {
         return conceptAliasesWithConceptIdDeclaration
     }
 
-    private fun validateNoDuplicateConceptIdentifierDeclaration(method: FunctionMirror) {
+    private fun validateNoDuplicateConceptIdentifierDeclaration(method: FunctionMirrorInterface) {
         val usedConceptAliasToSetConceptIdentifier: MutableSet<String> = mutableSetOf()
         method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { autoRandomConceptIdAnnotation ->
             val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
@@ -196,7 +208,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun validateUsedAliases(method: FunctionMirror, knownConceptAlias: Set<String>) {
+    private fun validateUsedAliases(method: FunctionMirrorInterface, knownConceptAlias: Set<String>) {
         val usedAliasesPerAnnotation = collectAllUsedAliases(method)
         usedAliasesPerAnnotation.forEach { (annotationClazz, conceptAliases) ->
             conceptAliases.forEach { conceptAlias ->
@@ -223,7 +235,7 @@ object DataCollectorBuilderValidator {
         }
     }
 
-    private fun collectAllUsedAliases(method: FunctionMirror): AnnotationAndAliases {
+    private fun collectAllUsedAliases(method: FunctionMirrorInterface): AnnotationAndAliases {
         val annotationAndAliases = AnnotationAndAliases()
 
         method.annotations.filterIsInstance<SetRandomConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
@@ -265,7 +277,7 @@ object DataCollectorBuilderValidator {
         return annotationAndAliases
     }
 
-    private fun validateCorrectConceptIdentifierType(method: FunctionMirror, methodParameter: ParameterMirror) {
+    private fun validateCorrectConceptIdentifierType(method: FunctionMirrorInterface, methodParameter: ParameterMirrorInterface) {
         if(methodParameter.hasAnnotation(SetConceptIdentifierValue::class)) {
             when(val signatureMirror = methodParameter.type.signatureMirror.provideMirror()) {
                 is ClassMirrorInterface -> if(!signatureMirror.isClass(MirrorFactory.convertToClassMirror(ConceptIdentifier::class))) {

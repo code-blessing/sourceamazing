@@ -12,10 +12,8 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 sealed interface SignatureMirror {
     fun toMirrorProvider(): MirrorProvider<out SignatureMirror> {
         return when (this) {
-            is FunctionMirror -> this
-            is ClassMirror -> this
-            is ClassMirrorInterface -> this
             is FunctionMirrorInterface -> this
+            is ClassMirrorInterface -> this
         }
     }
 }

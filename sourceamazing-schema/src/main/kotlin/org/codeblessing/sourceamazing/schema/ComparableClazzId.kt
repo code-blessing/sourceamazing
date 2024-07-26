@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 
 

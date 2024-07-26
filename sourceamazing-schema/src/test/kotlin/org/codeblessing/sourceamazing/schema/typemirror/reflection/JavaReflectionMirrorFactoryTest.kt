@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -40,7 +41,7 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(4, facetInterfaceMirror.methods.size)
         val giveMeTheConceptMethodMirror = facetInterfaceMirror.methods[0]
         val againConceptInterface = requireNotNull(giveMeTheConceptMethodMirror.returnType).type.signatureMirror.provideMirror()
-        require(againConceptInterface is ClassMirror)
+        require(againConceptInterface is ClassMirrorInterface)
         assertEquals(conceptInterfaceMirror.classQualifier, againConceptInterface.classQualifier)
         assertFalse(conceptInterfaceMirror.classQualifier === againConceptInterface.classQualifier)
     }
@@ -58,7 +59,7 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(0, toStringMethod.parameters.size)
         val returnType = requireNotNull(toStringMethod.returnType)
         assertEquals(false, returnType.type.nullable)
-        val returnTypeClassMirror = returnType.type.signatureMirror.provideMirror() as ClassMirror
+        val returnTypeClassMirror = returnType.type.signatureMirror.provideMirror() as ClassMirrorInterface
         assertEquals("kotlin.String", returnTypeClassMirror.fullQualifiedName)
     }
 }

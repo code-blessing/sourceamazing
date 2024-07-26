@@ -5,10 +5,10 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 interface FunctionMirrorInterface: MirrorProvider<FunctionMirrorInterface>, SignatureMirror, AbstractMirrorInterface {
     val functionName: String?
     override val annotations: List<AnnotationMirror>
-    val receiverParameterType: ParameterMirror?
-    val instanceParameterType: ParameterMirror?
-    val parameters: List<ParameterMirror>
-    val returnType: ReturnMirror?
+    val receiverParameterType: ParameterMirrorInterface?
+    val instanceParameterType: ParameterMirrorInterface?
+    val parameters: List<ParameterMirrorInterface>
+    val returnType: ReturnMirrorInterface?
 
     override fun provideMirror(): FunctionMirrorInterface = this
 
@@ -20,4 +20,7 @@ interface FunctionMirrorInterface: MirrorProvider<FunctionMirrorInterface>, Sign
             .mapIndexed { index, parameterMirror -> parameterMirror.withArgument(index, args[index]) }
     }
 
+    override fun longText(): String = functionName ?: "<anonymousMethod>" // TODO fqn
+
+    override fun shortText(): String  = functionName ?: "<anonymousMethod>"
 }

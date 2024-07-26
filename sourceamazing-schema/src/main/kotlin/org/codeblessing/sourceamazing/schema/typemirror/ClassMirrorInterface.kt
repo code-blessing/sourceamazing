@@ -7,7 +7,7 @@ interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureM
     val classQualifier: ClassQualifierMirror
     val classKind: ClassKind
     override val annotations: List<AnnotationMirror>
-    val methods: List<FunctionMirror>
+    val methods: List<FunctionMirrorInterface>
     val propertiesNames: List<String>
     val typeParameters: List<MirrorProvider<ClassMirrorInterface>>
     val superClasses: List<MirrorProvider<ClassMirrorInterface>>
@@ -40,4 +40,8 @@ interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureM
         // TODO grant equality for same objects
         return this == otherClassMirror
     }
+
+    override fun longText(): String = fullQualifiedName
+
+    override fun shortText(): String = className
 }
