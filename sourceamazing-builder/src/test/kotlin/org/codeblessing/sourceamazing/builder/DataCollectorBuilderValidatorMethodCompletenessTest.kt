@@ -1,12 +1,6 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.typemirror.ExpectedAliasFromSuperiorBuilderAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMirror
@@ -190,16 +184,6 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         }
     }
 
-    @Builder
-    private interface DataCollectorWithUseOfUnknownAliasInFacetValueAnnotation {
-
-        interface FacetClass
-        @BuilderMethod
-        fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class) value: String
-        )
-    }
-
     @Test
     fun `test use of unknown alias on FacetValue annotation should throw an error`() {
         lateinit var myFacet : ClassMirror
@@ -216,9 +200,8 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
                     parameterClassMirror = CommonMirrors.stringClassMirror(),
                     nullable = false,
                     SetFacetValueAnnotationMirror(
-                        conceptToModifyAlias = "foo",
+                        conceptToModifyAlias = "unknown",
                         facetToModify = myFacet,
-                        facetModificationRule = FacetModificationRule.ADD
                     ),
                 )
             }
@@ -227,15 +210,6 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
             DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(builder)
         }
-    }
-
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder("known")
-    private interface DataCollectorWithUseOfUnknownAliasInLinkFacetAnnotation {
-        interface FacetClass
-        @BuilderMethod
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, referencedConceptAlias = "known")
-        fun doSomething()
     }
 
     @Test
@@ -340,14 +314,6 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         }
     }
 
-    @Builder
-    private interface DataCollectorWithUseOfUnknownAliasInDefaultIntegerFacetValueAnnotation {
-        interface FacetClass
-        @BuilderMethod
-        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = FacetClass::class, value = 42)
-        fun doSomething()
-    }
-
     @Test
     fun `test use of unknown alias on DefaultIntFacetValue annotation should throw an error`() {
         lateinit var myFacet : ClassMirror
@@ -398,18 +364,6 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         }
     }
 
-
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(conceptAlias = "known")
-    @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
-    private interface DataCollectorMissingAnAliasButExpectsItFromParentBuilder {
-        interface FacetClass
-        @BuilderMethod
-        fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "known", facetToModify = FacetClass::class) value: String,
-        )
-    }
-
     @Test
     fun `test use of alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder should return without exceptions`() {
         lateinit var myFacet : ClassMirror
@@ -420,15 +374,16 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
         }
 
         val builder = BuilderMirrorDsl.builder {
+            withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "known"))
+            withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "alsoKnown"))
             builderMethod {
                 withParameter(
                     parameterName = "value",
                     parameterClassMirror = CommonMirrors.stringClassMirror(),
                     nullable = false,
                     SetFacetValueAnnotationMirror(
-                        conceptToModifyAlias = "unknown",
+                        conceptToModifyAlias = "known",
                         facetToModify = myFacet,
-                        facetModificationRule = FacetModificationRule.ADD,
                     )
                 )
             }

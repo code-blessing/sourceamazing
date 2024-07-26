@@ -8,13 +8,14 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeM
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test concept having an empty enumeration facet should not throw an exception`() {
-        val emptyEnumerationClassMirror = CommonMirrors.enumClassMirror()
+        val emptyEnumerationClassMirror = CommonMirrors.namedEnumClassMirror("MyEnum")
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 facet {
@@ -30,14 +31,14 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         val enumFacetSchema = conceptSchema.facets.first()
         assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        // TODO This check is currently not possible
-        //  assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationType)
+        assertNotNull(enumFacetSchema.enumerationType)
+        assertEquals("MyEnum", requireNotNull(enumFacetSchema.enumerationType).className)
         assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
     @Test
     fun `test concept having a enumeration facet`() {
-        val seasonEnumerationClassMirror = CommonMirrors.enumClassMirror("WINTER", "SPRING", "SUMMER", "FALL")
+        val seasonEnumerationClassMirror = CommonMirrors.namedEnumClassMirror("MySeasonEnum", "WINTER", "SPRING", "SUMMER", "FALL")
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 facet {
@@ -52,17 +53,10 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
         val conceptSchema = schema.allConcepts().first()
         val enumFacetSchema = conceptSchema.facets.first()
-        assertEquals("MyEnumFacet", enumFacetSchema.facetName)
+        assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        // TODO This check is currently not possible
-        //  assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationType)
+        assertEquals("MySeasonEnum", requireNotNull(enumFacetSchema.enumerationType).className)
         assertEquals(4, enumFacetSchema.enumerationValues.size)
-
-        // TODO This check is currently not possible
-//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues[0])
-//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues[1])
-//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues[2])
-//          assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues[3])
         assertEquals("WINTER", enumFacetSchema.enumerationValues[0])
         assertEquals("SPRING", enumFacetSchema.enumerationValues[1])
         assertEquals("SUMMER", enumFacetSchema.enumerationValues[2])

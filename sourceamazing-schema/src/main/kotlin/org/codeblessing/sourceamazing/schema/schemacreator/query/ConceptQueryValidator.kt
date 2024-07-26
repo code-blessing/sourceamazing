@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import org.codeblessing.sourceamazing.schema.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
@@ -16,7 +17,7 @@ object ConceptQueryValidator {
     fun validateAccessorMethodsOfConceptClass(conceptClass: ClassMirror) {
 
         val possibleFacetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors().toSet()
-        conceptClass.methods.forEach { method ->
+        conceptClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
             if(method.parameters.isNotEmpty()) {
                 throw WrongFacetQueryMalformedSchemaException("The method has arguments/parameters " +
                         "which is not allowed for methods annotated with " +

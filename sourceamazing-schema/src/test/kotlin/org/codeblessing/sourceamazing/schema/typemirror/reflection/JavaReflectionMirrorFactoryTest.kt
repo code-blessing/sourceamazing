@@ -58,6 +58,7 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(0, toStringMethod.parameters.size)
         val returnType = requireNotNull(toStringMethod.returnType)
         assertEquals(false, returnType.type.nullable)
-        assertEquals(false, returnType.type.signatureMirror)
+        val returnTypeClassMirror = returnType.type.signatureMirror.provideMirror() as ClassMirror
+        assertEquals("kotlin.String", returnTypeClassMirror.fullQualifiedName)
     }
 }

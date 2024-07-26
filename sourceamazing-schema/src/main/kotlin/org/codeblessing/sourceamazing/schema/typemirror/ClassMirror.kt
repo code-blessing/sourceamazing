@@ -6,11 +6,7 @@ import kotlin.reflect.KClass
 
 data class ClassMirror(
     val classQualifier: ClassQualifierMirror,
-    val isInterface: Boolean = false,
-    val isClass: Boolean = true,
-    val isObjectClass: Boolean = false,
-    val isAnnotation: Boolean = false,
-    val isEnum: Boolean = false,
+    val classKind: ClassKind = ClassKind.REGULAR_CLASS,
     override val annotations: List<AnnotationMirror> = emptyList(),
     val methods: List<FunctionMirror> = emptyList(),
     val propertiesNames: List<String> = emptyList(),
@@ -40,6 +36,14 @@ data class ClassMirror(
     val packageName: String = classQualifier.packageName
     val fullQualifiedName: String = if(packageName.isNotEmpty()) "$packageName.$className" else className
 
+
+    val isInterface: Boolean = classKind == ClassKind.INTERFACE
+    val isClass: Boolean = classKind == ClassKind.REGULAR_CLASS
+    val isObjectClass: Boolean = classKind == ClassKind.OBJECT_CLASS
+    val isAnnotation: Boolean = classKind == ClassKind.ANNOTATION
+    val isEnum: Boolean = classKind == ClassKind.ENUM_CLASS
+    val isDataClass: Boolean = classKind == ClassKind.DATA_CLASS
+
     override fun provideMirror(): ClassMirror = this
 
     override fun longText(): String = fullQualifiedName
@@ -52,15 +56,13 @@ data class ClassMirror(
 
     fun setIsEnum(): ClassMirror {
         return this.copy(
-            isEnum = true,
-            isClass = false,
+            classKind = ClassKind.ENUM_CLASS,
         )
     }
 
     fun setIsAnnotation(): ClassMirror {
         return this.copy(
-            isAnnotation = true,
-            isClass = false,
+            classKind = ClassKind.ANNOTATION,
         )
     }
 
@@ -85,23 +87,25 @@ data class ClassMirror(
 
     fun setIsInterface(): ClassMirror {
         return this.copy(
-            isInterface = true,
-            isClass = false,
+            classKind = ClassKind.INTERFACE,
         )
     }
 
     fun setIsClass(): ClassMirror {
         return this.copy(
-            isInterface = false,
-            isClass = true,
+            classKind = ClassKind.REGULAR_CLASS,
         )
     }
 
     fun setIsObjectClass(): ClassMirror {
         return this.copy(
-            isInterface = false,
-            isClass = true,
-            isObjectClass = true,
+            classKind = ClassKind.OBJECT_CLASS,
+        )
+    }
+
+    fun setIsDataClass(): ClassMirror {
+        return this.copy(
+            classKind = ClassKind.DATA_CLASS,
         )
     }
 

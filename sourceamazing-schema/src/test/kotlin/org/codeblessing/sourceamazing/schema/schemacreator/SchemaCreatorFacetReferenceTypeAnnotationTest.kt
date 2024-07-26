@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
@@ -136,7 +137,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
         }
 
 
-        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        Assertions.assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }

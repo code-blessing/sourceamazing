@@ -70,6 +70,11 @@ object SchemaMirrorDsl {
             if(addSchemaAnnotationWithAllConcepts) {
                 schemaClassMirror = schemaClassMirror.withAnnotation(SchemaAnnotationMirror(concepts = schemaConceptClassMirrors))
             }
+
+            schemaFunctionMirrors.forEach { schemaMethod ->
+                schemaClassMirror = schemaClassMirror.withMethod(schemaMethod)
+            }
+
             return schemaClassMirror
         }
     }
@@ -120,6 +125,9 @@ object SchemaMirrorDsl {
         fun buildConceptMirror(addConceptAnnotationWithAllFacets: Boolean = true): ClassMirror {
             if(addConceptAnnotationWithAllFacets) {
                 conceptMirror = conceptMirror.withAnnotation(ConceptAnnotationMirror(facets = conceptFacetClassMirrors))
+            }
+            conceptFunctionMirrors.forEach { schemaMethod ->
+                conceptMirror = conceptMirror.withMethod(schemaMethod)
             }
             return conceptMirror
         }

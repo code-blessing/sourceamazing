@@ -14,6 +14,7 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetFixedIntFacetValueAn
 import org.codeblessing.sourceamazing.builder.typemirror.SetFixedStringFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
+import org.codeblessing.sourceamazing.schema.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
@@ -34,7 +35,7 @@ object DataCollectorBuilderValidator {
     private fun validateBuilderClassStructure(builderClass: ClassMirror) {
         checkHasBuilderAnnotationOnClassAndIsInterface(builderClass)
 
-        builderClass.methods.forEach { method ->
+        builderClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
             if(!method.hasAnnotation(BuilderMethod::class)) {
                 throw DataCollectorBuilderMethodSyntaxException(method, "The method is missing " +
                         "the annotation ${BuilderMethod::class.annotationText()}. " +
@@ -115,6 +116,7 @@ object DataCollectorBuilderValidator {
 
     private fun validateBuilderMethodSyntax(builderClass: ClassMirror) {
         builderClass.methods
+            .filter(TypeHelper::isNotFromKotlinAnyClass)
             .filter { method -> method.hasAnnotation(BuilderMethod::class) }
             .forEach { method ->
                 val importedConceptAliases = importedAliasFromSuperiorBuilder(builderClass)
@@ -282,7 +284,7 @@ object DataCollectorBuilderValidator {
         // avoid infinite recursion
         if(!collectedBuilders.contains(builderClass)) {
             collectedBuilders.add(builderClass)
-            builderClass.methods.forEach { method ->
+            builderClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
                 if(method.hasAnnotation(WithNewBuilder::class)) {
                     val nestedBuilderClass = method.getAnnotationMirror(WithNewBuilderAnnotationMirror::class).builderClass.provideMirror()
                     collectBuilderClassesRecursively(collectedBuilders, nestedBuilderClass)

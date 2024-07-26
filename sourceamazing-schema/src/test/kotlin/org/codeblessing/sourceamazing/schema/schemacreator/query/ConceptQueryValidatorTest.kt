@@ -117,17 +117,18 @@ class ConceptQueryValidatorTest {
     fun `test concept with valid return types should return without exception`() {
         val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
-            val anotherConcept = concept {
+            val otherConcept = concept {
                 withSuperClassMirror(commonInterface)
             }
             concept {
+                withSuperClassMirror(commonInterface)
                 val oneFacet = facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(commonInterface)))
+                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(otherConcept)))
                 }
 
                 val returnTypes = mapOf(
                     "Any" to CommonMirrors.anyClassMirror(),
-                    "OtherConcept" to anotherConcept,
+                    "OtherConcept" to otherConcept,
                     "CommonConceptInterface" to commonInterface,
                 )
                 for ((text, returnType) in returnTypes) {

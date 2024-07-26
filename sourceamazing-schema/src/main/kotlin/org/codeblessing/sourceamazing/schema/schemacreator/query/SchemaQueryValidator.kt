@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import org.codeblessing.sourceamazing.schema.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
@@ -13,7 +14,7 @@ object SchemaQueryValidator {
     @Throws(MalformedSchemaException::class)
     fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: ClassMirror) {
         val possibleSchemaConceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors().toSet()
-        schemaDefinitionClass.methods.forEach { method ->
+        schemaDefinitionClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
             val queryConceptClasses = method.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.concepts?.provideClassMirrors()
                 ?: throw WrongConceptQueryMalformedSchemaException("The method is missing " +
                         "the annotation ${QueryConcepts::class.shortText()}. Method: $method")

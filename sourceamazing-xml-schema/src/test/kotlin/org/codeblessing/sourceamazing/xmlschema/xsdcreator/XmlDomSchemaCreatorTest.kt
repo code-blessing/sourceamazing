@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.xmlschema.xsdcreator
 
 import org.codeblessing.sourceamazing.schema.SchemaAccess
-import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
+import org.codeblessing.sourceamazing.xmlschema.XmlTestSchemaCreator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -85,7 +85,7 @@ internal class XmlDomSchemaCreatorTest {
 
     @Test
     fun testXmlDomSchemaCreator() {
-        val schema: SchemaAccess = XmlTestSchema.createSchema()
+        val schema: SchemaAccess = XmlTestSchemaCreator.createSchema()
         val schemaContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)
         assertEquals(expectedXml, schemaContent)
     }

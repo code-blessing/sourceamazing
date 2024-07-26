@@ -12,7 +12,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import kotlin.reflect.KClass
 
-object XmlTestSchema {
+object XmlTestSchemaCreator {
 
     val testEntityConceptName = TestEntityConcept::class.toConceptName()
     val testEntityNameFacetName = TestEntityConcept.Name::class.toFacetName()

@@ -16,7 +16,11 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  0, maximumOccurrences = 1))
+                }
+                facet {
                     withAnnotationOnFacet(BooleanFacetAnnotationMirror(minimumOccurrences =  1, maximumOccurrences = 1))
+                }
+                facet {
                     withAnnotationOnFacet(IntFacetAnnotationMirror(minimumOccurrences =  2, maximumOccurrences = 5))
                 }
             }

@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMi
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
@@ -14,16 +15,16 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 facet {
-                    facetMirror.withClassName("TextFacetClass")
-                    facetMirror.withAnnotation(StringFacetAnnotationMirror())
+                    withFacetClassName("TextFacetClass")
+                    withAnnotationOnFacet(StringFacetAnnotationMirror())
                 }
                 facet {
-                    facetMirror.withClassName("BooleanFacetClass")
-                    facetMirror.withAnnotation(BooleanFacetAnnotationMirror())
+                    withFacetClassName("BooleanFacetClass")
+                    withAnnotationOnFacet(BooleanFacetAnnotationMirror())
                 }
                 facet {
-                    facetMirror.withClassName("NumberFacetClass")
-                    facetMirror.withAnnotation(IntFacetAnnotationMirror())
+                    withFacetClassName("NumberFacetClass")
+                    withAnnotationOnFacet(IntFacetAnnotationMirror())
                 }
             }
         }
@@ -41,9 +42,9 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
         assertEquals(FacetType.BOOLEAN, conceptSchema.facets[1].facetType)
         assertEquals(FacetType.NUMBER, conceptSchema.facets[2].facetType)
 
-        assertEquals(Unit::class, conceptSchema.facets[0].enumerationType)
-        assertEquals(Unit::class, conceptSchema.facets[1].enumerationType)
-        assertEquals(Unit::class, conceptSchema.facets[2].enumerationType)
+        assertNull(conceptSchema.facets[0].enumerationType)
+        assertNull(conceptSchema.facets[1].enumerationType)
+        assertNull(conceptSchema.facets[2].enumerationType)
 
         assertEquals(0, conceptSchema.facets[0].enumerationValues.size)
         assertEquals(0, conceptSchema.facets[1].enumerationValues.size)

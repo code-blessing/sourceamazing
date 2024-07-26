@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema.typemirror.reflection
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassKind
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassQualifierMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
@@ -37,15 +38,13 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         return createMethodMirror(kotlinFunction)
     }
 
-    private class ClassQualifierMirrorProvider(
+    private data class ClassQualifierMirrorProvider(
         private val clazz: KClass<*>,
     ): MirrorProvider<ClassMirror> {
         override fun provideMirror(): ClassMirror {
             return ClassMirror(
                 classQualifier = createClassQualifier(clazz),
-                isInterface = clazz.java.isInterface,
-                isAnnotation = clazz.java.isAnnotation,
-                isEnum = clazz.java.isEnum,
+                classKind = toClassKind(clazz),
                 annotations = createAnnotationList(clazz.annotations),
                 methods = createMethodList(clazz),
                 propertiesNames = clazz.memberProperties.map { it.name }
@@ -53,24 +52,28 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         }
     }
 
+    private fun toClassKind(clazz: KClass<*>): ClassKind {
+        return if(clazz.java.isAnnotation) {
+            ClassKind.ANNOTATION
+        } else if(clazz.java.isInterface) {
+            ClassKind.INTERFACE
+        } else if(clazz.java.isEnum) {
+            ClassKind.ENUM_CLASS
+        } else {
+            ClassKind.REGULAR_CLASS
+        }
+    }
+
     private fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirror> {
         return ClassQualifierMirrorProvider(clazz)
     }
 
-    private fun createClassMirror(clazz: KClass<*>): ClassMirror {
-        return ClassMirror(
-            classQualifier = createClassQualifier(clazz),
-            isInterface = clazz.java.isInterface,
-            isAnnotation = clazz.java.isAnnotation,
-            isEnum = clazz.java.isEnum,
-            annotations = createAnnotationList(clazz.annotations),
-            methods = createMethodList(clazz),
-            propertiesNames = clazz.memberProperties.map { it.name }
-        )
-    }
-
     private fun createClassQualifier(clazz: KClass<*>): ClassQualifierMirror {
-        return ClassQualifierMirror(clazz.simpleName ?: clazz.jvmName, clazz.qualifiedName ?: "")
+        // see https://youtrack.jetbrains.com/issue/KT-18104
+        return ClassQualifierMirror(
+            className = clazz.simpleName ?: "",
+            packageName = clazz.qualifiedName?.split(".")?.dropLast(1)?.joinToString(".") ?: "",
+        )
     }
 
     private fun createAnnotationList(annotations: List<Annotation>): List<AnnotationMirror> {
@@ -92,12 +95,19 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         return FunctionMirror(
             functionName = memberFunction.name,
             annotations = createAnnotationList(memberFunction.annotations),
-            parameters = memberFunction.parameters.map(this::createParameterMirror),
+            parameters = memberFunction.parameters
+                .filter { it.kind == KParameter.Kind.VALUE }
+                .map(this::createParameterMirror),
             returnType = createReturnMirror(memberFunction.returnType),
             receiverParameterType = memberFunction.parameters
                 .filter { it.kind == KParameter.Kind.EXTENSION_RECEIVER }
                 .map(this::createParameterMirror)
+                .firstOrNull(),
+            instanceParameterType = memberFunction.parameters
+                .filter { it.kind == KParameter.Kind.INSTANCE }
+                .map(this::createParameterMirror)
                 .firstOrNull()
+
         )
     }
 

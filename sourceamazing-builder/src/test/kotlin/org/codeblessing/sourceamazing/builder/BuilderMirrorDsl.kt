@@ -64,6 +64,9 @@ object BuilderMirrorDsl {
             if(addBuilderAnnotation) {
                 builderClassMirror = builderClassMirror.withAnnotation(BuilderAnnotationMirror())
             }
+            builderFunctionMirrors.forEach { schemaMethod ->
+                builderClassMirror = builderClassMirror.withMethod(schemaMethod)
+            }
             return builderClassMirror
         }
     }
