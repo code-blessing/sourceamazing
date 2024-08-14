@@ -67,12 +67,15 @@ object ConceptResolver {
             .map { value -> transformEnumFacetValue(enumerationType, value) }
     }
 
-    private fun transformEnumFacetValue(enumerationType: ClassMirrorInterface, value: Any): Any {
+    private fun transformEnumFacetValue(enumerationType: ClassMirrorInterface, value: Any): Enum<*> {
         if(value is String) {
-            return value
+            val enumConstants = enumerationType.convertToKClass().java.enumConstants
+            return enumerationType.convertToKClass().java.enumConstants.filterIsInstance<Enum<*>>().firstOrNull {
+                it.name == value
+            } ?: throw IllegalStateException("Could not convert enum value '$value' to enum constants $enumConstants of $enumerationType")
         }
         if(value is Enum<*>) {
-            return value.name
+            return value
         }
 
         throw IllegalStateException("Could not convert enum value '$value' to enum constants of $enumerationType")
