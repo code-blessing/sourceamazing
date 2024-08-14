@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-data class ParameterMirror(
+data class FakeParameterMirror(
     override val name: String?,
-    override val type: TypeMirror,
+    override val type: TypeMirrorInterface,
     override val annotations: List<AnnotationMirror> = emptyList(),
 ): AbstractMirror(), ParameterMirrorInterface

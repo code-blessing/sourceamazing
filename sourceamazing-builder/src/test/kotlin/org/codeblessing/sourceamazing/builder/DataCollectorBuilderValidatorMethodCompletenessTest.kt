@@ -15,7 +15,7 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentif
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
@@ -186,7 +186,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on FacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -214,7 +214,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias in property conceptToModifyAlias on the ReferenceFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -240,7 +240,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias in property referencedConceptAlias on ReferenceFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -266,7 +266,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on DefaultStringFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -291,7 +291,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on DefaultBooleanFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(BooleanFacetAnnotationMirror())
@@ -316,7 +316,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on DefaultIntFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(IntFacetAnnotationMirror())
@@ -341,7 +341,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on DefaultEnumFacetValue annotation should throw an error`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(EnumFacetAnnotationMirror(CommonMirrors.enumClassMirror("FOO", "BAR")))
@@ -366,7 +366,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder should return without exceptions`() {
-        lateinit var myFacet : ClassMirror
+        lateinit var myFacet : FakeClassMirror
         SchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())

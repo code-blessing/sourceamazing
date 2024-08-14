@@ -3,9 +3,9 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.typemirror.BuilderAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.BuilderMethodAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeMirror
 
 object BuilderMirrorDsl {
     const val DEFAULT_PACKAGE_NAME = "org.codeblessing.sourceamazing.test.mock"
@@ -15,7 +15,7 @@ object BuilderMirrorDsl {
 
     @BuilderDslMarker
     class BuilderDsl {
-        private var builderClassMirror: ClassMirror = ClassMirror
+        private var builderClassMirror: FakeClassMirror = FakeClassMirror
             .interfaceMirror("TestBuilder")
             .setIsInterface()
             .withPackage(DEFAULT_PACKAGE_NAME)
@@ -42,14 +42,14 @@ object BuilderMirrorDsl {
         }
 
 
-        fun withSuperClassMirror(superClassMirror: ClassMirror) {
+        fun withSuperClassMirror(superClassMirror: FakeClassMirror) {
             builderClassMirror = builderClassMirror.withSuperClass(superClassMirror)
         }
 
 
-        private val builderFunctionMirrors: MutableList<FunctionMirror> = mutableListOf()
+        private val builderFunctionMirrors: MutableList<FakeFunctionMirror> = mutableListOf()
 
-        fun builderMethod(addBuilderMethodAnnotation: Boolean = true, methodConfiguration: MethodDsl.() -> Unit): FunctionMirror {
+        fun builderMethod(addBuilderMethodAnnotation: Boolean = true, methodConfiguration: MethodDsl.() -> Unit): FakeFunctionMirror {
             val methodDsl = MethodDsl("Method${builderFunctionMirrors.size}")
             if(addBuilderMethodAnnotation) {
                 methodDsl.withAnnotationOnMethod(BuilderMethodAnnotationMirror())
@@ -60,7 +60,7 @@ object BuilderMirrorDsl {
             return methodMirror
         }
 
-        fun buildBuilderInterfaceMirror(addBuilderAnnotation: Boolean): ClassMirror {
+        fun buildBuilderInterfaceMirror(addBuilderAnnotation: Boolean): FakeClassMirror {
             if(addBuilderAnnotation) {
                 builderClassMirror = builderClassMirror.withAnnotation(BuilderAnnotationMirror())
             }
@@ -73,17 +73,17 @@ object BuilderMirrorDsl {
 
     @BuilderDslMarker
     class MethodDsl(methodName: String) {
-        private var functionMirror: FunctionMirror = FunctionMirror.methodMirror(methodName)
+        private var functionMirror: FakeFunctionMirror = FakeFunctionMirror.methodMirror(methodName)
 
         fun withMethodName(methodName: String) {
             functionMirror = functionMirror.withMethodName(methodName)
         }
 
-        fun withReturnType(returnType: TypeMirror) {
+        fun withReturnType(returnType: FakeTypeMirror) {
             functionMirror = functionMirror.withReturnType(returnType)
         }
 
-        fun withReturnType(returnType: ClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
+        fun withReturnType(returnType: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
             functionMirror = functionMirror.withReturnType(
                 returnClass = returnType,
                 nullable = nullable,
@@ -91,7 +91,7 @@ object BuilderMirrorDsl {
             )
         }
 
-        fun withParameter(parameterName: String, parameterClassMirror: ClassMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
+        fun withParameter(parameterName: String, parameterClassMirror: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
             functionMirror = functionMirror.withParameter(
                 parameterName = parameterName,
                 parameterClass = parameterClassMirror,
@@ -103,7 +103,7 @@ object BuilderMirrorDsl {
         /**
          * something like "myParameter: MyBuilder.() -> Unit"
          */
-        fun withFunctionParameter(parameterName: String, parameterFunction: FunctionMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
+        fun withFunctionParameter(parameterName: String, parameterFunction: FakeFunctionMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
             functionMirror = functionMirror.withParameter(
                 parameterName = parameterName,
                 parameterClass = parameterFunction,
@@ -117,12 +117,12 @@ object BuilderMirrorDsl {
         }
 
 
-        fun buildMethodMirror(): FunctionMirror {
+        fun buildMethodMirror(): FakeFunctionMirror {
             return functionMirror
         }
     }
 
-    fun builder(addBuilderAnnotation: Boolean = true, configuration: BuilderDsl.() -> Unit): ClassMirror {
+    fun builder(addBuilderAnnotation: Boolean = true, configuration: BuilderDsl.() -> Unit): FakeClassMirror {
         val schemaDsl = BuilderDsl()
         configuration.invoke(schemaDsl)
         return schemaDsl.buildBuilderInterfaceMirror(addBuilderAnnotation)

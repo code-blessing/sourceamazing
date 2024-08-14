@@ -4,11 +4,11 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import kotlin.reflect.KClass
 
 
-data class ClassMirror(
+data class FakeClassMirror(
     override val classQualifier: ClassQualifierMirror,
     override val classKind: ClassKind = ClassKind.REGULAR_CLASS,
     override val annotations: List<AnnotationMirror> = emptyList(),
-    override val methods: List<FunctionMirror> = emptyList(),
+    override val methods: List<FakeFunctionMirror> = emptyList(),
     override val propertiesNames: List<String> = emptyList(),
     override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
@@ -16,16 +16,16 @@ data class ClassMirror(
 ): AbstractMirror(), ClassMirrorInterface {
 
     companion object {
-        fun classMirror(className: String = "UnnamedClass", packageName: String = ""): ClassMirror {
-            return ClassMirror(
+        fun classMirror(className: String = "UnnamedClass", packageName: String = ""): FakeClassMirror {
+            return FakeClassMirror(
                 classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
             )
         }
-        fun interfaceMirror(className: String = "UnnamedInterface", packageName: String = ""): ClassMirror {
+        fun interfaceMirror(className: String = "UnnamedInterface", packageName: String = ""): FakeClassMirror {
             return classMirror(className = className, packageName = packageName).setIsInterface()
         }
-        fun enumMirror(className: String = "UnnamedEnum", packageName: String = "", vararg enumValues: String): ClassMirror {
-            return ClassMirror(
+        fun enumMirror(className: String = "UnnamedEnum", packageName: String = "", vararg enumValues: String): FakeClassMirror {
+            return FakeClassMirror(
                 classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
                 enumValues = enumValues.toList()
             ).setIsEnum()
@@ -36,73 +36,73 @@ data class ClassMirror(
         throw UnsupportedOperationException("Can not create a KClass from a class mirror mock")
     }
 
-    fun setIsEnum(): ClassMirror {
+    fun setIsEnum(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.ENUM_CLASS,
         )
     }
 
-    fun setIsAnnotation(): ClassMirror {
+    fun setIsAnnotation(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.ANNOTATION,
         )
     }
 
-    fun withAnnotation(annotation: AnnotationMirror): ClassMirror {
+    fun withAnnotation(annotation: AnnotationMirror): FakeClassMirror {
         return this.copy(
             annotations = this.annotations + annotation
         )
     }
 
-    fun withClassName(className: String): ClassMirror {
+    fun withClassName(className: String): FakeClassMirror {
         return this.copy(
             classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
         )
     }
 
-    fun withPackage(packageName: String): ClassMirror {
+    fun withPackage(packageName: String): FakeClassMirror {
         return this.copy(
             classQualifier = ClassQualifierMirror(className = className, packageName = packageName),
         )
     }
 
-    fun setIsInterface(): ClassMirror {
+    fun setIsInterface(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.INTERFACE,
         )
     }
 
-    fun setIsClass(): ClassMirror {
+    fun setIsClass(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.REGULAR_CLASS,
         )
     }
 
-    fun setIsObjectClass(): ClassMirror {
+    fun setIsObjectClass(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.OBJECT_CLASS,
         )
     }
 
-    fun setIsDataClass(): ClassMirror {
+    fun setIsDataClass(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.DATA_CLASS,
         )
     }
 
-    fun withTypeParameter(classMirror: ClassMirror): ClassMirror {
+    fun withTypeParameter(classMirror: FakeClassMirror): FakeClassMirror {
         return this.copy(
             typeParameters = this.typeParameters + classMirror
         )
     }
 
-    fun withSuperClass(classMirror: ClassMirror): ClassMirror {
+    fun withSuperClass(classMirror: FakeClassMirror): FakeClassMirror {
         return this.copy(
             superClasses = this.superClasses + classMirror
         )
     }
 
-    fun withMethod(method: FunctionMirror): ClassMirror {
+    fun withMethod(method: FakeFunctionMirror): FakeClassMirror {
         return this.copy(
             methods = this.methods + method
         )

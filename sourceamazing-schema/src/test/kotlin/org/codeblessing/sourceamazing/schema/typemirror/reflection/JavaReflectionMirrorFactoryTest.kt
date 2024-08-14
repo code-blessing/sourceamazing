@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.schema.typemirror.reflection
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
@@ -22,7 +21,7 @@ class JavaReflectionMirrorFactoryTest {
 
     @StringFacet
     private interface MyFacetInterface {
-        fun giveMeTheConcept(): MyConceptInterface
+        @Suppress("UNUSED") fun giveMeTheConcept(): MyConceptInterface
     }
 
 

@@ -2,11 +2,11 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors.DEFAULT_PACKAGE_NAME
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeMirror
 
 object SchemaMirrorDsl {
     @DslMarker
@@ -14,13 +14,13 @@ object SchemaMirrorDsl {
 
     @SchemaDslMarker
     class SchemaDsl {
-        private var schemaClassMirror: ClassMirror = ClassMirror
+        private var schemaClassMirror: FakeClassMirror = FakeClassMirror
             .interfaceMirror("Schema")
             .setIsInterface()
             .withPackage(DEFAULT_PACKAGE_NAME)
 
 
-        private val schemaConceptClassMirrors: MutableList<ClassMirror> = mutableListOf()
+        private val schemaConceptClassMirrors: MutableList<FakeClassMirror> = mutableListOf()
 
         fun setSchemaIsClass() {
             schemaClassMirror = schemaClassMirror.setIsClass()
@@ -43,12 +43,12 @@ object SchemaMirrorDsl {
         }
 
 
-        fun withSuperClassMirror(superClassMirror: ClassMirror) {
+        fun withSuperClassMirror(superClassMirror: FakeClassMirror) {
             schemaClassMirror = schemaClassMirror.withSuperClass(superClassMirror)
         }
 
 
-        fun concept(addConceptAnnotationWithAllFacets: Boolean = true, configuration: ConceptDsl.() -> Unit): ClassMirror {
+        fun concept(addConceptAnnotationWithAllFacets: Boolean = true, configuration: ConceptDsl.() -> Unit): FakeClassMirror {
             val conceptDsl = ConceptDsl("Concept${schemaConceptClassMirrors.size}")
             configuration.invoke(conceptDsl)
             val conceptClassMirror = conceptDsl.buildConceptMirror(addConceptAnnotationWithAllFacets)
@@ -56,9 +56,9 @@ object SchemaMirrorDsl {
             return conceptClassMirror
         }
 
-        private val schemaFunctionMirrors: MutableList<FunctionMirror> = mutableListOf()
+        private val schemaFunctionMirrors: MutableList<FakeFunctionMirror> = mutableListOf()
 
-        fun method(methodConfiguration: MethodDsl.() -> Unit): FunctionMirror {
+        fun method(methodConfiguration: MethodDsl.() -> Unit): FakeFunctionMirror {
             val methodDsl = MethodDsl("Method${schemaFunctionMirrors.size}")
             methodConfiguration.invoke(methodDsl)
             val methodMirror = methodDsl.buildMethodMirror()
@@ -66,7 +66,7 @@ object SchemaMirrorDsl {
             return methodMirror
         }
 
-        fun buildSchemaMirror(addSchemaAnnotationWithAllConcepts: Boolean): ClassMirror {
+        fun buildSchemaMirror(addSchemaAnnotationWithAllConcepts: Boolean): FakeClassMirror {
             if(addSchemaAnnotationWithAllConcepts) {
                 schemaClassMirror = schemaClassMirror.withAnnotation(SchemaAnnotationMirror(concepts = schemaConceptClassMirrors))
             }
@@ -81,11 +81,11 @@ object SchemaMirrorDsl {
 
     @SchemaDslMarker
     class ConceptDsl(conceptClassName: String) {
-        var conceptMirror: ClassMirror = ClassMirror
+        var conceptMirror: FakeClassMirror = FakeClassMirror
             .interfaceMirror(conceptClassName)
             .withPackage(DEFAULT_PACKAGE_NAME)
-        private val conceptFacetClassMirrors: MutableList<ClassMirror> = mutableListOf()
-        private val conceptFunctionMirrors: MutableList<FunctionMirror> = mutableListOf()
+        private val conceptFacetClassMirrors: MutableList<FakeClassMirror> = mutableListOf()
+        private val conceptFunctionMirrors: MutableList<FakeFunctionMirror> = mutableListOf()
 
         fun setConceptIsClass() {
             conceptMirror = conceptMirror.setIsClass()
@@ -99,11 +99,11 @@ object SchemaMirrorDsl {
             conceptMirror = conceptMirror.withClassName(conceptClassName)
         }
 
-        fun withSuperClassMirror(superClassMirror: ClassMirror) {
+        fun withSuperClassMirror(superClassMirror: FakeClassMirror) {
             conceptMirror = conceptMirror.withSuperClass(superClassMirror)
         }
 
-        fun facet(addFacetToConcept: Boolean = true, facetConfiguration: FacetDsl.() -> Unit): ClassMirror {
+        fun facet(addFacetToConcept: Boolean = true, facetConfiguration: FacetDsl.() -> Unit): FakeClassMirror {
             val facetDsl = FacetDsl("Facet${conceptFacetClassMirrors.size}")
             facetConfiguration.invoke(facetDsl)
             val facetClassMirror = facetDsl.buildFacetMirror()
@@ -113,7 +113,7 @@ object SchemaMirrorDsl {
             return facetClassMirror
         }
 
-        fun method(methodConfiguration: MethodDsl.() -> Unit): FunctionMirror {
+        fun method(methodConfiguration: MethodDsl.() -> Unit): FakeFunctionMirror {
             val methodDsl = MethodDsl("Method${conceptFunctionMirrors.size}")
             methodConfiguration.invoke(methodDsl)
             val methodMirror = methodDsl.buildMethodMirror()
@@ -122,7 +122,7 @@ object SchemaMirrorDsl {
         }
 
 
-        fun buildConceptMirror(addConceptAnnotationWithAllFacets: Boolean = true): ClassMirror {
+        fun buildConceptMirror(addConceptAnnotationWithAllFacets: Boolean = true): FakeClassMirror {
             if(addConceptAnnotationWithAllFacets) {
                 conceptMirror = conceptMirror.withAnnotation(ConceptAnnotationMirror(facets = conceptFacetClassMirrors))
             }
@@ -136,17 +136,17 @@ object SchemaMirrorDsl {
 
     @SchemaDslMarker
     class MethodDsl(methodName: String) {
-        private var functionMirror: FunctionMirror = FunctionMirror.methodMirror(methodName)
+        private var functionMirror: FakeFunctionMirror = FakeFunctionMirror.methodMirror(methodName)
 
         fun withMethodName(methodName: String) {
             functionMirror = functionMirror.withMethodName(methodName)
         }
 
-        fun withReturnType(returnType: TypeMirror) {
+        fun withReturnType(returnType: FakeTypeMirror) {
             functionMirror = functionMirror.withReturnType(returnType)
         }
 
-        fun withReturnType(returnType: ClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
+        fun withReturnType(returnType: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
             functionMirror = functionMirror.withReturnType(
                 returnClass = returnType,
                 nullable = nullable,
@@ -154,7 +154,7 @@ object SchemaMirrorDsl {
             )
         }
 
-        fun withParameter(parameterName: String, parameterClassMirror: ClassMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
+        fun withParameter(parameterName: String, parameterClassMirror: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
             functionMirror = functionMirror.withParameter(
                 parameterName = parameterName,
                 parameterClass = parameterClassMirror,
@@ -168,14 +168,14 @@ object SchemaMirrorDsl {
         }
 
 
-        fun buildMethodMirror(): FunctionMirror {
+        fun buildMethodMirror(): FakeFunctionMirror {
             return functionMirror
         }
     }
 
     @SchemaDslMarker
     class FacetDsl(facetClassName: String) {
-        var facetMirror: ClassMirror = ClassMirror
+        var facetMirror: FakeClassMirror = FakeClassMirror
             .interfaceMirror(facetClassName)
             .withPackage(DEFAULT_PACKAGE_NAME)
 
@@ -191,23 +191,23 @@ object SchemaMirrorDsl {
             facetMirror = facetMirror.withClassName(conceptClassName)
         }
 
-        fun withSuperClassMirrorForFacet(superClassMirror: ClassMirror) {
+        fun withSuperClassMirrorForFacet(superClassMirror: FakeClassMirror) {
             facetMirror = facetMirror.withSuperClass(superClassMirror)
         }
 
-        fun buildFacetMirror(): ClassMirror {
+        fun buildFacetMirror(): FakeClassMirror {
             return facetMirror
         }
 
     }
 
-    fun schema(addSchemaAnnotationWithAllConcepts: Boolean = true, configuration: SchemaDsl.() -> Unit): ClassMirror {
+    fun schema(addSchemaAnnotationWithAllConcepts: Boolean = true, configuration: SchemaDsl.() -> Unit): FakeClassMirror {
         val schemaDsl = SchemaDsl()
         configuration.invoke(schemaDsl)
         return schemaDsl.buildSchemaMirror(addSchemaAnnotationWithAllConcepts)
     }
 
-    fun concept(addConceptAnnotationWithAllFacets: Boolean = true, configuration: ConceptDsl.() -> Unit): ClassMirror {
+    fun concept(addConceptAnnotationWithAllFacets: Boolean = true, configuration: ConceptDsl.() -> Unit): FakeClassMirror {
         val conceptBuilder = ConceptDsl("Concept")
         configuration.invoke(conceptBuilder)
         return conceptBuilder.buildConceptMirror(addConceptAnnotationWithAllFacets = addConceptAnnotationWithAllFacets)

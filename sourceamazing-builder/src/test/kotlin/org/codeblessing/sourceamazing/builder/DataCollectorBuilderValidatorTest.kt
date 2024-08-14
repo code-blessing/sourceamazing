@@ -13,15 +13,12 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetFacetValueAnnotation
 import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class DataCollectorBuilderValidatorTest {
-
-    @Builder
-    private interface EmptyBuilder
 
     @Test
     fun `test data collector without annotation should throw an exception`() {
@@ -76,17 +73,6 @@ class DataCollectorBuilderValidatorTest {
         DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(builder)
     }
 
-
-    @Builder
-    private interface DataCollectorWithOtherBuildersWithoutAnnotation {
-
-
-        private interface OtherBuilder
-
-        @BuilderMethod
-        @WithNewBuilder(builderClass = OtherBuilder::class)
-        fun doSomething()
-    }
 
     @Test
     fun `test sub-builder class without Builder annotation should throw an exception`() {
@@ -145,7 +131,7 @@ class DataCollectorBuilderValidatorTest {
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withNoReturnType(),
                         // .withReceiverType(this@builder), to assign Builder interface as receiver type is not possible
@@ -170,7 +156,7 @@ class DataCollectorBuilderValidatorTest {
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
@@ -194,7 +180,7 @@ class DataCollectorBuilderValidatorTest {
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
@@ -203,7 +189,7 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withFunctionParameter(
                     parameterName = "anotherBuilder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
@@ -240,7 +226,7 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
@@ -271,7 +257,7 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
@@ -282,7 +268,7 @@ class DataCollectorBuilderValidatorTest {
                     parameterName = "myValue",
                     parameterClassMirror = CommonMirrors.stringClassMirror(),
                     nullable = false,
-                    SetFacetValueAnnotationMirror(facetToModify = ClassMirror.interfaceMirror("MyFacetMirror"))
+                    SetFacetValueAnnotationMirror(facetToModify = FakeClassMirror.interfaceMirror("MyFacetMirror"))
                 )
             }
         }
@@ -334,7 +320,7 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FunctionMirror
+                    parameterFunction = FakeFunctionMirror
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),

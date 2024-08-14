@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.junit.jupiter.api.Assertions
@@ -32,9 +32,9 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test concept having a reference facet referencing one concept`() {
-        lateinit var conceptClassWithReferenceFacet: ClassMirror
-        lateinit var myReferenceToOtherConceptFacet: ClassMirror
-        lateinit var otherConcept: ClassMirror
+        lateinit var conceptClassWithReferenceFacet: FakeClassMirror
+        lateinit var myReferenceToOtherConceptFacet: FakeClassMirror
+        lateinit var otherConcept: FakeClassMirror
 
         val schemaMirror = SchemaMirrorDsl.schema {
             otherConcept = concept {
@@ -61,11 +61,11 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test concept having a reference facet referencing multiple concept`() {
-        lateinit var conceptClassWithReferenceFacet: ClassMirror
-        lateinit var myReferenceToOtherConceptFacet: ClassMirror
-        lateinit var otherConcept: ClassMirror
-        lateinit var andAnotherConcept: ClassMirror
-        lateinit var andJustOneAnotherConcept: ClassMirror
+        lateinit var conceptClassWithReferenceFacet: FakeClassMirror
+        lateinit var myReferenceToOtherConceptFacet: FakeClassMirror
+        lateinit var otherConcept: FakeClassMirror
+        lateinit var andAnotherConcept: FakeClassMirror
+        lateinit var andJustOneAnotherConcept: FakeClassMirror
 
         val schemaMirror = SchemaMirrorDsl.schema {
             otherConcept = concept {

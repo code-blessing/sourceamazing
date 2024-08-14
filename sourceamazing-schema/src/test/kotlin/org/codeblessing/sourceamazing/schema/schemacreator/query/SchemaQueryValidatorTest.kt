@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -14,7 +14,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema without accessor method should return without exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
@@ -29,7 +29,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema with a unannotated method should throw an exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
@@ -52,7 +52,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema with a unsupported concept class should throw an exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
             val declaredConceptClassMirror = concept {
                 withSuperClassMirror(commonInterface)
@@ -77,7 +77,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema with a empty concept class list should throw an exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
@@ -100,7 +100,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema with valid return types should return without exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             val oneConcept = concept {
                 withSuperClassMirror(commonInterface)
@@ -145,7 +145,7 @@ class SchemaQueryValidatorTest {
 
     @Test
     fun `test schema with method having parameters should throw an exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             val oneConcept = concept {
                 withSuperClassMirror(commonInterface)

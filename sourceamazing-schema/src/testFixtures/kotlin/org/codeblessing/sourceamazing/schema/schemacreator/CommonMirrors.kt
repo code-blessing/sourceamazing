@@ -1,62 +1,62 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 
 object CommonMirrors {
     const val KOTLIN_PACKAGE_NAME = "kotlin"
     const val DEFAULT_PACKAGE_NAME = "org.codeblessing.sourceamazing.test.mock"
 
-    fun anyClassMirror(): ClassMirror {
-        return ClassMirror
+    fun anyClassMirror(): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("Any")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun conceptIdentifierClassMirror(): ClassMirror {
-        return ClassMirror
+    fun conceptIdentifierClassMirror(): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("ConceptIdentifier")
             .withPackage("org.codeblessing.sourceamazing.schema.api")
     }
 
-    fun listOfAnyClassMirror(): ClassMirror {
+    fun listOfAnyClassMirror(): FakeClassMirror {
         return listOfMirror(anyClassMirror())
     }
 
-    fun listOfMirror(innerClassMirror: ClassMirror): ClassMirror {
-        return ClassMirror
+    fun listOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("List")
             .withPackage(KOTLIN_PACKAGE_NAME)
             .withTypeParameter(innerClassMirror)
     }
 
-    fun setOfMirror(innerClassMirror: ClassMirror): ClassMirror {
-        return ClassMirror
+    fun setOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("Set")
             .withPackage(KOTLIN_PACKAGE_NAME)
             .withTypeParameter(innerClassMirror)
     }
 
-    fun enumClassMirror(vararg enumValues: String): ClassMirror {
-        return ClassMirror.enumMirror(enumValues = enumValues)
+    fun enumClassMirror(vararg enumValues: String): FakeClassMirror {
+        return FakeClassMirror.enumMirror(enumValues = enumValues)
     }
-    fun namedEnumClassMirror(className: String, vararg enumValues: String): ClassMirror {
-        return ClassMirror.enumMirror(className = className, enumValues = enumValues)
+    fun namedEnumClassMirror(className: String, vararg enumValues: String): FakeClassMirror {
+        return FakeClassMirror.enumMirror(className = className, enumValues = enumValues)
     }
 
-    fun stringClassMirror(): ClassMirror {
-        return ClassMirror
+    fun stringClassMirror(): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("String")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun intClassMirror(): ClassMirror {
-        return ClassMirror
+    fun intClassMirror(): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("Int")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun unitClassMirror(): ClassMirror {
-        return ClassMirror
+    fun unitClassMirror(): FakeClassMirror {
+        return FakeClassMirror
             .classMirror("Unit")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }

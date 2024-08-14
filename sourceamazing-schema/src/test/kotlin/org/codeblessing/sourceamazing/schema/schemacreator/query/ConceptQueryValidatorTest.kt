@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
@@ -115,7 +115,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with valid return types should return without exception`() {
-        val commonInterface = ClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = SchemaMirrorDsl.schema {
             val otherConcept = concept {
                 withSuperClassMirror(commonInterface)
