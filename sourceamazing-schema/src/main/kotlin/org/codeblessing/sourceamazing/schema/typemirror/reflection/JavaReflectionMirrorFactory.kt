@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror.reflection
 
+import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactoryApi
@@ -22,6 +24,11 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         return createFunctionMirrorProvider(kotlinFunction).provideMirror()
     }
 
+    fun createAnnotationList(annotations: List<Annotation>): List<AnnotationMirror> {
+        return AnnotationMirrorFactory.createAnnotationMirrorList(annotations) {
+            createClassMirrorProvider(it)
+        }
+    }
 
     fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirrorInterface> {
         return ClassQualifierMirrorProvider(clazz)

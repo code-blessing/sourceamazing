@@ -11,5 +11,5 @@ data class JavaReflectionParameterMirror(
 ): AbstractMirror(), ParameterMirrorInterface {
     override val name: String? = parameter.name
     override val type: TypeMirrorInterface = JavaReflectionTypeMirror(parameter.type)
-    override val annotations: List<AnnotationMirror> = JavaReflectionAnnotationHelper.createAnnotationList(parameter.annotations)
+    override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(parameter.annotations)
 }

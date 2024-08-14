@@ -10,6 +10,6 @@ data class JavaReflectionReturnMirror(
     private val ktype: KType
 ): AbstractMirror(), ReturnMirrorInterface {
     override val type: TypeMirrorInterface = JavaReflectionTypeMirror(ktype)
-    override val annotations: List<AnnotationMirror> = JavaReflectionAnnotationHelper.createAnnotationList(ktype.annotations)
+    override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(ktype.annotations)
 
 }

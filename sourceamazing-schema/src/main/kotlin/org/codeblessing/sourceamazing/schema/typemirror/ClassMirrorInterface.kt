@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
+import kotlin.reflect.KClass
 
 
 interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureMirror, AbstractMirrorInterface {
@@ -44,4 +45,6 @@ interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureM
     override fun longText(): String = fullQualifiedName
 
     override fun shortText(): String = className
+
+    fun convertToKClass(): KClass<*>
 }

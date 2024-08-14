@@ -18,12 +18,14 @@ data class JavaReflectionClassMirror(
 
     override val classQualifier: ClassQualifierMirror = createClassQualifier(clazz)
     override val classKind: ClassKind = toClassKind(clazz)
-    override val annotations: List<AnnotationMirror> = JavaReflectionAnnotationHelper.createAnnotationList(clazz.annotations)
+    override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(clazz.annotations)
     override val methods: List<FunctionMirrorInterface> = clazz.memberFunctions.map(::JavaReflectionFunctionMirror)
     override val propertiesNames: List<String> = clazz.memberProperties.map { it.name }
     override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList()
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList()
-    override val enumValues: List<String> = emptyList()
+    override val enumValues: List<String> = clazz.java.enumConstants?.map { it.toString() } ?: emptyList()
+
+    override fun convertToKClass(): KClass<*> = clazz
 
     private fun toClassKind(clazz: KClass<*>): ClassKind {
         return if(clazz.java.isAnnotation) {

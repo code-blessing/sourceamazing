@@ -13,7 +13,7 @@ data class JavaReflectionFunctionMirror (
 ): AbstractMirror(), FunctionMirrorInterface {
 
     override val functionName: String = memberFunction.name
-    override val annotations: List<AnnotationMirror> = JavaReflectionAnnotationHelper.createAnnotationList(memberFunction.annotations)
+    override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(memberFunction.annotations)
     override val receiverParameterType: ParameterMirrorInterface? = memberFunction.parameters
         .filter { it.kind == KParameter.Kind.EXTENSION_RECEIVER }
         .map(::JavaReflectionParameterMirror)

@@ -29,10 +29,4 @@ object MirrorFactory {
     fun convertToMethodMirror(method: Method): FunctionMirrorInterface {
         return factoryImplementation.convertToMirrorHierarchy(method)
     }
-
-    fun ClassMirrorInterface.convertToKClass(): KClass<*> {
-        println("Convert $this to class")
-        TODO("Use reflection to get the class from classname and package name")
-    }
-
 }

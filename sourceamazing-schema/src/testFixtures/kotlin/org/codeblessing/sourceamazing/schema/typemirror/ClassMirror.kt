@@ -32,6 +32,10 @@ data class ClassMirror(
         }
     }
 
+    override fun convertToKClass(): KClass<*> {
+        throw UnsupportedOperationException("Can not create a KClass from a class mirror mock")
+    }
+
     fun setIsEnum(): ClassMirror {
         return this.copy(
             classKind = ClassKind.ENUM_CLASS,

@@ -65,7 +65,7 @@ internal class SaxParserHandlerTest {
         val firstnameNode = conceptDataList[1]
         assertEquals(XmlTestSchemaCreator.testEntityAttributeConceptName, firstnameNode.conceptName)
         assertEquals("firstname", firstnameNode.getFacet(XmlTestSchemaCreator.testEntityAttributeNameFacetName).firstOrNull())
-        assertEquals(XmlTestSchemaCreator.TestEntityAttributeConcept.AttributeTypeEnum.TEXT, firstnameNode.getFacet(XmlTestSchemaCreator.testEntityAttributeTypeFacetName).firstOrNull())
+        assertEquals(XmlTestSchemaCreator.TestEntityAttributeConcept.AttributeTypeEnum.TEXT.name, firstnameNode.getFacet(XmlTestSchemaCreator.testEntityAttributeTypeFacetName).firstOrNull())
         val addressRootNode = conceptDataList[3]
         assertEquals(XmlTestSchemaCreator.testEntityConceptName, addressRootNode.conceptName)
         assertEquals("Address", addressRootNode.getFacet(XmlTestSchemaCreator.testEntityNameFacetName).firstOrNull())

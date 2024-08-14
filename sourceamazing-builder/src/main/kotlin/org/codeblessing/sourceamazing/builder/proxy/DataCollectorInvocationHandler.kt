@@ -41,7 +41,7 @@ class DataCollectorInvocationHandler(
         if(methodMirror.hasAnnotation(BuilderMethod::class)){
             val myAliases = updateConceptDataCollector(methodMirror, args)
 
-            val builderForNextStep: Any = if(methodMirror.hasAnnotation(BuilderMethod::class)) {
+            val builderForNextStep: Any = if(methodMirror.hasAnnotation(WithNewBuilder::class)) {
                 createNewBuilderProxy(method, conceptDataCollector, myAliases)
             } else {
                 proxy // use same builder
@@ -164,7 +164,7 @@ class DataCollectorInvocationHandler(
         }
 
         paramsWithArgumentValues.forEach { (_, methodParam, argumentValue) ->
-            functionMirror.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdentifierValueAnnotation ->
+            methodParam.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdentifierValueAnnotation ->
                 val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias
                 val conceptName = newConceptsByAlias[conceptAlias]
                     ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $functionMirror")

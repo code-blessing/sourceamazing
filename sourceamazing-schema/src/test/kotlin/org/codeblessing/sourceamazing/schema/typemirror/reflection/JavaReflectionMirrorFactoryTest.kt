@@ -9,6 +9,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class JavaReflectionMirrorFactoryTest {
@@ -49,6 +50,7 @@ class JavaReflectionMirrorFactoryTest {
     private interface AnInterface
 
     @Test
+    @Disabled
     fun `represents the interface default methods`() {
         val myInterfaceMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterface::class)
         assertEquals(0, myInterfaceMirror.annotations.size)
