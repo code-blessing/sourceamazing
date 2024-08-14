@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import kotlin.reflect.KClass
 

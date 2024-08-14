@@ -1,10 +1,6 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import kotlin.reflect.KClass
 
 class EnumFacetAnnotationMirrorCreator: AnnotationMirrorCreator {

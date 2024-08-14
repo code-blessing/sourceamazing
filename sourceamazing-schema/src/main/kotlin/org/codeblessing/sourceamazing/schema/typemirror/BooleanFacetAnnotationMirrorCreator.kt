@@ -1,8 +1,6 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
-import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import kotlin.reflect.KClass
 
 class BooleanFacetAnnotationMirrorCreator: AnnotationMirrorCreator {

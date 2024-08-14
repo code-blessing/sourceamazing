@@ -2,11 +2,11 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors.DEFAULT_PACKAGE_NAME
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
-import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeMirror
+import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 
 object SchemaMirrorDsl {
     @DslMarker
