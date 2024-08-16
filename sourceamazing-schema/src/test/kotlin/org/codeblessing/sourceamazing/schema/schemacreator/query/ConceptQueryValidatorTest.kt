@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror

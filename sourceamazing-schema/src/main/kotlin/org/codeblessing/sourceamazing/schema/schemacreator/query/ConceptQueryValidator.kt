@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
@@ -10,6 +9,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongFacet
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object ConceptQueryValidator {

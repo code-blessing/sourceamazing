@@ -28,7 +28,6 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetFixedIntFacetValueAn
 import org.codeblessing.sourceamazing.builder.typemirror.SetFixedStringFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
@@ -36,6 +35,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import kotlin.reflect.KClass
 
 object DataCollectorBuilderValidator {

@@ -13,8 +13,8 @@ import org.codeblessing.sourceamazing.schema.datacollection.validation.exception
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror

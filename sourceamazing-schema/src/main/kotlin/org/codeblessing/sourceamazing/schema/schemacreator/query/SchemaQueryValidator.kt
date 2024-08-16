@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
@@ -8,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConce
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
 
 object SchemaQueryValidator {
