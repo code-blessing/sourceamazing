@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 
-object CommonMirrors {
+object CommonFakeMirrors {
     const val KOTLIN_PACKAGE_NAME = "kotlin"
     const val DEFAULT_PACKAGE_NAME = "org.codeblessing.sourceamazing.test.mock"
 

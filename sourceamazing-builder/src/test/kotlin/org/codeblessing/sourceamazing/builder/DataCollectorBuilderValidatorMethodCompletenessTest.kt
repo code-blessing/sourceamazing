@@ -12,8 +12,8 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetFixedEnumFacetValueA
 import org.codeblessing.sourceamazing.builder.typemirror.SetFixedIntFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetFixedStringFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentifierValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
+import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
@@ -28,11 +28,11 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test duplicate alias for NewConcept annotation should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
@@ -46,11 +46,11 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test duplicate alias from superior concept for NewConcept annotation should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "foo"))
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
@@ -65,11 +65,11 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test duplicate alias for AutoRandomConceptIdentifier annotation should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
                 withAnnotationOnMethod(SetRandomConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "foo"))
@@ -84,23 +84,23 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test duplicate alias for ConceptIdentifierValue annotation should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
                 withMethodName("doSomething")
                 withParameter(
                     parameterName = "conceptIdentifier1",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "foo"),
                 )
                 withParameter(
                     parameterName = "conceptIdentifier2",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "foo"),
                 )
@@ -113,11 +113,11 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test missing concept identifier declaration for alias should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
             }
@@ -130,17 +130,17 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test duplicate alias for AutoRandomConceptIdentifier and ConceptIdentifier annotation should throw an error`() {
-        val myConcept = SchemaMirrorDsl.concept {
+        val myConcept = FakeSchemaMirrorDsl.concept {
             // empty concept
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
                 withAnnotationOnMethod(SetRandomConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "foo"))
                 withParameter(
                     parameterName = "conceptIdentifier",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "foo"),
                 )
@@ -154,7 +154,7 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on AutoRandomConceptIdentifier annotation should throw an error`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(SetRandomConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "unknown"))
             }
@@ -168,11 +168,11 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
     @Test
     fun `test use of unknown alias on ConceptIdentifierValue annotation should throw an error`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withParameter(
                     parameterName = "id",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(conceptToModifyAlias = "unknown"),
                 )
@@ -187,17 +187,17 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias on FacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withParameter(
                     parameterName = "value",
-                    parameterClassMirror = CommonMirrors.stringClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
                     SetFacetValueAnnotationMirror(
                         conceptToModifyAlias = "unknown",
@@ -215,13 +215,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias in property conceptToModifyAlias on the ReferenceFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "known"))
             builderMethod {
                 withAnnotationOnMethod(SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror(
@@ -241,13 +241,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias in property referencedConceptAlias on ReferenceFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "known"))
             builderMethod {
                 withAnnotationOnMethod(SetAliasConceptIdentifierReferenceFacetValueAnnotationMirror(
@@ -267,13 +267,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias on DefaultStringFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(SetFixedStringFacetValueAnnotationMirror(
                     conceptToModifyAlias = "unknown",
@@ -292,13 +292,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias on DefaultBooleanFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(BooleanFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(SetFixedBooleanFacetValueAnnotationMirror(
                     conceptToModifyAlias = "unknown",
@@ -317,13 +317,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias on DefaultIntFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(IntFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(SetFixedIntFacetValueAnnotationMirror(
                     conceptToModifyAlias = "unknown",
@@ -342,13 +342,13 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of unknown alias on DefaultEnumFacetValue annotation should throw an error`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
-                withAnnotationOnFacet(EnumFacetAnnotationMirror(CommonMirrors.enumClassMirror("FOO", "BAR")))
+                withAnnotationOnFacet(EnumFacetAnnotationMirror(CommonFakeMirrors.enumClassMirror("FOO", "BAR")))
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(SetFixedEnumFacetValueAnnotationMirror(
                     conceptToModifyAlias = "unknown",
@@ -367,19 +367,19 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
     @Test
     fun `test use of alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder should return without exceptions`() {
         lateinit var myFacet : FakeClassMirror
-        SchemaMirrorDsl.concept {
+        FakeSchemaMirrorDsl.concept {
             myFacet = facet {
                 withAnnotationOnFacet(StringFacetAnnotationMirror())
             }
         }
 
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "known"))
             withAnnotationOnBuilder(ExpectedAliasFromSuperiorBuilderAnnotationMirror(conceptAlias = "alsoKnown"))
             builderMethod {
                 withParameter(
                     parameterName = "value",
-                    parameterClassMirror = CommonMirrors.stringClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
                     SetFacetValueAnnotationMirror(
                         conceptToModifyAlias = "known",

@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
+import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
@@ -18,7 +18,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept without accessor method should return without exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 // concept without facets and accessors
             }
@@ -29,7 +29,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with a unannotated method should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -37,7 +37,7 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("getFacetValue")
-                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                 }
             }
         }
@@ -50,7 +50,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with a valid annotated method should return without exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val facetInterfaceMirror = facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -58,7 +58,7 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("getFacetValue")
-                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                     withAnnotationOnMethod(QueryFacetValueAnnotationMirror(facetInterfaceMirror))
                 }
             }
@@ -69,7 +69,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with a valid annotated concept id accessor method should return without exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -77,7 +77,7 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("getConceptId")
-                    withReturnType(CommonMirrors.conceptIdentifierClassMirror())
+                    withReturnType(CommonFakeMirrors.conceptIdentifierClassMirror())
                     withAnnotationOnMethod(QueryConceptIdentifierValueAnnotationMirror())
                 }
             }
@@ -88,7 +88,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with a unsupported facet class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 val declaredFacet = facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -100,7 +100,7 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("getFacetValue")
-                    withReturnType(CommonMirrors.listOfAnyClassMirror())
+                    withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                     withAnnotationOnMethod(QueryFacetValueAnnotationMirror(undeclaredFacet))
                 }
 
@@ -116,7 +116,7 @@ class ConceptQueryValidatorTest {
     @Test
     fun `test concept with valid return types should return without exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             val otherConcept = concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -127,7 +127,7 @@ class ConceptQueryValidatorTest {
                 }
 
                 val returnTypes = mapOf(
-                    "Any" to CommonMirrors.anyClassMirror(),
+                    "Any" to CommonFakeMirrors.anyClassMirror(),
                     "OtherConcept" to otherConcept,
                     "CommonConceptInterface" to commonInterface,
                 )
@@ -148,14 +148,14 @@ class ConceptQueryValidatorTest {
                 for ((text, returnType) in returnTypes) {
                     method {
                         withMethodName("getConceptAsListOf$text")
-                        withReturnType(CommonMirrors.listOfMirror(returnType))
+                        withReturnType(CommonFakeMirrors.listOfMirror(returnType))
                         withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
                     }
                 }
                 for ((text, returnType) in returnTypes) {
                     method {
                         withMethodName("getConceptAsSetOf$text")
-                        withReturnType(CommonMirrors.setOfMirror(returnType))
+                        withReturnType(CommonFakeMirrors.setOfMirror(returnType))
                         withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
                     }
                 }
@@ -167,7 +167,7 @@ class ConceptQueryValidatorTest {
 
     @Test
     fun `test concept with method having parameters should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val oneFacet = facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -175,8 +175,8 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("myMethodWithParameter")
-                    withReturnType(CommonMirrors.listOfAnyClassMirror())
-                    withParameter("myParam", CommonMirrors.intClassMirror(), nullable = false)
+                    withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
+                    withParameter("myParam", CommonFakeMirrors.intClassMirror(), nullable = false)
                     withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
                 }
             }
@@ -190,7 +190,7 @@ class ConceptQueryValidatorTest {
     @Test
     @Disabled("Currently, this can't be validated properly for generic return types like list of strings etc.")
     fun `test concept with wrong return type in query method should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val stringFacet = facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -198,7 +198,7 @@ class ConceptQueryValidatorTest {
 
                 method {
                     withMethodName("myIntReturningMethod")
-                    withReturnType(CommonMirrors.intClassMirror(), nullable = false)
+                    withReturnType(CommonFakeMirrors.intClassMirror(), nullable = false)
                     withAnnotationOnMethod(QueryFacetValueAnnotationMirror(stringFacet))
                 }
             }

@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
+import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
@@ -15,7 +15,7 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema without accessor method should return without exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -30,7 +30,7 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema with a unannotated method should throw an exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -40,7 +40,7 @@ class SchemaQueryValidatorTest {
 
             method {
                 withMethodName("getMyConcepts")
-                withReturnType(CommonMirrors.listOfAnyClassMirror())
+                withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                 // no annotation on method
             }
         }
@@ -53,7 +53,7 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema with a unsupported concept class should throw an exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+        val schemaMirror = FakeSchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
             val declaredConceptClassMirror = concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -65,7 +65,7 @@ class SchemaQueryValidatorTest {
 
             method {
                 withMethodName("getMyConcepts")
-                withReturnType(CommonMirrors.listOfAnyClassMirror())
+                withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                 withAnnotationOnMethod(QueryConceptsAnnotationMirror(listOf(declaredConceptClassMirror, undeclaredConceptClassMirror)))
             }
         }
@@ -78,7 +78,7 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema with a empty concept class list should throw an exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -88,7 +88,7 @@ class SchemaQueryValidatorTest {
 
             method {
                 withMethodName("getMyConcepts")
-                withReturnType(CommonMirrors.listOfAnyClassMirror())
+                withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                 withAnnotationOnMethod(QueryConceptsAnnotationMirror(emptyList()))
             }
         }
@@ -101,12 +101,12 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema with valid return types should return without exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             val oneConcept = concept {
                 withSuperClassMirror(commonInterface)
             }
             val returnTypes = mapOf(
-                "Any" to CommonMirrors.anyClassMirror(),
+                "Any" to CommonFakeMirrors.anyClassMirror(),
                 "OneConcept" to oneConcept,
                 "CommonConceptInterface" to commonInterface,
             )
@@ -127,14 +127,14 @@ class SchemaQueryValidatorTest {
             for ((text, returnType) in returnTypes) {
                 method {
                     withMethodName("getConceptAsListOf$text")
-                    withReturnType(CommonMirrors.listOfMirror(returnType))
+                    withReturnType(CommonFakeMirrors.listOfMirror(returnType))
                     withAnnotationOnMethod(QueryConceptsAnnotationMirror(listOf(oneConcept)))
                 }
             }
             for ((text, returnType) in returnTypes) {
                 method {
                     withMethodName("getConceptAsSetOf$text")
-                    withReturnType(CommonMirrors.setOfMirror(returnType))
+                    withReturnType(CommonFakeMirrors.setOfMirror(returnType))
                     withAnnotationOnMethod(QueryConceptsAnnotationMirror(listOf(oneConcept)))
                 }
             }
@@ -146,7 +146,7 @@ class SchemaQueryValidatorTest {
     @Test
     fun `test schema with method having parameters should throw an exception`() {
         val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             val oneConcept = concept {
                 withSuperClassMirror(commonInterface)
             }
@@ -156,8 +156,8 @@ class SchemaQueryValidatorTest {
 
             method {
                 withMethodName("getMyConceptsAsListOfAny")
-                withReturnType(CommonMirrors.listOfAnyClassMirror())
-                withParameter("myParam", CommonMirrors.intClassMirror(), nullable = false)
+                withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
+                withParameter("myParam", CommonFakeMirrors.intClassMirror(), nullable = false)
                 withAnnotationOnMethod(QueryConceptsAnnotationMirror(listOf(oneConcept, anotherConcept)))
             }
         }

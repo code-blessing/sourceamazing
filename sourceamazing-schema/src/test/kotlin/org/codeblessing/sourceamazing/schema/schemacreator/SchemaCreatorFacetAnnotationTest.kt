@@ -17,7 +17,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an unannotated facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     // no facet annotation
@@ -31,7 +31,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an non-interface facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -47,7 +47,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a schema annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -63,7 +63,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create facet with multiple facet annotations should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -79,7 +79,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a concept annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -95,7 +95,7 @@ class SchemaCreatorFacetAnnotationTest {
 
     @Test
     fun `test duplicate facet class within a concept should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 val facetClassMirror = facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror())
@@ -112,7 +112,7 @@ class SchemaCreatorFacetAnnotationTest {
     fun `test create an schema with concept class having a text facet`() {
         val conceptClassName = "MyConceptClassWithTextFacet"
         val facetClassName = "MyTextFacet"
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withConceptClassName(conceptClassName)
                 facet {

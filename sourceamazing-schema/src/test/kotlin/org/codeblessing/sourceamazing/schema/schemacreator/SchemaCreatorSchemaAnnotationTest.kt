@@ -14,7 +14,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test unannotated schema class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+        val schemaMirror = FakeSchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
             // nothing to do
         }
 
@@ -26,7 +26,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema interface as class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             setSchemaIsClass()
         }
 
@@ -37,7 +37,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema interface as enum class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             setSchemaIsEnum()
         }
 
@@ -48,7 +48,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema interface as annotation interface should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             setSchemaIsAnnotation()
         }
 
@@ -59,7 +59,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema interface as object class interface should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             setSchemaIsObjectClass()
         }
 
@@ -70,7 +70,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema class with concept annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             withAnnotationOnSchema(ConceptAnnotationMirror(emptyList()))
         }
 
@@ -81,7 +81,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test schema class with facet annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             withAnnotationOnSchema(StringFacetAnnotationMirror())
         }
 
@@ -93,10 +93,10 @@ class SchemaCreatorSchemaAnnotationTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
-        val parentSchemaMirror = SchemaMirrorDsl.schema {
+        val parentSchemaMirror = FakeSchemaMirrorDsl.schema {
             // parent schema
         }
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             withSuperClassMirror(parentSchemaMirror)
             // child schema
         }
@@ -108,7 +108,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
     @Test
     fun `test create an empty schema from an empty schema interface without throwing an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             // empty schema without concepts
         }
         val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)

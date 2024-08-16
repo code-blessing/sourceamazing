@@ -12,7 +12,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
 
     @Test
     fun `test concept having three facets with correct cardinalities`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  0, maximumOccurrences = 1))
@@ -41,7 +41,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
 
     @Test
     fun `test negative cardinality on facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  -1, maximumOccurrences = 1))
@@ -56,7 +56,7 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
 
     @Test
     fun `test min cardinality is greater than maximum cardinality on facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  3, maximumOccurrences = 2))

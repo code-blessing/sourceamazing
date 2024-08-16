@@ -18,7 +18,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test unannotated concept class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 // concept without concept annotation
             }
@@ -30,7 +30,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test non-interface concept class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 setConceptIsClass()
             }
@@ -43,7 +43,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test create concept class with a schema annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withAnnotationOnConcept(SchemaAnnotationMirror(emptyList()))
             }
@@ -56,7 +56,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test concept class with a facet annotation should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 withAnnotationOnConcept(StringFacetAnnotationMirror())
             }
@@ -68,7 +68,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test duplicate concept classes should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+        val schemaMirror = FakeSchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
             val conceptClassMirror = concept {
                 // a concept
             }
@@ -82,7 +82,7 @@ class SchemaCreatorConceptAnnotationTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             val parentConcept = concept {
                 // parentConcept
             }
@@ -107,7 +107,7 @@ class SchemaCreatorConceptAnnotationTest {
 
     @Test
     fun `test create an schema with an empty concept class`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 // empty concept class
             }

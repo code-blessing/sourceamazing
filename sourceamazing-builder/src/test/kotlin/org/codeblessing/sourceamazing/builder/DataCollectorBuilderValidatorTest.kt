@@ -8,8 +8,8 @@ import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMir
 import org.codeblessing.sourceamazing.builder.typemirror.SetConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
-import org.codeblessing.sourceamazing.schema.schemacreator.CommonMirrors
-import org.codeblessing.sourceamazing.schema.schemacreator.SchemaMirrorDsl
+import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
+import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -19,7 +19,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test data collector without annotation should throw an exception`() {
-        val builder = BuilderMirrorDsl.builder(addBuilderAnnotation = false) {
+        val builder = FakeBuilderMirrorDsl.builder(addBuilderAnnotation = false) {
             // empty builder without annotation
         }
 
@@ -30,7 +30,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder class not being an interface should throw an exception`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             setBuilderIsClass()
         }
         assertThrows(DataCollectorBuilderException::class.java) {
@@ -41,7 +41,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test data collector without accessor method should return without exception`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             // builder without methods
         }
 
@@ -50,7 +50,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder method without BuilderMethod annotation should throw an exception`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod(addBuilderMethodAnnotation = false) {
                 // no parameter and return type
             }
@@ -62,7 +62,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test data collector with BuilderMethod annotation using the same builder should return without exception`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 // no parameter and return type
             }
@@ -73,10 +73,10 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test sub-builder class without Builder annotation should throw an exception`() {
-        val otherBuilder = BuilderMirrorDsl.builder(addBuilderAnnotation = false) {
+        val otherBuilder = FakeBuilderMirrorDsl.builder(addBuilderAnnotation = false) {
             // empty builder without annotation
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = otherBuilder))
                 // no parameter and return type
@@ -91,10 +91,10 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test data collector sub-builder with annotation should return without exception`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
                 // no parameter and return type
@@ -107,10 +107,10 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder method without base BuilderMethod annotation should throw an exception`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod(addBuilderMethodAnnotation = false) {
                 withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
                 // no parameter and return type
@@ -124,7 +124,7 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder injection without declaring the builder should use the existing builder and return without exception`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
@@ -145,10 +145,10 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder methods last parameter having the builder injection annotation should return without exception`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
             builderMethod {
                 withFunctionParameter(
@@ -169,10 +169,10 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test if more than one parameter have the builder injection annotation, an error is thrown`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
             builderMethod {
                 withFunctionParameter(
@@ -203,21 +203,21 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test if one parameter is not having an annotation, an error is thrown`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
             builderMethod {
                 withParameter(
                     parameterName = "conceptId",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror()
                 )
                 withParameter(
                     parameterName = "myValue",
-                    parameterClassMirror = CommonMirrors.stringClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
                     // missing annotation
                 )
@@ -240,15 +240,15 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test builder inject annotation on a non-last parameter should throw an error`() {
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
             builderMethod {
                 withParameter(
                     parameterName = "conceptId",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror()
                 )
@@ -263,7 +263,7 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withParameter(
                     parameterName = "myValue",
-                    parameterClassMirror = CommonMirrors.stringClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
                     SetFacetValueAnnotationMirror(facetToModify = FakeClassMirror.interfaceMirror("MyFacetMirror"))
                 )
@@ -277,15 +277,15 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method should throw an error`() {
-        val myConceptClass = SchemaMirrorDsl.concept {
+        val myConceptClass = FakeSchemaMirrorDsl.concept {
             // nothing
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConceptClass))
                 withParameter(
                     parameterName = "conceptId",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     IgnoreNullFacetValueAnnotationMirror(),
                     SetConceptIdentifierValueAnnotationMirror(),
@@ -300,18 +300,18 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and InjectBuilder annotation on same method should throw an error`() {
-        val myConceptClass = SchemaMirrorDsl.concept {
+        val myConceptClass = FakeSchemaMirrorDsl.concept {
             // nothing
         }
-        val emptyBuilder = BuilderMirrorDsl.builder {
+        val emptyBuilder = FakeBuilderMirrorDsl.builder {
             // empty builder
         }
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConceptClass))
                 withParameter(
                     parameterName = "conceptId",
-                    parameterClassMirror = CommonMirrors.conceptIdentifierClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(),
                 )
@@ -335,11 +335,11 @@ class DataCollectorBuilderValidatorTest {
 
     @Test
     fun `test concept id parameter without ConceptIdentifier class should throw an error`() {
-        val builder = BuilderMirrorDsl.builder {
+        val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
                 withParameter(
                     parameterName = "conceptId",
-                    parameterClassMirror = CommonMirrors.stringClassMirror(),
+                    parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
                     SetConceptIdentifierValueAnnotationMirror(),
                 )

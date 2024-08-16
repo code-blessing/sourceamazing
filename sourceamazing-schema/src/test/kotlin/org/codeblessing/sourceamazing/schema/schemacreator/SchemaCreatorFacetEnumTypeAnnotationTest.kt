@@ -15,8 +15,8 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test concept having an empty enumeration facet should not throw an exception`() {
-        val emptyEnumerationClassMirror = CommonMirrors.namedEnumClassMirror("MyEnum")
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val emptyEnumerationClassMirror = CommonFakeMirrors.namedEnumClassMirror("MyEnum")
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withFacetClassName("MyEnumFacet")
@@ -38,8 +38,8 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test concept having a enumeration facet`() {
-        val seasonEnumerationClassMirror = CommonMirrors.namedEnumClassMirror("MySeasonEnum", "WINTER", "SPRING", "SUMMER", "FALL")
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val seasonEnumerationClassMirror = CommonFakeMirrors.namedEnumClassMirror("MySeasonEnum", "WINTER", "SPRING", "SUMMER", "FALL")
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withFacetClassName("MyEnumFacet")
@@ -65,10 +65,10 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test invalid enum type on facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonMirrors.stringClassMirror()))
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.stringClassMirror()))
                 }
             }
         }
@@ -91,10 +91,10 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
 
     @Test
     fun `test enum facet with missing enum type should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonMirrors.unitClassMirror()))
+                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.unitClassMirror()))
                 }
             }
         }

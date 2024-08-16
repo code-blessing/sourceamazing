@@ -17,7 +17,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test concept having an empty reference facet should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withAnnotationOnFacet(ReferenceFacetAnnotationMirror(emptyList()))
@@ -36,7 +36,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
         lateinit var myReferenceToOtherConceptFacet: FakeClassMirror
         lateinit var otherConcept: FakeClassMirror
 
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             otherConcept = concept {
                 // no facets
             }
@@ -67,7 +67,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
         lateinit var andAnotherConcept: FakeClassMirror
         lateinit var andJustOneAnotherConcept: FakeClassMirror
 
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             otherConcept = concept {
                 // no facets
             }
@@ -106,7 +106,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test reference facet to unknown concept should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
+        val schemaMirror = FakeSchemaMirrorDsl.schema(addSchemaAnnotationWithAllConcepts = false) {
             val unknownConcept = concept {
                 // concept not listed on schema
             }
@@ -125,7 +125,7 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test reference facet to a non-concept class should throw an exception`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             val conceptWithoutConceptAnnotation = concept(addConceptAnnotationWithAllFacets = false) {
                 // concept not a concept
             }

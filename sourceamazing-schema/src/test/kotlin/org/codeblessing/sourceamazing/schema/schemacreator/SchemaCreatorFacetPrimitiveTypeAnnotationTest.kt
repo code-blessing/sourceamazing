@@ -12,7 +12,7 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
 
     @Test
     fun `test concept having three primitive type facet`() {
-        val schemaMirror = SchemaMirrorDsl.schema {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
                     withFacetClassName("TextFacetClass")
