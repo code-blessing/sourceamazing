@@ -28,7 +28,7 @@ import org.codeblessing.sourceamazing.builder.typemirror.SetFixedIntFacetValueAn
 import org.codeblessing.sourceamazing.builder.typemirror.SetFixedStringFacetValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.SetRandomConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
-import org.codeblessing.sourceamazing.schema.TypeHelper
+import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText

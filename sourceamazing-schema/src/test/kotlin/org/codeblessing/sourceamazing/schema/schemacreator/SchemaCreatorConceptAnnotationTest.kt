@@ -98,13 +98,6 @@ class SchemaCreatorConceptAnnotationTest {
         }
     }
 
-    @Schema(concepts = [SchemaWithEmptyConceptClass.EmptyConceptClass::class])
-    private interface SchemaWithEmptyConceptClass {
-
-        @Concept(facets = [])
-        interface EmptyConceptClass
-    }
-
     @Test
     fun `test create an schema with an empty concept class`() {
         val schemaMirror = FakeSchemaMirrorDsl.schema {

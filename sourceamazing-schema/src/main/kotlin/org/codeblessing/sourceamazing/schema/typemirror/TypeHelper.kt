@@ -1,6 +1,4 @@
-package org.codeblessing.sourceamazing.schema
-
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+package org.codeblessing.sourceamazing.schema.typemirror
 
 object TypeHelper {
     private val kotlinAnyClassMethodNames = setOf(

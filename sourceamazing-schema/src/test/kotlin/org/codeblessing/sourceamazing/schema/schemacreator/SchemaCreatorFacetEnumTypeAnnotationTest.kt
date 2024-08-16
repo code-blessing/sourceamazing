@@ -78,17 +78,6 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         }
     }
 
-    @Schema(concepts = [SchemaWithConceptWithMissingEnumTypeOnFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithMissingEnumTypeOnFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MissingEnumTypeFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = Unit::class)
-            interface MissingEnumTypeFacet
-        }
-    }
-
     @Test
     fun `test enum facet with missing enum type should throw an exception`() {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
