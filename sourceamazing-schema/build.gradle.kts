@@ -11,7 +11,6 @@ dependencies {
     implementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.jupiter.params)
 }
 
 tasks.named<Test>("test") {

@@ -11,7 +11,6 @@ dependencyResolutionManagement {
 
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef(kotlinVersion)
             library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").versionRef(junit5Version)
-            library("junit-jupiter-params", "org.junit.jupiter", "junit-jupiter-params").versionRef(junit5Version)
 
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").versionRef(kotlinVersion)
         }
