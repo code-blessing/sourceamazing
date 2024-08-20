@@ -2,6 +2,7 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors.DEFAULT_PACKAGE_NAME
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
@@ -52,6 +53,11 @@ object FakeSchemaMirrorDsl {
             val conceptDsl = ConceptDsl("Concept${schemaConceptClassMirrors.size}")
             configuration.invoke(conceptDsl)
             val conceptClassMirror = conceptDsl.buildConceptMirror(addConceptAnnotationWithAllFacets)
+            schemaConceptClassMirrors.add(conceptClassMirror)
+            return conceptClassMirror
+        }
+
+        fun concept(conceptClassMirror: FakeClassMirror): FakeClassMirror {
             schemaConceptClassMirrors.add(conceptClassMirror)
             return conceptClassMirror
         }

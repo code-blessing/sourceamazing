@@ -13,6 +13,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
+import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
@@ -101,6 +102,9 @@ object SchemaCreator {
             checkHasNotAnnotation(IntFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasNotAnnotation(EnumFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasNotAnnotation(ReferenceFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(QueryConcepts::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(QueryFacetValue::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNotAnnotation(QueryConceptIdentifierValue::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 

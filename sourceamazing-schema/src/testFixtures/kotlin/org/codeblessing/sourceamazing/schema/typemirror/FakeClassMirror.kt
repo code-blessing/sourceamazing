@@ -42,6 +42,12 @@ data class FakeClassMirror(
         )
     }
 
+    fun setEnumValues(vararg enumValues: String): FakeClassMirror {
+        return this.copy(
+            enumValues = enumValues.toList()
+        )
+    }
+
     fun setIsAnnotation(): FakeClassMirror {
         return this.copy(
             classKind = ClassKind.ANNOTATION,
