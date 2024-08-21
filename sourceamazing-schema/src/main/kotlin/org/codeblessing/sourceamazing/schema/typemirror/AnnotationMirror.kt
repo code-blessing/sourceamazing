@@ -7,4 +7,9 @@ abstract class AnnotationMirror(val annotationClass: KClass<out Annotation>) {
         return annotationClass == annotationClassToCompare
     }
 
+    fun isAnnotationFromSourceAmazing(): Boolean {
+        // as we only import source amazing annotations as mirrors,
+        // this is always true
+        return true
+    }
 }

@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.annotations.*
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.*
 import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryValidator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
@@ -13,7 +14,6 @@ import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
-import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
@@ -84,27 +84,14 @@ object SchemaCreator {
     private fun validateSchemaClassAnnotations(schemaDefinitionClass: ClassMirrorInterface) {
         checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(Concept::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(StringFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(BooleanFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(IntFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(EnumFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
-        checkHasNotAnnotation(ReferenceFacet::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasOnlyAnnotation(listOf(Schema::class), schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
     private fun validateConceptClassesAnnotations(conceptClasses: List<ClassMirrorInterface>) {
         conceptClasses.forEach { conceptClass ->
             checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasOnlyAnnotation(listOf(Concept::class), conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Schema::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(StringFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(BooleanFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(IntFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(EnumFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(ReferenceFacet::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(QueryConcepts::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(QueryFacetValue::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(QueryConceptIdentifierValue::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
@@ -112,15 +99,23 @@ object SchemaCreator {
         facetClasses.forEach { facetClass ->
             checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasExactlyOneOfAnnotation(
+                annotations = listOf(
+                    StringFacet::class,
+                    BooleanFacet::class,
+                    IntFacet::class,
+                    EnumFacet::class,
+                    ReferenceFacet::class,
+                ),
+                classToInspect = facetClass,
+                classDescription = FACET_CLASS_DESCRIPTION)
+
+            checkHasOnlyAnnotation(listOf(
                 StringFacet::class,
                 BooleanFacet::class,
                 IntFacet::class,
                 EnumFacet::class,
                 ReferenceFacet::class,
-                classToInspect = facetClass,
-                classDescription = FACET_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Schema::class, facetClass, FACET_CLASS_DESCRIPTION)
-            checkHasNotAnnotation(Concept::class, facetClass, FACET_CLASS_DESCRIPTION)
+            ), facetClass, FACET_CLASS_DESCRIPTION)
         }
     }
 
@@ -257,13 +252,27 @@ object SchemaCreator {
         }
     }
 
-    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
+    private fun checkHasOnlyAnnotation(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: ClassMirrorInterface, classDescription: String) {
+        classToInspect.annotations
+            .filter { it.isAnnotationFromSourceAmazing() }
+            .forEach { annotationOnClass ->
+                if(!permittedAnnotations.any { annotationOnClass.isAnnotation(it) }) {
+                    throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have annotation of type '${annotationOnClass.annotationClass.longText()}'.")
+                }
+            }
+    }
+
+    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String, maxRepeatable: Int = 1) {
         if(!classToInspect.hasAnnotation(annotation)) {
             throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
         }
+
+        if(classToInspect.numberOfAnnotation(annotation) > maxRepeatable) {
+            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have more than $maxRepeatable annotation of type '${annotation.annotationText()}'.")
+        }
     }
 
-    private fun checkHasExactlyOneOfAnnotation(vararg annotations: KClass<out Annotation>, classToInspect: ClassMirrorInterface, classDescription: String) {
+    private fun checkHasExactlyOneOfAnnotation(annotations: List<KClass<out Annotation>>, classToInspect: ClassMirrorInterface, classDescription: String) {
         val numberOfAnnotations = annotations.count { annotation -> hasClassAnnotation(annotation, classToInspect) }
 
         if(numberOfAnnotations < 1) {

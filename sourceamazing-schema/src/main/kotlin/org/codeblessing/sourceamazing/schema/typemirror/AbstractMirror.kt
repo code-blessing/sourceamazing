@@ -10,6 +10,10 @@ abstract class AbstractMirror(
         return annotations.any { it.isAnnotation(annotation) }
     }
 
+    fun numberOfAnnotation(annotation: KClass<out Annotation>): Int {
+        return annotations.filter { it.isAnnotation(annotation) }.size
+    }
+
     fun <T: AnnotationMirror> getAnnotationMirrorOrNull(annotationMirrorClass: KClass<out T>): T? {
         return annotations.filterIsInstance(annotationMirrorClass.java).firstOrNull()
     }

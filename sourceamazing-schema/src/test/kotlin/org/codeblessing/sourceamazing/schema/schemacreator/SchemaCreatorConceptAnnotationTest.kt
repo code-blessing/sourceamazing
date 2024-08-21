@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnn
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
@@ -33,6 +34,21 @@ class SchemaCreatorConceptAnnotationTest {
             }
         }
         assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
+            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        }
+    }
+
+    @Test
+    fun `test concept class with two concept annotations should throw an exception`() {
+        val schemaMirror = FakeSchemaMirrorDsl.schema {
+            concept(addConceptAnnotationWithAllFacets = false) {
+                // concept with two concept annotation
+                withAnnotationOnConcept(ConceptAnnotationMirror(emptyList()),)
+                withAnnotationOnConcept(ConceptAnnotationMirror(emptyList()),)
+
+            }
+        }
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
@@ -143,7 +159,7 @@ class SchemaCreatorConceptAnnotationTest {
             }
         }
 
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
             SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
         }
     }
