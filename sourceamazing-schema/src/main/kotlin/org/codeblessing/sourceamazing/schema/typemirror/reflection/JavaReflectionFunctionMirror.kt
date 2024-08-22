@@ -7,6 +7,9 @@ import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ReturnMirrorInterface
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.KType
+import kotlin.reflect.javaType
+import kotlin.reflect.jvm.jvmErasure
 
 data class JavaReflectionFunctionMirror (
     private val memberFunction: KFunction<*>,
@@ -25,5 +28,9 @@ data class JavaReflectionFunctionMirror (
     override val parameters: List<ParameterMirrorInterface> = memberFunction.parameters
         .filter { it.kind == KParameter.Kind.VALUE }
         .map(::JavaReflectionParameterMirror)
-    override val returnType: ReturnMirrorInterface = JavaReflectionReturnMirror(memberFunction.returnType)
+    override val returnType: ReturnMirrorInterface? = if(isUnitType(memberFunction.returnType)) null else JavaReflectionReturnMirror(memberFunction.returnType)
+
+    private fun isUnitType(returnType: KType): Boolean {
+        return returnType.jvmErasure == Unit::class
+    }
 }

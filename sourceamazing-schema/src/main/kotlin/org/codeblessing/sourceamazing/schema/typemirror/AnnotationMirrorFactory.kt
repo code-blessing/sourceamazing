@@ -5,26 +5,42 @@ import java.util.*
 import kotlin.reflect.KClass
 
 object AnnotationMirrorFactory {
+    private val lockObject = Any()
+    private var isServiceLoaderCalled = false
     private val registeredAnnotations: MutableMap<KClass<out Annotation>, AnnotationMirrorCreator> = mutableMapOf()
 
     fun createAnnotationMirrorList(annotations: List<Annotation>, classMirrorCreator: (KClass<*>) -> MirrorProvider<ClassMirrorInterface>): List<AnnotationMirror> {
+
         return annotations.map { createAnnotationMirror(it, classMirrorCreator) }
     }
 
     private fun createAnnotationMirror(annotation: Annotation, classMirrorCreatorCallable: ClassMirrorCreatorCallable): AnnotationMirror {
-        registerAnnotationsWithServiceLoader()
-
-        val annotationCreator = requireNotNull(registeredAnnotations[annotation.annotationClass]) {
-            "Annotation ${annotation.annotationClass} is not registered. Registered classes are ${registeredAnnotations.keys}!"
+        registerAnnotationsWithServiceLoaderIfNecessary()
+        require(registeredAnnotations.isNotEmpty()) {
+            "No annotation was registered"
         }
-        return annotationCreator.createAnnotationMirror(annotation, classMirrorCreatorCallable)
+        val annotationCreator = registeredAnnotations[annotation.annotationClass]
+
+        return annotationCreator?.createAnnotationMirror(annotation, classMirrorCreatorCallable)
+            ?: createAnnotationMirrorForUnregisteredAnnotation(annotation, classMirrorCreatorCallable)
     }
 
-    private fun registerAnnotationsWithServiceLoader() {
-        registeredAnnotations.clear()
-        val annotationMirrorCreatorCallables: ServiceLoader<AnnotationMirrorCreator> = ServiceLoader.load(AnnotationMirrorCreator::class.java)
-        annotationMirrorCreatorCallables.forEach {
-            registerAnnotation(it.annotationClass(), it)
+    private fun createAnnotationMirrorForUnregisteredAnnotation(annotation: Annotation, classMirrorCreatorCallable: ClassMirrorCreatorCallable): AnnotationMirror {
+        return OtherAnnotationMirrorCreator(annotationClass = annotation.annotationClass).createAnnotationMirror(annotation, classMirrorCreatorCallable)
+    }
+
+    private fun registerAnnotationsWithServiceLoaderIfNecessary() {
+        if (isServiceLoaderCalled) {
+            return
+        }
+        synchronized(lockObject) {
+            if (!isServiceLoaderCalled) {
+                val annotationMirrorCreatorCallables: ServiceLoader<AnnotationMirrorCreator> = ServiceLoader.load(AnnotationMirrorCreator::class.java)
+                annotationMirrorCreatorCallables.forEach {
+                    registerAnnotation(it.annotationClass(), it)
+                }
+                isServiceLoaderCalled = true
+            }
         }
     }
 
