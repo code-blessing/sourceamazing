@@ -9,7 +9,7 @@ data class FakeClassMirror(
     override val classKind: ClassKind = ClassKind.REGULAR_CLASS,
     override val annotations: List<AnnotationMirror> = emptyList(),
     override val methods: List<FakeFunctionMirror> = emptyList(),
-    override val propertiesNames: List<String> = emptyList(),
+    override val fields: List<FieldMirrorInterface> = emptyList(),
     override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
     override val enumValues: List<String> = emptyList(),

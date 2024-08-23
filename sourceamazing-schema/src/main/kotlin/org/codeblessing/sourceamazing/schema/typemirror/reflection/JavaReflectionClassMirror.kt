@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassKind
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ClassQualifierMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FieldMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import kotlin.reflect.KClass
@@ -20,7 +21,7 @@ data class JavaReflectionClassMirror(
     override val classKind: ClassKind = toClassKind(clazz)
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(clazz.annotations)
     override val methods: List<FunctionMirrorInterface> = clazz.memberFunctions.map(::JavaReflectionFunctionMirror)
-    override val propertiesNames: List<String> = clazz.memberProperties.map { it.name }
+    override val fields: List<FieldMirrorInterface> = clazz.memberProperties.map(::JavaReflectionFieldMirror)
     override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList()
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList()
     override val enumValues: List<String> = clazz.java.enumConstants?.map { it.toString() } ?: emptyList()

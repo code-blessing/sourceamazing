@@ -9,7 +9,7 @@ interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureM
     val classKind: ClassKind
     override val annotations: List<AnnotationMirror>
     val methods: List<FunctionMirrorInterface>
-    val propertiesNames: List<String>
+    val fields: List<FieldMirrorInterface>
     val typeParameters: List<MirrorProvider<ClassMirrorInterface>>
     val superClasses: List<MirrorProvider<ClassMirrorInterface>>
     val enumValues: List<String>

@@ -2,12 +2,20 @@ package org.codeblessing.sourceamazing.schema.typemirror.reflection
 
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.EveryLocationAnnotation
+import org.codeblessing.sourceamazing.schema.typemirror.FieldMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.OtherAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.OtherTypeMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
+import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,6 +24,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty
 
 class JavaReflectionMirrorFactoryTest {
     private val numberOfDefaultMethods = 3 //toString(), hash(), equals()
@@ -179,6 +188,41 @@ class JavaReflectionMirrorFactoryTest {
         assertTrue(expectedMethods.containsAll(classMirror.methods.mapNotNull { it.functionName }))
     }
 
+    private interface AnInterfaceWithMethodsHavingAnnotations {
+
+        @QueryConceptIdentifierValue
+        @QueryConcepts(conceptClasses = [])
+        @Deprecated("This is deprecated")
+        fun methodWithAnnotation()
+
+        fun methodWithoutAnnotation()
+    }
+
+
+    @Test
+    fun `method annotations are reflected correctly`() {
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsHavingAnnotations::class)
+        assertEquals(numberOfDefaultMethods + 2, classMirror.methods.size)
+
+        classMirror.withMethod(AnInterfaceWithMethodsHavingAnnotations::methodWithoutAnnotation).let { method ->
+            assertEquals(0, method.annotations.size)
+        }
+
+        classMirror.withMethod(AnInterfaceWithMethodsHavingAnnotations::methodWithAnnotation).let { method ->
+            assertEquals(3, method.annotations.size)
+
+            val queryConceptsIdentifierValueAnnotationMirror = method.annotations[0] as QueryConceptIdentifierValueAnnotationMirror
+            assertEquals(true, queryConceptsIdentifierValueAnnotationMirror.isAnnotation(QueryConceptIdentifierValue::class))
+
+            val queryConceptsAnnotationMirror = method.annotations[1] as QueryConceptsAnnotationMirror
+            assertEquals(true, queryConceptsAnnotationMirror.isAnnotation(QueryConcepts::class))
+
+            val deprecatedAnnotationMirror = method.annotations[2] as OtherAnnotationMirror
+            assertEquals(true, deprecatedAnnotationMirror.isAnnotation(Deprecated::class))
+
+        }
+    }
+
     private interface AnInterfaceWithMethodsWithoutParamsAndReturnType {
 
         fun methodWithoutParamsAndReturnType()
@@ -202,12 +246,14 @@ class JavaReflectionMirrorFactoryTest {
         fun methodWithSimpleParam(objectParam: AParamObject)
         fun methodWithSimpleNullableParam(objectParam: AParamObject?)
         fun methodWithListParams(listParam: List<AParamObject>)
+        fun methodWithKotlinBuiltIntType(myInt: Int)
+        fun methodWithAnnotatedParam(@EveryLocationAnnotation myInt: Int)
     }
 
     @Test
-    fun `methods and their params on a interface are represented correctly`() {
+    fun `method parameters on a interface are represented correctly`() {
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsWithParams::class)
-        assertEquals(numberOfDefaultMethods + 3, classMirror.methods.size)
+        assertEquals(numberOfDefaultMethods + 5, classMirror.methods.size)
 
         classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithSimpleParam).let { method ->
             assertEquals(1, method.parameters.size)
@@ -234,6 +280,61 @@ class JavaReflectionMirrorFactoryTest {
 
             }
         }
+        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithKotlinBuiltIntType).let { method ->
+            assertEquals(1, method.parameters.size)
+            method.parameters.first().let { param ->
+                assertEquals(false, param.type.nullable)
+                assertEquals(true, param.type.signatureMirror.provideMirror() is ClassMirrorInterface)
+                val returnTypeClass = param.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals("kotlin.Int", returnTypeClass.fullQualifiedName)
+            }
+        }
+        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithAnnotatedParam).let { method ->
+            assertEquals(1, method.parameters.size)
+            method.parameters.first().let { param ->
+                assertEquals(1, param.annotations.size)
+                val annotation = param.annotations.first() as OtherAnnotationMirror
+                assertEquals(true, annotation.isAnnotation(EveryLocationAnnotation::class))
+            }
+        }
+    }
+
+    private interface AnInterfaceWithFields {
+        class AFieldObject
+
+        val myInt: Int
+        val mySimpleObject: AFieldObject?
+        val myMethodField: () -> Int?
+    }
+
+
+    @Test
+    fun `field on an interface are represented correctly`() {
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithFields::class)
+        assertEquals(3, classMirror.fields.size)
+
+        classMirror.withField(AnInterfaceWithFields::myInt).let { field ->
+            assertEquals("myInt", field.fieldName)
+            assertEquals(false, field.type.nullable)
+            assertEquals(false, field.type.nullable)
+            assertEquals(true, field.type.signatureMirror.provideMirror() is ClassMirrorInterface)
+            val fieldTypeClass = field.type.signatureMirror.provideMirror() as ClassMirrorInterface
+            assertEquals("kotlin.Int", fieldTypeClass.fullQualifiedName)
+        }
+        classMirror.withField(AnInterfaceWithFields::mySimpleObject).let { field ->
+            assertEquals("mySimpleObject", field.fieldName)
+            assertEquals(true, field.type.nullable)
+            assertEquals(true, field.type.signatureMirror.provideMirror() is ClassMirrorInterface)
+            val fieldTypeClass = field.type.signatureMirror.provideMirror() as ClassMirrorInterface
+            assertEquals(AnInterfaceWithFields.AFieldObject::class.qualifiedName, fieldTypeClass.fullQualifiedName)
+        }
+        classMirror.withField(AnInterfaceWithFields::myMethodField).let { field ->
+            assertEquals("myMethodField", field.fieldName)
+            assertEquals(false, field.type.nullable)
+            assertEquals(true, field.type.signatureMirror.provideMirror() is OtherTypeMirrorInterface)
+            val fieldFunctionType = field.type.signatureMirror.provideMirror() as OtherTypeMirrorInterface
+            // assertEquals(null, fieldFunctionType.functionName)
+        }
     }
 
     private interface AnInterfaceWithMethodsReturningValues {
@@ -247,7 +348,7 @@ class JavaReflectionMirrorFactoryTest {
     }
 
     @Test
-    fun `methods return types on a interface are represented correctly`() {
+    fun `method return types on a interface are represented correctly`() {
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsReturningValues::class)
         assertEquals(numberOfDefaultMethods + 4, classMirror.methods.size)
 
@@ -279,7 +380,7 @@ class JavaReflectionMirrorFactoryTest {
     interface InterfaceWithMethodsInheritedFromAnyObject
 
     @Test
-    fun `represents the interface methods inherited from kotlin Any`() {
+    fun `class mirror represents the interface methods inherited from kotlin Any`() {
         val myInterfaceMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(InterfaceWithMethodsInheritedFromAnyObject::class)
         assertEquals(numberOfDefaultMethods, myInterfaceMirror.methods.size)
 
@@ -296,4 +397,9 @@ class JavaReflectionMirrorFactoryTest {
     private fun ClassMirrorInterface.withMethod(kFunction: KFunction<*>): FunctionMirrorInterface {
         return this.methods.first { it.functionName == kFunction.name }
     }
+
+    private fun ClassMirrorInterface.withField(kProperty: KProperty<*>): FieldMirrorInterface {
+        return this.fields.first { it.fieldName == kProperty.name }
+    }
+
 }
