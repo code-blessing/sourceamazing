@@ -44,10 +44,9 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(false, classMirror.isObjectClass)
     }
 
-    private class AnEmptyClass
-
     @Test
     fun `class is marked as a class and no other class type`() {
+        class AnEmptyClass
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnEmptyClass::class)
         assertEquals(false, classMirror.isAnnotation)
         assertEquals(true, classMirror.isClass)
@@ -97,15 +96,16 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(expectedEnumValues, classMirror.enumValues)
     }
 
-    @Schema(concepts = [AnEmptyInterface::class])
-    @StringFacet
-    @BooleanFacet(minimumOccurrences = 5, maximumOccurrences = 8)
-    @Concept(facets = [AnEmptyInterface::class, AnEmptyInterface::class, AnEmptyInterface::class])
-    private interface AnInterfaceWithMultipleAnnotations
-
     @Test
-    fun `annotations and their values on a interface are represented correctly`() {
-        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMultipleAnnotations::class)
+    fun `annotations and their values on a class are represented correctly`() {
+
+        @Schema(concepts = [AnEmptyInterface::class])
+        @StringFacet
+        @BooleanFacet(minimumOccurrences = 5, maximumOccurrences = 8)
+        @Concept(facets = [AnEmptyInterface::class, AnEmptyInterface::class, AnEmptyInterface::class])
+        class AnClassWithMultipleAnnotations
+
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnClassWithMultipleAnnotations::class)
         assertEquals(4, classMirror.annotations.size)
 
         val schemaAnnotationMirror = classMirror.annotations[0] as SchemaAnnotationMirror
@@ -130,17 +130,17 @@ class JavaReflectionMirrorFactoryTest {
         assertEquals(3, conceptFacetAnnotationMirror.facets.size)
     }
 
-    private interface AnInterfaceWithMethodsInACertainOrder {
-
-        fun firstMethod()
-        fun secondMethod()
-        fun thirdMethod()
-        fun fourthMethod()
-    }
-
-
     @Test
-    fun `methods on a interface are represented but not necessary in the correct order`() {
+    fun `methods on a class are represented but not necessary in the correct order`() {
+
+        abstract class AnInterfaceWithMethodsInACertainOrder {
+
+            abstract fun firstMethod()
+            abstract fun secondMethod()
+            abstract fun thirdMethod()
+            abstract fun fourthMethod()
+        }
+
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsInACertainOrder::class)
         assertEquals(numberOfDefaultMethods + 4, classMirror.methods.size)
 
@@ -156,19 +156,18 @@ class JavaReflectionMirrorFactoryTest {
         assertTrue(expectedMethods.containsAll(classMirror.methods.mapNotNull { it.functionName }))
     }
 
-    private interface AnInterfaceWithMethodsHavingAnnotations {
-
-        @QueryConceptIdentifierValue
-        @QueryConcepts(conceptClasses = [])
-        @Deprecated("This is deprecated")
-        fun methodWithAnnotation()
-
-        fun methodWithoutAnnotation()
-    }
-
-
     @Test
     fun `method annotations are reflected correctly`() {
+        abstract class AnInterfaceWithMethodsHavingAnnotations {
+
+            @QueryConceptIdentifierValue
+            @QueryConcepts(conceptClasses = [])
+            @Deprecated("This is deprecated")
+            abstract fun methodWithAnnotation()
+
+            abstract fun methodWithoutAnnotation()
+        }
+
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsHavingAnnotations::class)
         assertEquals(numberOfDefaultMethods + 2, classMirror.methods.size)
 
@@ -191,13 +190,12 @@ class JavaReflectionMirrorFactoryTest {
         }
     }
 
-    private interface AnInterfaceWithMethodsWithoutParamsAndReturnType {
-
-        fun methodWithoutParamsAndReturnType()
-    }
-
     @Test
-    fun `methods without param and return types on a interface are represented correctly`() {
+    fun `methods without param and return types on a class are represented correctly`() {
+        abstract class AnInterfaceWithMethodsWithoutParamsAndReturnType {
+            abstract fun methodWithoutParamsAndReturnType()
+        }
+
         val classMirror =
             JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsWithoutParamsAndReturnType::class)
         assertEquals(numberOfDefaultMethods + 1, classMirror.methods.size)
@@ -208,37 +206,38 @@ class JavaReflectionMirrorFactoryTest {
         }
     }
 
-    private interface AnInterfaceWithMethodsWithParams {
-        class AParamObject
-
-        fun methodWithSimpleParam(objectParam: AParamObject)
-        fun methodWithSimpleNullableParam(objectParam: AParamObject?)
-        fun methodWithListParams(listParam: List<AParamObject>)
-        fun methodWithKotlinBuiltIntType(myInt: Int)
-        fun methodWithAnnotatedParam(@EveryLocationAnnotation myInt: Int)
-    }
-
     @Test
-    fun `method parameters on a interface are represented correctly`() {
-        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsWithParams::class)
+    fun `method parameters on a class are represented correctly`() {
+        class AParamObject
+        abstract class AClassWithMethodsWithParams {
+
+
+            abstract fun methodWithSimpleParam(objectParam: AParamObject)
+            abstract fun methodWithSimpleNullableParam(objectParam: AParamObject?)
+            abstract fun methodWithListParams(listParam: List<AParamObject>)
+            abstract fun methodWithKotlinBuiltIntType(myInt: Int)
+            abstract fun methodWithAnnotatedParam(@EveryLocationAnnotation myInt: Int)
+        }
+
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AClassWithMethodsWithParams::class)
         assertEquals(numberOfDefaultMethods + 5, classMirror.methods.size)
 
-        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithSimpleParam).let { method ->
+        classMirror.withMethod(AClassWithMethodsWithParams::methodWithSimpleParam).let { method ->
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
                 assertEquals(true, param.type.signatureMirror.provideMirror() is ClassMirrorInterface)
                 val returnTypeClass = param.type.signatureMirror.provideMirror() as ClassMirrorInterface
-                assertEquals(AnInterfaceWithMethodsWithParams.AParamObject::class.qualifiedName, returnTypeClass.fullQualifiedName)
+                assertEquals("AParamObject", returnTypeClass.fullQualifiedName)
             }
         }
-        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithSimpleNullableParam).let { method ->
+        classMirror.withMethod(AClassWithMethodsWithParams::methodWithSimpleNullableParam).let { method ->
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(true, param.type.nullable)
             }
         }
-        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithListParams).let { method ->
+        classMirror.withMethod(AClassWithMethodsWithParams::methodWithListParams).let { method ->
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
@@ -248,7 +247,7 @@ class JavaReflectionMirrorFactoryTest {
 
             }
         }
-        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithKotlinBuiltIntType).let { method ->
+        classMirror.withMethod(AClassWithMethodsWithParams::methodWithKotlinBuiltIntType).let { method ->
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
@@ -257,7 +256,7 @@ class JavaReflectionMirrorFactoryTest {
                 assertEquals("kotlin.Int", returnTypeClass.fullQualifiedName)
             }
         }
-        classMirror.withMethod(AnInterfaceWithMethodsWithParams::methodWithAnnotatedParam).let { method ->
+        classMirror.withMethod(AClassWithMethodsWithParams::methodWithAnnotatedParam).let { method ->
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(1, param.annotations.size)
@@ -267,33 +266,31 @@ class JavaReflectionMirrorFactoryTest {
         }
     }
 
-    private interface AnInterfaceWithFields<T> {
-        class AFieldObject
-
-        val myInt: Int
-        val mySimpleObject: AFieldObject?
-        val myMethodField: () -> Int?
-        val myOtherField: List<Int>
-    }
-
-
     @Test
-    fun `field on an interface are represented correctly`() {
-        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithFields::class)
+    fun `fields on a class are represented correctly`() {
+        class AFieldObject
+        abstract class AnClassWithFields {
+            abstract val myInt: Int
+            abstract val mySimpleObject: AFieldObject?
+            abstract val myMethodField: () -> Int?
+            abstract val myOtherField: List<Int>
+        }
+
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnClassWithFields::class)
         assertEquals(4, classMirror.fields.size)
 
-        classMirror.withField(AnInterfaceWithFields<*>::myInt).let { field ->
+        classMirror.withField(AnClassWithFields::myInt).let { field ->
             assertEquals("myInt", field.fieldName)
             assertEquals(false, field.type.nullable)
             assertEquals(false, field.type.nullable)
             assertClassMirrorType("kotlin.Int", field.type)
         }
-        classMirror.withField(AnInterfaceWithFields<*>::mySimpleObject).let { field ->
+        classMirror.withField(AnClassWithFields::mySimpleObject).let { field ->
             assertEquals("mySimpleObject", field.fieldName)
             assertEquals(true, field.type.nullable)
-            assertClassMirrorType(AnInterfaceWithFields.AFieldObject::class.qualifiedName!!, field.type)
+            assertClassMirrorType("AFieldObject", field.type)
         }
-        classMirror.withField(AnInterfaceWithFields<*>::myMethodField).let { field ->
+        classMirror.withField(AnClassWithFields::myMethodField).let { field ->
             assertEquals("myMethodField", field.fieldName)
             assertEquals(false, field.type.nullable)
             assertEquals(true, field.type.signatureMirror.provideMirror() is FunctionMirrorInterface)
@@ -307,36 +304,34 @@ class JavaReflectionMirrorFactoryTest {
             assertEquals(true, returnType.type.nullable)
             assertClassMirrorType("kotlin.Int", returnType.type)
         }
-        classMirror.withField(AnInterfaceWithFields<*>::myOtherField).let { field ->
+        classMirror.withField(AnClassWithFields::myOtherField).let { field ->
             assertEquals("myOtherField", field.fieldName)
             assertEquals(false, field.type.nullable)
             assertClassMirrorType("kotlin.collections.List", field.type)
         }
     }
 
-    private interface AnInterfaceWithForTypesWithTypeParams<E> {
-        val myTypeParamField: List<E>
-    }
-
     @Test
     fun `type parameters on fields are represented as type parameter types`() {
-        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithForTypesWithTypeParams::class)
-        classMirror.withField(AnInterfaceWithForTypesWithTypeParams<*>::myTypeParamField).let { field ->
+        abstract class AClassWithForTypesWithTypeParams<E> {
+            abstract val myTypeParamField: List<E>
+        }
+
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AClassWithForTypesWithTypeParams::class)
+        classMirror.withField(AClassWithForTypesWithTypeParams<*>::myTypeParamField).let { field ->
             assertEquals("myTypeParamField", field.fieldName)
             assertEquals(false, field.type.nullable)
             assertEquals(true, field.type.signatureMirror.provideMirror() is TypeParameterTypeMirrorInterface)
         }
     }
 
-    private interface AnInterfaceWithTypeParametersOnMethod {
-        fun <E> myGenericReturningMethod(): List<E>
-    }
-
-
     @Test
     fun `type parameters on methods are represented as type parameter types`() {
-        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithTypeParametersOnMethod::class)
-        val methodReference: KFunction<List<Int>> = AnInterfaceWithTypeParametersOnMethod::myGenericReturningMethod
+        abstract class AClassWithTypeParametersOnMethod {
+            abstract fun <E> myGenericReturningMethod(): List<E>
+        }
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AClassWithTypeParametersOnMethod::class)
+        val methodReference: KFunction<List<Int>> = AClassWithTypeParametersOnMethod::myGenericReturningMethod
         classMirror.withMethod(methodReference).let { method ->
             assertEquals("myGenericReturningMethod", method.functionName)
             val returnType = requireNotNull(method.returnType?.type) as JavaReflectionTypeMirror
@@ -344,18 +339,17 @@ class JavaReflectionMirrorFactoryTest {
         }
     }
 
-    private interface AnInterfaceWithMethodsReturningValues {
-
-        class AReturnedObject
-
-        fun methodReturningASimpleNullableObject(): AReturnedObject?
-        fun methodReturningASimpleObject(): AReturnedObject
-        fun methodReturningAList(): List<AReturnedObject>
-        fun methodWithoutReturnType()
-    }
-
     @Test
-    fun `method return types on a interface are represented correctly`() {
+    fun `method return types on a class are represented correctly`() {
+        class AReturnedObject
+        abstract class AnInterfaceWithMethodsReturningValues {
+            abstract fun methodReturningASimpleNullableObject(): AReturnedObject?
+            abstract fun methodReturningASimpleObject(): AReturnedObject
+            abstract fun methodReturningAList(): List<AReturnedObject>
+            abstract fun methodWithoutReturnType()
+        }
+
+
         val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnInterfaceWithMethodsReturningValues::class)
         assertEquals(numberOfDefaultMethods + 4, classMirror.methods.size)
 
@@ -367,7 +361,7 @@ class JavaReflectionMirrorFactoryTest {
                 assertEquals(false, returnType.type.nullable)
                 assertEquals(true, returnType.type.signatureMirror.provideMirror() is ClassMirrorInterface)
                 val returnTypeClass = returnType.type.signatureMirror.provideMirror() as ClassMirrorInterface
-                assertEquals(AnInterfaceWithMethodsReturningValues.AReturnedObject::class.qualifiedName, returnTypeClass.fullQualifiedName)
+                assertEquals("AReturnedObject", returnTypeClass.fullQualifiedName)
             }
         }
         classMirror.withMethod(AnInterfaceWithMethodsReturningValues::methodReturningASimpleNullableObject).let { method ->
@@ -384,14 +378,14 @@ class JavaReflectionMirrorFactoryTest {
         }
     }
 
-    interface InterfaceWithMethodsInheritedFromAnyObject
-
     @Test
-    fun `class mirror represents the interface methods inherited from kotlin Any`() {
-        val myInterfaceMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(InterfaceWithMethodsInheritedFromAnyObject::class)
+    fun `class mirror represents the class methods inherited from kotlin Any`() {
+        class ClassWithMethodsInheritedFromAnyObject
+
+        val myInterfaceMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(ClassWithMethodsInheritedFromAnyObject::class)
         assertEquals(numberOfDefaultMethods, myInterfaceMirror.methods.size)
 
-        val toStringMethod = myInterfaceMirror.methods.first { it.functionName == InterfaceWithMethodsInheritedFromAnyObject::toString.name }
+        val toStringMethod = myInterfaceMirror.methods.first { it.functionName == ClassWithMethodsInheritedFromAnyObject::toString.name }
         assertEquals("toString", toStringMethod.functionName)
         assertEquals(0, toStringMethod.valueParameters.size)
         toStringMethod.returnType!!.let { returnType ->
@@ -402,7 +396,7 @@ class JavaReflectionMirrorFactoryTest {
 
 
     @Test
-    fun `check type arguments and return values are distributed correctly`() {
+    fun `type arguments and return values of an anonymous class are distributed correctly in the function type object`() {
         abstract class AnInterfaceWithForTypes {
             abstract val myFunctionType: String.(Boolean?, Double) -> Int?
         }
