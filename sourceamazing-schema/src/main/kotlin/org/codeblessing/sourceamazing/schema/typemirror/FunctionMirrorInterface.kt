@@ -7,16 +7,16 @@ interface FunctionMirrorInterface: MirrorProvider<FunctionMirrorInterface>, Sign
     override val annotations: List<AnnotationMirror>
     val receiverParameterType: ParameterMirrorInterface?
     val instanceParameterType: ParameterMirrorInterface?
-    val parameters: List<ParameterMirrorInterface>
+    val valueParameters: List<ParameterMirrorInterface>
     val returnType: ReturnMirrorInterface?
 
     override fun provideMirror(): FunctionMirrorInterface = this
 
     fun withMethodArguments(args: Array<out Any?>): List<ParameterMirrorWithArgument> {
-        require(args.size == parameters.size) {
-            "Argument size (${args.size}) must match size of ${parameters.size}"
+        require(args.size == valueParameters.size) {
+            "Argument size (${args.size}) must match size of ${valueParameters.size}"
         }
-        return parameters
+        return valueParameters
             .mapIndexed { index, parameterMirror -> parameterMirror.withArgument(index, args[index]) }
     }
 

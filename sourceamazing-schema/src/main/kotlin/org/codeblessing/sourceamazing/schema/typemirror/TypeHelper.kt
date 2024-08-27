@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
 object TypeHelper {
-    private val kotlinAnyClassMethodNames = setOf(
+    val kotlinAnyClassMethodNames = setOf(
         ::equals.name,
         ::hashCode.name,
         ::toString.name

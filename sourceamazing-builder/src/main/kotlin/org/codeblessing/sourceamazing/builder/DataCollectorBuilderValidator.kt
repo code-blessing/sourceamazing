@@ -57,8 +57,8 @@ object DataCollectorBuilderValidator {
                         "This annotation must be on every builder method.")
             }
 
-            method.parameters.forEachIndexed { index, methodParameter ->
-                val isLastParameter = index == (method.parameters.size - 1)
+            method.valueParameters.forEachIndexed { index, methodParameter ->
+                val isLastParameter = index == (method.valueParameters.size - 1)
 
                 if(methodParameter.hasAnnotation(IgnoreNullFacetValue::class)) {
 
@@ -140,7 +140,7 @@ object DataCollectorBuilderValidator {
                 validateUsedAliases(method, importedConceptAliases + newConceptAliases)
                 validateNoMissingConceptIdentifierDeclaration(method, newConceptAliases)
 
-                method.parameters.forEach { methodParameter ->
+                method.valueParameters.forEach { methodParameter ->
                     validateCorrectConceptIdentifierType(method, methodParameter)
                 }
         }
@@ -170,7 +170,7 @@ object DataCollectorBuilderValidator {
             conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
         }
 
-        method.parameters.forEach { methodParameter ->
+        method.valueParameters.forEach { methodParameter ->
             methodParameter.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
                 conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
             }
@@ -193,7 +193,7 @@ object DataCollectorBuilderValidator {
             }
         }
 
-        method.parameters.forEach { parameter ->
+        method.valueParameters.forEach { parameter ->
             parameter.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { conceptIdValueAnnotation ->
                 val conceptAlias = conceptIdValueAnnotation.conceptToModifyAlias
                 if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
@@ -263,13 +263,13 @@ object DataCollectorBuilderValidator {
             annotationAndAliases.add(SetAliasConceptIdentifierReferenceFacetValue::class, annotation.referencedConceptAlias)
         }
 
-        method.parameters.forEach { methodParameter ->
+        method.valueParameters.forEach { methodParameter ->
             methodParameter.annotations.filterIsInstance<SetConceptIdentifierValueAnnotationMirror>().forEach { annotation ->
                 annotationAndAliases.add(SetConceptIdentifierValue::class, annotation.conceptToModifyAlias)
             }
         }
 
-        method.parameters.forEach { methodParameter ->
+        method.valueParameters.forEach { methodParameter ->
             methodParameter.annotations.filterIsInstance<SetFacetValueAnnotationMirror>().forEach { annotation ->
                 annotationAndAliases.add(SetFacetValue::class, annotation.conceptToModifyAlias)
             }

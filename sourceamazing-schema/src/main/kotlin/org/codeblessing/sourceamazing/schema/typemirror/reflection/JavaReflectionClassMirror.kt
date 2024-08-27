@@ -20,7 +20,7 @@ data class JavaReflectionClassMirror(
     override val classQualifier: ClassQualifierMirror = createClassQualifier(clazz)
     override val classKind: ClassKind = toClassKind(clazz)
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(clazz.annotations)
-    override val methods: List<FunctionMirrorInterface> = clazz.memberFunctions.map(::JavaReflectionFunctionMirror)
+    override val methods: List<FunctionMirrorInterface> = clazz.memberFunctions.map(::JavaReflectionMethodMirror)
     override val fields: List<FieldMirrorInterface> = clazz.memberProperties.map(::JavaReflectionFieldMirror)
     override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList()
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList()

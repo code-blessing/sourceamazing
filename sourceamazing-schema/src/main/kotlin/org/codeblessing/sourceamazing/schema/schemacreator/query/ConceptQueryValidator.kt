@@ -18,7 +18,7 @@ object ConceptQueryValidator {
 
         val possibleFacetClasses = conceptClass.getAnnotationMirror(ConceptAnnotationMirror::class).facets.provideClassMirrors().toSet()
         conceptClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
-            if(method.parameters.isNotEmpty()) {
+            if(method.valueParameters.isNotEmpty()) {
                 throw WrongFacetQueryMalformedSchemaException("The method has arguments/parameters " +
                         "which is not allowed for methods annotated with " +
                         "${QueryConcepts::class.shortText()} or ${QueryConceptIdentifierValue::class.shortText()}. Method: $method")

@@ -5,7 +5,7 @@ data class FakeFunctionMirror (
     override val annotations: List<AnnotationMirror> = emptyList(),
     override val receiverParameterType: FakeParameterMirror? = null,
     override val instanceParameterType: FakeParameterMirror? = null,
-    override val parameters: List<FakeParameterMirror> = emptyList(),
+    override val valueParameters: List<FakeParameterMirror> = emptyList(),
     override val returnType: FakeReturnMirror? = null,
 ): AbstractMirror(), FunctionMirrorInterface {
 
@@ -73,7 +73,7 @@ data class FakeFunctionMirror (
 
     fun withParameter(parameterName: String, parameterType: TypeMirrorInterface): FakeFunctionMirror {
         return copy(
-            parameters = parameters + FakeParameterMirror(
+            valueParameters = valueParameters + FakeParameterMirror(
                 name = parameterName,
                 type = parameterType,
             ),
@@ -82,7 +82,7 @@ data class FakeFunctionMirror (
 
     fun withParameter(parameterName: String, parameterClass: SignatureMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror): FakeFunctionMirror {
         return copy(
-            parameters = parameters + FakeParameterMirror(
+            valueParameters = valueParameters + FakeParameterMirror(
                 name = parameterName,
                 type = FakeTypeMirror(
                     signatureMirror = parameterClass.toMirrorProvider(),

@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.TypeMirrorInterface
 import kotlin.reflect.KParameter
 
-data class JavaReflectionParameterMirror(
+data class JavaReflectionMethodParameterMirror(
     private val parameter: KParameter
 ): AbstractMirror(), ParameterMirrorInterface {
     override val name: String? = parameter.name

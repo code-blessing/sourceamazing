@@ -10,7 +10,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 import kotlin.reflect.jvm.jvmErasure
 
-data class JavaReflectionFunctionMirror (
+data class JavaReflectionMethodMirror (
     private val memberFunction: KFunction<*>,
 ): AbstractMirror(), FunctionMirrorInterface {
 
@@ -18,15 +18,15 @@ data class JavaReflectionFunctionMirror (
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(memberFunction.annotations)
     override val receiverParameterType: ParameterMirrorInterface? = memberFunction.parameters
         .filter { it.kind == KParameter.Kind.EXTENSION_RECEIVER }
-        .map(::JavaReflectionParameterMirror)
+        .map(::JavaReflectionMethodParameterMirror)
         .firstOrNull()
     override val instanceParameterType: ParameterMirrorInterface? = memberFunction.parameters
         .filter { it.kind == KParameter.Kind.INSTANCE }
-        .map(::JavaReflectionParameterMirror)
+        .map(::JavaReflectionMethodParameterMirror)
         .firstOrNull()
-    override val parameters: List<ParameterMirrorInterface> = memberFunction.parameters
+    override val valueParameters: List<ParameterMirrorInterface> = memberFunction.parameters
         .filter { it.kind == KParameter.Kind.VALUE }
-        .map(::JavaReflectionParameterMirror)
+        .map(::JavaReflectionMethodParameterMirror)
     override val returnType: ReturnMirrorInterface? = if(isUnitType(memberFunction.returnType)) null else JavaReflectionReturnMirror(memberFunction.returnType)
 
     private fun isUnitType(returnType: KType): Boolean {

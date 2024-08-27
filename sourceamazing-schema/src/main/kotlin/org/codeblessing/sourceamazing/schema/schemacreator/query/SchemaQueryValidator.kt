@@ -24,7 +24,7 @@ object SchemaQueryValidator {
                         "for ${QueryConcepts::conceptClasses.name} on ${QueryConcepts::class.shortText()}. Method: $method")
             }
 
-            if(method.parameters.isNotEmpty()) {
+            if(method.valueParameters.isNotEmpty()) {
                 throw WrongConceptQueryMalformedSchemaException("The method has arguments/parameters which is not allowed " +
                         "for methods annotated with ${QueryConcepts::class.shortText()}. Method: $method")
             }

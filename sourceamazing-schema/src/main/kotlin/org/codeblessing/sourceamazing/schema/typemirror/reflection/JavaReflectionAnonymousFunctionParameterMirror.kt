@@ -2,14 +2,15 @@ package org.codeblessing.sourceamazing.schema.typemirror.reflection
 
 import org.codeblessing.sourceamazing.schema.typemirror.AbstractMirror
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ReturnMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.TypeMirrorInterface
+import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 
-data class JavaReflectionReturnMirror(
+data class JavaReflectionAnonymousFunctionParameterMirror(
     private val kType: KType
-): AbstractMirror(), ReturnMirrorInterface {
+): AbstractMirror(), ParameterMirrorInterface {
+    override val name: String? = null
     override val type: TypeMirrorInterface = JavaReflectionTypeMirror(kType)
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(kType.annotations)
-
 }
