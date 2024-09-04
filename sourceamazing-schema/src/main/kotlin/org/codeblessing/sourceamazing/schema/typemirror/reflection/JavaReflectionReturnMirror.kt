@@ -9,7 +9,8 @@ import kotlin.reflect.KType
 data class JavaReflectionReturnMirror(
     private val kType: KType
 ): AbstractMirror(), ReturnMirrorInterface {
-    override val type: TypeMirrorInterface = JavaReflectionTypeMirror(kType)
+    override val type: TypeMirrorInterface = JavaReflectionMirrorFactory.createTypeMirrorProvider(kType)
+    // TODO is this annotation list still needed?
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(kType.annotations)
 
 }

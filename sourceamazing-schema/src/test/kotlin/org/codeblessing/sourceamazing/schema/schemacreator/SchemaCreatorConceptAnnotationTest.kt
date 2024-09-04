@@ -1,7 +1,6 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException

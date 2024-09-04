@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
+import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeParameterMirror
 
 object CommonFakeMirrors {
     const val KOTLIN_PACKAGE_NAME = "kotlin"
@@ -23,17 +24,21 @@ object CommonFakeMirrors {
     }
 
     fun listOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+        // TODO Here, we return a class mirror, should probably be a TypeMirror
         return FakeClassMirror
             .classMirror("List")
             .withPackage(KOTLIN_PACKAGE_NAME)
-            .withTypeParameter(innerClassMirror)
+            .withTypeParameter(
+                FakeTypeParameterMirror(name = "E")
+            )
     }
 
     fun setOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+        // TODO Here, we return a class mirror, should probably be a TypeMirror
         return FakeClassMirror
             .classMirror("Set")
             .withPackage(KOTLIN_PACKAGE_NAME)
-            .withTypeParameter(innerClassMirror)
+            .withTypeParameter(FakeTypeParameterMirror(name = "E"))
     }
 
     fun enumClassMirror(vararg enumValues: String): FakeClassMirror {

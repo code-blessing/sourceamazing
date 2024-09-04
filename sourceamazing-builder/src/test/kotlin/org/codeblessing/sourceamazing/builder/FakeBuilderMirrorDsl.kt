@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.typemirror.BuilderMethodAnnotation
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeMirror
 
 object FakeBuilderMirrorDsl {
     const val DEFAULT_PACKAGE_NAME = "org.codeblessing.sourceamazing.test.mock"
@@ -79,10 +78,6 @@ object FakeBuilderMirrorDsl {
             functionMirror = functionMirror.withMethodName(methodName)
         }
 
-        fun withReturnType(returnType: FakeTypeMirror) {
-            functionMirror = functionMirror.withReturnType(returnType)
-        }
-
         fun withReturnType(returnType: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {
             functionMirror = functionMirror.withReturnType(
                 returnClass = returnType,
@@ -106,7 +101,7 @@ object FakeBuilderMirrorDsl {
         fun withFunctionParameter(parameterName: String, parameterFunction: FakeFunctionMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror) {
             functionMirror = functionMirror.withParameter(
                 parameterName = parameterName,
-                parameterClass = parameterFunction,
+                parameterFunction = parameterFunction,
                 nullable = nullable,
                 parameterAnnotation = parameterAnnotation
             )

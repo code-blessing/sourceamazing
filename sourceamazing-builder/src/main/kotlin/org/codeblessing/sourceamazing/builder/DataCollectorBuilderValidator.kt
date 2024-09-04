@@ -32,7 +32,9 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.ClassTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
@@ -279,15 +281,21 @@ object DataCollectorBuilderValidator {
 
     private fun validateCorrectConceptIdentifierType(method: FunctionMirrorInterface, methodParameter: ParameterMirrorInterface) {
         if(methodParameter.hasAnnotation(SetConceptIdentifierValue::class)) {
-            when(val signatureMirror = methodParameter.type.signatureMirror.provideMirror()) {
-                is ClassMirrorInterface -> if(!signatureMirror.isClass(MirrorFactory.convertToClassMirror(ConceptIdentifier::class))) {
+            when(val typeMirror = methodParameter.type) {
+                is ClassTypeMirrorInterface -> {
+                    val classMirror = typeMirror.classMirror.provideMirror()
+                    if(!classMirror.isClass(MirrorFactory.convertToClassMirror(ConceptIdentifier::class))) {
+                        throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
+                                "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
+                                "must be of type '${ConceptIdentifier::class.shortText()}' but was '${classMirror.longText()}'")
+                    }
+                }
+                is FunctionTypeMirrorInterface -> {
+                    val functionMirror = typeMirror.functionMirror.provideMirror()
                     throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
                             "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
-                            "must be of type '${ConceptIdentifier::class.shortText()}' but was '${signatureMirror.longText()}'")
+                            "can not be a function but was '${functionMirror.longText()}'")
                 }
-                is FunctionMirrorInterface -> throw DataCollectorBuilderMethodSyntaxException(method, "The parameter of the method " +
-                        "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
-                        "can not be a function but was '${signatureMirror.longText()}'")
             }
         }
     }

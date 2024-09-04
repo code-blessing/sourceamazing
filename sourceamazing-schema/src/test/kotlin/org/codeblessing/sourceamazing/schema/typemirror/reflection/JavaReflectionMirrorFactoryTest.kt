@@ -8,10 +8,12 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.ClassTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EveryLocationAnnotation
 import org.codeblessing.sourceamazing.schema.typemirror.FieldMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.OtherAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
@@ -28,6 +30,17 @@ import org.junit.jupiter.api.Test
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
+/**
+ * TODO Welche Fälle sind noch nicht getestet?
+ *      Felder mit Map<String, List<Int>>
+ *      Felder mit List<() -> Int>
+ *      Receiver-Objekte?
+ *      Superklassen/Klassenhierarchie
+ *      this-Objekt bei Methoden?
+ *      Funktioniert der Mechanismus über tiefer Verschachtelungen?
+ *      Funktioniert der Mechanismus mit Kotlin-Objekten (String, List, etc.)
+ *      Werden type-parameter konsequent unterbunden?
+ */
 class JavaReflectionMirrorFactoryTest {
     private val numberOfDefaultMethods = TypeHelper.kotlinAnyClassMethodNames.size //toString(), hash(), equals()
 
@@ -226,8 +239,8 @@ class JavaReflectionMirrorFactoryTest {
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
-                assertEquals(true, param.type.signatureMirror.provideMirror() is ClassMirrorInterface)
-                val returnTypeClass = param.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals(true, param.type is ClassTypeMirrorInterface)
+                val returnTypeClass = (param.type as ClassTypeMirrorInterface).classMirror.provideMirror() as ClassMirrorInterface
                 assertEquals("AParamObject", returnTypeClass.fullQualifiedName)
             }
         }
@@ -241,8 +254,8 @@ class JavaReflectionMirrorFactoryTest {
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
-                assertEquals(true, param.type.signatureMirror.provideMirror() is ClassMirrorInterface)
-                val returnTypeClass = param.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals(true, param.type is ClassTypeMirrorInterface)
+                val returnTypeClass = (param.type as ClassTypeMirrorInterface).classMirror.provideMirror()
                 assertEquals("kotlin.collections.List", returnTypeClass.fullQualifiedName)
 
             }
@@ -251,8 +264,8 @@ class JavaReflectionMirrorFactoryTest {
             assertEquals(1, method.valueParameters.size)
             method.valueParameters.first().let { param ->
                 assertEquals(false, param.type.nullable)
-                assertEquals(true, param.type.signatureMirror.provideMirror() is ClassMirrorInterface)
-                val returnTypeClass = param.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals(true, param.type is ClassTypeMirrorInterface)
+                val returnTypeClass = (param.type as ClassTypeMirrorInterface).classMirror.provideMirror()
                 assertEquals("kotlin.Int", returnTypeClass.fullQualifiedName)
             }
         }
@@ -293,14 +306,14 @@ class JavaReflectionMirrorFactoryTest {
         classMirror.withField(AnClassWithFields::myMethodField).let { field ->
             assertEquals("myMethodField", field.fieldName)
             assertEquals(false, field.type.nullable)
-            assertEquals(true, field.type.signatureMirror.provideMirror() is FunctionMirrorInterface)
-            val fieldFunctionType = field.type.signatureMirror.provideMirror() as FunctionMirrorInterface
-            assertNull(fieldFunctionType.functionName)
-            assertNull(fieldFunctionType.instanceParameterType)
-            assertNull(fieldFunctionType.receiverParameterType)
-            assertEquals(true, fieldFunctionType.valueParameters.isEmpty())
-            assertNotNull(fieldFunctionType.returnType)
-            val returnType = requireNotNull(fieldFunctionType.returnType)
+            assertEquals(true, field.type is FunctionTypeMirrorInterface)
+            val fieldFunction = (field.type as FunctionTypeMirrorInterface).functionMirror.provideMirror()
+            assertNull(fieldFunction.functionName)
+            assertNull(fieldFunction.instanceParameterType)
+            assertNull(fieldFunction.receiverParameterType)
+            assertEquals(true, fieldFunction.valueParameters.isEmpty())
+            assertNotNull(fieldFunction.returnType)
+            val returnType = requireNotNull(fieldFunction.returnType)
             assertEquals(true, returnType.type.nullable)
             assertClassMirrorType("kotlin.Int", returnType.type)
         }
@@ -321,7 +334,7 @@ class JavaReflectionMirrorFactoryTest {
         classMirror.withField(AClassWithForTypesWithTypeParams<*>::myTypeParamField).let { field ->
             assertEquals("myTypeParamField", field.fieldName)
             assertEquals(false, field.type.nullable)
-            assertEquals(true, field.type.signatureMirror.provideMirror() is TypeParameterTypeMirrorInterface)
+            assertEquals(true, field.type is TypeParameterTypeMirrorInterface)
         }
     }
 
@@ -334,8 +347,8 @@ class JavaReflectionMirrorFactoryTest {
         val methodReference: KFunction<List<Int>> = AClassWithTypeParametersOnMethod::myGenericReturningMethod
         classMirror.withMethod(methodReference).let { method ->
             assertEquals("myGenericReturningMethod", method.functionName)
-            val returnType = requireNotNull(method.returnType?.type) as JavaReflectionTypeMirror
-            assertEquals(true, returnType.signatureMirror.provideMirror() is TypeParameterTypeMirrorInterface)
+            val returnType = requireNotNull(method.returnType?.type)
+            assertEquals(true, returnType is TypeParameterTypeMirrorInterface)
         }
     }
 
@@ -359,8 +372,8 @@ class JavaReflectionMirrorFactoryTest {
         classMirror.withMethod(AnInterfaceWithMethodsReturningValues::methodReturningASimpleObject).let { method ->
             method.returnType!!.let { returnType ->
                 assertEquals(false, returnType.type.nullable)
-                assertEquals(true, returnType.type.signatureMirror.provideMirror() is ClassMirrorInterface)
-                val returnTypeClass = returnType.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals(true, returnType.type is ClassTypeMirrorInterface)
+                val returnTypeClass = (returnType.type as ClassTypeMirrorInterface).classMirror.provideMirror()
                 assertEquals("AReturnedObject", returnTypeClass.fullQualifiedName)
             }
         }
@@ -370,8 +383,8 @@ class JavaReflectionMirrorFactoryTest {
         classMirror.withMethod(AnInterfaceWithMethodsReturningValues::methodReturningAList).let { method ->
             method.returnType!!.let { returnType ->
                 assertEquals(false, returnType.type.nullable)
-                assertEquals(true, returnType.type.signatureMirror.provideMirror() is ClassMirrorInterface)
-                val returnTypeClass = returnType.type.signatureMirror.provideMirror() as ClassMirrorInterface
+                assertEquals(true, returnType.type is ClassTypeMirrorInterface)
+                val returnTypeClass = (returnType.type as ClassTypeMirrorInterface).classMirror.provideMirror()
                 assertEquals(List::class.qualifiedName, returnTypeClass.fullQualifiedName)
                 // TODO inspect the generic param of the list
             }
@@ -397,14 +410,15 @@ class JavaReflectionMirrorFactoryTest {
 
     @Test
     fun `type arguments and return values of an anonymous class are distributed correctly in the function type object`() {
-        abstract class AnInterfaceWithForTypes {
-            abstract val myFunctionType: String.(Boolean?, Double) -> Int?
+        abstract class AnClassWithFunctionTypes {
+            abstract fun myFunctionType(): String.(Boolean?, Double) -> Int?
         }
 
-        val typeMirror = JavaReflectionMirrorFactory.createSignatureMirrorProvider(AnInterfaceWithForTypes::myFunctionType.returnType)
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AnClassWithFunctionTypes::class)
+        val typeMirror = requireNotNull(classMirror.withMethod(AnClassWithFunctionTypes::myFunctionType).returnType?.type).provideMirror()
 
-        assertEquals(true, typeMirror.provideMirror() is FunctionMirrorInterface)
-        val functionTypeMirror = typeMirror.provideMirror() as FunctionMirrorInterface
+        assertEquals(true, typeMirror is FunctionTypeMirrorInterface)
+        val functionTypeMirror = (typeMirror as FunctionTypeMirrorInterface).functionMirror.provideMirror()
         assertNull(functionTypeMirror.instanceParameterType)
 
         assertNotNull(functionTypeMirror.receiverParameterType)
@@ -432,12 +446,41 @@ class JavaReflectionMirrorFactoryTest {
 
     }
 
+    @Test
+    fun `type parameters of a kotlin class is provided`() {
+        abstract class AClassWithNestedGenericParameters {
+            abstract fun mapReturningFunction(): Map<String, Map<Boolean, List<Int>>>
+        }
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AClassWithNestedGenericParameters::class)
+        val function: KFunction<Map<*, *>> = AClassWithNestedGenericParameters::mapReturningFunction
+        val typeMirror = requireNotNull(classMirror.withMethod(function).returnType?.type).provideMirror()
+        val mapClassMirror = typeMirror.provideMirror() as ClassMirrorInterface
+        assertEquals("kotlin.collections.Map", mapClassMirror.fullQualifiedName)
+        assertEquals(2, mapClassMirror.typeParameters.size)
+        assertEquals(listOf("K, V").joinToString(), mapClassMirror.typeParameters.joinToString { it.name })
+    }
+
+    @Test
+    fun `type parameters of a custom class is provided`() {
+        abstract class AClassWithGenericParameters<T, V> {
+            abstract fun mapReturningFunction(): Map<T, V>
+        }
+        val classMirror = JavaReflectionMirrorFactory.convertToMirrorHierarchy(AClassWithGenericParameters::class)
+        val function: KFunction<Map<*, *>> = AClassWithGenericParameters<*, *>::mapReturningFunction
+        val typeMirror = requireNotNull(classMirror.withMethod(function).returnType?.type).provideMirror()
+
+        val mapClassMirror = typeMirror.provideMirror() as ClassMirrorInterface
+        assertEquals("kotlin.collections.Map", mapClassMirror.fullQualifiedName)
+        assertEquals(2, mapClassMirror.typeParameters.size)
+        assertEquals(listOf("K, V").joinToString(), mapClassMirror.typeParameters.joinToString { it.name })
+    }
+
     private fun assertClassMirrorType(fullQualifiedName: String, typeMirrorInterface: TypeMirrorInterface?) {
         assertNotNull(typeMirrorInterface, "Expected type of class $fullQualifiedName but was null.")
-        val signatureMirror = requireNotNull(typeMirrorInterface).signatureMirror.provideMirror()
-        assertTrue(signatureMirror is ClassMirrorInterface, "Expected $typeMirrorInterface to contain a ClassMirror.")
-        val classMirror = signatureMirror as ClassMirrorInterface
-        assertEquals(fullQualifiedName, classMirror.fullQualifiedName)
+        requireNotNull(typeMirrorInterface)
+        assertTrue(typeMirrorInterface is ClassMirrorInterface, "Expected $typeMirrorInterface to contain a ClassMirror.")
+        val classMirror = typeMirrorInterface as ClassTypeMirrorInterface
+        assertEquals(fullQualifiedName, classMirror.classMirror.provideMirror().fullQualifiedName)
     }
 
     private fun ClassMirrorInterface.withMethod(kFunction: KFunction<*>): FunctionMirrorInterface {

@@ -12,5 +12,5 @@ data class JavaReflectionFieldMirror (
 
     override val fieldName: String = kField.name
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(kField.annotations)
-    override val type: TypeMirrorInterface = JavaReflectionTypeMirror(kField.returnType)
+    override val type: TypeMirrorInterface = JavaReflectionMirrorFactory.createTypeMirrorProvider(kField.returnType)
 }

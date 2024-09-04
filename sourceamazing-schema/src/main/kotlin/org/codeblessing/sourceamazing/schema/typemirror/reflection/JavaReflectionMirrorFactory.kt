@@ -3,10 +3,12 @@ package org.codeblessing.sourceamazing.schema.typemirror.reflection
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirrorFactory
 import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.ClassTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import org.codeblessing.sourceamazing.schema.typemirror.FunctionTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactoryApi
 import org.codeblessing.sourceamazing.schema.typemirror.OtherTypeMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.SignatureMirror
+import org.codeblessing.sourceamazing.schema.typemirror.TypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.TypeParameterTypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import java.lang.reflect.Method
@@ -37,46 +39,45 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
         }
     }
 
-    fun createSignatureMirrorProvider(type: KType): MirrorProvider<out SignatureMirror> {
-        val classifier = type.classifier ?: return createOtherTypeMirrorProvider(type)
-        val hasTypeParameter = type.arguments.any { argument: KTypeProjection ->
+    fun createTypeMirrorProvider(kType: KType): TypeMirrorInterface {
+        // TODO distinguish between class/function/other types here
+        val classifier = kType.classifier ?: return createOtherTypeMirror(kType)
+        val hasTypeParameter = kType.arguments.any { argument: KTypeProjection ->
             return@any argument.type?.classifier is KTypeParameter
         }
         if(hasTypeParameter) {
-            return createTypeParameterTypeMirrorProvider(type)
+            return createTypeParameterTypeMirrorProvider(kType)
         }
-        // read https://kt.academy/article/ak-reflection-type
+        // TODO read https://kt.academy/article/ak-reflection-type
         return when (classifier) {
             is KFunction<*> -> {
-                createFunctionMirrorProvider(classifier)
+                // TODO will this branch ever be selected?
+                createFunctionTypeMirrorProvider(kType, classifier)
             }
-
             is KClass<*> -> {
                 if(classifier.isSubclassOf(Function::class)) {
-                    createFunctionMirrorProviderFromAnonymousFunctionType(type)
+                    createFunctionTypeMirrorProvider(kType)
                 } else {
-                    createClassMirrorProvider(classifier)
+                    createClassTypeMirrorProvider(kType, classifier)
                 }
-
             }
-
             else -> {
-                createOtherTypeMirrorProvider(type)
+                createOtherTypeMirror(kType)
             }
         }
     }
 
-    private fun createOtherTypeMirrorProvider(ktype: KType): MirrorProvider<OtherTypeMirrorInterface> {
+    private fun createOtherTypeMirror(ktype: KType): OtherTypeMirrorInterface {
         return JavaReflectionOtherTypeMirror(ktype)
     }
 
-    private fun createFunctionMirrorProviderFromAnonymousFunctionType(kType: KType): MirrorProvider<FunctionMirrorInterface> {
-        return GenericMirrorProvider { JavaReflectionAnonymousFunctionTypeMirror(kType) }
+    private fun createFunctionMirrorProviderFromFunctionType(kType: KType): FunctionMirrorInterface {
+        return JavaReflectionFunctionFromFunctionTypeMirror(kType)
     }
 
 
-    private fun createTypeParameterTypeMirrorProvider(kType: KType): MirrorProvider<TypeParameterTypeMirrorInterface> {
-        return GenericMirrorProvider { JavaReflectionTypeParameterTypeMirror(kType) }
+    private fun createTypeParameterTypeMirrorProvider(kType: KType): TypeParameterTypeMirrorInterface {
+        return JavaReflectionTypeParameterTypeMirror(kType)
     }
 
     private fun createClassMirrorProvider(clazz: KClass<*>): MirrorProvider<ClassMirrorInterface> {
@@ -85,6 +86,22 @@ object JavaReflectionMirrorFactory: MirrorFactoryApi {
 
     private fun createFunctionMirrorProvider(function: KFunction<*>): MirrorProvider<FunctionMirrorInterface> {
         return GenericMirrorProvider { JavaReflectionMethodMirror(function) }
+    }
+
+    private fun createFunctionTypeMirrorProvider(kType: KType): FunctionTypeMirrorInterface {
+        val function = createFunctionMirrorProviderFromFunctionType(kType)
+        return JavaReflectionFunctionTypeMirror(kType, function)
+    }
+
+    private fun createFunctionTypeMirrorProvider(kType: KType, kFunction: KFunction<*>): FunctionTypeMirrorInterface {
+        return JavaReflectionFunctionTypeMirror(kType, createFunctionMirrorProvider(kFunction))
+    }
+
+    private fun createClassTypeMirrorProvider(kType: KType, clazz: KClass<*>): ClassTypeMirrorInterface {
+        val genericTypeArguments = kType.arguments
+            .mapNotNull { it.type }
+            .map { createTypeMirrorProvider(it) }
+        return JavaReflectionClassTypeMirror(kType, createClassMirrorProvider(clazz), genericTypeArguments)
     }
 
     private class GenericMirrorProvider<T>(

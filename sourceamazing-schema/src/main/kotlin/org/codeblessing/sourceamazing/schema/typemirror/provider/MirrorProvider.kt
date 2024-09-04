@@ -1,5 +1,5 @@
 package org.codeblessing.sourceamazing.schema.typemirror.provider
 
-fun interface MirrorProvider<T> {
+fun interface MirrorProvider<out T> {
     fun provideMirror(): T
 }

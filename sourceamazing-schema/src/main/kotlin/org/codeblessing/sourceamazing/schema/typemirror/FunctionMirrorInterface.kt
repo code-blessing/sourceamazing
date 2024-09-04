@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.schema.typemirror
 
 import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 
-interface FunctionMirrorInterface: MirrorProvider<FunctionMirrorInterface>, SignatureMirror, AbstractMirrorInterface {
+interface FunctionMirrorInterface: MirrorProvider<FunctionMirrorInterface>, AbstractMirrorInterface {
     val functionName: String?
     override val annotations: List<AnnotationMirror>
     val receiverParameterType: ParameterMirrorInterface?

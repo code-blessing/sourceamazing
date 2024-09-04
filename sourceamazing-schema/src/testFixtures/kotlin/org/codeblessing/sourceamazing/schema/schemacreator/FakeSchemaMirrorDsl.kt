@@ -2,11 +2,9 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors.DEFAULT_PACKAGE_NAME
 import org.codeblessing.sourceamazing.schema.typemirror.AnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 
 object FakeSchemaMirrorDsl {
@@ -146,10 +144,6 @@ object FakeSchemaMirrorDsl {
 
         fun withMethodName(methodName: String) {
             functionMirror = functionMirror.withMethodName(methodName)
-        }
-
-        fun withReturnType(returnType: FakeTypeMirror) {
-            functionMirror = functionMirror.withReturnType(returnType)
         }
 
         fun withReturnType(returnType: FakeClassMirror, nullable: Boolean = false, vararg parameterAnnotations: AnnotationMirror) {

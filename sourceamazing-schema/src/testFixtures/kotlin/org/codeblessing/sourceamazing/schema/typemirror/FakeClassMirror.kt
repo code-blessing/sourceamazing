@@ -10,7 +10,7 @@ data class FakeClassMirror(
     override val annotations: List<AnnotationMirror> = emptyList(),
     override val methods: List<FakeFunctionMirror> = emptyList(),
     override val fields: List<FieldMirrorInterface> = emptyList(),
-    override val typeParameters: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
+    override val typeParameters: List<TypeParameterMirrorInterface> = emptyList(),
     override val superClasses: List<MirrorProvider<ClassMirrorInterface>> = emptyList(),
     override val enumValues: List<String> = emptyList(),
 ): AbstractMirror(), ClassMirrorInterface {
@@ -96,9 +96,9 @@ data class FakeClassMirror(
         )
     }
 
-    fun withTypeParameter(classMirror: FakeClassMirror): FakeClassMirror {
+    fun withTypeParameter(typeMirror: FakeTypeParameterMirror): FakeClassMirror {
         return this.copy(
-            typeParameters = this.typeParameters + classMirror
+            typeParameters = this.typeParameters + typeMirror
         )
     }
 

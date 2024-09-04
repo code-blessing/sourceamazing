@@ -7,13 +7,12 @@ import org.codeblessing.sourceamazing.schema.typemirror.ParameterMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.ReturnMirrorInterface
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
-import kotlin.reflect.KVariance
 import kotlin.reflect.jvm.jvmErasure
 
 /**
  * An anonymous function passed as parameter, field or return type
  */
-data class JavaReflectionAnonymousFunctionTypeMirror (
+data class JavaReflectionFunctionFromFunctionTypeMirror (
     private val kType: KType,
 ): AbstractMirror(), FunctionMirrorInterface {
 

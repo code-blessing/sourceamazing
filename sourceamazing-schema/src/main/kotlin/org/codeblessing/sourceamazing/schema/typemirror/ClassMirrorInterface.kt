@@ -4,13 +4,13 @@ import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProvider
 import kotlin.reflect.KClass
 
 
-interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, SignatureMirror, AbstractMirrorInterface {
+interface ClassMirrorInterface: MirrorProvider<ClassMirrorInterface>, AbstractMirrorInterface {
     val classQualifier: ClassQualifierMirror
     val classKind: ClassKind
     override val annotations: List<AnnotationMirror>
     val methods: List<FunctionMirrorInterface>
     val fields: List<FieldMirrorInterface>
-    val typeParameters: List<MirrorProvider<ClassMirrorInterface>>
+    val typeParameters: List<TypeParameterMirrorInterface>
     val superClasses: List<MirrorProvider<ClassMirrorInterface>>
     val enumValues: List<String>
 

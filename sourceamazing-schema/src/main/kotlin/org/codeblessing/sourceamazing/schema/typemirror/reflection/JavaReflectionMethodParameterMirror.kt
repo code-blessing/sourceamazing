@@ -10,6 +10,6 @@ data class JavaReflectionMethodParameterMirror(
     private val parameter: KParameter
 ): AbstractMirror(), ParameterMirrorInterface {
     override val name: String? = parameter.name
-    override val type: TypeMirrorInterface = JavaReflectionTypeMirror(parameter.type)
+    override val type: TypeMirrorInterface = JavaReflectionMirrorFactory.createTypeMirrorProvider(parameter.type)
     override val annotations: List<AnnotationMirror> = JavaReflectionMirrorFactory.createAnnotationList(parameter.annotations)
 }

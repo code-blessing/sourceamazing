@@ -34,23 +34,17 @@ data class FakeFunctionMirror (
         )
     }
 
-    fun withReturnType(returnType: FakeTypeMirror): FakeFunctionMirror {
-        return copy(
-            returnType = FakeReturnMirror(returnType)
-        )
-    }
-
     fun withNoReturnType(): FakeFunctionMirror {
         return copy(
             returnType = null
         )
     }
 
-    fun withReturnType(returnClass: SignatureMirror, nullable: Boolean = false, vararg returnTypeAnnotations: AnnotationMirror): FakeFunctionMirror {
+    fun withReturnType(returnClass: ClassMirrorInterface, nullable: Boolean = false, vararg returnTypeAnnotations: AnnotationMirror): FakeFunctionMirror {
         return copy(
             returnType = FakeReturnMirror(
-                type = FakeTypeMirror(
-                    signatureMirror = returnClass.toMirrorProvider(),
+                type = FakeClassTypeMirror(
+                    classMirror = returnClass,
                     nullable = nullable,
                 ),
                 annotations = returnTypeAnnotations.toList(),
@@ -62,8 +56,8 @@ data class FakeFunctionMirror (
         return copy(
             receiverParameterType = FakeParameterMirror(
                 name = null,
-                type = FakeTypeMirror(
-                    signatureMirror = receiverType.toMirrorProvider(),
+                type = FakeClassTypeMirror(
+                    classMirror = receiverType,
                     nullable = false,
                 ),
                 annotations = emptyList(),
@@ -80,12 +74,25 @@ data class FakeFunctionMirror (
         )
     }
 
-    fun withParameter(parameterName: String, parameterClass: SignatureMirror, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror): FakeFunctionMirror {
+    fun withParameter(parameterName: String, parameterClass: ClassMirrorInterface, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror): FakeFunctionMirror {
         return copy(
             valueParameters = valueParameters + FakeParameterMirror(
                 name = parameterName,
-                type = FakeTypeMirror(
-                    signatureMirror = parameterClass.toMirrorProvider(),
+                type = FakeClassTypeMirror(
+                    classMirror = parameterClass,
+                    nullable = nullable,
+                ),
+                annotations = parameterAnnotation.toList()
+            ),
+        )
+    }
+
+    fun withParameter(parameterName: String, parameterFunction: FunctionMirrorInterface, nullable: Boolean = false, vararg parameterAnnotation: AnnotationMirror): FakeFunctionMirror {
+        return copy(
+            valueParameters = valueParameters + FakeParameterMirror(
+                name = parameterName,
+                type = FakeFunctionTypeMirror(
+                    functionMirror = parameterFunction,
                     nullable = nullable,
                 ),
                 annotations = parameterAnnotation.toList()
