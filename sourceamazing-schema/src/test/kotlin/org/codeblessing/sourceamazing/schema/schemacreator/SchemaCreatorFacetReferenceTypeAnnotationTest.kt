@@ -3,11 +3,11 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -20,21 +20,21 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(emptyList()))
+                    withAnnotationOnFacet(ReferenceFacet(emptyArray()))
                 }
             }
         }
 
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
     @Test
     fun `test concept having a reference facet referencing one concept`() {
-        lateinit var conceptClassWithReferenceFacet: FakeClassMirror
-        lateinit var myReferenceToOtherConceptFacet: FakeClassMirror
-        lateinit var otherConcept: FakeClassMirror
+        lateinit var conceptClassWithReferenceFacet: FakeKClass
+        lateinit var myReferenceToOtherConceptFacet: FakeKClass
+        lateinit var otherConcept: FakeKClass
 
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             otherConcept = concept {
@@ -42,12 +42,12 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
             }
             conceptClassWithReferenceFacet = concept {
                 myReferenceToOtherConceptFacet = facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(otherConcept)))
+                    withAnnotationOnFacet(ReferenceFacet(arrayOf(otherConcept)))
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(conceptClassWithReferenceFacet))
         val referenceFacetName = FacetName.of(myReferenceToOtherConceptFacet)
@@ -61,11 +61,11 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
     @Test
     fun `test concept having a reference facet referencing multiple concept`() {
-        lateinit var conceptClassWithReferenceFacet: FakeClassMirror
-        lateinit var myReferenceToOtherConceptFacet: FakeClassMirror
-        lateinit var otherConcept: FakeClassMirror
-        lateinit var andAnotherConcept: FakeClassMirror
-        lateinit var andJustOneAnotherConcept: FakeClassMirror
+        lateinit var conceptClassWithReferenceFacet: FakeKClass
+        lateinit var myReferenceToOtherConceptFacet: FakeKClass
+        lateinit var otherConcept: FakeKClass
+        lateinit var andAnotherConcept: FakeKClass
+        lateinit var andJustOneAnotherConcept: FakeKClass
 
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             otherConcept = concept {
@@ -79,14 +79,14 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
             }
             conceptClassWithReferenceFacet = concept {
                 myReferenceToOtherConceptFacet = facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(
-                        listOf(otherConcept, andAnotherConcept, andJustOneAnotherConcept)
+                    withAnnotationOnFacet(ReferenceFacet(
+                        arrayOf(otherConcept, andAnotherConcept, andJustOneAnotherConcept)
                     ))
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(conceptClassWithReferenceFacet))
         val referenceFacetName = FacetName.of(myReferenceToOtherConceptFacet)
@@ -112,14 +112,14 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
             }
             val knownConceptWithReference = concept {
                 facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(unknownConcept)))
+                    withAnnotationOnFacet(ReferenceFacet(arrayOf(unknownConcept)))
                 }
             }
-            withAnnotationOnSchema(SchemaAnnotationMirror(listOf(knownConceptWithReference)))
+            withAnnotationOnSchema(Schema(arrayOf(knownConceptWithReference)))
         }
 
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -131,14 +131,14 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
             }
             concept {
                 facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(conceptWithoutConceptAnnotation)))
+                    withAnnotationOnFacet(ReferenceFacet(arrayOf(conceptWithoutConceptAnnotation)))
                 }
             }
         }
 
 
         Assertions.assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 }

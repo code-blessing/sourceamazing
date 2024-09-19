@@ -3,6 +3,9 @@ package org.codeblessing.sourceamazing.schema.validation
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
@@ -12,6 +15,7 @@ import org.codeblessing.sourceamazing.schema.datacollection.validation.exception
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
@@ -39,7 +43,7 @@ class ConceptDataValidatorTest {
                     // empty concept
                 }
             }
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             ConceptDataValidator.validateEntries(schemaAccess, emptyList())
         }
 
@@ -47,7 +51,7 @@ class ConceptDataValidatorTest {
         fun `validate a unknown concept throws an exception`() {
             val undeclaredConcept = FakeSchemaMirrorDsl.concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences = 0, maximumOccurrences = 1))
+                    withAnnotationOnFacet(StringFacet(minimumOccurrences = 0, maximumOccurrences = 1))
                 }
             }
 
@@ -57,7 +61,7 @@ class ConceptDataValidatorTest {
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(undeclaredConcept) // here we define undeclaredConcept which is not known in this schema
             Assertions.assertThrows(UnknownConceptException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -66,14 +70,14 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate a duplicate concept throws an exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     // empty concept
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptDataOriginal = createEmptyConceptData(conceptClassMirror)
             val conceptDataDuplicate = createEmptyConceptData(conceptClassMirror)
             Assertions.assertThrows(DuplicateConceptIdentifierException::class.java) {
@@ -87,22 +91,22 @@ class ConceptDataValidatorTest {
     inner class BasicFacetValidationTests {
         @Test
         fun `validate unknown facet throws an exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var knownTextFacetClassMirror: FakeClassMirror
-            lateinit var unknownTextFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var knownTextFacetClassMirror: FakeKClass
+            lateinit var unknownTextFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     knownTextFacetClassMirror = facet {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror())
+                        withAnnotationOnFacet(StringFacet())
                     }
 
                     unknownTextFacetClassMirror = facet(addFacetToConcept = false) {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror())
+                        withAnnotationOnFacet(StringFacet())
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(knownTextFacetClassMirror), "my text")
             conceptData.addFacetValue(FacetName.of(unknownTextFacetClassMirror), "my text") // here we add values for an unknown facet
@@ -113,17 +117,17 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate a valid entry does return without exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var knownTextFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var knownTextFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     knownTextFacetClassMirror = facet {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror())
+                        withAnnotationOnFacet(StringFacet())
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(knownTextFacetClassMirror), "my text")
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -131,17 +135,17 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate a entry with wrong type does throw an exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var textFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var textFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     textFacetClassMirror = facet {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror())
+                        withAnnotationOnFacet(StringFacet())
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(textFacetClassMirror), 42) // here we add a number instead of text
             Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
@@ -156,16 +160,16 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate missing mandatory text facet throws an exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     facet {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 1))
+                        withAnnotationOnFacet(StringFacet(minimumOccurrences = 1, maximumOccurrences = 1))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             // here we do not add the mandatory text facet
             Assertions.assertThrows(WrongCardinalityForFacetValueException::class.java) {
@@ -175,17 +179,17 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate too much values on facet throws an exception`() {
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var textFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var textFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     textFacetClassMirror = facet {
-                        withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 1))
+                        withAnnotationOnFacet(StringFacet(minimumOccurrences = 1, maximumOccurrences = 1))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(textFacetClassMirror), "my text")
             conceptData.addFacetValue(FacetName.of(textFacetClassMirror), "my text number two")
@@ -202,17 +206,17 @@ class ConceptDataValidatorTest {
         @Test
         fun `validate that a correct enum as String does return without exception`() {
             val enumClassMirror = CommonFakeMirrors.namedEnumClassMirror(className = "MyEnum", "X", "Y")
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var enumFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var enumFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     enumFacetClassMirror = facet {
-                        withAnnotationOnFacet(EnumFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
+                        withAnnotationOnFacet(EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "X")
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "Y")
@@ -223,17 +227,17 @@ class ConceptDataValidatorTest {
         @Test
         fun `validate that a correct enum does return without exception`() {
             val enumClassMirror = CommonFakeMirrors.namedEnumClassMirror(className = "MyEnumeration", "X", "Y")
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var enumFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var enumFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     enumFacetClassMirror = facet {
-                        withAnnotationOnFacet(EnumFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
+                        withAnnotationOnFacet(EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.Y)
@@ -244,17 +248,17 @@ class ConceptDataValidatorTest {
         @Test
         fun `validate that another enum type with valid enum values does return without exception`() {
             val enumClassMirror = CommonFakeMirrors.namedEnumClassMirror(className = "MyEnumeration", "X", "Y")
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var enumFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var enumFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     enumFacetClassMirror = facet {
-                        withAnnotationOnFacet(EnumFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
+                        withAnnotationOnFacet(EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), OtherEnumeration.Y)
@@ -264,17 +268,17 @@ class ConceptDataValidatorTest {
         @Test
         fun `validate that a wrong enum type as string throws an exception`() {
             val enumClassMirror = CommonFakeMirrors.namedEnumClassMirror(className = "MyEnum", "X", "Y")
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var enumFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var enumFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     enumFacetClassMirror = facet {
-                        withAnnotationOnFacet(EnumFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
+                        withAnnotationOnFacet(EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "X")
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "y")  // lowercase is wrong
@@ -287,17 +291,17 @@ class ConceptDataValidatorTest {
         @Test
         fun `validate that a wrong enum type throws an exception`() {
             val enumClassMirror = CommonFakeMirrors.namedEnumClassMirror(className = "MyEnum", "X", "Y")
-            lateinit var conceptClassMirror: FakeClassMirror
-            lateinit var enumFacetClassMirror: FakeClassMirror
+            lateinit var conceptClassMirror: FakeKClass
+            lateinit var enumFacetClassMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 conceptClassMirror = concept {
                     enumFacetClassMirror = facet {
-                        withAnnotationOnFacet(EnumFacetAnnotationMirror(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
+                        withAnnotationOnFacet(EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = enumClassMirror))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
             conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), OtherEnumeration.Z)
@@ -314,20 +318,20 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate that a wrong type for reference throws an exception`() {
-            lateinit var conceptClassWithReferenceFacetMirror: FakeClassMirror
-            lateinit var referenceFacetMirror: FakeClassMirror
+            lateinit var conceptClassWithReferenceFacetMirror: FakeKClass
+            lateinit var referenceFacetMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 val otherConceptMirror = concept {
                     // other concept
                 }
                 conceptClassWithReferenceFacetMirror = concept {
                     referenceFacetMirror = facet {
-                        withAnnotationOnFacet(ReferenceFacetAnnotationMirror(referencedConcepts = listOf(otherConceptMirror)))
+                        withAnnotationOnFacet(ReferenceFacet(referencedConcepts = arrayOf(otherConceptMirror)))
                     }
                 }
             }
 
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
 
             conceptData.addFacetValue(FacetName.of(referenceFacetMirror), "Bar")
@@ -338,21 +342,21 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate that a reference pointing to a missing concept throws an exception`() {
-            lateinit var conceptClassWithReferenceFacetMirror: FakeClassMirror
-            lateinit var referenceFacetMirror: FakeClassMirror
+            lateinit var conceptClassWithReferenceFacetMirror: FakeKClass
+            lateinit var referenceFacetMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 val otherConceptMirror = concept {
                     // other concept
                 }
                 conceptClassWithReferenceFacetMirror = concept {
                     referenceFacetMirror = facet {
-                        withAnnotationOnFacet(ReferenceFacetAnnotationMirror(referencedConcepts = listOf(otherConceptMirror)))
+                        withAnnotationOnFacet(ReferenceFacet(referencedConcepts = arrayOf(otherConceptMirror)))
                     }
                 }
             }
 
             val conceptIdentifier = ConceptIdentifier.of("Bar")
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
             conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
 
@@ -363,22 +367,22 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate that a reference pointing to an available concept does return without exception`() {
-            lateinit var conceptClassWithReferenceFacetMirror: FakeClassMirror
-            lateinit var otherConceptMirror: FakeClassMirror
-            lateinit var referenceFacetMirror: FakeClassMirror
+            lateinit var conceptClassWithReferenceFacetMirror: FakeKClass
+            lateinit var otherConceptMirror: FakeKClass
+            lateinit var referenceFacetMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 otherConceptMirror = concept {
                     // other concept
                 }
                 conceptClassWithReferenceFacetMirror = concept {
                     referenceFacetMirror = facet {
-                        withAnnotationOnFacet(ReferenceFacetAnnotationMirror(referencedConcepts = listOf(otherConceptMirror)))
+                        withAnnotationOnFacet(ReferenceFacet(referencedConcepts = arrayOf(otherConceptMirror)))
                     }
                 }
             }
 
             val conceptIdentifier = ConceptIdentifier.of("Bar")
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
             conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
@@ -388,10 +392,10 @@ class ConceptDataValidatorTest {
 
         @Test
         fun `validate that a reference pointing to an available concept with wrong type throws an exception`() {
-            lateinit var conceptClassWithReferenceFacetMirror: FakeClassMirror
-            lateinit var otherConceptMirror: FakeClassMirror
-            lateinit var otherThanOtherConceptMirror: FakeClassMirror
-            lateinit var referenceFacetMirror: FakeClassMirror
+            lateinit var conceptClassWithReferenceFacetMirror: FakeKClass
+            lateinit var otherConceptMirror: FakeKClass
+            lateinit var otherThanOtherConceptMirror: FakeKClass
+            lateinit var referenceFacetMirror: FakeKClass
             val schemaMirror = FakeSchemaMirrorDsl.schema {
                 otherConceptMirror = concept {
                     // other concept
@@ -401,13 +405,13 @@ class ConceptDataValidatorTest {
                 }
                 conceptClassWithReferenceFacetMirror = concept {
                     referenceFacetMirror = facet {
-                        withAnnotationOnFacet(ReferenceFacetAnnotationMirror(referencedConcepts = listOf(otherConceptMirror)))
+                        withAnnotationOnFacet(ReferenceFacet(referencedConcepts = arrayOf(otherConceptMirror)))
                     }
                 }
             }
 
             val conceptIdentifier = ConceptIdentifier.of("Bar")
-            val schemaAccess = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
             conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
@@ -420,7 +424,7 @@ class ConceptDataValidatorTest {
 
 
 
-    private fun createEmptyConceptData(conceptClass: FakeClassMirror, conceptIdentifier: ConceptIdentifier = ConceptIdentifier.of("Foo")): ConceptDataImpl {
+    private fun createEmptyConceptData(conceptClass: FakeKClass, conceptIdentifier: ConceptIdentifier = ConceptIdentifier.of("Foo")): ConceptDataImpl {
         return ConceptDataImpl(
             1,
             ConceptName.of(conceptClass),

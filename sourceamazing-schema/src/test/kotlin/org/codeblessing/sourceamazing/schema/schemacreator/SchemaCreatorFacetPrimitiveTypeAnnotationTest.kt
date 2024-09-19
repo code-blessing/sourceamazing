@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -16,20 +16,20 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
             concept {
                 facet {
                     withFacetClassName("TextFacetClass")
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
                 facet {
                     withFacetClassName("BooleanFacetClass")
-                    withAnnotationOnFacet(BooleanFacetAnnotationMirror())
+                    withAnnotationOnFacet(BooleanFacet())
                 }
                 facet {
                     withFacetClassName("NumberFacetClass")
-                    withAnnotationOnFacet(IntFacetAnnotationMirror())
+                    withAnnotationOnFacet(IntFacet())
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
         val conceptSchema = schema.allConcepts().first()
         assertEquals(3, conceptSchema.facets.size)

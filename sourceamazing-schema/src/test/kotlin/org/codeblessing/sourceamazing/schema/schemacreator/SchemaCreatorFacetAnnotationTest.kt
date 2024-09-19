@@ -1,6 +1,10 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
@@ -25,7 +29,7 @@ class SchemaCreatorFacetAnnotationTest {
             }
         }
         assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -34,14 +38,14 @@ class SchemaCreatorFacetAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                     setFacetIsNotInterface()
                 }
             }
         }
 
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -50,14 +54,14 @@ class SchemaCreatorFacetAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
-                    withAnnotationOnFacet(SchemaAnnotationMirror(emptyList()))
+                    withAnnotationOnFacet(StringFacet())
+                    withAnnotationOnFacet(Schema(emptyArray()))
                 }
             }
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -66,14 +70,14 @@ class SchemaCreatorFacetAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
-                    withAnnotationOnFacet(IntFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
+                    withAnnotationOnFacet(IntFacet())
                 }
             }
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -82,14 +86,14 @@ class SchemaCreatorFacetAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
-                    withAnnotationOnFacet(ConceptAnnotationMirror(emptyList()))
+                    withAnnotationOnFacet(StringFacet())
+                    withAnnotationOnFacet(Concept(emptyArray()))
                 }
             }
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -98,13 +102,13 @@ class SchemaCreatorFacetAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 val facetClassMirror = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
-                withAnnotationOnConcept(ConceptAnnotationMirror(listOf(facetClassMirror, facetClassMirror)))
+                withAnnotationOnConcept(Concept(arrayOf(facetClassMirror, facetClassMirror)))
             }
         }
         assertThrows(DuplicateFacetMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -117,19 +121,19 @@ class SchemaCreatorFacetAnnotationTest {
                 withConceptClassName(conceptClassName)
                 facet {
                     withFacetClassName(facetClassName)
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
         val concept = schema.allConcepts().first()
-        assertEquals(conceptClassName, concept.conceptName.clazz.className)
+        assertEquals(conceptClassName, concept.conceptName)
         assertEquals(1, concept.facetNames.size)
         val facet = concept.facets.first()
         assertEquals(FacetType.TEXT, facet.facetType)
-        assertEquals(facetClassName, facet.facetName.clazz.className)
+        assertEquals(facetClassName, facet.facetName)
     }
 
 }

@@ -154,7 +154,7 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun createDataCollectorProxy(conceptDataCollector: ConceptDataCollector): DataCollectorRoot {
-        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(MirrorFactory.convertToClassMirror(DataCollectorRoot::class))
+        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(DataCollectorRoot::class)
         return ProxyCreator.createProxy(
             DataCollectorRoot::class,
             DataCollectorInvocationHandler(conceptDataCollector, emptyMap())
@@ -243,7 +243,7 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun KClass<*>.toFacetName(): FacetName {
-        return FacetName.of(MirrorFactory.convertToClassMirror(this))
+        return FacetName.of(this)
     }
 
     private fun createDataCollector(): ConceptDataCollector {

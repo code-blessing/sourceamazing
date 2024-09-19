@@ -1,67 +1,68 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeParameterMirror
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKTypeParameter
+import kotlin.reflect.KVariance
 
 object CommonFakeMirrors {
     const val KOTLIN_PACKAGE_NAME = "kotlin"
     const val DEFAULT_PACKAGE_NAME = "org.codeblessing.sourceamazing.test.mock"
 
-    fun anyClassMirror(): FakeClassMirror {
-        return FakeClassMirror
+    fun anyClassMirror(): FakeKClass {
+        return FakeKClass
             .classMirror("Any")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun conceptIdentifierClassMirror(): FakeClassMirror {
-        return FakeClassMirror
+    fun conceptIdentifierClassMirror(): FakeKClass {
+        return FakeKClass
             .classMirror("ConceptIdentifier")
             .withPackage("org.codeblessing.sourceamazing.schema.api")
     }
 
-    fun listOfAnyClassMirror(): FakeClassMirror {
+    fun listOfAnyClassMirror(): FakeKClass {
         return listOfMirror(anyClassMirror())
     }
 
-    fun listOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+    fun listOfMirror(innerClassMirror: FakeKClass): FakeKClass {
         // TODO Here, we return a class mirror, should probably be a TypeMirror
-        return FakeClassMirror
+        return FakeKClass
             .classMirror("List")
             .withPackage(KOTLIN_PACKAGE_NAME)
             .withTypeParameter(
-                FakeTypeParameterMirror(name = "E")
+                FakeKTypeParameter(name = "E", variance = KVariance.INVARIANT)
             )
     }
 
-    fun setOfMirror(innerClassMirror: FakeClassMirror): FakeClassMirror {
+    fun setOfMirror(innerClassMirror: FakeKClass): FakeKClass {
         // TODO Here, we return a class mirror, should probably be a TypeMirror
-        return FakeClassMirror
+        return FakeKClass
             .classMirror("Set")
             .withPackage(KOTLIN_PACKAGE_NAME)
-            .withTypeParameter(FakeTypeParameterMirror(name = "E"))
+            .withTypeParameter(FakeKTypeParameter(name = "E", variance = KVariance.INVARIANT))
     }
 
-    fun enumClassMirror(vararg enumValues: String): FakeClassMirror {
-        return FakeClassMirror.enumMirror(enumValues = enumValues)
+    fun enumClassMirror(vararg enumValues: String): FakeKClass {
+        return FakeKClass.enumMirror(enumValues = enumValues)
     }
-    fun namedEnumClassMirror(className: String, vararg enumValues: String): FakeClassMirror {
-        return FakeClassMirror.enumMirror(className = className, enumValues = enumValues)
+    fun namedEnumClassMirror(className: String, vararg enumValues: String): FakeKClass {
+        return FakeKClass.enumMirror(className = className, enumValues = enumValues)
     }
 
-    fun stringClassMirror(): FakeClassMirror {
-        return FakeClassMirror
+    fun stringClassMirror(): FakeKClass {
+        return FakeKClass
             .classMirror("String")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun intClassMirror(): FakeClassMirror {
-        return FakeClassMirror
+    fun intClassMirror(): FakeKClass {
+        return FakeKClass
             .classMirror("Int")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }
 
-    fun unitClassMirror(): FakeClassMirror {
-        return FakeClassMirror
+    fun unitClassMirror(): FakeKClass {
+        return FakeKClass
             .classMirror("Unit")
             .withPackage(KOTLIN_PACKAGE_NAME)
     }

@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -17,19 +17,19 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
             concept {
                 facet {
                     withFacetClassName("MyEnumFacet")
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = emptyEnumerationClassMirror))
+                    withAnnotationOnFacet(EnumFacet(enumerationClass = emptyEnumerationClassMirror))
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
         val conceptSchema = schema.allConcepts().first()
         val enumFacetSchema = conceptSchema.facets.first()
         assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         assertNotNull(enumFacetSchema.enumerationType)
-        assertEquals("MyEnum", requireNotNull(enumFacetSchema.enumerationType).className)
+        assertEquals("MyEnum", requireNotNull(enumFacetSchema.enumerationType).simpleName)
         assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
@@ -40,19 +40,19 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
             concept {
                 facet {
                     withFacetClassName("MyEnumFacet")
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = seasonEnumerationClassMirror))
+                    withAnnotationOnFacet(EnumFacet(enumerationClass = seasonEnumerationClassMirror))
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
 
         val conceptSchema = schema.allConcepts().first()
         val enumFacetSchema = conceptSchema.facets.first()
         assertEquals("MyEnumFacet", enumFacetSchema.facetName.simpleName())
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        assertEquals("MySeasonEnum", requireNotNull(enumFacetSchema.enumerationType).className)
+        assertEquals("MySeasonEnum", requireNotNull(enumFacetSchema.enumerationType).simpleName)
         assertEquals(4, enumFacetSchema.enumerationValues.size)
         assertEquals("WINTER", enumFacetSchema.enumerationValues[0])
         assertEquals("SPRING", enumFacetSchema.enumerationValues[1])
@@ -65,13 +65,13 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.stringClassMirror()))
+                    withAnnotationOnFacet(EnumFacet(enumerationClass = CommonFakeMirrors.stringClassMirror()))
                 }
             }
         }
 
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -80,13 +80,13 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(EnumFacetAnnotationMirror(enumerationClass = CommonFakeMirrors.unitClassMirror()))
+                    withAnnotationOnFacet(EnumFacet(enumerationClass = CommonFakeMirrors.unitClassMirror()))
                 }
             }
         }
 
         Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 }

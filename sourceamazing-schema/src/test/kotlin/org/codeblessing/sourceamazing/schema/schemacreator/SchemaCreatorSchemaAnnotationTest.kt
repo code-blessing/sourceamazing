@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
@@ -20,7 +22,7 @@ class SchemaCreatorSchemaAnnotationTest {
 
 
         assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -31,7 +33,7 @@ class SchemaCreatorSchemaAnnotationTest {
         }
 
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -42,7 +44,7 @@ class SchemaCreatorSchemaAnnotationTest {
         }
 
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -53,7 +55,7 @@ class SchemaCreatorSchemaAnnotationTest {
         }
 
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -64,29 +66,29 @@ class SchemaCreatorSchemaAnnotationTest {
         }
 
         assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
     @Test
     fun `test schema class with concept annotation should throw an exception`() {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
-            withAnnotationOnSchema(ConceptAnnotationMirror(emptyList()))
+            withAnnotationOnSchema(Concept(emptyArray()))
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
     @Test
     fun `test schema class with facet annotation should throw an exception`() {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
-            withAnnotationOnSchema(StringFacetAnnotationMirror())
+            withAnnotationOnSchema(StringFacet())
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -102,7 +104,7 @@ class SchemaCreatorSchemaAnnotationTest {
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -111,7 +113,7 @@ class SchemaCreatorSchemaAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             // empty schema without concepts
         }
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         assertEquals(0, schema.numberOfConcepts())
     }
 }

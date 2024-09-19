@@ -1,15 +1,15 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.QueryFacetValueAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -24,7 +24,7 @@ class ConceptQueryValidatorTest {
             }
         }
 
-        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
     }
 
     @Test
@@ -32,7 +32,7 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
@@ -43,7 +43,7 @@ class ConceptQueryValidatorTest {
         }
 
         assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -53,18 +53,18 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val facetInterfaceMirror = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
                     withMethodName("getFacetValue")
                     withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
-                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(facetInterfaceMirror))
+                    withAnnotationOnMethod(QueryFacetValue(facetInterfaceMirror))
                 }
             }
         }
 
-        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
     }
 
     @Test
@@ -72,18 +72,18 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
                     withMethodName("getConceptId")
                     withReturnType(CommonFakeMirrors.conceptIdentifierClassMirror())
-                    withAnnotationOnMethod(QueryConceptIdentifierValueAnnotationMirror())
+                    withAnnotationOnMethod(QueryConceptIdentifierValue())
                 }
             }
         }
 
-        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
     }
 
     @Test
@@ -91,31 +91,31 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 val declaredFacet = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 val undeclaredFacet = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
                     withMethodName("getFacetValue")
                     withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
-                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(undeclaredFacet))
+                    withAnnotationOnMethod(QueryFacetValue(undeclaredFacet))
                 }
 
-                withAnnotationOnConcept(ConceptAnnotationMirror(listOf(declaredFacet)))
+                withAnnotationOnConcept(Concept(arrayOf(declaredFacet)))
             }
         }
 
         assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
     @Test
     fun `test concept with valid return types should return without exception`() {
-        val commonInterface = FakeClassMirror.interfaceMirror("CommonInterface").setIsInterface()
+        val commonInterface = FakeKClass.interfaceMirror("CommonInterface").setIsInterface()
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             val otherConcept = concept {
                 withSuperClassMirror(commonInterface)
@@ -123,7 +123,7 @@ class ConceptQueryValidatorTest {
             concept {
                 withSuperClassMirror(commonInterface)
                 val oneFacet = facet {
-                    withAnnotationOnFacet(ReferenceFacetAnnotationMirror(listOf(otherConcept)))
+                    withAnnotationOnFacet(ReferenceFacet(arrayOf(otherConcept)))
                 }
 
                 val returnTypes = mapOf(
@@ -135,34 +135,34 @@ class ConceptQueryValidatorTest {
                     method {
                         withMethodName("getConceptAs$text")
                         withReturnType(returnType, nullable = false)
-                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                        withAnnotationOnMethod(QueryFacetValue(oneFacet))
                     }
                 }
                 for ((text, returnType) in returnTypes) {
                     method {
                         withMethodName("getConceptAsNullable$text")
                         withReturnType(returnType, nullable = true)
-                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                        withAnnotationOnMethod(QueryFacetValue(oneFacet))
                     }
                 }
                 for ((text, returnType) in returnTypes) {
                     method {
                         withMethodName("getConceptAsListOf$text")
                         withReturnType(CommonFakeMirrors.listOfMirror(returnType))
-                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                        withAnnotationOnMethod(QueryFacetValue(oneFacet))
                     }
                 }
                 for ((text, returnType) in returnTypes) {
                     method {
                         withMethodName("getConceptAsSetOf$text")
                         withReturnType(CommonFakeMirrors.setOfMirror(returnType))
-                        withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                        withAnnotationOnMethod(QueryFacetValue(oneFacet))
                     }
                 }
             }
         }
 
-        SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
     }
 
     @Test
@@ -170,20 +170,20 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val oneFacet = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
                     withMethodName("myMethodWithParameter")
                     withReturnType(CommonFakeMirrors.listOfAnyClassMirror())
                     withParameter("myParam", CommonFakeMirrors.intClassMirror(), nullable = false)
-                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(oneFacet))
+                    withAnnotationOnMethod(QueryFacetValue(oneFacet))
                 }
             }
         }
 
         assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -193,19 +193,19 @@ class ConceptQueryValidatorTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 val stringFacet = facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror())
+                    withAnnotationOnFacet(StringFacet())
                 }
 
                 method {
                     withMethodName("myIntReturningMethod")
                     withReturnType(CommonFakeMirrors.intClassMirror(), nullable = false)
-                    withAnnotationOnMethod(QueryFacetValueAnnotationMirror(stringFacet))
+                    withAnnotationOnMethod(QueryFacetValue(stringFacet))
                 }
             }
         }
 
         assertThrows(MalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 

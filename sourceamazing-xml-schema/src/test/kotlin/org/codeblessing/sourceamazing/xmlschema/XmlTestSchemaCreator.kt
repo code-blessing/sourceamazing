@@ -9,6 +9,8 @@ import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
+import org.codeblessing.sourceamazing.schema.toConceptName
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import kotlin.reflect.KClass
 
@@ -25,14 +27,6 @@ object XmlTestSchemaCreator {
 
     fun createSchema(): SchemaAccess {
         return SchemaCreator.createSchemaFromSchemaDefinitionClass(XmlTestSchema::class)
-    }
-
-    private fun KClass<*>.toFacetName(): FacetName {
-        return FacetName.of(MirrorFactory.convertToClassMirror(this))
-    }
-
-    private fun KClass<*>.toConceptName(): ConceptName {
-        return ConceptName.of(MirrorFactory.convertToClassMirror(this))
     }
 
     @Schema(concepts = [

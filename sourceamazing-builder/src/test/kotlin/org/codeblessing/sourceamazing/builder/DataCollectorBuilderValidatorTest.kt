@@ -1,17 +1,17 @@
 package org.codeblessing.sourceamazing.builder
 
+import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderException
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.builder.typemirror.IgnoreNullFacetValueAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.InjectBuilderAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.SetConceptIdentifierValueAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.SetFacetValueAnnotationMirror
-import org.codeblessing.sourceamazing.builder.typemirror.WithNewBuilderAnnotationMirror
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKFunction
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
-import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
-import org.codeblessing.sourceamazing.schema.typemirror.FakeFunctionMirror
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -78,7 +78,7 @@ class DataCollectorBuilderValidatorTest {
         }
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
-                withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = otherBuilder))
+                withAnnotationOnMethod(WithNewBuilder(builderClass = otherBuilder))
                 // no parameter and return type
             }
         }
@@ -96,7 +96,7 @@ class DataCollectorBuilderValidatorTest {
         }
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
-                withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+                withAnnotationOnMethod(WithNewBuilder(builderClass = emptyBuilder))
                 // no parameter and return type
             }
         }
@@ -112,7 +112,7 @@ class DataCollectorBuilderValidatorTest {
         }
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod(addBuilderMethodAnnotation = false) {
-                withAnnotationOnMethod(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+                withAnnotationOnMethod(WithNewBuilder(builderClass = emptyBuilder))
                 // no parameter and return type
             }
         }
@@ -128,12 +128,12 @@ class DataCollectorBuilderValidatorTest {
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withNoReturnType(),
                         // .withReceiverType(this@builder), to assign Builder interface as receiver type is not possible
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
             }
         }
@@ -149,16 +149,16 @@ class DataCollectorBuilderValidatorTest {
             // empty builder
         }
         val builder = FakeBuilderMirrorDsl.builder {
-            withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+            withAnnotationOnBuilder(WithNewBuilder(builderClass = emptyBuilder))
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
             }
         }
@@ -173,25 +173,25 @@ class DataCollectorBuilderValidatorTest {
             // empty builder
         }
         val builder = FakeBuilderMirrorDsl.builder {
-            withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+            withAnnotationOnBuilder(WithNewBuilder(builderClass = emptyBuilder))
             builderMethod {
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
                 withFunctionParameter(
                     parameterName = "anotherBuilder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
             }
         }
@@ -207,13 +207,13 @@ class DataCollectorBuilderValidatorTest {
             // empty builder
         }
         val builder = FakeBuilderMirrorDsl.builder {
-            withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+            withAnnotationOnBuilder(WithNewBuilder(builderClass = emptyBuilder))
             builderMethod {
                 withParameter(
                     parameterName = "conceptId",
                     parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
-                    SetConceptIdentifierValueAnnotationMirror()
+                    SetConceptIdentifierValue()
                 )
                 withParameter(
                     parameterName = "myValue",
@@ -223,12 +223,12 @@ class DataCollectorBuilderValidatorTest {
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
             }
         }
@@ -244,28 +244,28 @@ class DataCollectorBuilderValidatorTest {
             // empty builder
         }
         val builder = FakeBuilderMirrorDsl.builder {
-            withAnnotationOnBuilder(WithNewBuilderAnnotationMirror(builderClass = emptyBuilder))
+            withAnnotationOnBuilder(WithNewBuilder(builderClass = emptyBuilder))
             builderMethod {
                 withParameter(
                     parameterName = "conceptId",
                     parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
-                    SetConceptIdentifierValueAnnotationMirror()
+                    SetConceptIdentifierValue()
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
+                    InjectBuilder(),
                 )
                 withParameter(
                     parameterName = "myValue",
                     parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
-                    SetFacetValueAnnotationMirror(facetToModify = FakeClassMirror.interfaceMirror("MyFacetMirror"))
+                    SetFacetValue(facetToModify = FakeKClass.interfaceMirror("MyFacetMirror"))
                 )
             }
         }
@@ -282,13 +282,13 @@ class DataCollectorBuilderValidatorTest {
         }
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
-                withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConceptClass))
+                withAnnotationOnMethod(NewConcept(concept = myConceptClass))
                 withParameter(
                     parameterName = "conceptId",
                     parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
-                    IgnoreNullFacetValueAnnotationMirror(),
-                    SetConceptIdentifierValueAnnotationMirror(),
+                    IgnoreNullFacetValue(),
+                    SetConceptIdentifierValue(),
                 )
             }
         }
@@ -308,22 +308,22 @@ class DataCollectorBuilderValidatorTest {
         }
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
-                withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConceptClass))
+                withAnnotationOnMethod(NewConcept(concept = myConceptClass))
                 withParameter(
                     parameterName = "conceptId",
                     parameterClassMirror = CommonFakeMirrors.conceptIdentifierClassMirror(),
                     nullable = false,
-                    SetConceptIdentifierValueAnnotationMirror(),
+                    SetConceptIdentifierValue(),
                 )
                 withFunctionParameter(
                     parameterName = "builder",
-                    parameterFunction = FakeFunctionMirror
+                    parameterFunction = FakeKFunction
                         .anonymousFunctionMirror()
                         .withReceiverType(emptyBuilder)
                         .withNoReturnType(),
                     nullable = false,
-                    InjectBuilderAnnotationMirror(),
-                    IgnoreNullFacetValueAnnotationMirror(),
+                    InjectBuilder(),
+                    IgnoreNullFacetValue(),
                 )
 
             }
@@ -341,7 +341,7 @@ class DataCollectorBuilderValidatorTest {
                     parameterName = "conceptId",
                     parameterClassMirror = CommonFakeMirrors.stringClassMirror(),
                     nullable = false,
-                    SetConceptIdentifierValueAnnotationMirror(),
+                    SetConceptIdentifierValue(),
                 )
             }
         }

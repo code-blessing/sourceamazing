@@ -1,5 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
@@ -15,18 +18,18 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  0, maximumOccurrences = 1))
+                    withAnnotationOnFacet(StringFacet(minimumOccurrences =  0, maximumOccurrences = 1))
                 }
                 facet {
-                    withAnnotationOnFacet(BooleanFacetAnnotationMirror(minimumOccurrences =  1, maximumOccurrences = 1))
+                    withAnnotationOnFacet(BooleanFacet(minimumOccurrences =  1, maximumOccurrences = 1))
                 }
                 facet {
-                    withAnnotationOnFacet(IntFacetAnnotationMirror(minimumOccurrences =  2, maximumOccurrences = 5))
+                    withAnnotationOnFacet(IntFacet(minimumOccurrences =  2, maximumOccurrences = 5))
                 }
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         val conceptSchema = schema.allConcepts().first()
         assertEquals(0, conceptSchema.facets[0].minimumOccurrences)
         assertEquals(1, conceptSchema.facets[0].maximumOccurrences)
@@ -44,13 +47,13 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  -1, maximumOccurrences = 1))
+                    withAnnotationOnFacet(StringFacet(minimumOccurrences =  -1, maximumOccurrences = 1))
                 }
             }
         }
 
         Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -59,13 +62,13 @@ class SchemaCreatorFacetCardinalityAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept {
                 facet {
-                    withAnnotationOnFacet(StringFacetAnnotationMirror(minimumOccurrences =  3, maximumOccurrences = 2))
+                    withAnnotationOnFacet(StringFacet(minimumOccurrences =  3, maximumOccurrences = 2))
                 }
             }
         }
 
         Assertions.assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 

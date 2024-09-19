@@ -5,21 +5,19 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 
 val KClass<*>.isInterface: Boolean
-    get() = this.java.isInterface && !this.isAnnotation
+    get() = this.toKClassJavaCompatibilityLayer().isInterface
 
 val KClass<*>.isEnum: Boolean
-    get() = this.java.isEnum
+    get() = this.toKClassJavaCompatibilityLayer().isEnum
 
 val KClass<*>.isAnnotation: Boolean
-    get() = this.java.isAnnotation
+    get() = this.toKClassJavaCompatibilityLayer().isAnnotation
 
 val KClass<*>.isRegularClass: Boolean
-    get() = !isInterface && !isEnum && !isAnnotation
-
+    get() = this.toKClassJavaCompatibilityLayer().isRegularClass
 
 val  KClass<*>.enumValues: List<String>
-    get() = this.java.enumConstants.map { it.toString() }.toList()
-
+    get() = this.toKClassJavaCompatibilityLayer().enumValues
 
 inline fun <reified T: Annotation> KAnnotatedElement.getAnnotation(): T = getAnnotation(T::class)
 
@@ -29,13 +27,28 @@ fun KAnnotatedElement.hasAnnotation(clazz: KClass<out Annotation>): Boolean = fi
 
 fun KAnnotatedElement.getNumberOfAnnotation(clazz: KClass<out Annotation>): Int = findAnnotations(clazz).count()
 
-// see https://youtrack.jetbrains.com/issue/KT-18104
+
 val KClass<*>.packageName: String
-    get() = this.qualifiedName?.split(".")?.dropLast(1)?.joinToString(".") ?: ""
+    get() = ClassNameUtil.packageFromQualifiedName(this.qualifiedName)
 
 val KClass<*>.className: String
     get() = this.simpleName ?: ""
 
 val KClass<*>.fullQualifiedName: String
-    get() = if(packageName.isNotEmpty()) "$packageName.$className" else className
+    get() = ClassNameUtil.fullQualifiedName(packageName, this.simpleName) ?: ""
 
+private fun KClass<*>.toKClassJavaCompatibilityLayer(): KClassJavaCompatibilityLayer {
+    return if (this is KClassJavaCompatibilityLayer) {
+        this
+    } else {
+        KClassJavaCompatibilityLayerImpl(this)
+    }
+}
+
+private class KClassJavaCompatibilityLayerImpl(kClass: KClass<*>) : KClassJavaCompatibilityLayer {
+    override val enumValues: List<String> = kClass.java.enumConstants.map { it.toString() }.toList()
+    override val isAnnotation: Boolean = kClass.java.isAnnotation
+    override val isInterface: Boolean = kClass.java.isInterface && !this.isAnnotation
+    override val isEnum: Boolean = kClass.java.isEnum
+    override val isRegularClass: Boolean = !isInterface && !isEnum && !isAnnotation
+}

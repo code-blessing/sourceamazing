@@ -36,7 +36,6 @@ enum class KTypeKind {
 }
 
 fun KType.typeKind(): KTypeKind {
-    // TODO distinguish between class/function/other types here
     val classifier = classifier ?: return KTypeKind.OTHER_TYPE
     val hasTypeParameter = arguments.any { argument: KTypeProjection ->
         return@any argument.type?.classifier is KTypeParameter

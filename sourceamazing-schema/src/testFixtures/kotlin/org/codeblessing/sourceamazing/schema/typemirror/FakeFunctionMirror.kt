@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.schema.typemirror
 
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKFunction
+
 data class FakeFunctionMirror (
     override val functionName: String?,
     override val annotations: List<AnnotationMirror> = emptyList(),

@@ -1,11 +1,21 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
+import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.typemirror.BooleanFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.ConceptAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.IntFacetAnnotationMirror
@@ -33,7 +43,7 @@ class SchemaCreatorConceptAnnotationTest {
             }
         }
         assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -42,13 +52,13 @@ class SchemaCreatorConceptAnnotationTest {
         val schemaMirror = FakeSchemaMirrorDsl.schema {
             concept(addConceptAnnotationWithAllFacets = false) {
                 // concept with two concept annotation
-                withAnnotationOnConcept(ConceptAnnotationMirror(emptyList()),)
-                withAnnotationOnConcept(ConceptAnnotationMirror(emptyList()),)
+                withAnnotationOnConcept(Concept(facets = emptyArray()),)
+                withAnnotationOnConcept(Concept(facets = emptyArray()),)
 
             }
         }
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -57,7 +67,7 @@ class SchemaCreatorConceptAnnotationTest {
 
         data class TestData(
             val description: String,
-            val conceptMirror: FakeClassMirror
+            val conceptMirror: FakeKClass
         )
 
         return listOf(
@@ -98,7 +108,7 @@ class SchemaCreatorConceptAnnotationTest {
                     concept(conceptMirror)
                 }
                 assertThrows(NotInterfaceMalformedSchemaException::class.java) {
-                    SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+                    SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
                 }
             }
         }
@@ -107,15 +117,15 @@ class SchemaCreatorConceptAnnotationTest {
     @TestFactory
     fun `test wrong annotations on concept should throw an exception`(): List<DynamicTest> {
         return listOf(
-            SchemaAnnotationMirror(emptyList()),
-            BooleanFacetAnnotationMirror(),
-            IntFacetAnnotationMirror(),
-            StringFacetAnnotationMirror(),
-            EnumFacetAnnotationMirror(CommonFakeMirrors.enumClassMirror("FOO", "BAR")),
-            ReferenceFacetAnnotationMirror(emptyList()),
-            QueryConceptIdentifierValueAnnotationMirror(),
-            QueryConceptsAnnotationMirror(emptyList()),
-            QueryFacetValueAnnotationMirror(CommonFakeMirrors.anyClassMirror()),
+            Schema(emptyArray()),
+            BooleanFacet(),
+            IntFacet(),
+            StringFacet(),
+            EnumFacet(CommonFakeMirrors.enumClassMirror("FOO", "BAR")),
+            ReferenceFacet(emptyArray()),
+            QueryConceptIdentifierValue(),
+            QueryConcepts(emptyArray()),
+            QueryFacetValue(CommonFakeMirrors.anyClassMirror()),
         ).map { annotationMirror ->
             DynamicTest.dynamicTest(
                 "Annotation ${annotationMirror.annotationClass} not allowed on concept interface.") {
@@ -125,7 +135,7 @@ class SchemaCreatorConceptAnnotationTest {
                     }
                 }
                 assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-                    SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+                    SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
                 }
             }
         }
@@ -137,10 +147,10 @@ class SchemaCreatorConceptAnnotationTest {
             val conceptClassMirror = concept {
                 // a concept
             }
-            withAnnotationOnSchema(SchemaAnnotationMirror(listOf(conceptClassMirror, conceptClassMirror)))
+            withAnnotationOnSchema(Schema(arrayOf(conceptClassMirror, conceptClassMirror)))
         }
         assertThrows(DuplicateConceptMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -159,7 +169,7 @@ class SchemaCreatorConceptAnnotationTest {
         }
 
         assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         }
     }
 
@@ -171,7 +181,7 @@ class SchemaCreatorConceptAnnotationTest {
             }
         }
 
-        val schema = SchemaCreator.createSchemaFromSchemaClassMirror(schemaMirror)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
         assertEquals(1, schema.numberOfConcepts())
     }
 }
