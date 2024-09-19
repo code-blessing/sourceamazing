@@ -1,21 +1,23 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQueryMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
-import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
-import org.codeblessing.sourceamazing.schema.typemirror.provider.MirrorProviderHelper.provideClassMirrors
+import org.codeblessing.sourceamazing.schema.type.isFromKotlinAnyClass
+import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.valueParameters
 
 object SchemaQueryValidator {
     @Throws(MalformedSchemaException::class)
-    fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: ClassMirrorInterface) {
-        val possibleSchemaConceptClasses = schemaDefinitionClass.getAnnotationMirror(SchemaAnnotationMirror::class).concepts.provideClassMirrors().toSet()
-        schemaDefinitionClass.methods.filter(TypeHelper::isNotFromKotlinAnyClass).forEach { method ->
-            val queryConceptClasses = method.getAnnotationMirrorOrNull(QueryConceptsAnnotationMirror::class)?.concepts?.provideClassMirrors()
+    fun validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass: KClass<*>) {
+        val possibleSchemaConceptClasses = schemaDefinitionClass.annotations.filterIsInstance<Schema>().first().concepts.toSet()
+        schemaDefinitionClass.memberFunctions.filterNot { it.isFromKotlinAnyClass() }.forEach { method ->
+            val queryConceptClasses = method.findAnnotation<QueryConcepts>()?.conceptClasses
                 ?: throw WrongConceptQueryMalformedSchemaException("The method is missing " +
                         "the annotation ${QueryConcepts::class.shortText()}. Method: $method")
 

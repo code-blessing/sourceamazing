@@ -19,7 +19,7 @@ import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptIdentifierVa
 import org.codeblessing.sourceamazing.schema.typemirror.QueryConceptsAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.SchemaAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.StringFacetAnnotationMirror
-import org.codeblessing.sourceamazing.schema.typemirror.TypeHelper
+import org.codeblessing.sourceamazing.schema.type.kotlinAnyClassMethodNames
 import org.codeblessing.sourceamazing.schema.typemirror.TypeMirrorInterface
 import org.codeblessing.sourceamazing.schema.typemirror.TypeParameterTypeMirrorInterface
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -42,7 +42,7 @@ import kotlin.reflect.KProperty
  *      Werden type-parameter konsequent unterbunden?
  */
 class JavaReflectionMirrorFactoryTest {
-    private val numberOfDefaultMethods = TypeHelper.kotlinAnyClassMethodNames.size //toString(), hash(), equals()
+    private val numberOfDefaultMethods = kotlinAnyClassMethodNames.size //toString(), hash(), equals()
 
     private interface AnEmptyInterface
 

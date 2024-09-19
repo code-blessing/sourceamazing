@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import kotlin.reflect.KClass
 
 
 interface FacetSchema {
@@ -9,6 +9,6 @@ interface FacetSchema {
     val minimumOccurrences: Int
     val maximumOccurrences: Int
     val referencingConcepts: Set<ConceptName>
-    val enumerationType: ClassMirrorInterface?
+    val enumerationType: KClass<*>?
     val enumerationValues: List<String>
 }

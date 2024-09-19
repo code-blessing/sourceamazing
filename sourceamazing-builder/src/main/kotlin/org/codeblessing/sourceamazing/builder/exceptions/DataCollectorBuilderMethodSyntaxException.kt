@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.builder.exceptions
 
-import org.codeblessing.sourceamazing.schema.typemirror.FunctionMirrorInterface
+import kotlin.reflect.KFunction
 
-class DataCollectorBuilderMethodSyntaxException(method: FunctionMirrorInterface, msg: String)
+class DataCollectorBuilderMethodSyntaxException(method: KFunction<*>, msg: String)
     : DataCollectorBuilderException("$msg\n Method: $method")

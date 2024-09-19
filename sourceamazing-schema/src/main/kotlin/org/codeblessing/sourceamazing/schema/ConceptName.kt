@@ -1,11 +1,11 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import kotlin.reflect.KClass
 
-class ConceptName private constructor(concept: ClassMirrorInterface): ComparableClazzId(concept) {
+class ConceptName private constructor(concept: KClass<*>): ComparableClazzId(concept) {
 
     companion object {
-        fun of(concept: ClassMirrorInterface): ConceptName {
+        fun of(concept: KClass<*>): ConceptName {
             return ConceptName(concept)
         }
     }

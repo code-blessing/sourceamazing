@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.typemirror.ExpectedAliasFromSuperiorBuilderAnnotationMirror
 import org.codeblessing.sourceamazing.builder.typemirror.NewConceptAnnotationMirror
@@ -34,8 +35,8 @@ class DataCollectorBuilderValidatorMethodCompletenessTest {
 
         val builder = FakeBuilderMirrorDsl.builder {
             builderMethod {
-                withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
-                withAnnotationOnMethod(NewConceptAnnotationMirror(concept = myConcept, declareConceptAlias = "foo"))
+                withAnnotationOnMethod(NewConcept(concept = myConcept, declareConceptAlias = "foo"))
+                withAnnotationOnMethod(NewConcept(concept = myConcept, declareConceptAlias = "foo"))
             }
         }
 

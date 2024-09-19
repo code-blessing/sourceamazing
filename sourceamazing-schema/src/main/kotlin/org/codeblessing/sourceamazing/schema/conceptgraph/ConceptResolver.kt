@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.SchemaValidationException
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import kotlin.reflect.KClass
 
 object ConceptResolver {
 
@@ -67,10 +67,10 @@ object ConceptResolver {
             .map { value -> transformEnumFacetValue(enumerationType, value) }
     }
 
-    private fun transformEnumFacetValue(enumerationType: ClassMirrorInterface, value: Any): Enum<*> {
+    private fun transformEnumFacetValue(enumerationType: KClass<*>, value: Any): Enum<*> {
         if(value is String) {
-            val enumConstants = enumerationType.convertToKClass().java.enumConstants
-            return enumerationType.convertToKClass().java.enumConstants.filterIsInstance<Enum<*>>().firstOrNull {
+            val enumConstants = enumerationType.java.enumConstants
+            return enumerationType.java.enumConstants.filterIsInstance<Enum<*>>().firstOrNull {
                 it.name == value
             } ?: throw IllegalStateException("Could not convert enum value '$value' to enum constants $enumConstants of $enumerationType")
         }

@@ -16,7 +16,9 @@ import org.codeblessing.sourceamazing.schema.datacollection.validation.exception
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.type.enumValues
+import kotlin.reflect.KClass
+
 
 object ConceptDataValidator {
 
@@ -242,7 +244,7 @@ object ConceptDataValidator {
         return exceptionList
     }
 
-    private fun facetEnumType(facetSchema: FacetSchema): ClassMirrorInterface {
+    private fun facetEnumType(facetSchema: FacetSchema): KClass<*> {
         return facetSchema.enumerationType
             ?: throw IllegalStateException("EnumerationType was empty for facet schema $facetSchema")
     }

@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.typemirror.ClassMirrorInterface
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import kotlin.reflect.KClass
 
 
-abstract class ComparableClazzId protected constructor(val clazz: ClassMirrorInterface) {
+abstract class ComparableClazzId protected constructor(val clazz: KClass<*>) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

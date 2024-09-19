@@ -107,7 +107,7 @@ object FakeBuilderMirrorDsl {
             )
         }
 
-        fun withAnnotationOnMethod(annotation: AnnotationMirror) {
+        fun withAnnotationOnMethod(annotation: Annotation) {
             functionMirror = functionMirror.withAnnotation(annotation)
         }
 
