@@ -8,6 +8,8 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.toConceptName
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -49,9 +51,9 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(conceptClassWithReferenceFacet))
-        val referenceFacetName = FacetName.of(myReferenceToOtherConceptFacet)
-        val otherReferencedConceptName = ConceptName.of(otherConcept)
+        val conceptSchema = schema.conceptByConceptName(conceptClassWithReferenceFacet.toConceptName())
+        val referenceFacetName = myReferenceToOtherConceptFacet.toFacetName()
+        val otherReferencedConceptName = otherConcept.toConceptName()
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
         assertEquals(referenceFacetName, referenceFacetSchema.facetName)
         assertEquals(FacetType.REFERENCE, referenceFacetSchema.facetType)
@@ -88,13 +90,13 @@ class SchemaCreatorFacetReferenceTypeAnnotationTest {
 
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(conceptClassWithReferenceFacet))
-        val referenceFacetName = FacetName.of(myReferenceToOtherConceptFacet)
+        val conceptSchema = schema.conceptByConceptName(conceptClassWithReferenceFacet.toConceptName())
+        val referenceFacetName = myReferenceToOtherConceptFacet.toFacetName()
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
 
-        val referencedConceptName1 = ConceptName.of(otherConcept)
-        val referencedConceptName2 = ConceptName.of(andAnotherConcept)
-        val referencedConceptName3 = ConceptName.of(andJustOneAnotherConcept)
+        val referencedConceptName1 = otherConcept.toConceptName()
+        val referencedConceptName2 = andAnotherConcept.toConceptName()
+        val referencedConceptName3 = andJustOneAnotherConcept.toConceptName()
 
         assertEquals(referenceFacetName, referenceFacetSchema.facetName)
         assertEquals(FacetType.REFERENCE, referenceFacetSchema.facetType)

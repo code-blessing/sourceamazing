@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.findAnnotation
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
 import java.lang.reflect.InvocationHandler
@@ -20,7 +21,7 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): In
         method.findAnnotation<QueryFacetValue>()
             ?.let {
             val facetClass = it.facetClass
-            val facetNameToQuery = FacetName.of(facetClass)
+            val facetNameToQuery = facetClass.toFacetName()
             val facetValues = conceptNode.facetValues[facetNameToQuery] ?: throw IllegalStateException("Facet values not found for facet ${facetClass}.")
 
             val resultList = facetValues.map(::mapFacetValue)

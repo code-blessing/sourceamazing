@@ -3,8 +3,6 @@ package org.codeblessing.sourceamazing.schema.fakereflection
 import org.codeblessing.sourceamazing.schema.type.ClassNameUtil
 import org.codeblessing.sourceamazing.schema.type.KClassJavaCompatibilityLayer
 import org.codeblessing.sourceamazing.schema.typemirror.ClassKind
-import org.codeblessing.sourceamazing.schema.typemirror.FakeTypeParameterMirror
-import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -45,6 +43,9 @@ class FakeKClass(): FakeKAnnotatedElement<FakeKClass>(), KClass<Any>, KClassJava
     override val isEnum: Boolean get() = classKind == ClassKind.ENUM_CLASS
     override val isAnnotation: Boolean get() = classKind == ClassKind.ANNOTATION
     override val isRegularClass: Boolean get() = classKind == ClassKind.REGULAR_CLASS
+
+    val java: Class<*> = Any::class.java
+    val jClass: Class<*> = Any::class.java
 
     override fun equals(other: Any?): Boolean {
         TODO("Not yet implemented")

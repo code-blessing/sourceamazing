@@ -19,6 +19,8 @@ import org.codeblessing.sourceamazing.schema.fakereflection.FakeKClass
 import org.codeblessing.sourceamazing.schema.schemacreator.CommonFakeMirrors
 import org.codeblessing.sourceamazing.schema.schemacreator.FakeSchemaMirrorDsl
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
+import org.codeblessing.sourceamazing.schema.toConceptName
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.typemirror.EnumFacetAnnotationMirror
 import org.codeblessing.sourceamazing.schema.typemirror.FakeClassMirror
 import org.codeblessing.sourceamazing.schema.typemirror.ReferenceFacetAnnotationMirror
@@ -108,8 +110,8 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(knownTextFacetClassMirror), "my text")
-            conceptData.addFacetValue(FacetName.of(unknownTextFacetClassMirror), "my text") // here we add values for an unknown facet
+            conceptData.addFacetValue(knownTextFacetClassMirror.toFacetName(), "my text")
+            conceptData.addFacetValue(unknownTextFacetClassMirror.toFacetName(), "my text") // here we add values for an unknown facet
             Assertions.assertThrows(UnknownFacetNameException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
             }
@@ -129,7 +131,7 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(knownTextFacetClassMirror), "my text")
+            conceptData.addFacetValue(knownTextFacetClassMirror.toFacetName(), "my text")
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
         }
 
@@ -147,7 +149,7 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(textFacetClassMirror), 42) // here we add a number instead of text
+            conceptData.addFacetValue(textFacetClassMirror.toFacetName(), 42) // here we add a number instead of text
             Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
             }
@@ -191,8 +193,8 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(textFacetClassMirror), "my text")
-            conceptData.addFacetValue(FacetName.of(textFacetClassMirror), "my text number two")
+            conceptData.addFacetValue(textFacetClassMirror.toFacetName(), "my text")
+            conceptData.addFacetValue(textFacetClassMirror.toFacetName(), "my text number two")
             Assertions.assertThrows(WrongCardinalityForFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
             }
@@ -218,9 +220,9 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "X")
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "Y")
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "X")
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), "X")
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), "Y")
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), "X")
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
         }
 
@@ -239,9 +241,9 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.Y)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), MyEnumeration.X)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), MyEnumeration.Y)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), MyEnumeration.X)
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
         }
 
@@ -260,8 +262,8 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), OtherEnumeration.Y)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), MyEnumeration.X)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), OtherEnumeration.Y)
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
         }
 
@@ -280,8 +282,8 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "X")
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), "y")  // lowercase is wrong
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), "X")
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), "y")  // lowercase is wrong
 
             Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -303,8 +305,8 @@ class ConceptDataValidatorTest {
 
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassMirror)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), MyEnumeration.X)
-            conceptData.addFacetValue(FacetName.of(enumFacetClassMirror), OtherEnumeration.Z)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), MyEnumeration.X)
+            conceptData.addFacetValue(enumFacetClassMirror.toFacetName(), OtherEnumeration.Z)
 
             Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -334,7 +336,7 @@ class ConceptDataValidatorTest {
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptData = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
 
-            conceptData.addFacetValue(FacetName.of(referenceFacetMirror), "Bar")
+            conceptData.addFacetValue(referenceFacetMirror.toFacetName(), "Bar")
             Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
             }
@@ -358,7 +360,7 @@ class ConceptDataValidatorTest {
             val conceptIdentifier = ConceptIdentifier.of("Bar")
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
-            conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
+            conceptDataReferencing.addFacetValue(referenceFacetMirror.toFacetName(), conceptIdentifier)
 
             Assertions.assertThrows(MissingReferencedConceptFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptDataReferencing))
@@ -385,7 +387,7 @@ class ConceptDataValidatorTest {
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
-            conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
+            conceptDataReferencing.addFacetValue(referenceFacetMirror.toFacetName(), conceptIdentifier)
             val conceptDataReferenced = createEmptyConceptData(otherConceptMirror, conceptIdentifier)
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptDataReferencing, conceptDataReferenced))
         }
@@ -414,7 +416,7 @@ class ConceptDataValidatorTest {
             val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaMirror)
 
             val conceptDataReferencing = createEmptyConceptData(conceptClassWithReferenceFacetMirror)
-            conceptDataReferencing.addFacetValue(FacetName.of(referenceFacetMirror), conceptIdentifier)
+            conceptDataReferencing.addFacetValue(referenceFacetMirror.toFacetName(), conceptIdentifier)
             val conceptDataReferenced = createEmptyConceptData(otherThanOtherConceptMirror, conceptIdentifier) // wrong concept type
             Assertions.assertThrows(WrongReferencedConceptFacetValueException::class.java) {
                 ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptDataReferencing, conceptDataReferenced))
@@ -427,7 +429,7 @@ class ConceptDataValidatorTest {
     private fun createEmptyConceptData(conceptClass: FakeKClass, conceptIdentifier: ConceptIdentifier = ConceptIdentifier.of("Foo")): ConceptDataImpl {
         return ConceptDataImpl(
             1,
-            ConceptName.of(conceptClass),
+            conceptClass.toConceptName(),
             conceptIdentifier
         )
 

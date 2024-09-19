@@ -46,7 +46,7 @@ private fun KClass<*>.toKClassJavaCompatibilityLayer(): KClassJavaCompatibilityL
 }
 
 private class KClassJavaCompatibilityLayerImpl(kClass: KClass<*>) : KClassJavaCompatibilityLayer {
-    override val enumValues: List<String> = kClass.java.enumConstants.map { it.toString() }.toList()
+    override val enumValues: List<String> = kClass.java.enumConstants?.map { it.toString() }?.toList() ?: emptyList()
     override val isAnnotation: Boolean = kClass.java.isAnnotation
     override val isInterface: Boolean = kClass.java.isInterface && !this.isAnnotation
     override val isEnum: Boolean = kClass.java.isEnum

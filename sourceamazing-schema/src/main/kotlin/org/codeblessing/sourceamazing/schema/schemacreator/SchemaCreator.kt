@@ -31,10 +31,10 @@ object SchemaCreator {
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
         val conceptSimpleNames: MutableSet<String> = mutableSetOf()
-        val conceptNames = conceptClasses.map { ConceptName.of(it) }
+        val conceptNames = conceptClasses.map { it.toConceptName() }
         conceptClasses.forEach { conceptClass ->
             ConceptQueryValidator.validateAccessorMethodsOfConceptClass(conceptClass)
-            val conceptName = ConceptName.of(conceptClass)
+            val conceptName = conceptClass.toConceptName()
 
             if(conceptSimpleNames.contains(conceptName.simpleName())) {
                 throw DuplicateConceptMalformedSchemaException("There is already a concept registered " +
@@ -49,7 +49,7 @@ object SchemaCreator {
             val facets: MutableList<FacetSchema> = mutableListOf()
             val facetSimpleNames: MutableSet<String> = mutableSetOf()
             facetClasses.forEach { facetClass ->
-                val facetName = FacetName.of(facetClass)
+                val facetName = facetClass.toFacetName()
                 if(facetSimpleNames.contains(facetName.simpleName())) {
                     throw DuplicateFacetMalformedSchemaException("There is already a facet registered " +
                             "with name '${facetName.simpleName()}' on concept '$conceptName'. " +
@@ -204,7 +204,7 @@ object SchemaCreator {
         val maximumOccurrences = facetSchema.maximumOccurrences
         val enumerationType =  facetSchema.enumerationType
         val referencedConcepts =  facetSchema.referencedConceptClasses
-            .map { ConceptName.of(it) }.toSet()
+            .map { it.toConceptName() }.toSet()
 
 
         if(facetType == FacetType.TEXT_ENUMERATION && (enumerationType == null || !enumerationType.isEnum)) {

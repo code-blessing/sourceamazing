@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptGraph
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.type.findAnnotation
 import org.codeblessing.sourceamazing.schema.util.MethodUtil
 import java.lang.reflect.InvocationHandler
@@ -19,7 +20,7 @@ class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): I
         method.findAnnotation<QueryConcepts>()
             ?.let {
             val conceptClasses = it.conceptClasses
-            val conceptNamesToQuery = conceptClasses.map { ConceptName.of(it) }.toSet()
+            val conceptNamesToQuery = conceptClasses.map { it.toConceptName() }.toSet()
             val conceptNodes = conceptGraph.conceptsByConceptNames(conceptNamesToQuery)
             val proxyList = conceptNodes.map { conceptNode ->
                 ProxyCreator.createProxy(

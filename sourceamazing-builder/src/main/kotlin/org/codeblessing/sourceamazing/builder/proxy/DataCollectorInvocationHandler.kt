@@ -21,6 +21,8 @@ import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.toConceptName
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.findAnnotations
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
@@ -153,7 +155,7 @@ class DataCollectorInvocationHandler(
         val newConceptsIdentifierByAlias: MutableMap<String, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
 
         method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = ConceptName.of(newConceptAnnotation.concept)
+            newConceptsByAlias[newConceptAnnotation.declareConceptAlias] = newConceptAnnotation.concept.toConceptName()
         }
 
         method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { autoRandomConceptIdentifierAnnotation ->
@@ -190,7 +192,7 @@ class DataCollectorInvocationHandler(
     ) {
         val conceptId: ConceptIdentifier = conceptIdByAlias(conceptAlias, newConceptAliases)
         val conceptData = conceptDataCollector.existingConceptData(conceptId)
-        val facetName = FacetName.of(facetClazz)
+        val facetName = facetClazz.toFacetName()
         val facetValues = facetValues(value)
         when(facetModificationRule) {
             FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)

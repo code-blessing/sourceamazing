@@ -20,6 +20,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.typemirror.MirrorFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -240,10 +241,6 @@ class DataCollectorInvocationHandlerTest {
             .single { it.conceptIdentifier == judoConceptIdentifier }
 
         Assertions.assertEquals("Judo", judo.getFacet(skillDescriptionFacet).single())
-    }
-
-    private fun KClass<*>.toFacetName(): FacetName {
-        return FacetName.of(this)
     }
 
     private fun createDataCollector(): ConceptDataCollector {
