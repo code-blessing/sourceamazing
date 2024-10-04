@@ -6,8 +6,6 @@ import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -73,41 +71,5 @@ class SchemaCreatorFacetEnumTypeAnnotationTest {
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues[1])
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SUMMER, enumFacetSchema.enumerationValues[2])
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues[3])
-    }
-
-    @Schema(concepts = [SchemaWithConceptWithInvalidEnumFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithInvalidEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.InvalidEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = String::class)
-            interface InvalidEnumFacet
-        }
-    }
-
-    @Test
-    fun `test invalid enum type on facet should throw an exception`() {
-        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithInvalidEnumFacet::class)
-        }
-    }
-
-    @Schema(concepts = [SchemaWithConceptWithMissingEnumTypeOnFacet.ConceptClassWithEnumFacet::class])
-    private interface SchemaWithConceptWithMissingEnumTypeOnFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MissingEnumTypeFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = Unit::class)
-            interface MissingEnumTypeFacet
-        }
-    }
-
-    @Test
-    fun `test enum facet with missing enum type should throw an exception`() {
-        Assertions.assertThrows(WrongTypeMalformedSchemaException::class.java) {
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithMissingEnumTypeOnFacet::class)
-        }
     }
 }

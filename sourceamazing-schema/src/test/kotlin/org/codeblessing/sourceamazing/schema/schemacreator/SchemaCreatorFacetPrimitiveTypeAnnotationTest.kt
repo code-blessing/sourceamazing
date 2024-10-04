@@ -58,6 +58,5 @@ class SchemaCreatorFacetPrimitiveTypeAnnotationTest {
         assertEquals(0, conceptSchema.facets[0].enumerationValues.size)
         assertEquals(0, conceptSchema.facets[1].enumerationValues.size)
         assertEquals(0, conceptSchema.facets[2].enumerationValues.size)
-
     }
 }
