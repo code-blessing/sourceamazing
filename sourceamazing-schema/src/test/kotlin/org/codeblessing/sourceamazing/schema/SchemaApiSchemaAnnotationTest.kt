@@ -172,4 +172,20 @@ class SchemaApiSchemaAnnotationTest {
             }
         }
     }
+
+    @Suppress("Unused")
+    @Schema(concepts = [])
+    private interface SchemaWithGenericTypeParameter<T>
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema class with generic type parameter should throw an exception`() {
+        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+
 }

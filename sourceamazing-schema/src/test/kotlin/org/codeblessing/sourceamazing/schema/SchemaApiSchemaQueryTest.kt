@@ -1,0 +1,414 @@
+package org.codeblessing.sourceamazing.schema
+
+import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import java.util.SortedSet
+
+class SchemaApiSchemaQueryTest {
+
+    private interface CommonConceptInterface
+
+    @Concept(facets = [])
+    private interface OneConceptClass: CommonConceptInterface
+
+    @Concept(facets = [])
+    private interface OtherConceptClass: CommonConceptInterface
+
+    @Concept(facets = [])
+    private interface UnsupportedConceptClass: CommonConceptInterface
+
+    @Concept(facets = [])
+    private interface ConceptWithoutCommonConceptInterface
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithoutQueryMethods
+
+    @Test
+    fun `test schema without query methods should return without exception`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithoutQueryMethods::class) {
+            // do nothing
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private fun interface SchemaWithFunctionalInterface {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    fun `test schema with a functional interface SAM with one method should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithFunctionalInterface::class) {
+            // do nothing
+        }
+    }
+
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithUnannotatedQueryMethod {
+        @Suppress("UNUSED")
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    fun `test schema with a unannotated query method should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithUnannotatedQueryMethod::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithDefaultQueryMethod {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): List<CommonConceptInterface> {
+            return emptyList()
+        }
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with a query method having a method body should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithDefaultQueryMethod::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodForUnsupportedConceptClass {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OtherConceptClass::class, UnsupportedConceptClass::class])
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    fun `test schema with a query method for an unsupported concept class should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodForUnsupportedConceptClass::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithEmptyConceptClass {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [])
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    fun `test schema with a query method with a empty concept class list should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithEmptyConceptClass::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithNonConceptClass {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [String::class])
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    fun `test schema with a query method with a non-concept class list should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithNonConceptClass::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodsWithValidReturnTypes {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsAsListOfAny(): List<Any>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsOfListOfConcreteConceptClass(): List<OneConceptClass>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsOfListWithACommonBaseInterface(): List<CommonConceptInterface>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsAsSetOfAny(): Set<Any>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsOfSetOfConcreteConceptClass(): Set<OneConceptClass>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsOfSetWithACommonBaseInterface(): Set<CommonConceptInterface>
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsAsAny(): Any
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsConcreteConceptClass(): OneConceptClass
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsWithACommonBaseInterface(): CommonConceptInterface
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsAsAnyNullable(): Any?
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsConcreteConceptClassNullable(): OneConceptClass?
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsWithACommonBaseInterfaceNullable(): CommonConceptInterface?
+    }
+
+    @Test
+    fun `test schema with query methods with valid return types should return without exception`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodsWithValidReturnTypes::class) {
+            // do nothing
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodHavingParameter {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConceptsAsListOfAny(myParam: Int): List<Any>
+    }
+
+    @Test
+    fun `test schema with method having parameters should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodHavingParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodHavingExtensionFunctionParameter {
+        interface MyInterface
+
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun MyInterface.getMyConceptsAsListOfAny(myParam: Int): List<Any>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with method having extension function parameter should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodHavingExtensionFunctionParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithProperty {
+        @Suppress("UNUSED")
+        val myConcepts: List<CommonConceptInterface>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with property should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithProperty::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryListMethodReturningUnsupportedConcept {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConcepts(): List<OtherConceptClass>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method returning wrong concept class list should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryListMethodReturningUnsupportedConcept::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodReturningUnsupportedConcept {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class])
+        fun getMyConcept(): OtherConceptClass
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method returning wrong concept class should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningUnsupportedConcept::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, ConceptWithoutCommonConceptInterface::class ])
+    private interface SchemaWithQueryMethodReturningConceptsWithoutCommonInterface {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, ConceptWithoutCommonConceptInterface::class])
+        fun getMyConcepts(): List<CommonConceptInterface>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method returning concepts without common interface should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningConceptsWithoutCommonInterface::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, ConceptWithoutCommonConceptInterface::class ])
+    private interface SchemaWithQueryMethodReturningConceptWithoutCommonInterface {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, ConceptWithoutCommonConceptInterface::class])
+        fun getMyConcept(): CommonConceptInterface
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method returning concept without common interface should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningConceptWithoutCommonInterface::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithUnsupportedCollectionType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): SortedSet<CommonConceptInterface>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with unsupported collection type should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithUnsupportedCollectionValueType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): List<String>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with unsupported collection value type should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionValueType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithUnsupportedValueType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): String
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with unsupported value type should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedValueType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithNullableCollectionValueType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts(): List<CommonConceptInterface?>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with nullable collection value type should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithNullableCollectionValueType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithGenericParameterCollectionValueType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun <A> getMyConcepts(): List<A>
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with generic collection type parameter should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithGenericParameterCollectionValueType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithGenericParameterValueType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun <A> getMyConcepts(): A
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test schema with query method with generic type parameter value should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithGenericParameterValueType::class) {
+                // do nothing
+            }
+        }
+    }
+}
