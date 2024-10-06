@@ -234,8 +234,7 @@ class ConceptDataValidatorTest {
         @Concept(facets = [
             MandatoryReferenceToOtherConceptFacetClass::class,
         ])
-        interface ConceptClassWithFacets {
-        }
+        interface ConceptClassWithFacets
 
     }
 

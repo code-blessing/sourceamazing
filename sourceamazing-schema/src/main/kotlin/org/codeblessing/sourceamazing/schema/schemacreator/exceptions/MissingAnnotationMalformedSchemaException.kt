@@ -1,4 +1,3 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.exceptions
 
-class MissingAnnotationMalformedSchemaException(msg: String) : MalformedSchemaException(msg) {
-}
+class MissingAnnotationMalformedSchemaException(msg: String) : MalformedSchemaException(msg)

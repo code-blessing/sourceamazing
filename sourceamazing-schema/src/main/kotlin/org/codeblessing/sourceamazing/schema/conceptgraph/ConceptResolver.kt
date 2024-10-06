@@ -91,7 +91,7 @@ object ConceptResolver {
         conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>
     ): List<Any> {
         return conceptData.getFacet(facetName)
-            .filterIsInstance(ConceptIdentifier::class.java)
+            .filterIsInstance<ConceptIdentifier>()
             .map { referencingConceptIdentifier ->
                 conceptNodeMap[referencingConceptIdentifier]
                     ?: throw IllegalStateException("Could not resolve reference to $referencingConceptIdentifier from $${conceptData.conceptIdentifier}. ")

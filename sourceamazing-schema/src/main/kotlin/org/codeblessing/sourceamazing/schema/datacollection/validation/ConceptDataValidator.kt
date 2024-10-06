@@ -165,7 +165,7 @@ object ConceptDataValidator {
                     "occurred multiple times. A concept identifier must be unique. " +
                     "\n${conceptDataEntry.describe()}")
         }
-        return null;
+        return null
     }
 
     private fun validateForObsoletFacets(

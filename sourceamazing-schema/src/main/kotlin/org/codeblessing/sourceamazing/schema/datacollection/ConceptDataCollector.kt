@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 class ConceptDataCollector {
 
-    private var sequenceNumber: Int = 0;
+    private var sequenceNumber: Int = 0
 
     private val conceptData: MutableMap<ConceptIdentifier, ConceptData> = mutableMapOf()
 
