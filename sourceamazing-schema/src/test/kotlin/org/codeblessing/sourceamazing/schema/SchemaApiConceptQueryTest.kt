@@ -8,6 +8,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
@@ -243,15 +244,31 @@ class SchemaApiConceptQueryTest {
         }
     }
 
-    @Schema(concepts = [ SchemaWithConceptWithValidFacets.ConceptWithValidFacets::class ])
+    @Schema(concepts = [
+        SchemaWithConceptWithValidFacets.ConceptWithValidFacets::class,
+        SchemaWithConceptWithValidFacets.SecondConcept::class,
+        SchemaWithConceptWithValidFacets.ThirdConcept::class,
+    ])
     private interface SchemaWithConceptWithValidFacets {
 
         enum class MyEnumeration
+
+        interface CommonConceptInterface
+
+        @Concept(facets = [])
+        interface SecondConcept: CommonConceptInterface
+
+        @Concept(facets = [])
+        interface ThirdConcept: CommonConceptInterface
+
+
         @Concept(facets = [
             ConceptWithValidFacets.TextFacet::class,
             ConceptWithValidFacets.BoolFacet::class,
             ConceptWithValidFacets.NumberFacet::class,
             ConceptWithValidFacets.EnumerationFacet::class,
+            ConceptWithValidFacets.SingleConceptReferenceFacet::class,
+            ConceptWithValidFacets.MultipleConceptReferenceFacet::class,
         ])
         interface ConceptWithValidFacets {
 
@@ -266,6 +283,14 @@ class SchemaApiConceptQueryTest {
 
             @EnumFacet(enumerationClass = MyEnumeration::class)
             interface EnumerationFacet
+
+            @ReferenceFacet(referencedConcepts = [SecondConcept::class])
+            interface SingleConceptReferenceFacet
+
+            @ReferenceFacet(referencedConcepts = [SecondConcept::class, ThirdConcept::class])
+            interface MultipleConceptReferenceFacet
+
+
 
             @Suppress("Unused")
             @QueryFacetValue(facetClass = TextFacet::class)
@@ -337,9 +362,6 @@ class SchemaApiConceptQueryTest {
 
 
 
-
-
-
             @Suppress("Unused")
             @QueryFacetValue(facetClass = BoolFacet::class)
             fun getBoolFacetAsListOfAny(): List<Any>
@@ -371,9 +393,6 @@ class SchemaApiConceptQueryTest {
             @Suppress("Unused")
             @QueryFacetValue(facetClass = BoolFacet::class)
             fun getBoolFacetAsNullableBoolean(): Boolean?
-
-
-
 
 
 
@@ -426,6 +445,72 @@ class SchemaApiConceptQueryTest {
             @QueryFacetValue(facetClass = EnumerationFacet::class)
             fun getEnumerationFacetAsNullableString(): String?
 
+
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsListOfAny(): List<Any>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsSetOfAny(): Set<Any>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsListOfCommonConceptInterface(): List<SecondConcept>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsSetOfCommonConceptInterface(): Set<SecondConcept>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsAny(): Any
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsCommonConceptInterface(): SecondConcept
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsNullableAny(): Any?
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            fun getSingleConceptReferenceFacetAsNullableCommonConceptInterface(): SecondConcept?
+
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsListOfAny(): List<Any>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsSetOfAny(): Set<Any>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsListOfCommonConceptInterface(): List<CommonConceptInterface>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsSetOfCommonConceptInterface(): Set<CommonConceptInterface>
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsAny(): Any
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsCommonConceptInterface(): CommonConceptInterface
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsNullableAny(): Any?
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            fun getMultipleConceptReferenceFacetAsNullableCommonConceptInterface(): CommonConceptInterface?
         }
     }
 
@@ -655,6 +740,78 @@ class SchemaApiConceptQueryTest {
     fun `test concept with method returning value with generic type parameter should throw an exception`() {
         assertThrows(MalformedSchemaException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningGenericParameterValue::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [
+        SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod.ConceptOne::class,
+        SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod.ConceptTwo::class,
+        SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod.ConceptWithOnlyOneOfTwoConceptQueryMethod::class,
+    ])
+    private interface SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod {
+        interface CommonConcept
+
+        @Concept(facets = [])
+        interface ConceptOne: CommonConcept
+
+        @Concept(facets = [])
+        interface ConceptTwo: CommonConcept
+
+        @Concept(facets = [ConceptWithOnlyOneOfTwoConceptQueryMethod.MyReferenceFacet::class])
+        interface ConceptWithOnlyOneOfTwoConceptQueryMethod {
+
+            @ReferenceFacet(referencedConcepts = [ConceptOne::class, ConceptTwo::class])
+            interface MyReferenceFacet
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MyReferenceFacet::class)
+            fun getReferencedConcepts(): List<ConceptOne>
+        }
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test concept with query method fetching only one of multiple allowed concepts should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [
+        SchemaWithConceptWithUnreferencedConceptQueryMethod.ReferencedConcept::class,
+        SchemaWithConceptWithUnreferencedConceptQueryMethod.NotReferencedConcept::class,
+        SchemaWithConceptWithUnreferencedConceptQueryMethod.ConceptWithUnreferencedConceptQueryMethod::class,
+    ])
+    private interface SchemaWithConceptWithUnreferencedConceptQueryMethod {
+        interface CommonConcept
+
+        @Concept(facets = [])
+        interface ReferencedConcept: CommonConcept
+
+        @Concept(facets = [])
+        interface NotReferencedConcept: CommonConcept
+
+        @Concept(facets = [ConceptWithUnreferencedConceptQueryMethod.MyReferenceFacet::class])
+        interface ConceptWithUnreferencedConceptQueryMethod {
+
+            @ReferenceFacet(referencedConcepts = [ReferencedConcept::class])
+            interface MyReferenceFacet
+
+            @Suppress("Unused")
+            @QueryFacetValue(facetClass = MyReferenceFacet::class)
+            fun getReferencedConcepts(): List<NotReferencedConcept>
+        }
+    }
+
+    @Test
+    @Disabled("Not prevented currently")
+    fun `test concept with query method fetching an not referenced concept should throw an exception`() {
+        assertThrows(MalformedSchemaException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnreferencedConceptQueryMethod::class) {
                 // do nothing
             }
         }
