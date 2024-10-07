@@ -12,27 +12,25 @@ import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetSchemaSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryValidator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasAnnotation
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasExactNumberOfAnnotations
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasExactlyOneOfAnnotation
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasNoGenericTypeParameters
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasOnlyAnnotation
+import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkIsOrdinaryInterface
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
-import org.codeblessing.sourceamazing.schema.type.getNumberOfAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
-import org.codeblessing.sourceamazing.schema.type.isAnnotation
-import org.codeblessing.sourceamazing.schema.type.isAnnotationFromSourceAmazing
 import org.codeblessing.sourceamazing.schema.type.isEnum
-import org.codeblessing.sourceamazing.schema.type.isInterface
 import kotlin.reflect.KClass
 
 object SchemaCreator {
@@ -40,7 +38,7 @@ object SchemaCreator {
     private const val CONCEPT_CLASS_DESCRIPTION = "Concept Class"
     private const val FACET_CLASS_DESCRIPTION = "Facet Class"
 
-    @Throws(MalformedSchemaException::class)
+    @Throws(SyntaxException::class)
     fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: KClass<*>): SchemaImpl {
         validateSchemaClassAnnotations(schemaDefinitionClass)
         SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
@@ -56,7 +54,7 @@ object SchemaCreator {
             val conceptName = conceptClass.toConceptName()
 
             if(conceptSimpleNames.contains(conceptName.simpleName())) {
-                throw DuplicateConceptMalformedSchemaException("There is already a concept registered " +
+                throw DuplicateConceptSchemaSyntaxException("There is already a concept registered " +
                         "with name '${conceptName.simpleName()}' on schema '${schemaDefinitionClass.longText()}'. " +
                         "Can not register concept class '${conceptClass}'.")
             } else {
@@ -70,7 +68,7 @@ object SchemaCreator {
             facetClasses.forEach { facetClass ->
                 val facetName = facetClass.toFacetName()
                 if(facetSimpleNames.contains(facetName.simpleName())) {
-                    throw DuplicateFacetMalformedSchemaException("There is already a facet registered " +
+                    throw DuplicateFacetSchemaSyntaxException("There is already a facet registered " +
                             "with name '${facetName.simpleName()}' on concept '$conceptName'. " +
                             "Can not register facet class '${facetClass}'.")
                 } else {
@@ -91,22 +89,27 @@ object SchemaCreator {
 
 
     private fun validateSchemaClassAnnotations(schemaDefinitionClass: KClass<*>) {
-        checkIsInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkIsOrdinaryInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNoGenericTypeParameters(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasExactNumberOfAnnotations(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
     private fun validateConceptClassesAnnotations(conceptClasses: List<KClass<*>>) {
         conceptClasses.forEach { conceptClass ->
-            checkIsInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkIsOrdinaryInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNoGenericTypeParameters(conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasExactNumberOfAnnotations(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION, numberOf = 1)
             checkHasOnlyAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
     private fun validateFacetClassesAnnotations(facetClasses: Collection<KClass<*>>) {
         facetClasses.forEach { facetClass ->
-            checkIsInterface(facetClass, FACET_CLASS_DESCRIPTION)
+            checkIsOrdinaryInterface(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNoGenericTypeParameters(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasExactlyOneOfAnnotation(
                 annotations = listOf(
                     StringFacet::class,
@@ -116,8 +119,8 @@ object SchemaCreator {
                     ReferenceFacet::class,
                 ),
                 classToInspect = facetClass,
-                classDescription = FACET_CLASS_DESCRIPTION)
-
+                classDescription = FACET_CLASS_DESCRIPTION
+            )
             checkHasOnlyAnnotation(listOf(
                 StringFacet::class,
                 BooleanFacet::class,
@@ -227,7 +230,7 @@ object SchemaCreator {
 
 
         if(facetType == FacetType.TEXT_ENUMERATION && (enumerationType == null || !enumerationType.isEnum)) {
-            throw WrongTypeMalformedSchemaException(
+            throw WrongTypeSyntaxException(
                 "Facet '$facetName' on concept '$conceptName' " +
                         "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
                         "defined or not a real enumeration class (was '$enumerationType')."
@@ -236,7 +239,7 @@ object SchemaCreator {
 
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
-            throw WrongTypeMalformedSchemaException(
+            throw WrongTypeSyntaxException(
                 "Facet '$facetName' on concept '$conceptName' " +
                 "is declared as type '${FacetType.REFERENCE}' " +
                 "but the list of concept type is empty."
@@ -244,7 +247,7 @@ object SchemaCreator {
         }
 
         if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
-            throw WrongTypeMalformedSchemaException(
+            throw WrongTypeSyntaxException(
                 "Facet '$facetName' on concept '$conceptName' " +
                 "is not declared as type '${FacetType.REFERENCE}' (is '${facetType}') but the list " +
                 "of concept type is not empty (is '${referencedConcepts}')."
@@ -252,7 +255,7 @@ object SchemaCreator {
         }
 
         if(minimumOccurrences < 0 || maximumOccurrences < 0) {
-            throw WrongCardinalityMalformedSchemaException(
+            throw WrongCardinalitySchemaSyntaxException(
                 "Facet '$facetName' on concept '$conceptName' " +
                 "has negative cardinalities. Only number greater/equal zero are allowed, " +
                 "but was $minimumOccurrences/$maximumOccurrences."
@@ -260,7 +263,7 @@ object SchemaCreator {
         }
 
         if(minimumOccurrences > maximumOccurrences) {
-            throw WrongCardinalityMalformedSchemaException(
+            throw WrongCardinalitySchemaSyntaxException(
                 "Facet '$facetName' on concept '$conceptName' " +
                 "has a greater minimumOccurrences ($minimumOccurrences) " +
                 "than the maximumOccurrences ($maximumOccurrences)."
@@ -269,7 +272,7 @@ object SchemaCreator {
 
         referencedConcepts.forEach { referencedConcept ->
             if(!conceptNames.contains(referencedConcept)) {
-                throw WrongTypeMalformedSchemaException(
+                throw WrongTypeSyntaxException(
                     "Facet '$facetName' on concept '$conceptName' " +
                     "has an reference concept '${referencedConcept}' which is not a known concept " +
                     "(known concepts are '${conceptNames}')."
@@ -285,49 +288,5 @@ object SchemaCreator {
             referencingConcepts = referencedConcepts,
             enumerationType = enumerationType,
         )
-    }
-
-    private fun checkIsInterface(classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.isInterface || classToInspect.isAnnotation) {
-            throw NotInterfaceMalformedSchemaException("$classDescription '${classToInspect.longText()}' must be an interface.")
-        }
-    }
-
-    private fun checkHasOnlyAnnotation(permittedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
-        return checkHasOnlyAnnotation(listOf(permittedAnnotation), classToInspect, classDescription)
-    }
-
-    private fun checkHasOnlyAnnotation(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
-        classToInspect.annotations
-            .filter { it.isAnnotationFromSourceAmazing() }
-            .forEach { annotationOnClass ->
-                if(!permittedAnnotations.contains(annotationOnClass.annotationClass)) {
-                    throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have annotation of type '${annotationOnClass.annotationClass.longText()}'.")
-                }
-            }
-    }
-
-    private fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String, maxRepeatable: Int = 1) {
-        if(!classToInspect.hasAnnotation(annotation)) {
-            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
-        }
-
-        if(classToInspect.getNumberOfAnnotation(annotation) > maxRepeatable) {
-            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have more than $maxRepeatable annotation of type '${annotation.annotationText()}'.")
-        }
-    }
-
-    private fun checkHasExactlyOneOfAnnotation(annotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
-        val numberOfAnnotations = annotations.count { annotation -> hasClassAnnotation(annotation, classToInspect) }
-
-        if(numberOfAnnotations < 1) {
-            throw MissingAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' must have one of the annotations ${annotations.joinToString { it.annotationText() }}.")
-        } else if(numberOfAnnotations > 1) {
-            throw WrongAnnotationMalformedSchemaException("$classDescription '${classToInspect.longText()}' can not have more than one of the annotations ${annotations.joinToString { it.annotationText() }}.")
-        }
-    }
-
-    private fun hasClassAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {
-        return classToInspect.hasAnnotation(annotation)
     }
 }

@@ -7,12 +7,12 @@ import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalityMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongTypeMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetSchemaSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -64,7 +64,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an unannotated facet should throw an exception`() {
-        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
+        assertThrows(MissingAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithUnannotatedFacet::class) {
                 // do nothing
             }
@@ -82,7 +82,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an facet class instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetClassInsteadOfInterface::class) {
                 // do nothing
             }
@@ -100,7 +100,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an facet enum instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetEnumInsteadOfInterface::class) {
                 // do nothing
             }
@@ -118,7 +118,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an facet object instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetObjectInsteadOfInterface::class) {
                 // do nothing
             }
@@ -136,7 +136,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an facet annotation interface instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetAnnotationInterfaceInsteadOfInterface::class) {
                 // do nothing
             }
@@ -155,7 +155,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetHavingSchemaAnnotation::class) {
                 // do nothing
             }
@@ -174,7 +174,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create facet with multiple facet annotations should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetHavingMultipleFacetAnnotation::class) {
                 // do nothing
             }
@@ -193,7 +193,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create facet class with a concept annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetHavingConceptAnnotation::class) {
                 // do nothing
             }
@@ -214,7 +214,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test duplicate facet class within a concept should throw an exception`() {
-        assertThrows(DuplicateFacetMalformedSchemaException::class.java) {
+        assertThrows(DuplicateFacetSchemaSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithDuplicateFacet::class) {
                 // do nothing
             }
@@ -234,7 +234,7 @@ class SchemaApiFacetAnnotationTest {
     @Test
     fun `test negative cardinality on facet should throw an exception`() {
         // we here only test this for minimumOccurrences and for the String facet
-        assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
+        assertThrows(WrongCardinalitySchemaSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithNegativeCardinalityFacet::class) {
                 // do nothing
             }
@@ -253,7 +253,7 @@ class SchemaApiFacetAnnotationTest {
     @Test
     fun `test min cardinality is greater than maximum cardinality on facet should throw an exception`() {
         // we here only test this for the String facet
-        assertThrows(WrongCardinalityMalformedSchemaException::class.java) {
+        assertThrows(WrongCardinalitySchemaSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithSwappedCardinalityFacet::class) {
                 // do nothing
             }
@@ -273,7 +273,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test invalid enum type on facet should throw an exception`() {
-        assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        assertThrows(WrongTypeSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidEnumFacet::class) {
                 // do nothing
             }
@@ -293,7 +293,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test enum facet with unit enum type should throw an exception`() {
-        assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        assertThrows(WrongTypeSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnitEnumTypeOnFacet::class) {
                 // do nothing
             }
@@ -313,7 +313,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test concept having an empty reference facet should throw an exception`() {
-        assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        assertThrows(WrongTypeSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithEmptyReferenceFacet::class) {
                 // do nothing
             }
@@ -336,7 +336,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test reference facet to unknown concept should throw an exception`() {
-        assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        assertThrows(WrongTypeSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnknownReferencedConceptFacet::class) {
                 // do nothing
             }
@@ -358,10 +358,30 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test reference facet to a non-concept class should throw an exception`() {
-        assertThrows(WrongTypeMalformedSchemaException::class.java) {
+        assertThrows(WrongTypeSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithReferenceToNonConceptClass::class) {
                 // do nothing
             }
         }
     }
+
+    @Schema(concepts = [SchemaAndConceptWithFacetWithTypeParameter.ConceptWithFacetWithTypeParameter::class])
+    private interface SchemaAndConceptWithFacetWithTypeParameter {
+        @Concept(facets = [ConceptWithFacetWithTypeParameter.FacetWithTypeParameter::class])
+        interface ConceptWithFacetWithTypeParameter {
+            @Suppress("UNUSED")
+            @StringFacet
+            interface FacetWithTypeParameter<T>
+        }
+    }
+
+    @Test
+    fun `test facet with type parameter should throw an exception`() {
+        assertThrows(WrongTypeSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetWithTypeParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
 }

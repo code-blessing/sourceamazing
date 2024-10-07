@@ -4,11 +4,12 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MissingAnnotationMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.NotInterfaceMalformedSchemaException
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongAnnotationMalformedSchemaException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
+import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -36,7 +37,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test unannotated concept class should throw an exception`() {
-        assertThrows(MissingAnnotationMalformedSchemaException::class.java) {
+        assertThrows(MissingAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithUnannotatedConcept::class) {
                 // do nothing
             }
@@ -52,7 +53,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept class instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptClassInsteadOfInterface::class) {
                 // do nothing
             }
@@ -68,7 +69,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept enum instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptEnumInsteadOfInterface::class) {
                 // do nothing
             }
@@ -84,7 +85,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept object instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptObjectInsteadOfInterface::class) {
                 // do nothing
             }
@@ -100,7 +101,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept annotation interface instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceMalformedSchemaException::class.java) {
+        assertThrows(NotInterfaceSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAnnotationInterfaceInsteadOfInterface::class) {
                 // do nothing
             }
@@ -117,7 +118,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test create concept class with a schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptHavingSchemaAnnotation::class) {
                 // do nothing
             }
@@ -135,7 +136,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept class with a facet annotation should throw an exception`() {
-        assertThrows(WrongAnnotationMalformedSchemaException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptHavingFacetAnnotation::class) {
                 // do nothing
             }
@@ -155,7 +156,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test duplicate concept classes in schema annotation should throw an exception`() {
-        assertThrows(DuplicateConceptMalformedSchemaException::class.java) {
+        assertThrows(DuplicateConceptSchemaSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithDuplicateConcepts::class) {
                 // do nothing
             }
@@ -176,10 +177,30 @@ class SchemaApiConceptAnnotationTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoConceptAnnotationsInHierarchy::class) {
                 // do nothing
             }
         }
     }
+
+    @Schema(concepts = [
+        SchemaWithConceptWithTypeParameter.ConceptWithTypeParameter::class,
+    ])
+    private interface SchemaWithConceptWithTypeParameter {
+
+        @Suppress("Unused")
+        @Concept(facets = [])
+        interface ConceptWithTypeParameter<T>
+    }
+
+    @Test
+    fun `test concept with generic type parameter should throw an exception`() {
+        assertThrows(WrongTypeSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTypeParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
 }

@@ -11,11 +11,11 @@ import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.MalformedSchemaException
+import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.util.SortedSet
+import java.util.*
 
 class SchemaApiConceptQueryTest {
 
@@ -68,7 +68,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with an unannotated query method should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnannotatedQueryMethod::class) {
                 // do nothing
             }
@@ -94,7 +94,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with an query method having a method body should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithDefaultQueryMethod::class) {
                 // do nothing
             }
@@ -190,7 +190,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with a invalid annotated concept id query method returning a list collection should return with exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidCollectionConceptIdAnnotatedQueryMethods::class) {
                 // do nothing
             }
@@ -211,7 +211,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with a valid annotated concept id query method returning an int should return without exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidIntConceptIdAnnotatedQueryMethods::class) {
                 // do nothing
             }
@@ -237,7 +237,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with a unsupported facet class should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnsupportedFacet::class) {
                 // do nothing
             }
@@ -538,7 +538,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method having parameters should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacetMethodHavingParameter::class) {
                 // do nothing
             }
@@ -564,7 +564,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method having extension function parameter should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacetMethodHavingExtensionFunctionParameter::class) {
                 // do nothing
             }
@@ -588,7 +588,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with property should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithProperty::class) {
                 // do nothing
             }
@@ -613,7 +613,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning wrong facet type list should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongFacetTypeList::class) {
                 // do nothing
             }
@@ -638,7 +638,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning wrong facet type should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongFacetType::class) {
                 // do nothing
             }
@@ -663,7 +663,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning wrong facet collection type should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongCollectionType::class) {
                 // do nothing
             }
@@ -688,7 +688,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning collection with nullable values should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningNullableListValue::class) {
                 // do nothing
             }
@@ -713,7 +713,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning collection with generic collection type parameter should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningGenericParameterListValue::class) {
                 // do nothing
             }
@@ -738,7 +738,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with method returning value with generic type parameter should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningGenericParameterValue::class) {
                 // do nothing
             }
@@ -774,7 +774,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with query method fetching only one of multiple allowed concepts should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod::class) {
                 // do nothing
             }
@@ -810,7 +810,7 @@ class SchemaApiConceptQueryTest {
     @Test
     @Disabled("Not prevented currently")
     fun `test concept with query method fetching an not referenced concept should throw an exception`() {
-        assertThrows(MalformedSchemaException::class.java) {
+        assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnreferencedConceptQueryMethod::class) {
                 // do nothing
             }
