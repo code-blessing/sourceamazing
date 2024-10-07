@@ -18,8 +18,7 @@ import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetSchemaSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
-import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryValidator
-import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
+import org.codeblessing.sourceamazing.schema.schemacreator.query.QueryMethodsValidator
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
@@ -44,7 +43,7 @@ object SchemaCreator {
     @Throws(SyntaxException::class)
     fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: KClass<*>): SchemaImpl {
         validateSchemaClass(schemaDefinitionClass)
-        SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
+        QueryMethodsValidator.validateQueryMethodsOfSchema(schemaDefinitionClass)
 
         val conceptClasses = schemaDefinitionClass.getAnnotation<Schema>().concepts.toList()
         validateConceptClasses(conceptClasses)
@@ -53,7 +52,7 @@ object SchemaCreator {
         val conceptSimpleNames: MutableSet<String> = mutableSetOf()
         val conceptNames = conceptClasses.map { it.toConceptName() }
         conceptClasses.forEach { conceptClass ->
-            ConceptQueryValidator.validateAccessorMethodsOfConceptClass(conceptClass)
+            QueryMethodsValidator.validateQueryMethodsOfConcept(conceptClass)
             val conceptName = conceptClass.toConceptName()
 
             if(conceptSimpleNames.contains(conceptName.simpleName())) {

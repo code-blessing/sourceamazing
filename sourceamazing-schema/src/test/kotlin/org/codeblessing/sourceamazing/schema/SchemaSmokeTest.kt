@@ -30,10 +30,12 @@ class SchemaSmokeTest {
 
             enum class PersonSex { MALE, FEMALE }
 
-            @StringFacet() interface PersonFirstnameFacet
+            @StringFacet()
+            interface PersonFirstnameFacet
             @IntFacet
             interface PersonAgeFacet
-            @EnumFacet(enumerationClass = PersonSex::class) interface PersonSexFacet
+            @EnumFacet(enumerationClass = PersonSex::class)
+            interface PersonSexFacet
 
             @QueryConceptIdentifierValue
             fun getConceptId(): ConceptIdentifier

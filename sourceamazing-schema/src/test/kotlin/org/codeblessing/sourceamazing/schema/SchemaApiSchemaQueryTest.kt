@@ -249,9 +249,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method returning wrong concept class list should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryListMethodReturningUnsupportedConcept::class) {
                 // do nothing
             }
@@ -266,9 +265,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method returning wrong concept class should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningUnsupportedConcept::class) {
                 // do nothing
             }
@@ -283,9 +281,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method returning concepts without common interface should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningConceptsWithoutCommonInterface::class) {
                 // do nothing
             }
@@ -300,9 +297,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method returning concept without common interface should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodReturningConceptWithoutCommonInterface::class) {
                 // do nothing
             }
@@ -317,10 +313,25 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with unsupported collection type should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionType::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [ OneConceptClass::class, OtherConceptClass::class ])
+    private interface SchemaWithQueryMethodWithoutReturnType {
+        @Suppress("UNUSED")
+        @QueryConcepts(conceptClasses = [OneConceptClass::class, OtherConceptClass::class])
+        fun getMyConcepts()
+    }
+
+    @Test
+    fun `test schema with query method without return type should throw an exception`() {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithoutReturnType::class) {
                 // do nothing
             }
         }
@@ -334,9 +345,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with unsupported collection value type should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionValueType::class) {
                 // do nothing
             }
@@ -351,9 +361,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with unsupported value type should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedValueType::class) {
                 // do nothing
             }
@@ -368,9 +377,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with nullable collection value type should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithNullableCollectionValueType::class) {
                 // do nothing
             }
