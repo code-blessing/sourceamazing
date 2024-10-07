@@ -9,7 +9,6 @@ import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxExcept
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class SchemaApiSchemaAnnotationTest {
@@ -149,7 +148,6 @@ class SchemaApiSchemaAnnotationTest {
         ParentSchemaWithTwoSchemaAnnotationsInHierarchyClasses
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
         assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoSchemaAnnotationsInHierarchyClasses::class) {
@@ -165,7 +163,6 @@ class SchemaApiSchemaAnnotationTest {
         ParentSchemaWithConceptAnnotation
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with concept and schema annotations in hierarchy should throw an exception`() {
         assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAndSchemaAnnotationsInHierarchyClasses::class) {

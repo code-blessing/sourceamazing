@@ -175,9 +175,8 @@ class SchemaApiConceptAnnotationTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoConceptAnnotationsInHierarchy::class) {
                 // do nothing
             }

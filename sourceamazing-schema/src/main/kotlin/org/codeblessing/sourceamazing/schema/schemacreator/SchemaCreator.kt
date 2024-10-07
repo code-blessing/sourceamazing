@@ -24,6 +24,7 @@ import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactlyOneOfAnnotation
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoAnnotationOnSuperclasses
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoMembers
@@ -98,6 +99,7 @@ object SchemaCreator {
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasExactNumberOfAnnotations(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNoAnnotationOnSuperclasses(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
     private fun validateConceptClasses(conceptClasses: List<KClass<*>>) {
@@ -109,6 +111,7 @@ object SchemaCreator {
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasExactNumberOfAnnotations(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION, numberOf = 1)
             checkHasOnlyAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNoAnnotationOnSuperclasses(conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
@@ -119,6 +122,7 @@ object SchemaCreator {
             checkHasNoExtensionFunctions(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasNoProperties(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasNoMembers(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNoAnnotationOnSuperclasses(facetClass, FACET_CLASS_DESCRIPTION)
 
             checkHasExactlyOneOfAnnotation(
                 annotations = listOf(

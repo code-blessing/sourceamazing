@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberExtensionFunctions
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.superclasses
 
 object ClassCheckerUtil {
 
@@ -78,6 +79,17 @@ object ClassCheckerUtil {
     fun checkHasNoMembers(classToInspect: KClass<*>, classDescription: String) {
         if(classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()) {
             throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have any member functions or properties but has ${classToInspect.members}.")
+        }
+    }
+
+    fun checkHasNoAnnotationOnSuperclasses(classToInspect: KClass<*>, classDescription: String) {
+        val annotationsOnSuperclasses = classToInspect
+            .superclasses
+            .map { superclass -> superclass.annotations }
+            .flatten()
+            .filter { it.isAnnotationFromSourceAmazing() }
+        if(annotationsOnSuperclasses.isNotEmpty()) {
+            throw WrongAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' can not have annotations on superclasses but has ${annotationsOnSuperclasses}.")
         }
     }
 
