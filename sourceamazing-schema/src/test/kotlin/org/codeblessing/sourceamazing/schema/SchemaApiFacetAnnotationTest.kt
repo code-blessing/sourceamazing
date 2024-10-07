@@ -10,6 +10,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetSchemaSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
@@ -66,6 +67,27 @@ class SchemaApiFacetAnnotationTest {
     fun `test create a concept with an unannotated facet should throw an exception`() {
         assertThrows(MissingAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithUnannotatedFacet::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Schema(concepts = [SchemaAndConceptWithFacetHavingMembers.ConceptWithFacetHavingMembers::class])
+    private interface SchemaAndConceptWithFacetHavingMembers {
+        @Concept(facets = [ConceptWithFacetHavingMembers.FacetHavingMembers::class])
+        interface ConceptWithFacetHavingMembers {
+            @StringFacet
+            interface FacetHavingMembers {
+                @Suppress("UNUSED")
+                fun oneMemberOnFacetInterface()
+            }
+        }
+    }
+
+    @Test
+    fun `test create a concept with an facet having members on it should throw an exception`() {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetHavingMembers::class) {
                 // do nothing
             }
         }

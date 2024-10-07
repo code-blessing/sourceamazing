@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQuerySchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
@@ -77,9 +78,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with a query method having a method body should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithDefaultQueryMethod::class) {
                 // do nothing
             }
@@ -218,9 +218,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with method having extension function parameter should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodHavingExtensionFunctionParameter::class) {
                 // do nothing
             }
@@ -234,9 +233,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with property should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithProperty::class) {
                 // do nothing
             }
@@ -387,9 +385,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with generic collection type parameter should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithGenericParameterCollectionValueType::class) {
                 // do nothing
             }
@@ -404,9 +401,8 @@ class SchemaApiSchemaQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test schema with query method with generic type parameter value should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithGenericParameterValueType::class) {
                 // do nothing
             }

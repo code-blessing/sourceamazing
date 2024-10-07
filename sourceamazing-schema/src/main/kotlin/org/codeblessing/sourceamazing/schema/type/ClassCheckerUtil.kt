@@ -5,10 +5,15 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
+import kotlin.collections.filterNot
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.declaredMemberExtensionFunctions
+import kotlin.reflect.full.memberProperties
 
-object TypeCheckerUtil {
+object ClassCheckerUtil {
 
     fun checkIsOrdinaryInterface(classToInspect: KClass<*>, classDescription: String) {
         if(!classToInspect.isInterface || classToInspect.isAnnotation) {
@@ -57,4 +62,23 @@ object TypeCheckerUtil {
             throw WrongAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' can not have more than one of the annotations ${annotations.joinToString { it.annotationText() }}.")
         }
     }
+
+    fun checkHasNoExtensionFunctions(classToInspect: KClass<*>, classDescription: String) {
+        if(classToInspect.declaredMemberExtensionFunctions.isNotEmpty()) {
+            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have extension functions but has ${classToInspect.declaredMemberExtensionFunctions}.")
+        }
+    }
+
+    fun checkHasNoProperties(classToInspect: KClass<*>, classDescription: String) {
+        if(classToInspect.memberProperties.isNotEmpty()) {
+            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have member properties but has ${classToInspect.memberProperties}.")
+        }
+    }
+
+    fun checkHasNoMembers(classToInspect: KClass<*>, classDescription: String) {
+        if(classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()) {
+            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have any member functions or properties but has ${classToInspect.members}.")
+        }
+    }
+
 }

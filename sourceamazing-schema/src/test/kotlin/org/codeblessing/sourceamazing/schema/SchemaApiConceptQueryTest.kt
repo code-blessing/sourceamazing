@@ -12,6 +12,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -92,7 +93,6 @@ class SchemaApiConceptQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test concept with an query method having a method body should throw an exception`() {
         assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithDefaultQueryMethod::class) {
@@ -210,7 +210,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     @Disabled("Not prevented currently")
-    fun `test concept with a valid annotated concept id query method returning an int should return without exception`() {
+    fun `test concept with a invalid annotated concept id query method returning an int instead of string should throw an exception`() {
         assertThrows(SyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidIntConceptIdAnnotatedQueryMethods::class) {
                 // do nothing
@@ -562,9 +562,8 @@ class SchemaApiConceptQueryTest {
     }
 
     @Test
-    @Disabled("Not prevented currently")
     fun `test concept with method having extension function parameter should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertThrows(WrongFunctionSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacetMethodHavingExtensionFunctionParameter::class) {
                 // do nothing
             }

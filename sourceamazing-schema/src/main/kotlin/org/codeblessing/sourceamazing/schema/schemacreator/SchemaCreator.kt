@@ -22,12 +22,15 @@ import org.codeblessing.sourceamazing.schema.schemacreator.query.ConceptQueryVal
 import org.codeblessing.sourceamazing.schema.schemacreator.query.SchemaQueryValidator
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasAnnotation
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasExactlyOneOfAnnotation
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasNoGenericTypeParameters
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkHasOnlyAnnotation
-import org.codeblessing.sourceamazing.schema.type.TypeCheckerUtil.checkIsOrdinaryInterface
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactlyOneOfAnnotation
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoMembers
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotation
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
 import org.codeblessing.sourceamazing.schema.type.isEnum
@@ -40,11 +43,11 @@ object SchemaCreator {
 
     @Throws(SyntaxException::class)
     fun createSchemaFromSchemaDefinitionClass(schemaDefinitionClass: KClass<*>): SchemaImpl {
-        validateSchemaClassAnnotations(schemaDefinitionClass)
+        validateSchemaClass(schemaDefinitionClass)
         SchemaQueryValidator.validateAccessorMethodsOfSchemaDefinitionClass(schemaDefinitionClass)
 
         val conceptClasses = schemaDefinitionClass.getAnnotation<Schema>().concepts.toList()
-        validateConceptClassesAnnotations(conceptClasses)
+        validateConceptClasses(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
         val conceptSimpleNames: MutableSet<String> = mutableSetOf()
@@ -62,7 +65,7 @@ object SchemaCreator {
             }
 
             val facetClasses = conceptClass.getAnnotation<Concept>().facets.toList()
-            validateFacetClassesAnnotations(facetClasses)
+            validateFacetClasses(facetClasses)
             val facets: MutableList<FacetSchema> = mutableListOf()
             val facetSimpleNames: MutableSet<String> = mutableSetOf()
             facetClasses.forEach { facetClass ->
@@ -88,28 +91,36 @@ object SchemaCreator {
     }
 
 
-    private fun validateSchemaClassAnnotations(schemaDefinitionClass: KClass<*>) {
+    private fun validateSchemaClass(schemaDefinitionClass: KClass<*>) {
         checkIsOrdinaryInterface(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasNoGenericTypeParameters(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNoExtensionFunctions(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
+        checkHasNoProperties(schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
         checkHasExactNumberOfAnnotations(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotation(Schema::class, schemaDefinitionClass, SCHEMA_CLASS_DESCRIPTION)
     }
 
-    private fun validateConceptClassesAnnotations(conceptClasses: List<KClass<*>>) {
+    private fun validateConceptClasses(conceptClasses: List<KClass<*>>) {
         conceptClasses.forEach { conceptClass ->
             checkIsOrdinaryInterface(conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasNoGenericTypeParameters(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNoExtensionFunctions(conceptClass, CONCEPT_CLASS_DESCRIPTION)
+            checkHasNoProperties(conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
             checkHasExactNumberOfAnnotations(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION, numberOf = 1)
             checkHasOnlyAnnotation(Concept::class, conceptClass, CONCEPT_CLASS_DESCRIPTION)
         }
     }
 
-    private fun validateFacetClassesAnnotations(facetClasses: Collection<KClass<*>>) {
+    private fun validateFacetClasses(facetClasses: Collection<KClass<*>>) {
         facetClasses.forEach { facetClass ->
             checkIsOrdinaryInterface(facetClass, FACET_CLASS_DESCRIPTION)
             checkHasNoGenericTypeParameters(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNoExtensionFunctions(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNoProperties(facetClass, FACET_CLASS_DESCRIPTION)
+            checkHasNoMembers(facetClass, FACET_CLASS_DESCRIPTION)
+
             checkHasExactlyOneOfAnnotation(
                 annotations = listOf(
                     StringFacet::class,
