@@ -2,10 +2,8 @@ package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
-import org.codeblessing.sourceamazing.schema.type.isFromKotlinAnyClass
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.memberFunctions
 
 object QueryMethodUtil {
     val supportedCollectionClasses: List<KClass<*>> = listOf(List::class, Set::class, Collection::class, Iterable::class)

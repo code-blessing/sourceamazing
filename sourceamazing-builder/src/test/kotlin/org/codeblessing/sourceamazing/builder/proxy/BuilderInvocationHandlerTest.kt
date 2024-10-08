@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.builder.validation
+package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
@@ -9,7 +9,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIde
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.proxy.DataCollectorInvocationHandler
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
@@ -23,13 +23,13 @@ import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class DataCollectorInvocationHandlerTest {
+class BuilderInvocationHandlerTest {
 
     @Schema(concepts = [
-        DataCollectorTestSchema.PersonConcept::class,
-        DataCollectorTestSchema.SkillConcept::class,
+        BuilderTestSchema.PersonConcept::class,
+        BuilderTestSchema.SkillConcept::class,
     ])
-    private interface DataCollectorTestSchema {
+    private interface BuilderTestSchema {
         @Concept(facets = [
             PersonConcept.PersonFirstnameFacet::class,
             PersonConcept.PersonAgeFacet::class,
@@ -67,21 +67,21 @@ class DataCollectorInvocationHandlerTest {
     private val judoConceptIdentifier = ConceptIdentifier.of("Judo")
 
     @Builder
-    interface DataCollectorRoot {
+    interface RootBuilder {
 
         // Builder style
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
-        @NewConcept(concept = DataCollectorTestSchema.PersonConcept::class)
+        @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
         fun newPerson(
             @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
         ): PersonConceptBuilder
 
         // DSL style
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
-        @NewConcept(concept = DataCollectorTestSchema.PersonConcept::class)
+        @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
         fun newPerson(
             @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
             @InjectBuilder builder: PersonConceptBuilder.() -> Unit,
@@ -94,25 +94,25 @@ class DataCollectorInvocationHandlerTest {
 
         @BuilderMethod
         fun firstname(
-            @SetFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun age(
-            @SetFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun firstnameAndAge(
-            @SetFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
-            @SetFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
         ): PersonConceptBuilder
 
         // Builder style
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
-        @NewConcept(DataCollectorTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
+        @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
         ): SkillConceptBuilder
@@ -120,8 +120,8 @@ class DataCollectorInvocationHandlerTest {
         // DSL style
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
-        @NewConcept(DataCollectorTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = DataCollectorTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
+        @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
             @InjectBuilder builder: SkillConceptBuilder.() -> Unit,
@@ -135,36 +135,36 @@ class DataCollectorInvocationHandlerTest {
 
         @BuilderMethod
         fun descriptionAndStillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = DataCollectorTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = DataCollectorTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun description(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = DataCollectorTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun stillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = DataCollectorTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
     }
 
-    private fun createDataCollectorProxy(conceptDataCollector: ConceptDataCollector): DataCollectorRoot {
-        DataCollectorBuilderValidator.validateAccessorMethodsOfDataCollector(DataCollectorRoot::class)
+    private fun createBuilderProxy(conceptDataCollector: ConceptDataCollector): RootBuilder {
+        BuilderValidator.validateBuilderMethods(RootBuilder::class)
         return ProxyCreator.createProxy(
-            DataCollectorRoot::class,
-            DataCollectorInvocationHandler(conceptDataCollector, emptyMap())
+            RootBuilder::class,
+            BuilderInvocationHandler(conceptDataCollector, emptyMap())
         )
     }
 
     @Test
     fun `test data invocation with individual data collector in builder style`() {
         val conceptDataCollector = createDataCollector()
-        val dataCollectorProxy = createDataCollectorProxy(conceptDataCollector)
+        val builderProxy = createBuilderProxy(conceptDataCollector)
 
-        val james = dataCollectorProxy
+        val james = builderProxy
             .newPerson(jamesConceptIdentifier, firstname = "James")
             .age(18)
         james.skill(cookingConceptIdentifier)
@@ -173,7 +173,7 @@ class DataCollectorInvocationHandlerTest {
             .description("Skateboarding")
             .stillEnjoying(false)
 
-        val linda = dataCollectorProxy
+        val linda = builderProxy
             .newPerson(lindaConceptIdentifier, firstname = "Linda")
             .age(29)
         linda.skill(judoConceptIdentifier)
@@ -186,9 +186,9 @@ class DataCollectorInvocationHandlerTest {
     @Test
     fun `test data invocation with individual data collector in DSL style`() {
         val conceptDataCollector = createDataCollector()
-        val dataCollectorProxy = createDataCollectorProxy(conceptDataCollector)
+        val builderProxy = createBuilderProxy(conceptDataCollector)
 
-        dataCollectorProxy
+        builderProxy
             .newPerson(jamesConceptIdentifier) {
                 firstnameAndAge(firstname = "James", age = 18)
                 skill(cookingConceptIdentifier) {
@@ -201,7 +201,7 @@ class DataCollectorInvocationHandlerTest {
                 }
             }
 
-        dataCollectorProxy
+        builderProxy
             .newPerson(lindaConceptIdentifier) {
                 firstnameAndAge(firstname = "Linda", age = 29)
                 skill(judoConceptIdentifier) {
@@ -214,10 +214,10 @@ class DataCollectorInvocationHandlerTest {
     }
 
     private fun checkAssertions(conceptDataCollector: ConceptDataCollector) {
-        val personFirstnameFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonFirstnameFacet::class)
-        val personAgeFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonAgeFacet::class)
-        val personSkillReferenceFacet = FacetName.of(DataCollectorTestSchema.PersonConcept.PersonSkillsReference::class)
-        val skillDescriptionFacet = FacetName.of(DataCollectorTestSchema.SkillConcept.SkillDescriptionFacet::class)
+        val personFirstnameFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class)
+        val personAgeFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonAgeFacet::class)
+        val personSkillReferenceFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonSkillsReference::class)
+        val skillDescriptionFacet = FacetName.of(BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class)
 
         val conceptDataList = conceptDataCollector.provideConceptData()
         Assertions.assertEquals(5, conceptDataList.size)

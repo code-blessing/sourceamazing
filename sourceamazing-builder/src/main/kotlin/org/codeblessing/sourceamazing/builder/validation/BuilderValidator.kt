@@ -23,7 +23,6 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoAnnotationOnSuperclasses
@@ -43,11 +42,11 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
 
-object DataCollectorBuilderValidator {
+object BuilderValidator {
     private const val BUILDER_CLASS_DESCRIPTION = "Builder Class"
 
     @Throws(SyntaxException::class)
-    fun validateAccessorMethodsOfDataCollector(builderClass: KClass<*>) {
+    fun validateBuilderMethods(builderClass: KClass<*>) {
         checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION) // this is only valid for top-level builder
         val allBuilders = mutableSetOf<KClass<*>>()
         collectBuilderClassesRecursively(allBuilders, builderClass)

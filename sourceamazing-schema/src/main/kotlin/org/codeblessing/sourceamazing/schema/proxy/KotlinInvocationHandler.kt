@@ -7,7 +7,7 @@ import kotlin.reflect.jvm.kotlinFunction
 
 abstract class KotlinInvocationHandler: InvocationHandler {
     override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
-        requiredProxy(proxyOrNull, methodOrNull)
+        val proxy = requiredProxy(proxyOrNull, methodOrNull)
         val memberFunction = validatedMethod(methodOrNull)
         val arguments = validatedArguments(memberFunction, argsOrNull)
 
@@ -22,10 +22,10 @@ abstract class KotlinInvocationHandler: InvocationHandler {
             return this == arguments.first()
         }
 
-        return invoke(memberFunction, arguments)
+        return invoke(proxy, memberFunction, arguments)
     }
 
-    abstract fun invoke(function: KFunction<*>, arguments: List<Any?>): Any?
+    abstract fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any?
 
     private fun validatedArguments(kFunction: KFunction<*>, argsOrNull: Array<out Any?>?): List<Any?> {
         val args = argsOrNull?.toList() ?: emptyList()

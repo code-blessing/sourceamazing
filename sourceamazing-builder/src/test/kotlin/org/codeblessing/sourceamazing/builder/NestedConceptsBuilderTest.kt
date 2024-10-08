@@ -167,7 +167,7 @@ class NestedConceptsBuilderTest {
     }
 
     @Builder
-    private interface NestedObjectsDataCollector {
+    private interface NestedObjectsBuilder {
 
         @BuilderMethod
         @WithNewBuilder(builderClass = BusinessObjectConceptBuilder::class)
@@ -255,8 +255,8 @@ class NestedConceptsBuilderTest {
         val personBo =  ConceptIdentifier.of("Person")
 
         val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(schemaDefinitionClass = NestedConceptsSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, NestedObjectsDataCollector::class) { dataCollector ->
-                dataCollector.newBusinessObject(personBo, "the person business object") {
+            BuilderApi.withBuilder(schemaContext, NestedObjectsBuilder::class) { builder ->
+                builder.newBusinessObject(personBo, "the person business object") {
                     addSingleValueField("firstname") {
                         builtinType(BuiltinTypeEnum.STRING)
                     }

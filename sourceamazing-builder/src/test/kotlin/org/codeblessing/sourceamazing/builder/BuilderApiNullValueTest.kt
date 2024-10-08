@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
-class DataCollectorBuilderNullValueInvocationHandlerTest {
+class BuilderApiNullValueTest {
 
     @Schema(concepts = [
         TestSchema.TestConcept::class,
@@ -97,10 +97,10 @@ class DataCollectorBuilderNullValueInvocationHandlerTest {
     @Test
     fun `passing of null value arguments in builder method does fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { dataCollector ->
-                dataCollector.newTestConcept(firstId,"Foo")
+            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
+                builder.newTestConcept(firstId,"Foo")
                 assertThrows(IllegalArgumentException::class.java) {
-                    dataCollector.newTestConcept(secondId,null)
+                    builder.newTestConcept(secondId,null)
                 }
             }
         }
@@ -109,9 +109,9 @@ class DataCollectorBuilderNullValueInvocationHandlerTest {
     @Test
     fun `passing of null value as concept identifier in builder method does fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { dataCollector ->
+            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
                 assertThrows(IllegalArgumentException::class.java) {
-                    dataCollector.newTestConcept(null,"Foo")
+                    builder.newTestConcept(null,"Foo")
                 }
             }
         }
@@ -120,11 +120,11 @@ class DataCollectorBuilderNullValueInvocationHandlerTest {
     @Test
     fun `test insertion of nullable value in builder method does not fail but ignore value`() {
         val schemaInstance: TestSchema = SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { dataCollector ->
-                dataCollector.newTestConceptIgnoringNullValues(firstId, "Foo")
-                dataCollector.newTestConceptIgnoringNullValues(secondId, null)
+            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
+                builder.newTestConceptIgnoringNullValues(firstId, "Foo")
+                builder.newTestConceptIgnoringNullValues(secondId, null)
 
-                dataCollector.newTestConceptWithSubDsl("Fez") {
+                builder.newTestConceptWithSubDsl("Fez") {
                     this.changeNullableValue(null)
                     this.changeNullableValue("Fraz")
                     this.changeNullableValue(null)
@@ -150,8 +150,8 @@ class DataCollectorBuilderNullValueInvocationHandlerTest {
     fun `test passing null for a sub-builder does fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
             assertThrows(IllegalStateException::class.java) {
-                BuilderApi.withBuilder(schemaContext, TestBuilder::class) { dataCollector ->
-                    dataCollector.newTestConceptWithSubDsl("Fez", null)
+                BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
+                    builder.newTestConceptWithSubDsl("Fez", null)
                 }
             }
         }

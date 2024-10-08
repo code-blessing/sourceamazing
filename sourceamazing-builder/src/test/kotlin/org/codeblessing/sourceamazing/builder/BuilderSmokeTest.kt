@@ -86,7 +86,7 @@ class BuilderSmokeTest {
     }
 
     @Builder
-    interface SmokeTestDataCollectorRootBuilder {
+    interface SmokeTestRootBuilder {
 
         // Builder style
         @BuilderMethod
@@ -184,9 +184,9 @@ class BuilderSmokeTest {
 
 
         val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, SmokeTestDataCollectorRootBuilder::class) { dataCollector ->
+            BuilderApi.withBuilder(schemaContext, SmokeTestRootBuilder::class) { builder ->
                 // add some data in DSL style
-                dataCollector
+                builder
                     .newPerson(jamesConceptIdentifier) {
                         firstnameAndAge(firstname = "James", age = 18)
                         sex(PersonSex.MALE.toString())
@@ -201,7 +201,7 @@ class BuilderSmokeTest {
                     }
 
                 // add some data in builder style
-                val linda = dataCollector
+                val linda = builder
                     .newPerson(lindaConceptIdentifier, firstname = "Linda", sex = PersonSex.FEMALE)
                     .age(29)
                 linda.skill(judoConceptIdentifier)

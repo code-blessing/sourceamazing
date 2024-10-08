@@ -18,45 +18,42 @@ import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.findAnnotations
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
-import org.codeblessing.sourceamazing.schema.type.methodParamsWithValues
+import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.findAnnotations
 
-class DataCollectorInvocationHandler(
+class BuilderInvocationHandler(
     private val conceptDataCollector: ConceptDataCollector,
     private val superiorAliases: Map<String, ConceptIdentifier>
-): InvocationHandler  {
+): KotlinInvocationHandler()  {
 
-    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any?>?): Any {
-        val proxy: Any = InvocationHandlerHelper.requiredProxy(proxyOrNull, methodOrNull)
-        val method: Method = InvocationHandlerHelper.validatedMethod(methodOrNull)
-        val args: Array<out Any?> = InvocationHandlerHelper.validatedArguments(methodOrNull, argsOrNull)
+    override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
 
-        if(method.hasAnnotation<BuilderMethod>()){
-            val myAliases = updateConceptDataCollector(method, args)
+        if(function.hasAnnotation(BuilderMethod::class)){
+            val myAliases = updateConceptDataCollector(function, arguments)
 
-            val builderForNextStep: Any = if(method.hasAnnotation<WithNewBuilder>()) {
-                createNewBuilderProxy(method, conceptDataCollector, myAliases)
+            val builderForNextStep: Any = if(function.hasAnnotation(WithNewBuilder::class)) {
+                createNewBuilderProxy(function, conceptDataCollector, myAliases)
             } else {
                 proxy // use same builder
             }
-            injectBuilderToParamMethod(method, args, builderForNextStep)
+            injectBuilderToParamMethod(function, arguments, builderForNextStep)
             return builderForNextStep
         }
 
-        return InvocationHandlerHelper.handleObjectMethodsOrThrow(this, method)
+        throw IllegalArgumentException("Method $function has not the supported annotations (${BuilderMethod::class.shortText()}.")
     }
 
-    private fun updateConceptDataCollector(method: Method, args: Array<out Any?>): Map<String, ConceptIdentifier> {
+    private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<String, ConceptIdentifier> {
         val newConceptAliasData: Map<String, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(method, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
@@ -113,14 +110,14 @@ class DataCollectorInvocationHandler(
             )
         }
 
-        val paramsWithValues = method.methodParamsWithValues(args)
+        val paramsWithValues = method.valueParamsWithValues(args)
         paramsWithValues.forEach { (_, param, argumentValue) ->
 
-            if(!param.hasAnnotation<SetFacetValue>()) {
+            if(!param.hasAnnotation(SetFacetValue::class)) {
                 return@forEach
             }
             if(argumentValue==null) {
-                if(param.hasAnnotation<IgnoreNullFacetValue>()) {
+                if(param.hasAnnotation(IgnoreNullFacetValue::class)) {
                     return@forEach // skip null values silently
                 } else {
                     throw IllegalArgumentException("Can not pass null values for parameter '${param.name}' " +
@@ -147,8 +144,8 @@ class DataCollectorInvocationHandler(
         ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    private fun collectNewAliases(method: Method, args: Array<out Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
-        val paramsWithArgumentValues = method.methodParamsWithValues(args)
+    private fun collectNewAliases(method: KFunction<*>, args: List<Any?>): Map<String, Pair<ConceptName, ConceptIdentifier>> {
+        val paramsWithArgumentValues = method.valueParamsWithValues(args)
 
         val newConceptsByAlias: MutableMap<String, ConceptName> = mutableMapOf()
         val newConceptsIdentifierByAlias: MutableMap<String, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
@@ -209,17 +206,17 @@ class DataCollectorInvocationHandler(
     }
 
     private fun createNewBuilderProxy(
-        method: Method,
+        method: KFunction<*>,
         dataCollector: ConceptDataCollector,
         aliasToConceptIdMap: Map<String, ConceptIdentifier>
     ): Any {
         val builderClass = getBuilderClazz(method)
-        return ProxyCreator.createProxy(builderClass, DataCollectorInvocationHandler(dataCollector, aliasToConceptIdMap))
+        return ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(dataCollector, aliasToConceptIdMap))
     }
 
     private fun injectBuilderToParamMethod(
-        method: Method,
-        args: Array<out Any?>,
+        method: KFunction<*>,
+        args: List<Any?>,
         builder: Any
     ) {
         val conceptBuilderFunctionParameter = getBuilderParameter(method, args)
@@ -236,17 +233,17 @@ class DataCollectorInvocationHandler(
         }
     }
 
-    private fun getBuilderClazz(method: Method): KClass<*> {
-        if(method.hasAnnotation<WithNewBuilder>()) {
+    private fun getBuilderClazz(method: KFunction<*>): KClass<*> {
+        if(method.hasAnnotation(WithNewBuilder::class)) {
             return method.getAnnotation<WithNewBuilder>().builderClass
         }
         throw IllegalStateException("No Annotation ${WithNewBuilder::class} found on method: $method")
     }
 
 
-    private fun getBuilderParameter(method: Method, args: Array<out Any?>): Any? {
-        for ((index, parameter) in method.parameters.withIndex()) {
-            if(parameter.hasAnnotation<InjectBuilder>()) {
+    private fun getBuilderParameter(method: KFunction<*>, args: List<Any?>): Any? {
+        method.valueParamsWithValues(args).forEach { (index, parameter) ->
+            if(parameter.hasAnnotation(InjectBuilder::class)) {
                 val builderToInject = args[index]
                 return builderToInject
                     ?: throw IllegalStateException(

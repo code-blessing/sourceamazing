@@ -15,7 +15,7 @@ import kotlin.reflect.full.findAnnotation
 
 class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): KotlinInvocationHandler()  {
 
-    override fun invoke(function: KFunction<*>, arguments: List<Any?>): Any? {
+    override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         function.findAnnotation<QueryFacetValue>()?.let {
             val facetClass = it.facetClass
             val facetNameToQuery = facetClass.toFacetName()
