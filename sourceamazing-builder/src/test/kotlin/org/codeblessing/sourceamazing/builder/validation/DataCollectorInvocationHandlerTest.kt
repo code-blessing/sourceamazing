@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.builder
+package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod

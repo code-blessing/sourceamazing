@@ -37,10 +37,6 @@ object QueryMethodUtil {
     }
 
 
-    fun relevantQueryMethods(definitionClass: KClass<*>): List<KFunction<*>> {
-        return definitionClass.memberFunctions.filterNot { it.isFromKotlinAnyClass() }
-    }
-
     fun collectionClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation? {
         return if(hasCollection(classesInformation)) classesInformation.first() else null
     }

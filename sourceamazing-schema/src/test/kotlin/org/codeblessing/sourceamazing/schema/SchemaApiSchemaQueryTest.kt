@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQuerySchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -218,7 +219,7 @@ class SchemaApiSchemaQueryTest {
 
     @Test
     fun `test schema with method having extension function parameter should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertThrows(WrongClassStructureSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodHavingExtensionFunctionParameter::class) {
                 // do nothing
             }
@@ -233,7 +234,7 @@ class SchemaApiSchemaQueryTest {
 
     @Test
     fun `test schema with property should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertThrows(WrongClassStructureSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithProperty::class) {
                 // do nothing
             }

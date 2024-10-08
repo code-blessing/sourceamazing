@@ -10,7 +10,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateFacetSchemaSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
@@ -86,7 +86,7 @@ class SchemaApiFacetAnnotationTest {
 
     @Test
     fun `test create a concept with an facet having members on it should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertThrows(WrongClassStructureSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaAndConceptWithFacetHavingMembers::class) {
                 // do nothing
             }

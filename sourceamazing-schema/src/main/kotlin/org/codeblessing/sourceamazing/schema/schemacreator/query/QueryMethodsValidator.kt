@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
@@ -39,7 +40,7 @@ object QueryMethodsValidator {
         val possibleSchemaConceptClasses = schemaDefinitionClass.annotations.filterIsInstance<Schema>().first().concepts.toSet()
         validateQueryMethods(schemaDefinitionClass, SCHEMA_QUERY_FUNCTION_DESCRIPTION)
 
-        QueryMethodUtil.relevantQueryMethods(schemaDefinitionClass).forEach { memberFunction ->
+        RelevantMethodFetcher.relevantQueryMethods(schemaDefinitionClass).forEach { memberFunction ->
             val queryConceptClasses = memberFunction.findAnnotation<QueryConcepts>()?.conceptClasses
                 ?: throw WrongConceptQuerySchemaSyntaxException("The method is missing " +
                         "the annotation ${QueryConcepts::class.shortText()}. Method: $memberFunction")
@@ -62,7 +63,7 @@ object QueryMethodsValidator {
             val returnTypeValueClassInfo = QueryMethodUtil.valueClassInfo(returnTypeClassesInformation)
 
             if(!isInheritanceCompatibleClass(returnTypeValueClassInfo.clazz, queryConceptClasses)) {
-                throw WrongFunctionSyntaxException("The return type class ${returnTypeValueClassInfo.clazz} must be inheritable for all concepts ${queryConceptClasses.toList()}. Method: $memberFunction")
+                throw WrongFunctionSyntaxException(memberFunction, "The return type class ${returnTypeValueClassInfo.clazz} must be inheritable for all concepts ${queryConceptClasses.toList()}.")
             }
         }
     }
@@ -72,7 +73,7 @@ object QueryMethodsValidator {
         val facetClassesOfThisConcept = conceptClass.findAnnotations<Concept>().first().facets.toSet()
         validateQueryMethods(conceptClass, CONCEPT_QUERY_FUNCTION_DESCRIPTION)
 
-        QueryMethodUtil.relevantQueryMethods(conceptClass).forEach { memberFunction ->
+        RelevantMethodFetcher.relevantQueryMethods(conceptClass).forEach { memberFunction ->
             val returnTypeClassesInformation = classesInformationFromReturnType(memberFunction, CONCEPT_QUERY_FUNCTION_DESCRIPTION)
             val returnTypeCollectionClassInfo = QueryMethodUtil.collectionClassInfo(returnTypeClassesInformation)
             val returnTypeValueClassInfo = QueryMethodUtil.valueClassInfo(returnTypeClassesInformation)
@@ -88,29 +89,27 @@ object QueryMethodsValidator {
 
                 val supportedValueTypes = getValueTypeForFacet(queryFacetValue)
                 if(!supportedValueTypes.contains(returnTypeValueClassInfo.clazz)) {
-                    throw WrongFunctionSyntaxException(
-                                "The method return type for the facet $queryFacetValueClass was ${returnTypeValueClassInfo.clazz}," +
+                    throw WrongFunctionSyntaxException(memberFunction,
+                        "The method return type for the facet $queryFacetValueClass was ${returnTypeValueClassInfo.clazz}," +
                                 "which is not a supported value type. " +
-                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. " +
-                                "Method: $memberFunction"
+                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. "
                     )
 
                 }
             } else if(memberFunction.hasAnnotation<QueryConceptIdentifierValue>()) {
                 if(returnTypeCollectionClassInfo != null) {
-                    throw WrongFunctionSyntaxException(
+                    throw WrongFunctionSyntaxException(memberFunction,
                         "The method return type for a method to fetch a concept identifier " +
-                                "can not return a collection. Method: $memberFunction"
+                                "can not return a collection."
                     )
                 }
 
                 val supportedValueTypes = listOf<KClass<*>>(Any::class, String::class, ConceptIdentifier::class)
                 if(!supportedValueTypes.contains(returnTypeValueClassInfo.clazz)) {
-                    throw WrongFunctionSyntaxException(
-                                "The method return type for a method to fetch a concept identifier " +
+                    throw WrongFunctionSyntaxException(memberFunction,
+                        "The method return type for a method to fetch a concept identifier " +
                                 "was ${returnTypeValueClassInfo.clazz}, which is not a supported value type." +
-                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. " +
-                                "Method: $memberFunction"
+                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. "
                     )
                 }
             } else {
@@ -139,7 +138,7 @@ object QueryMethodsValidator {
     }
 
     private fun validateQueryMethods(definitionClass: KClass<*>, classDescription: String) {
-        QueryMethodUtil.relevantQueryMethods(definitionClass).forEach { memberFunction ->
+        RelevantMethodFetcher.relevantQueryMethods(definitionClass).forEach { memberFunction ->
             FunctionCheckerUtil.checkHasNoValueParameters(memberFunction, classDescription)
             FunctionCheckerUtil.checkHasNoExtensionReceiverParameter(memberFunction, classDescription)
             FunctionCheckerUtil.checkHasNoTypeParameter(memberFunction, classDescription)
@@ -152,11 +151,11 @@ object QueryMethodsValidator {
 
             if(returnTypeCollectionClassInfo != null) {
                 if(supportedCollectionClasses.none { returnTypeCollectionClassInfo.clazz == it  }) {
-                    throw WrongFunctionSyntaxException("The collection type of the function must be one of $supportedCollectionClasses but was ${returnTypeCollectionClassInfo.clazz}. Method: $memberFunction")
+                    throw WrongFunctionSyntaxException(memberFunction, "The collection type of the function must be one of $supportedCollectionClasses but was ${returnTypeCollectionClassInfo.clazz}.")
                 }
 
                 if(returnTypeValueClassInfo.isValueNullable) {
-                    throw WrongFunctionSyntaxException("Returning a collection with values marked as nullable (inner generic type) is not allowed. Method: $memberFunction")
+                    throw WrongFunctionSyntaxException(memberFunction, "Returning a collection with values marked as nullable (inner generic type) is not allowed.")
                 }
             }
         }
@@ -166,13 +165,13 @@ object QueryMethodsValidator {
         val classesInformation = try {
             KTypeUtil.classesInformationFromKType(memberFunction.returnType)
         } catch (ex: IllegalStateException) {
-            throw WrongFunctionSyntaxException("$definitionClass return type is invalid. ${ex.message}. Method: $memberFunction")
+            throw WrongFunctionSyntaxException(memberFunction, "$definitionClass return type is invalid. ${ex.message}.")
         }
 
         if (classesInformation.size > 2 || classesInformation.isEmpty()) {
-            throw WrongFunctionSyntaxException("$definitionClass return type is invalid. " +
+            throw WrongFunctionSyntaxException(memberFunction, "$definitionClass return type is invalid. " +
                     "The return type can only be a class type or a collection ($supportedCollectionClasses) containing " +
-                    "a class type. Method: $memberFunction")
+                    "a class type.")
         }
         return classesInformation
     }

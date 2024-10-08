@@ -1,3 +1,5 @@
 package org.codeblessing.sourceamazing.schema.exceptions
 
-class WrongFunctionSyntaxException(msg: String) : SyntaxException(msg)
+import kotlin.reflect.KFunction
+
+class WrongFunctionSyntaxException(function: KFunction<*>, msg: String) : SyntaxException("$msg (Function: $function)")

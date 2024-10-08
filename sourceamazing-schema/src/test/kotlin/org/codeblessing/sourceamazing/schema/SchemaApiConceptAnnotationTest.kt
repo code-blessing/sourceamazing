@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -174,7 +175,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertThrows(WrongClassStructureSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoConceptAnnotationsInHierarchy::class) {
                 // do nothing
             }

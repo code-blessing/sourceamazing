@@ -30,6 +30,7 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGen
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoMembers
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotation
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
@@ -135,7 +136,7 @@ object SchemaCreator {
                 classToInspect = facetClass,
                 classDescription = FACET_CLASS_DESCRIPTION
             )
-            checkHasOnlyAnnotation(listOf(
+            checkHasOnlyAnnotations(listOf(
                 StringFacet::class,
                 BooleanFacet::class,
                 IntFacet::class,

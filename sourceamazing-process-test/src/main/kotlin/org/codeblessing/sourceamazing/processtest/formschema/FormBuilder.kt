@@ -51,7 +51,6 @@ interface FormBuilder {
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("formControl")
-
     interface FormControlBuilder {
 
         @BuilderMethod

@@ -2,6 +2,7 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderProcessorApi
 import org.codeblessing.sourceamazing.builder.proxy.DataCollectorInvocationHandler
+import org.codeblessing.sourceamazing.builder.validation.DataCollectorBuilderValidator
 import org.codeblessing.sourceamazing.schema.SchemaContextAccessor.toRevealedSchemaContext
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator

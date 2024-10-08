@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -40,10 +40,10 @@ object ClassCheckerUtil {
     }
 
     fun checkHasOnlyAnnotation(permittedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
-        checkHasOnlyAnnotation(listOf(permittedAnnotation), classToInspect, classDescription)
+        checkHasOnlyAnnotations(listOf(permittedAnnotation), classToInspect, classDescription)
     }
 
-    fun checkHasOnlyAnnotation(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
+    fun checkHasOnlyAnnotations(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
         classToInspect.annotations
             .filter { it.isAnnotationFromSourceAmazing() }
             .forEach { annotationOnClass ->
@@ -65,19 +65,19 @@ object ClassCheckerUtil {
 
     fun checkHasNoExtensionFunctions(classToInspect: KClass<*>, classDescription: String) {
         if(classToInspect.declaredMemberExtensionFunctions.isNotEmpty()) {
-            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have extension functions but has ${classToInspect.declaredMemberExtensionFunctions}.")
+            throw WrongClassStructureSyntaxException(classToInspect, "$classDescription must not have extension functions but has ${classToInspect.declaredMemberExtensionFunctions}.")
         }
     }
 
     fun checkHasNoProperties(classToInspect: KClass<*>, classDescription: String) {
         if(classToInspect.memberProperties.isNotEmpty()) {
-            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have member properties but has ${classToInspect.memberProperties}.")
+            throw WrongClassStructureSyntaxException(classToInspect, "$classDescription must not have member properties but has ${classToInspect.memberProperties}.")
         }
     }
 
     fun checkHasNoMembers(classToInspect: KClass<*>, classDescription: String) {
         if(classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()) {
-            throw WrongFunctionSyntaxException("$classDescription '${classToInspect.longText()}' must not have any member functions or properties but has ${classToInspect.members}.")
+            throw WrongClassStructureSyntaxException(classToInspect, "$classDescription must not have any member functions or properties but has ${classToInspect.members}.")
         }
     }
 
@@ -88,7 +88,7 @@ object ClassCheckerUtil {
             .flatten()
             .filter { it.isAnnotationFromSourceAmazing() }
         if(annotationsOnSuperclasses.isNotEmpty()) {
-            throw WrongAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' can not have annotations on superclasses but has ${annotationsOnSuperclasses}.")
+            throw WrongClassStructureSyntaxException(classToInspect, "$classDescription '${classToInspect.longText()}' can not have annotations on superclasses but has ${annotationsOnSuperclasses}.")
         }
     }
 

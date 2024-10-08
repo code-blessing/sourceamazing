@@ -9,33 +9,30 @@ object FunctionCheckerUtil {
 
     fun checkHasNoValueParameters(functionToInspect: KFunction<*>, functionDescription: String) {
         if(functionToInspect.valueParameters.isNotEmpty()) {
-            throw WrongFunctionSyntaxException("$functionDescription has parameters. " +
-                    "This is not allowed. Function: $functionToInspect")
+            throw WrongFunctionSyntaxException(functionToInspect, "$functionDescription has parameters. This is not allowed.")
         }
     }
 
     fun checkHasNoExtensionReceiverParameter(functionToInspect: KFunction<*>, functionDescription: String) {
         if(functionToInspect.extensionReceiverParameter != null) {
-            throw WrongFunctionSyntaxException(
-                "$functionDescription has extension receiver parameter. " +
-                        "This is not allowed. Function: $functionToInspect"
+            throw WrongFunctionSyntaxException(functionToInspect,
+                "$functionDescription has extension receiver parameter. This is not allowed."
             )
         }
     }
 
     fun checkHasNoTypeParameter(functionToInspect: KFunction<*>, functionDescription: String) {
         if(functionToInspect.typeParameters.isNotEmpty()) {
-            throw WrongFunctionSyntaxException(
-                "$functionDescription has type parameters ${functionToInspect.typeParameters}. " +
-                        "This is not allowed. Function: $functionToInspect"
+            throw WrongFunctionSyntaxException(functionToInspect,
+                "$functionDescription has type parameters ${functionToInspect.typeParameters}. This is not allowed."
             )
         }
     }
 
     fun checkHasNoFunctionBody(functionToInspect: KFunction<*>, functionDescription: String) {
         if(!functionToInspect.isAbstract) {
-            throw WrongFunctionSyntaxException(
-                "$functionDescription must be abstract. Function: $functionToInspect"
+            throw WrongFunctionSyntaxException(functionToInspect,
+                "$functionDescription must be abstract."
             )
         }
     }
@@ -43,8 +40,8 @@ object FunctionCheckerUtil {
     fun checkHasReturnType(functionToInspect: KFunction<*>, functionDescription: String) {
         val returnType = functionToInspect.returnTypeOrNull()
         if(returnType == null || returnType.isUnitType()) {
-            throw WrongFunctionSyntaxException(
-                "$functionDescription must have a return type. Function: $functionToInspect"
+            throw WrongFunctionSyntaxException(functionToInspect,
+                "$functionDescription must have a return type."
             )
         }
     }
