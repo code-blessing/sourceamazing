@@ -9,8 +9,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.builder.validation.DataCollectorBuilderValidator
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
@@ -45,7 +44,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test builder method without BuilderMethod annotation should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithoutBuilderMethodAnnotation::class) { dataCollector ->
                     // do nothing
@@ -170,7 +169,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test if more than one parameter have the builder injection annotation, an error is thrown`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithTwoBuilderParameter::class) { dataCollector ->
                     // do nothing
@@ -194,7 +193,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test if one parameter is not having an annotation, an error is thrown`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithMissingFacetAnnotationOnParameter::class) { dataCollector ->
                     // do nothing
@@ -219,7 +218,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test builder inject annotation on a non-last parameter should throw an error`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionOnNonLastParam::class) { dataCollector ->
                     // do nothing
@@ -242,7 +241,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method should throw an error`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValue::class) { dataCollector ->
                     // do nothing
@@ -266,7 +265,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and InjectBuilder annotation on same method should throw an error`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue::class) { dataCollector ->
                     // do nothing
@@ -288,7 +287,7 @@ class BuilderApiBuilderMethodAnnotationTest {
 
     @Test
     fun `test concept id parameter without ConceptIdentifier class should throw an error`() {
-        assertThrows(DataCollectorBuilderMethodSyntaxException::class.java) {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithIllegalConceptIdClass::class) { dataCollector ->
                     // do nothing

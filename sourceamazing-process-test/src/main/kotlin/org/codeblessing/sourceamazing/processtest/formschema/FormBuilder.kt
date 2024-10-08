@@ -49,9 +49,7 @@ interface FormBuilder {
         ): SelectDropdownEntryConceptBuilder
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
-    interface FormControlBuilder {
+    interface FormControlBuilderMethods {
 
         @BuilderMethod
         fun addLabel(
@@ -75,10 +73,14 @@ interface FormBuilder {
 
     }
 
+    @Builder
+    @ExpectedAliasFromSuperiorBuilder("formControl")
+    interface FormControlBuilder: FormControlBuilderMethods
+
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("formControl")
-    interface SelectDropdownEntryConceptBuilder: FormControlBuilder {
+    interface SelectDropdownEntryConceptBuilder: FormControlBuilderMethods {
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")

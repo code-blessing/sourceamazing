@@ -16,7 +16,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetVa
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.DataCollectorBuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
@@ -48,8 +48,7 @@ object DataCollectorBuilderValidator {
 
     @Throws(SyntaxException::class)
     fun validateAccessorMethodsOfDataCollector(builderClass: KClass<*>) {
-        // TODO introduce that again
-        // checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION) // this is only valid for top-level builder
+        checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION) // this is only valid for top-level builder
         val allBuilders = mutableSetOf<KClass<*>>()
         collectBuilderClassesRecursively(allBuilders, builderClass)
         allBuilders.forEach { validateBuilderClassStructure(it) }
@@ -61,7 +60,7 @@ object DataCollectorBuilderValidator {
 
         RelevantMethodFetcher.relevantQueryMethods(builderClass).forEach { method ->
             if(!method.hasAnnotation<BuilderMethod>()) {
-                throw WrongFunctionSyntaxException(
+                throw BuilderMethodSyntaxException(
                     method, "The method is missing " +
                             "the annotation ${BuilderMethod::class.annotationText()}. " +
                             "This annotation must be on every builder method."
@@ -74,7 +73,7 @@ object DataCollectorBuilderValidator {
                 if(methodParameter.hasAnnotation<IgnoreNullFacetValue>()) {
 
                     if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "A parameter setting the" +
                                     "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
                                     "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
@@ -82,7 +81,7 @@ object DataCollectorBuilderValidator {
                     }
 
                     if(methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "A parameter with ${InjectBuilder::class.annotationText()} " +
                                     "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
                         )
@@ -91,7 +90,7 @@ object DataCollectorBuilderValidator {
 
                 if(!isLastParameter) {
                     if(methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "Only the last parameter of the method " +
                                     "can have the annotation ${InjectBuilder::class.annotationText()}."
                         )
@@ -99,7 +98,7 @@ object DataCollectorBuilderValidator {
 
                     if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                         && !methodParameter.hasAnnotation<SetFacetValue>()) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "A parameter of the method " +
                                     "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
                                     "or ${SetFacetValue::class.annotationText()}"
@@ -109,7 +108,7 @@ object DataCollectorBuilderValidator {
                     if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                         && !methodParameter.hasAnnotation<SetFacetValue>()
                         && !methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "The last parameter of the method " +
                                     "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
                                     "or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}"
@@ -128,8 +127,7 @@ object DataCollectorBuilderValidator {
         checkHasAnnotation(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasExactNumberOfAnnotations(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotations(listOf(Builder::class, ExpectedAliasFromSuperiorBuilder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
-        // TODO introduce that again
-        // checkHasNoAnnotationOnSuperclasses(builderClass, BUILDER_CLASS_DESCRIPTION)
+        checkHasNoAnnotationOnSuperclasses(builderClass, BUILDER_CLASS_DESCRIPTION)
     }
 
 
@@ -150,7 +148,7 @@ object DataCollectorBuilderValidator {
 
             if(newConceptAliases.contains(conceptAlias) || importedConceptAliases.contains(conceptAlias)) {
                 val allAlreadyUsedConceptAliases = newConceptAliases + importedConceptAliases
-                throw DataCollectorBuilderMethodSyntaxException(
+                throw BuilderMethodSyntaxException(
                     method, "The alias '$conceptAlias' introduced " +
                             "with the annotation ${NewConcept::class.annotationText()} for concept ${conceptClazz.shortText()} " +
                             "is already used. All already used alias names are ${allAlreadyUsedConceptAliases}. " +
@@ -189,7 +187,7 @@ object DataCollectorBuilderValidator {
             val defaultAliasHint = conceptAliasesWithoutConceptIdDeclaration
                 .map { conceptAlias -> defaultAliasHint(conceptAlias) }
                 .firstOrNull { it.isNotBlank() } ?: ""
-            throw DataCollectorBuilderMethodSyntaxException(
+            throw BuilderMethodSyntaxException(
                 method, "The concept with alias " +
                         "$conceptAliasesWithoutConceptIdDeclaration have no corresponding " +
                         "concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
@@ -222,7 +220,7 @@ object DataCollectorBuilderValidator {
             val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
 
             if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                throw DataCollectorBuilderMethodSyntaxException(
+                throw BuilderMethodSyntaxException(
                     method, "The alias '$conceptAlias' used " +
                             "with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()} " +
                             "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
@@ -236,7 +234,7 @@ object DataCollectorBuilderValidator {
             parameter.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdValueAnnotation ->
                 val conceptAlias = conceptIdValueAnnotation.conceptToModifyAlias
                 if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                    throw DataCollectorBuilderMethodSyntaxException(
+                    throw BuilderMethodSyntaxException(
                         method, "The alias '$conceptAlias' used " +
                                 "with the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
                                 "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
@@ -253,7 +251,7 @@ object DataCollectorBuilderValidator {
         usedAliasesPerAnnotation.forEach { (annotationClazz, conceptAliases) ->
             conceptAliases.forEach { conceptAlias ->
                 if(!knownConceptAlias.contains(conceptAlias)) {
-                    throw DataCollectorBuilderMethodSyntaxException(
+                    throw BuilderMethodSyntaxException(
                         method, "The alias '$conceptAlias' used " +
                                 "with the annotation ${annotationClazz.annotationText()} " +
                                 "is unknown. Choose a known alias name (${knownConceptAlias}) or declare an alias with " +
@@ -325,7 +323,7 @@ object DataCollectorBuilderValidator {
             when(methodParamType.typeKind()) {
                 KTypeKind.KCLASS -> {
                     if(methodParamType.classifierAsClass() != ConceptIdentifier::class) {
-                        throw DataCollectorBuilderMethodSyntaxException(
+                        throw BuilderMethodSyntaxException(
                             method, "The parameter of the method " +
                                     "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
                                     "must be of type '${ConceptIdentifier::class.shortText()}' but was '${
@@ -337,14 +335,14 @@ object DataCollectorBuilderValidator {
                 }
                 KTypeKind.FUNCTION -> {
                     val typeAsFunction = methodParamType.classifierAsFunction()
-                    throw DataCollectorBuilderMethodSyntaxException(
+                    throw BuilderMethodSyntaxException(
                         method, "The parameter of the method " +
                                 "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
                                 "can not be a function but was '${typeAsFunction}'"
                     )
                 }
                 KTypeKind.OTHER_TYPE, KTypeKind.TYPE_PARAMETER -> {
-                    throw DataCollectorBuilderMethodSyntaxException(
+                    throw BuilderMethodSyntaxException(
                         method, "The parameter of the method " +
                                 "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) " +
                                 "can only be a class but was '${methodParamType}'"
