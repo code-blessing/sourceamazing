@@ -6,7 +6,6 @@ import kotlin.reflect.full.superclasses
 
 object KClassUtil {
 
-    // TODO write a test
     fun findAllCommonBaseClasses(classes: List<KClass<*>>): Set<KClass<*>> {
         val compatibleBaseClasses: MutableSet<KClass<*>> = mutableSetOf()
         val classesSet = classes.toSet()

@@ -6,12 +6,10 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class SchemaApiConceptAnnotationTest {

@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongConceptQuerySchemaSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.*
 

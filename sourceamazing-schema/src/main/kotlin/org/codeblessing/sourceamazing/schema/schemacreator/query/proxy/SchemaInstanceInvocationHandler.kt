@@ -2,21 +2,18 @@ package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
 
 import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptGraph
-import org.codeblessing.sourceamazing.schema.proxy.InvocationHandlerHelper
+import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.schemacreator.query.QueryMethodUtil
 import org.codeblessing.sourceamazing.schema.toConceptName
-import org.codeblessing.sourceamazing.schema.type.findAnnotation
-import org.codeblessing.sourceamazing.schema.util.MethodUtil
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.findAnnotation
 
-class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): InvocationHandler  {
+class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): KotlinInvocationHandler()  {
 
-
-    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
-        val method = InvocationHandlerHelper.validateInvocationArguments(proxyOrNull, methodOrNull, argsOrNull)
-
-        method.findAnnotation<QueryConcepts>()?.let {
+    override fun invoke(function: KFunction<*>, arguments: List<Any?>): Any? {
+        function.findAnnotation<QueryConcepts>()?.let {
             val conceptClasses = it.conceptClasses
             val conceptNamesToQuery = conceptClasses.map { it.toConceptName() }.toSet()
             val conceptNodes = conceptGraph.conceptsByConceptNames(conceptNamesToQuery)
@@ -26,9 +23,9 @@ class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): I
                     invocationHandler = ConceptInstanceInvocationHandler(conceptNode)
                 ) }
 
-            return@invoke MethodUtil.toMethodReturnType(method, proxyList)
+            return@invoke QueryMethodUtil.adaptResultToFunctionReturnType(function, proxyList)
         }
 
-        return InvocationHandlerHelper.handleObjectMethodsOrThrow(this, method)
+        throw IllegalArgumentException("Method $function has not the supported annotations (${QueryConcepts::class.shortText()}.")
     }
 }

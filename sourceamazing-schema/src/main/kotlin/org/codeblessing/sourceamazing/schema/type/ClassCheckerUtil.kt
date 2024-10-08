@@ -7,7 +7,6 @@ import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxExcept
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
-import kotlin.collections.filterNot
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberExtensionFunctions

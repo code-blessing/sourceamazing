@@ -1,10 +1,8 @@
 package org.codeblessing.sourceamazing.schema.type
 
 import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.extensionReceiverParameter
-import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.valueParameters
 
 object FunctionCheckerUtil {
@@ -50,15 +48,4 @@ object FunctionCheckerUtil {
             )
         }
     }
-
-    fun checkReturnTypeIsClass(functionToInspect: KFunction<*>, functionDescription: String) {
-        val returnType = functionToInspect.returnTypeOrNull()
-        val classifier = returnType?.classifier
-        if(classifier == null || classifier !is KClass<*>) {
-            throw WrongFunctionSyntaxException(
-                "$functionDescription must have a return type that is a class but was $classifier. Function: $functionToInspect"
-            )
-        }
-    }
-
 }
