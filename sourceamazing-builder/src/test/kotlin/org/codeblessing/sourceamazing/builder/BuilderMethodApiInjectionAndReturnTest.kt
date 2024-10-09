@@ -308,9 +308,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Builder
     private interface BuilderMethodWithBuilderInjectionAndReturnTypeBuilder {
-        @Builder
-        private interface OtherBuilder
-
         @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
@@ -352,5 +349,4 @@ class BuilderMethodApiInjectionAndReturnTest {
             }
         }
     }
-
 }
