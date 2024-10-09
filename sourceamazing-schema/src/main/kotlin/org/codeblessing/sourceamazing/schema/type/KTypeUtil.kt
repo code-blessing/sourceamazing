@@ -23,15 +23,15 @@ object KTypeUtil {
         return classInfos
     }
 
-    private fun kTypeFromProjection(projection: KTypeProjection): KType {
+    fun kTypeFromProjection(projection: KTypeProjection, validVariances: Set<KVariance> = setOf(KVariance.INVARIANT)): KType {
         requireNotNull(projection.variance) {
-            "type can not have a star-type projection for function return type."
+            "type can not have a star-type projection for function type."
         }
-        require(projection.variance != KVariance.IN) {
-            "type can not have an In-variant projection for function return type."
+        require(validVariances.contains(projection.variance)) {
+            "type can only have the variances $validVariances but was ${projection.variance} for function type."
         }
         val type = requireNotNull(projection.type) {
-            "type must have a declared function return type."
+            "type must have a declared function type."
         }
 
         return type

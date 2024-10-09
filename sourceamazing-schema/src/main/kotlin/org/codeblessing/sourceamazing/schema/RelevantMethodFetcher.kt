@@ -6,7 +6,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.memberFunctions
 
 object RelevantMethodFetcher {
-    fun relevantQueryMethods(definitionClass: KClass<*>): List<KFunction<*>> {
+    fun ownMemberFunctions(definitionClass: KClass<*>): List<KFunction<*>> {
         return definitionClass.memberFunctions.filterNot { it.isFromKotlinAnyClass() }
     }
 

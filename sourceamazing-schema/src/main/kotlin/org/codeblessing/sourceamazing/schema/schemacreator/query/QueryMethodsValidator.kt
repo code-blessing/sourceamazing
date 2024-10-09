@@ -40,7 +40,7 @@ object QueryMethodsValidator {
         val possibleSchemaConceptClasses = schemaDefinitionClass.annotations.filterIsInstance<Schema>().first().concepts.toSet()
         validateQueryMethods(schemaDefinitionClass, SCHEMA_QUERY_FUNCTION_DESCRIPTION)
 
-        RelevantMethodFetcher.relevantQueryMethods(schemaDefinitionClass).forEach { memberFunction ->
+        RelevantMethodFetcher.ownMemberFunctions(schemaDefinitionClass).forEach { memberFunction ->
             val queryConceptClasses = memberFunction.findAnnotation<QueryConcepts>()?.conceptClasses
                 ?: throw WrongConceptQuerySchemaSyntaxException("The method is missing " +
                         "the annotation ${QueryConcepts::class.shortText()}. Method: $memberFunction")
@@ -73,7 +73,7 @@ object QueryMethodsValidator {
         val facetClassesOfThisConcept = conceptClass.findAnnotations<Concept>().first().facets.toSet()
         validateQueryMethods(conceptClass, CONCEPT_QUERY_FUNCTION_DESCRIPTION)
 
-        RelevantMethodFetcher.relevantQueryMethods(conceptClass).forEach { memberFunction ->
+        RelevantMethodFetcher.ownMemberFunctions(conceptClass).forEach { memberFunction ->
             val returnTypeClassesInformation = classesInformationFromReturnType(memberFunction, CONCEPT_QUERY_FUNCTION_DESCRIPTION)
             val returnTypeCollectionClassInfo = QueryMethodUtil.collectionClassInfo(returnTypeClassesInformation)
             val returnTypeValueClassInfo = QueryMethodUtil.valueClassInfo(returnTypeClassesInformation)
@@ -138,7 +138,7 @@ object QueryMethodsValidator {
     }
 
     private fun validateQueryMethods(definitionClass: KClass<*>, classDescription: String) {
-        RelevantMethodFetcher.relevantQueryMethods(definitionClass).forEach { memberFunction ->
+        RelevantMethodFetcher.ownMemberFunctions(definitionClass).forEach { memberFunction ->
             FunctionCheckerUtil.checkHasNoValueParameters(memberFunction, classDescription)
             FunctionCheckerUtil.checkHasNoExtensionReceiverParameter(memberFunction, classDescription)
             FunctionCheckerUtil.checkHasNoTypeParameter(memberFunction, classDescription)

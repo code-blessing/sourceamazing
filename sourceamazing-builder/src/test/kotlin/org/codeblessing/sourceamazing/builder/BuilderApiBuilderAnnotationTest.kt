@@ -2,7 +2,10 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
@@ -27,7 +30,7 @@ class BuilderApiBuilderAnnotationTest {
     }
 
     @Builder
-    interface EmptyBuilder
+    private interface EmptyBuilder
 
     @Test
     fun `test create an empty builder should not fail`() {
@@ -196,14 +199,35 @@ class BuilderApiBuilderAnnotationTest {
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
-    @Disabled
-    fun `test builder class with ExpectedAliasFromSuperiorBuilder annotation should not fail`() {
-        // TODO that is only correct for nested builders
+    fun `test top level builder  with ExpectedAliasFromSuperiorBuilder should throw an exception`() {
         assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class) { builder ->
                     // do nothing
                 }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder()
+        private interface NestedBuilder
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(): NestedBuilder
+    }
+
+    @Test
+    @Disabled
+    fun `test nested builder with ExpectedAliasFromSuperiorBuilder should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation::class) { builder ->
+                // do nothing
             }
         }
     }

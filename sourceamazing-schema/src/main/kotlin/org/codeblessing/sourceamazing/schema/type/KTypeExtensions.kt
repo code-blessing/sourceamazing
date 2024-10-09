@@ -8,7 +8,7 @@ import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmErasure
 
-fun KType.receiverParameterType() = if(isExtensionFunction()) this.arguments.firstOrNull() else null
+fun KType.receiverParameter() = if(isExtensionFunction()) this.arguments.firstOrNull() else null
 
 fun KType.isExtensionFunction(): Boolean = annotations.any { it.annotationClass == ExtensionFunctionType::class }
 
