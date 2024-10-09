@@ -18,11 +18,11 @@ fun KFunction<*>.instanceParameter() = parameters.firstOrNull { it.kind == KPara
 fun KFunction<*>.valueParameters() = parameters.filter { it.kind == KParameter.Kind.VALUE }
 fun KFunction<*>.returnTypeOrNull() = if(returnType.isUnitType()) null else returnType
 
-fun KFunction<*>.valueParamsWithValues(args: List<Any?>): List<Triple<Int, KParameter, Any?>> {
+fun KFunction<*>.valueParamsWithValues(args: List<Any?>): List<Pair<KParameter, Any?>> {
     val functionValueParameters = valueParameters()
     require(functionValueParameters.size == args.size) {
         "Method $this parameter number (${functionValueParameters.size} and argument number (${args.size}) not matching."
     }
 
-    return functionValueParameters.mapIndexed { index, parameter -> Triple(index, parameter, args[index]) }
+    return functionValueParameters.mapIndexed { index, parameter -> Pair(parameter, args[index]) }
 }
