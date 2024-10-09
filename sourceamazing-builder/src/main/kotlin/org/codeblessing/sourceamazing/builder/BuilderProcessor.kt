@@ -13,7 +13,7 @@ class BuilderProcessor(): BuilderProcessorApi {
     override fun <I : Any> withBuilder(schemaContext: SchemaContext, builderClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
         BuilderValidator.validateBuilderMethods(builderClass)
         val schemaContextImplementation = schemaContext.toRevealedSchemaContext()
-        val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(schemaContextImplementation.conceptDataCollector, emptyMap()))
+        val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(builderClass, schemaContextImplementation.conceptDataCollector, emptyMap()))
         builderUsage(builderImplementation)
     }
 }

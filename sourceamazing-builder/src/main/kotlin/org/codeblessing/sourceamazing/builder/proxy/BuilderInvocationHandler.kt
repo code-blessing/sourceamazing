@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
@@ -13,7 +14,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassHelper.getBuilderClassFromInjectBuilderParameter
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassHelper.getBuilderClassFromReturnType
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
@@ -23,7 +25,6 @@ import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
 import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
@@ -32,25 +33,47 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotations
 
 class BuilderInvocationHandler(
+    builderClass: KClass<*>,
     private val conceptDataCollector: ConceptDataCollector,
     private val superiorAliases: Map<String, ConceptIdentifier>
 ): KotlinInvocationHandler()  {
 
-    override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
+    private val expectedAliasesFromSuperiorBuilder: Set<String> = builderClass.annotations
+        .filterIsInstance<ExpectedAliasFromSuperiorBuilder>()
+        .map { it.conceptAlias}
+        .toSet()
 
+
+    override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         if(function.hasAnnotation(BuilderMethod::class)){
             val myAliases = updateConceptDataCollector(function, arguments)
 
-            val builderForNextStep: Any = if(function.hasAnnotation(WithNewBuilder::class)) {
-                createNewBuilderProxy(function, conceptDataCollector, myAliases)
-            } else {
-                proxy // use same builder
+            val expectedSuperiorAliases = superiorAliases.filterKeys { key -> key in expectedAliasesFromSuperiorBuilder }
+            val expectedSuperiorAndMyAliases = mergeMaps(expectedSuperiorAliases, myAliases)
+
+            val subBuilderClassFromInjectBuilderAnnotation = getBuilderClassFromInjectBuilderParameter(function)
+            if(subBuilderClassFromInjectBuilderAnnotation != null) {
+                val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyAliases)
+                injectBuilderToParamMethod(function, arguments, builderForInjection)
+                return null // if a builder is injected, the method can not return a builder
             }
-            injectBuilderToParamMethod(function, arguments, builderForNextStep)
-            return builderForNextStep
+
+            val subBuilderClassFromReturnType = getBuilderClassFromReturnType(function)
+            if (subBuilderClassFromReturnType != null) {
+                // if the return type is the same class as the proxy , we could also return the proxy itself
+                val builderForReturnValue: Any = createNewBuilderProxy(subBuilderClassFromReturnType, conceptDataCollector, expectedSuperiorAndMyAliases)
+                return builderForReturnValue
+            }
+
+            // neither an injected nor a returned builder
+            return null
         }
 
         throw IllegalArgumentException("Method $function has not the supported annotations (${BuilderMethod::class.shortText()}.")
+    }
+
+    private fun mergeMaps(firstMap: Map<String, ConceptIdentifier>, secondDominantMap: Map<String, ConceptIdentifier>): Map<String, ConceptIdentifier> {
+        return firstMap.toMutableMap().also { it.putAll(secondDominantMap)}
     }
 
     private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<String, ConceptIdentifier> {
@@ -206,12 +229,11 @@ class BuilderInvocationHandler(
     }
 
     private fun createNewBuilderProxy(
-        method: KFunction<*>,
+        builderClass: KClass<*>,
         dataCollector: ConceptDataCollector,
         aliasToConceptIdMap: Map<String, ConceptIdentifier>
     ): Any {
-        val builderClass = getBuilderClazz(method)
-        return ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(dataCollector, aliasToConceptIdMap))
+        return ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(builderClass,dataCollector, aliasToConceptIdMap))
     }
 
     private fun injectBuilderToParamMethod(
@@ -232,14 +254,6 @@ class BuilderInvocationHandler(
             function(builder)
         }
     }
-
-    private fun getBuilderClazz(method: KFunction<*>): KClass<*> {
-        if(method.hasAnnotation(WithNewBuilder::class)) {
-            return method.getAnnotation<WithNewBuilder>().builderClass
-        }
-        throw IllegalStateException("No Annotation ${WithNewBuilder::class} found on method: $method")
-    }
-
 
     private fun getBuilderParameter(method: KFunction<*>, args: List<Any?>): Any? {
         method.valueParamsWithValues(args).forEach { (index, parameter) ->

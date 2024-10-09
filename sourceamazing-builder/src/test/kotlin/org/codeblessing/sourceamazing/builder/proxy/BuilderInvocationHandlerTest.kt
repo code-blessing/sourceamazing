@@ -155,7 +155,7 @@ class BuilderInvocationHandlerTest {
         BuilderValidator.validateBuilderMethods(RootBuilder::class)
         return ProxyCreator.createProxy(
             RootBuilder::class,
-            BuilderInvocationHandler(conceptDataCollector, emptyMap())
+            BuilderInvocationHandler(RootBuilder::class, conceptDataCollector, emptyMap())
         )
     }
 
@@ -163,6 +163,12 @@ class BuilderInvocationHandlerTest {
     fun `test data invocation with individual data collector in builder style`() {
         val conceptDataCollector = createDataCollector()
         val builderProxy = createBuilderProxy(conceptDataCollector)
+
+//        val firstStep = builderProxy.newPerson(jamesConceptIdentifier, firstname = "James")
+//        println("First step $firstStep")
+//        val secondStep = firstStep.age(18)
+//        println("Second step $secondStep")
+
 
         val james = builderProxy
             .newPerson(jamesConceptIdentifier, firstname = "James")

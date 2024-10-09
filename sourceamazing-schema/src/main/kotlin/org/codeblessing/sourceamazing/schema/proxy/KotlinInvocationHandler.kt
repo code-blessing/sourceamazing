@@ -11,13 +11,13 @@ abstract class KotlinInvocationHandler: InvocationHandler {
         val memberFunction = validatedMethod(methodOrNull)
         val arguments = validatedArguments(memberFunction, argsOrNull)
 
-        if(memberFunction == ::toString) {
+        if(memberFunction == Any::toString) {
             return this.toString()
         }
-        if(memberFunction == ::hashCode) {
+        if(memberFunction == Any::hashCode) {
             return this.hashCode()
         }
-        if(memberFunction == ::equals) {
+        if(memberFunction == Any::equals) {
             // make that sense to compare a proxy?
             return this == arguments.first()
         }
