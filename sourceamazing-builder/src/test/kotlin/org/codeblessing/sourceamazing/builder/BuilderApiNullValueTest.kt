@@ -50,18 +50,9 @@ class BuilderApiNullValueTest {
 
         @BuilderMethod
         @NewConcept(concept = TestSchema.TestConcept::class, declareConceptAlias = "testConcept")
-        fun newTestConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "testConcept")
-            conceptIdentifier: ConceptIdentifier?,
-            @SetFacetValue(facetToModify = TestSchema.TestConcept.NullableValueFacet::class, conceptToModifyAlias = "testConcept")
-            myNullableValue: String?,
-        )
-
-        @BuilderMethod
-        @NewConcept(concept = TestSchema.TestConcept::class, declareConceptAlias = "testConcept")
         fun newTestConceptIgnoringNullValues(
             @SetConceptIdentifierValue(conceptToModifyAlias = "testConcept")
-            conceptIdentifier: ConceptIdentifier?,
+            conceptIdentifier: ConceptIdentifier,
             @SetFacetValue(facetToModify = TestSchema.TestConcept.NullableValueFacet::class, conceptToModifyAlias = "testConcept")
             @IgnoreNullFacetValue
             myNullableValue: String?,
@@ -73,6 +64,7 @@ class BuilderApiNullValueTest {
         @WithNewBuilder(TestSubBuilder::class)
         fun newTestConceptWithSubDsl(
             @SetFacetValue(facetToModify = TestSchema.TestConcept.NullableValueFacet::class, conceptToModifyAlias = "testConcept")
+            @IgnoreNullFacetValue
             myNullableValue: String?,
             @InjectBuilder subBuilder: (TestSubBuilder.() -> Unit)?,
         )
@@ -93,29 +85,6 @@ class BuilderApiNullValueTest {
 
     private val firstId = ConceptIdentifier.of("First-Id")
     private val secondId = ConceptIdentifier.of("Second-Id")
-
-    @Test
-    fun `passing of null value arguments in builder method does fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
-                builder.newTestConcept(firstId,"Foo")
-                assertThrows(IllegalArgumentException::class.java) {
-                    builder.newTestConcept(secondId,null)
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `passing of null value as concept identifier in builder method does fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
-                assertThrows(IllegalArgumentException::class.java) {
-                    builder.newTestConcept(null,"Foo")
-                }
-            }
-        }
-    }
 
     @Test
     fun `test insertion of nullable value in builder method does not fail but ignore value`() {

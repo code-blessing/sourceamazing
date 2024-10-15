@@ -11,6 +11,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
@@ -20,6 +21,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -152,7 +154,7 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun createBuilderProxy(conceptDataCollector: ConceptDataCollector): RootBuilder {
-        BuilderValidator.validateBuilderMethods(RootBuilder::class)
+        BuilderValidator.validateBuilderMethods(RootBuilder::class, createSchemaAccess())
         return ProxyCreator.createProxy(
             RootBuilder::class,
             BuilderInvocationHandler(RootBuilder::class, conceptDataCollector, emptyMap())
@@ -247,6 +249,10 @@ class BuilderInvocationHandlerTest {
 
     private fun createDataCollector(): ConceptDataCollector {
         return ConceptDataCollector()
+    }
+
+    private fun createSchemaAccess(): SchemaAccess {
+        return SchemaCreator.createSchemaFromSchemaDefinitionClass(BuilderTestSchema::class)
     }
 
 }

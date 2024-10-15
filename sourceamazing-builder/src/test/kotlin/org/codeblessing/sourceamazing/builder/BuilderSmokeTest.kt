@@ -123,7 +123,7 @@ class BuilderSmokeTest {
 
             @BuilderMethod
             fun sex(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class)  sex: String,
+                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class)  sex: PersonSex,
             ): PersonConceptBuilder
 
             @BuilderMethod
@@ -189,7 +189,7 @@ class BuilderSmokeTest {
                 builder
                     .newPerson(jamesConceptIdentifier) {
                         firstnameAndAge(firstname = "James", age = 18)
-                        sex(PersonSex.MALE.toString())
+                        sex(PersonSex.MALE)
                         skill(cookingConceptIdentifier) {
                             description("Cooking for Dinner")
                             stillEnjoying(true)

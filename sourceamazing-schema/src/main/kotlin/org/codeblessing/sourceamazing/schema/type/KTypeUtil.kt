@@ -6,6 +6,7 @@ import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 
 object KTypeUtil {
+    private val KOTLIN_PRIMITIVE_ARRAY_TYPES = setOf(BooleanArray::class, IntArray::class, LongArray::class, FloatArray::class, DoubleArray::class, CharArray::class, ShortArray::class)
 
     data class KTypeClassInformation(
         val clazz: KClass<*>,
@@ -23,7 +24,7 @@ object KTypeUtil {
         return classInfos
     }
 
-    fun kTypeFromProjection(projection: KTypeProjection, validVariances: Set<KVariance> = setOf(KVariance.INVARIANT)): KType {
+    fun kTypeFromProjection(projection: KTypeProjection, validVariances: Set<KVariance> = setOf(KVariance.INVARIANT, KVariance.OUT)): KType {
         requireNotNull(projection.variance) {
             "type can not have a star-type projection for function type."
         }
@@ -44,6 +45,10 @@ object KTypeUtil {
         }
         require(classifier is KClass<*>) {
             "type classifier is not a class but was $classifier."
+        }
+
+        if(classifier in KOTLIN_PRIMITIVE_ARRAY_TYPES) {
+            return Array::class
         }
         return classifier
     }

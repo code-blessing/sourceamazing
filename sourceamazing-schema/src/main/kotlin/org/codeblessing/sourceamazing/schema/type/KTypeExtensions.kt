@@ -49,10 +49,10 @@ fun KType.typeKind(): KTypeKind {
             return KTypeKind.FUNCTION
         }
         is KClass<*> -> {
-            if(classifier.isSubclassOf(Function::class)) {
-                return KTypeKind.FUNCTION
+            return if(classifier.isSubclassOf(Function::class)) {
+                KTypeKind.FUNCTION
             } else {
-                return KTypeKind.KCLASS
+                KTypeKind.KCLASS
             }
         }
         else -> KTypeKind.OTHER_TYPE
