@@ -86,6 +86,14 @@ object BuilderClassHelper {
         }
 
         val injectionBuilderKType = methodParameter.type
+        if(injectionBuilderKType.isMarkedNullable) {
+            throw BuilderMethodSyntaxException(
+                method, "An injected builder " +
+                        "(parameter with ${InjectBuilder::class.annotationText()}) " +
+                        "can not be marked as nullable."
+            )
+        }
+
         if(injectionBuilderKType.returnTypeOrNull() != null) {
             throw BuilderMethodSyntaxException(
                 method, "An injected builder " +

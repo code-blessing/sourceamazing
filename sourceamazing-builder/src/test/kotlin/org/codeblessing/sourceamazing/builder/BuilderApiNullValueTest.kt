@@ -66,7 +66,7 @@ class BuilderApiNullValueTest {
             @SetFacetValue(facetToModify = TestSchema.TestConcept.NullableValueFacet::class, conceptToModifyAlias = "testConcept")
             @IgnoreNullFacetValue
             myNullableValue: String?,
-            @InjectBuilder subBuilder: (TestSubBuilder.() -> Unit)?,
+            @InjectBuilder subBuilder: (TestSubBuilder.() -> Unit),
         )
 
     }
@@ -112,17 +112,5 @@ class BuilderApiNullValueTest {
 
         val testConceptWithSecondNonNullValue = testConceptList[2]
         Assertions.assertEquals("Fraz", testConceptWithSecondNonNullValue.getNullableValue())
-    }
-
-
-    @Test
-    fun `test passing null for a sub-builder does fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = TestSchema::class) { schemaContext ->
-            assertThrows(IllegalStateException::class.java) {
-                BuilderApi.withBuilder(schemaContext, TestBuilder::class) { builder ->
-                    builder.newTestConceptWithSubDsl("Fez", null)
-                }
-            }
-        }
     }
 }

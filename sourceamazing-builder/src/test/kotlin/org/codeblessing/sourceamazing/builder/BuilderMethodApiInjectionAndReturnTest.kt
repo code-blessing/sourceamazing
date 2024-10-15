@@ -241,6 +241,27 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
+    private interface BuilderMethodWithBuilderInjectionWithNullableType {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        fun doSomething(
+            @InjectBuilder builder: (EmptyBuilder.() -> Unit)?,
+        )
+    }
+
+    @Test
+    fun `test builder injection with a nullable type should throw an exception`() {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithNullableType::class) { builder ->
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
     private interface BuilderMethodWithTwoBuilderInjectionParameter {
 
         @Suppress("UNUSED")
