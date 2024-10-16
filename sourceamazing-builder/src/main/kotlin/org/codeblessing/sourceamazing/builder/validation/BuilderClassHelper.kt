@@ -2,6 +2,7 @@ package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
@@ -72,8 +73,8 @@ object BuilderClassHelper {
                 .filterIndexed { index, _ -> index < lastParameterIndex }
                 .forEach { methodParameter ->
                     if(methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw BuilderMethodSyntaxException(
-                            method, "Only the last parameter of the method " +
+                        throw BuilderMethodParameterSyntaxException(
+                            method, methodParameter, "Only the last parameter of the method " +
                                     "can have the annotation ${InjectBuilder::class.annotationText()}."
                         )
                     }
@@ -87,16 +88,16 @@ object BuilderClassHelper {
 
         val injectionBuilderKType = methodParameter.type
         if(injectionBuilderKType.isMarkedNullable) {
-            throw BuilderMethodSyntaxException(
-                method, "An injected builder " +
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "An injected builder " +
                         "(parameter with ${InjectBuilder::class.annotationText()}) " +
                         "can not be marked as nullable."
             )
         }
 
         if(injectionBuilderKType.returnTypeOrNull() != null) {
-            throw BuilderMethodSyntaxException(
-                method, "An injected builder " +
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "An injected builder " +
                         "(parameter with ${InjectBuilder::class.annotationText()}) " +
                         "can not have a return type."
             )
@@ -105,8 +106,8 @@ object BuilderClassHelper {
         val receiverParameterType = injectionBuilderKType.receiverParameter()
 
         if(receiverParameterType == null || injectionBuilderKType.valueParameters().isNotEmpty()) {
-            throw BuilderMethodSyntaxException(
-                method, "An injected builder " +
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "An injected builder " +
                         "(parameter with ${InjectBuilder::class.annotationText()}) " +
                         "must have as sole parameter a receiver parameter (extension function) type." +
                         "Its declaration must be \'<Builder>.() -> Unit\'."
@@ -116,22 +117,22 @@ object BuilderClassHelper {
         val receiverParameterKType = try {
             KTypeUtil.kTypeFromProjection(receiverParameterType)
         } catch (ex: IllegalStateException) {
-            throw BuilderMethodSyntaxException(
-                method, "The receiver type of the injected builder is invalid." +
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "The receiver type of the injected builder is invalid." +
                         "${ex.message}"
             )
         }
         if(receiverParameterKType.isMarkedNullable) {
-            throw BuilderMethodSyntaxException(
-                method, "The receiver type of the injected builder can not be nullable."
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "The receiver type of the injected builder can not be nullable."
             )
         }
 
         return try {
             KTypeUtil.classFromType(receiverParameterKType)
         } catch (ex: IllegalStateException) {
-            throw BuilderMethodSyntaxException(
-                method, "The receiver type of the injected builder is invalid." +
+            throw BuilderMethodParameterSyntaxException(
+                method, methodParameter, "The receiver type of the injected builder is invalid." +
                         "${ex.message}"
             )
         }
