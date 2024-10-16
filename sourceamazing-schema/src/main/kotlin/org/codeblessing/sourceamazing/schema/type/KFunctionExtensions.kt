@@ -1,9 +1,7 @@
 package org.codeblessing.sourceamazing.schema.type
 
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.full.findAnnotations
 
 val kotlinAnyClassMethodNames = setOf(
     Any::equals.name,

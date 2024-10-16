@@ -20,7 +20,6 @@ import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BuilderApiNullValueTest {

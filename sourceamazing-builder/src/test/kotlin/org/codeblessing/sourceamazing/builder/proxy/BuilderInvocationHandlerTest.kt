@@ -166,12 +166,6 @@ class BuilderInvocationHandlerTest {
         val conceptDataCollector = createDataCollector()
         val builderProxy = createBuilderProxy(conceptDataCollector)
 
-//        val firstStep = builderProxy.newPerson(jamesConceptIdentifier, firstname = "James")
-//        println("First step $firstStep")
-//        val secondStep = firstStep.age(18)
-//        println("Second step $secondStep")
-
-
         val james = builderProxy
             .newPerson(jamesConceptIdentifier, firstname = "James")
             .age(18)
