@@ -150,7 +150,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongClassStructureSyntaxException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoSchemaAnnotationsInHierarchyClasses::class) {
                 // do nothing
             }
@@ -165,7 +165,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema with concept and schema annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongClassStructureSyntaxException::class.java) {
+        assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAndSchemaAnnotationsInHierarchyClasses::class) {
                 // do nothing
             }

@@ -32,8 +32,8 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoPro
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
-import org.codeblessing.sourceamazing.schema.type.getAnnotation
-import org.codeblessing.sourceamazing.schema.type.hasAnnotation
+import org.codeblessing.sourceamazing.schema.type.getAnnotationIncludingSuperclasses
+import org.codeblessing.sourceamazing.schema.type.hasAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.schema.type.isEnum
 import kotlin.reflect.KClass
 
@@ -47,7 +47,7 @@ object SchemaCreator {
         validateSchemaClass(schemaDefinitionClass)
         QueryMethodsValidator.validateQueryMethodsOfSchema(schemaDefinitionClass)
 
-        val conceptClasses = schemaDefinitionClass.getAnnotation<Schema>().concepts.toList()
+        val conceptClasses = schemaDefinitionClass.getAnnotationIncludingSuperclasses<Schema>().concepts.toList()
         validateConceptClasses(conceptClasses)
 
         val concepts: MutableMap<ConceptName, ConceptSchema> = mutableMapOf()
@@ -65,7 +65,7 @@ object SchemaCreator {
                 conceptSimpleNames.add(conceptName.simpleName())
             }
 
-            val facetClasses = conceptClass.getAnnotation<Concept>().facets.toList()
+            val facetClasses = conceptClass.getAnnotationIncludingSuperclasses<Concept>().facets.toList()
             validateFacetClasses(facetClasses)
             val facets: MutableList<FacetSchema> = mutableListOf()
             val facetSimpleNames: MutableSet<String> = mutableSetOf()
@@ -169,8 +169,8 @@ object SchemaCreator {
         facetName: FacetName,
         facetClass: KClass<*>,
     ): UnvalidatedFacetSchema {
-        return if(facetClass.hasAnnotation(StringFacet::class)) {
-            val stringFacet = facetClass.getAnnotation(StringFacet::class)
+        return if(facetClass.hasAnnotationIncludingSuperclasses(StringFacet::class)) {
+            val stringFacet = facetClass.getAnnotationIncludingSuperclasses(StringFacet::class)
             UnvalidatedFacetSchema(
                 facetName = facetName,
                 facetType = FacetType.TEXT,
@@ -180,8 +180,8 @@ object SchemaCreator {
                 referencedConceptClasses = emptyList(),
 
             )
-        } else if(facetClass.hasAnnotation(BooleanFacet::class)) {
-            val booleanFacet = facetClass.getAnnotation(BooleanFacet::class)
+        } else if(facetClass.hasAnnotationIncludingSuperclasses(BooleanFacet::class)) {
+            val booleanFacet = facetClass.getAnnotationIncludingSuperclasses(BooleanFacet::class)
             UnvalidatedFacetSchema(
                 facetName = facetName,
                 facetType = FacetType.BOOLEAN,
@@ -191,8 +191,8 @@ object SchemaCreator {
                 referencedConceptClasses = emptyList(),
 
                 )
-        } else if(facetClass.hasAnnotation(IntFacet::class)) {
-            val intFacet = facetClass.getAnnotation(IntFacet::class)
+        } else if(facetClass.hasAnnotationIncludingSuperclasses(IntFacet::class)) {
+            val intFacet = facetClass.getAnnotationIncludingSuperclasses(IntFacet::class)
             UnvalidatedFacetSchema(
                 facetName = facetName,
                 facetType = FacetType.NUMBER,
@@ -202,8 +202,8 @@ object SchemaCreator {
                 referencedConceptClasses = emptyList(),
 
                 )
-        } else if(facetClass.hasAnnotation(EnumFacet::class)) {
-            val enumFacet = facetClass.getAnnotation(EnumFacet::class)
+        } else if(facetClass.hasAnnotationIncludingSuperclasses(EnumFacet::class)) {
+            val enumFacet = facetClass.getAnnotationIncludingSuperclasses(EnumFacet::class)
             UnvalidatedFacetSchema(
                 facetName = facetName,
                 facetType = FacetType.TEXT_ENUMERATION,
@@ -213,8 +213,8 @@ object SchemaCreator {
                 referencedConceptClasses = emptyList(),
 
                 )
-        } else if(facetClass.hasAnnotation(ReferenceFacet::class)) {
-            val referenceFacet = facetClass.getAnnotation(ReferenceFacet::class)
+        } else if(facetClass.hasAnnotationIncludingSuperclasses(ReferenceFacet::class)) {
+            val referenceFacet = facetClass.getAnnotationIncludingSuperclasses(ReferenceFacet::class)
             UnvalidatedFacetSchema(
                 facetName = facetName,
                 facetType = FacetType.REFERENCE,

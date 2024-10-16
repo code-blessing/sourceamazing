@@ -24,6 +24,7 @@ import org.codeblessing.sourceamazing.schema.type.KClassUtil
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
+import org.codeblessing.sourceamazing.schema.type.getAnnotationIncludingSuperclasses
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
@@ -129,9 +130,9 @@ object QueryMethodsValidator {
         } else if (queryFacetValueClass.hasAnnotation<IntFacet>()) {
             return listOf(Any::class, Int::class)
         } else if (queryFacetValueClass.hasAnnotation<EnumFacet>()) {
-            return listOf(Any::class, String::class, queryFacetValueClass.getAnnotation<EnumFacet>().enumerationClass)
+            return listOf(Any::class, String::class, queryFacetValueClass.getAnnotationIncludingSuperclasses<EnumFacet>().enumerationClass)
         } else if(queryFacetValueClass.hasAnnotation<ReferenceFacet>()) {
-            val referencedConcepts = queryFacetValueClass.getAnnotation<ReferenceFacet>().referencedConcepts.toList()
+            val referencedConcepts = queryFacetValueClass.getAnnotationIncludingSuperclasses<ReferenceFacet>().referencedConcepts.toList()
             return KClassUtil.findAllCommonBaseClasses(referencedConcepts).toList()
         }
         throw IllegalStateException("Facet type not supported.")

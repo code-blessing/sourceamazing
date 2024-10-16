@@ -15,7 +15,6 @@ import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxExcept
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class BuilderApiBuilderAnnotationTest {
@@ -223,7 +222,6 @@ class BuilderApiBuilderAnnotationTest {
     }
 
     @Test
-    @Disabled
     fun `test nested builder with ExpectedAliasFromSuperiorBuilder should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
             BuilderApi.withBuilder(schemaContext, BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation::class) { builder ->
@@ -239,7 +237,6 @@ class BuilderApiBuilderAnnotationTest {
         ParentBuilderWithTwoBuilderAnnotationsInHierarchyClasses
 
     @Test
-    @Disabled
     fun `test builder with two builder annotations in hierarchy should throw an exception`() {
         assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
@@ -257,7 +254,6 @@ class BuilderApiBuilderAnnotationTest {
         ParentClassWithSchemaAnnotation
 
     @Test
-    @Disabled
     fun `test builder with schema annotations in hierarchy should throw an exception`() {
         assertThrows(WrongAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->

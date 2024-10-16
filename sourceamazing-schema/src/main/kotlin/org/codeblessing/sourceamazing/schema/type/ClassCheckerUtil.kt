@@ -28,13 +28,13 @@ object ClassCheckerUtil {
     }
 
     fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.hasAnnotation(annotation)) {
+        if(!classToInspect.hasAnnotationIncludingSuperclasses(annotation)) {
             throw MissingAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' must have an annotation of type '${annotation.annotationText()}'.")
         }
     }
 
     fun checkHasExactNumberOfAnnotations(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String, numberOf: Int) {
-        if(classToInspect.getNumberOfAnnotation(annotation) > numberOf) {
+        if(classToInspect.getNumberOfAnnotationIncludingSuperclasses(annotation) > numberOf) {
             throw WrongAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' can not have more than $numberOf annotation of type '${annotation.annotationText()}'.")
         }
     }
@@ -44,7 +44,7 @@ object ClassCheckerUtil {
     }
 
     fun checkHasOnlyAnnotations(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
-        classToInspect.annotations
+        classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
             .forEach { annotationOnClass ->
                 if(!permittedAnnotations.contains(annotationOnClass.annotationClass)) {
@@ -54,7 +54,7 @@ object ClassCheckerUtil {
     }
 
     fun checkHasExactlyOneOfAnnotation(annotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
-        val numberOfAnnotations = annotations.count { annotation -> classToInspect.hasAnnotation(annotation) }
+        val numberOfAnnotations = annotations.count { annotation -> classToInspect.hasAnnotationIncludingSuperclasses(annotation) }
 
         if(numberOfAnnotations < 1) {
             throw MissingAnnotationSyntaxException("$classDescription '${classToInspect.longText()}' must have one of the annotations ${annotations.joinToString { it.annotationText() }}.")

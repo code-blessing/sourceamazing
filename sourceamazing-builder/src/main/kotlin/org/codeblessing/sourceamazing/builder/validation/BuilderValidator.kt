@@ -36,7 +36,6 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyA
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
 import org.codeblessing.sourceamazing.schema.type.KTypeKind
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
-import org.codeblessing.sourceamazing.schema.type.classifierAsFunction
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
 import org.codeblessing.sourceamazing.schema.type.typeKind
 import kotlin.reflect.KClass
@@ -413,7 +412,7 @@ object BuilderValidator {
 
         val parameterWasWrongDescription = parameterWasWrongDescription(methodParameter)
         val detailDescription = when(methodParamType.typeKind()) {
-            KTypeKind.FUNCTION -> "Type can only be a class but was '${methodParamType.classifierAsFunction()}'."
+            KTypeKind.FUNCTION -> "Type can only be a class but was '${methodParamType}'."
             KTypeKind.OTHER_TYPE, KTypeKind.TYPE_PARAMETER -> "Type can only be a class but was '${methodParamType}'."
             else -> throw IllegalStateException("Type '${methodParamType.typeKind()}' not supported.")
         }

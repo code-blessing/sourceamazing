@@ -58,17 +58,3 @@ fun KType.typeKind(): KTypeKind {
         else -> KTypeKind.OTHER_TYPE
     }
 }
-
-fun KType.classifierAsClass(): KClass<*> {
-    require(typeKind() == KTypeKind.KCLASS) {
-        "type was not a classifier of ${typeKind()}"
-    }
-    return requireNotNull(classifier) as KClass<*>
-}
-
-fun KType.classifierAsFunction(): Function<*> {
-    require(typeKind() == KTypeKind.FUNCTION) {
-        "type was not a classifier of ${typeKind()}"
-    }
-    return requireNotNull(classifier) as Function<*>
-}
