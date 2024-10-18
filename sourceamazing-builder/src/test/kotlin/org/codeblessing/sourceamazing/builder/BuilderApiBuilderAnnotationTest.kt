@@ -10,7 +10,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
@@ -69,7 +69,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test unannotated builder class should throw an exception`() {
-        assertThrows(MissingAnnotationSyntaxException::class.java) {
+        assertThrows(MissingClassAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, UnannotatedBuilder::class) { builder ->
                     // do nothing

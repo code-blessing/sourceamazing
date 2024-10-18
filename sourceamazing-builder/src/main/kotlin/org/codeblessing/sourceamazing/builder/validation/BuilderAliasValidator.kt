@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
@@ -47,12 +48,7 @@ object BuilderAliasValidator {
 
             if(newConceptAliases.contains(conceptAlias) || importedConceptAliases.contains(conceptAlias)) {
                 val allAlreadyUsedConceptAliases = newConceptAliases + importedConceptAliases
-                throw BuilderMethodSyntaxException(
-                    method, "The alias '$conceptAlias' introduced " +
-                            "with the annotation ${NewConcept::class.annotationText()} for concept ${conceptClazz.shortText()} " +
-                            "is already used. All already used alias names are ${allAlreadyUsedConceptAliases}. " +
-                            "Choose another alias name. ${defaultAliasHint(conceptAlias)}"
-                )
+                throw BuilderMethodSyntaxException(method, BuilderErrorCode.ALIAS_IS_ALREADY_USED, conceptAlias, conceptClazz.shortText(), allAlreadyUsedConceptAliases, defaultAliasHint(conceptAlias))
 
             } else {
                 newConceptAliases.add(conceptAlias)
@@ -69,13 +65,7 @@ object BuilderAliasValidator {
             val defaultAliasHint = conceptAliasesWithoutConceptIdDeclaration
                 .map { conceptAlias -> defaultAliasHint(conceptAlias) }
                 .firstOrNull { it.isNotBlank() } ?: ""
-            throw BuilderMethodSyntaxException(
-                method, "The concept with alias " +
-                        "$conceptAliasesWithoutConceptIdDeclaration have no corresponding " +
-                        "concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
-                        "or ${SetRandomConceptIdentifierValue::class.annotationText()} to define " +
-                        "a concept identifier. $defaultAliasHint"
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER, conceptAliasesWithoutConceptIdDeclaration, defaultAliasHint)
         }
     }
 
@@ -102,11 +92,7 @@ object BuilderAliasValidator {
             val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
 
             if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                throw BuilderMethodSyntaxException(
-                    method, "The alias '$conceptAlias' used " +
-                            "with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()} " +
-                            "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
-                )
+                throw BuilderMethodSyntaxException(method, BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE, conceptAlias, defaultAliasHint(conceptAlias))
             } else {
                 usedConceptAliasToSetConceptIdentifier.add(conceptAlias)
             }
@@ -116,11 +102,7 @@ object BuilderAliasValidator {
             parameter.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdValueAnnotation ->
                 val conceptAlias = conceptIdValueAnnotation.conceptToModifyAlias
                 if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                    throw BuilderMethodSyntaxException(
-                        method, "The alias '$conceptAlias' used " +
-                                "with the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
-                                "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
-                    )
+                    throw BuilderMethodSyntaxException(method, BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE, conceptAlias,defaultAliasHint(conceptAlias))
                 } else {
                     usedConceptAliasToSetConceptIdentifier.add(conceptAlias)
                 }
@@ -133,12 +115,7 @@ object BuilderAliasValidator {
         usedAliasesPerAnnotation.forEach { (annotationClazz, conceptAliases) ->
             conceptAliases.forEach { conceptAlias ->
                 if(!knownConceptAlias.contains(conceptAlias)) {
-                    throw BuilderMethodSyntaxException(
-                        method, "The alias '$conceptAlias' used " +
-                                "with the annotation ${annotationClazz.annotationText()} " +
-                                "is unknown. Choose a known alias name (${knownConceptAlias}) or declare an alias with " +
-                                "${NewConcept::class.annotationText()}. ${defaultAliasHint(conceptAlias)}"
-                    )
+                    throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_ALIAS, conceptAlias, annotationClazz.annotationText(), knownConceptAlias, defaultAliasHint(conceptAlias))
                 }
             }
         }

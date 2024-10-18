@@ -1,3 +1,5 @@
 package org.codeblessing.sourceamazing.schema.exceptions
 
-abstract class SyntaxException(msg: String) : RuntimeException(msg)
+import org.codeblessing.sourceamazing.schema.ErrorCode
+
+abstract class SyntaxException(val errorCode: ErrorCode, msg: String) : RuntimeException(msg)

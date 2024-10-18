@@ -9,14 +9,12 @@ import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -85,7 +83,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning another builder without Builder annotation should throw an exception`() {
-        assertThrows(MissingAnnotationSyntaxException::class.java) {
+        assertThrows(MissingClassAnnotationSyntaxException::class.java) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodReturningOtherBuildersWithoutBuilderAnnotation::class) { builder ->
                     // do nothing
@@ -106,7 +104,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning no builder but declaring a builder with WithNewBuilder annotation should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_USED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class) { builder ->
                     // do nothing
@@ -130,7 +128,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method having different return type builder and WithNewBuilder annotation declared should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation::class) { builder ->
                     // do nothing
@@ -188,7 +186,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection not having the extension function parameter should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithoutExtensionFunction::class) { builder ->
                     // do nothing
@@ -210,7 +208,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection not passing a function function parameter should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithObjectInsteadOfFunction::class) { builder ->
                     // do nothing
@@ -231,7 +229,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection having value parameters should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithValueParameters::class) { builder ->
                     // do nothing
@@ -253,7 +251,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection returning a builder should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithReturnType::class) { builder ->
                     // do nothing
@@ -274,7 +272,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection with a nullable type should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithNullableType::class) { builder ->
                     // do nothing
@@ -296,7 +294,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method with more than one injected builder should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithTwoBuilderInjectionParameter::class) { builder ->
                     // do nothing
@@ -319,7 +317,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder inject annotation on a non-last parameter should throw an error`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionOnNonLastParam::class) { builder ->
                     // do nothing
@@ -341,7 +339,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and InjectBuilder annotation on same method should throw an error`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue::class) { builder ->
                     // do nothing
@@ -361,7 +359,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder inject and returned builder should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionAndReturnTypeBuilder::class) { builder ->
                     // do nothing
@@ -385,7 +383,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder inject with another builder in WithNewBuilder annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes::class) { builder ->
                     // do nothing

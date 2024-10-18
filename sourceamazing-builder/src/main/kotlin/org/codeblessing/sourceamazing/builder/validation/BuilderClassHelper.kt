@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.receiverParameter
 import org.codeblessing.sourceamazing.schema.type.returnTypeOrNull
@@ -29,19 +29,11 @@ object BuilderClassHelper {
         }
 
         if(subBuilderClassFromReturnType != null && subBuilderClassFromInjectBuilderAnnotation != null) {
-            throw BuilderMethodSyntaxException(
-                method, "A builder method can not have an injected builder (with " +
-                        "annotation ${InjectBuilder::class.annotationText()}) " +
-                        "and at the same time a builder as return type."
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME)
         }
 
         if(subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null) {
-            throw BuilderMethodSyntaxException(
-                method, "The builder class declared within the annotation " +
-                        "${WithNewBuilder::class.annotationText()} must be the " +
-                        "same as the return type or the injection type."
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_USED)
         }
 
         val subBuilderClass = subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation
@@ -49,13 +41,7 @@ object BuilderClassHelper {
 
         if(subBuilderClassFromNewBuilderAnnotation != null) {
             if (subBuilderClassFromNewBuilderAnnotation != subBuilderClass) {
-                throw BuilderMethodSyntaxException(
-                    method, "The builder class declared within the annotation " +
-                            "${WithNewBuilder::class.annotationText()} must be the " +
-                            "same as the return type or the injected builder type " +
-                            "of the method."
-                )
-
+                throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME)
             }
         }
 
@@ -73,10 +59,7 @@ object BuilderClassHelper {
                 .filterIndexed { index, _ -> index < lastParameterIndex }
                 .forEach { methodParameter ->
                     if(methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw BuilderMethodParameterSyntaxException(
-                            method, methodParameter, "Only the last parameter of the method " +
-                                    "can have the annotation ${InjectBuilder::class.annotationText()}."
-                        )
+                        throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION)
                     }
                 }
         }
@@ -88,53 +71,32 @@ object BuilderClassHelper {
 
         val injectionBuilderKType = methodParameter.type
         if(injectionBuilderKType.isMarkedNullable) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "An injected builder " +
-                        "(parameter with ${InjectBuilder::class.annotationText()}) " +
-                        "can not be marked as nullable."
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE)
         }
 
         if(injectionBuilderKType.returnTypeOrNull() != null) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "An injected builder " +
-                        "(parameter with ${InjectBuilder::class.annotationText()}) " +
-                        "can not have a return type."
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE)
         }
 
         val receiverParameterType = injectionBuilderKType.receiverParameter()
 
         if(receiverParameterType == null || injectionBuilderKType.valueParameters().isNotEmpty()) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "An injected builder " +
-                        "(parameter with ${InjectBuilder::class.annotationText()}) " +
-                        "must have as sole parameter a receiver parameter (extension function) type." +
-                        "Its declaration must be \'<Builder>.() -> Unit\'."
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_PARAMS)
         }
 
         val receiverParameterKType = try {
             KTypeUtil.kTypeFromProjection(receiverParameterType)
         } catch (ex: IllegalStateException) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "The receiver type of the injected builder is invalid." +
-                        "${ex.message}"
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM, ex.message ?: "")
         }
         if(receiverParameterKType.isMarkedNullable) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "The receiver type of the injected builder can not be nullable."
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_NOT_NULLABLE_RECEIVER_PARAM)
         }
 
         return try {
             KTypeUtil.classFromType(receiverParameterKType)
         } catch (ex: IllegalStateException) {
-            throw BuilderMethodParameterSyntaxException(
-                method, methodParameter, "The receiver type of the injected builder is invalid." +
-                        "${ex.message}"
-            )
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM, ex.message ?: "")
         }
     }
 
@@ -149,19 +111,19 @@ object BuilderClassHelper {
         val classesInformationFromKType = try {
             KTypeUtil.classesInformationFromKType(method.returnType)
         } catch (ex: IllegalStateException) {
-            throw BuilderMethodSyntaxException(method, "The return type of a builder method can only return a builder class. ${ex.message}")
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_MUST_RETURN_BUILDER_CLASS, ex.message ?:"")
         }
         if(classesInformationFromKType.isEmpty()) {
             return null
         }
 
         if(classesInformationFromKType.size > 1) {
-            throw BuilderMethodSyntaxException(method, "The return type of a builder method can only return a builder class.")
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_MUST_RETURN_BUILDER_CLASS, "")
         }
 
         val classInformation = classesInformationFromKType.first()
         if(classInformation.isValueNullable) {
-            throw BuilderMethodSyntaxException(method, "The return type of a builder method can not be nullable.")
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.BUILDER_RETURNED_CAN_NOT_BE_NULLABLE)
         }
 
         return classInformation.clazz

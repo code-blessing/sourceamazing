@@ -14,7 +14,6 @@ import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongFunctionSyntaxException
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.*
 
@@ -69,7 +68,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with an unannotated query method should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertSyntaxException(SyntaxException::class, SchemaErrorCode.NO_FACET_TO_QUERY) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnannotatedQueryMethod::class) {
                 // do nothing
             }
@@ -94,7 +93,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with an query method having a method body should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertSyntaxException(SyntaxException::class, SchemaErrorCode.FUNCTION_MUST_BE_ABSTRACT) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithDefaultQueryMethod::class) {
                 // do nothing
             }
@@ -189,7 +188,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with a invalid annotated concept id query method returning a list collection should return with exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.RETURN_TYPE_COLLECTION_TO_FETCH_CONCEPT_IDENTIFIER_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidCollectionConceptIdAnnotatedQueryMethods::class) {
                 // do nothing
             }
@@ -211,7 +210,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with a query method without return type should return with exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertSyntaxException(SyntaxException::class, SchemaErrorCode.FUNCTION_MUST_HAVE_RETURN_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodWithoutReturnType::class) {
                 // do nothing
             }
@@ -231,7 +230,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with a invalid annotated concept id query method returning an int instead of string should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.RETURN_TYPE_TO_FETCH_CONCEPT_IDENTIFIER_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithInvalidIntConceptIdAnnotatedQueryMethods::class) {
                 // do nothing
             }
@@ -257,7 +256,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with a unsupported facet class should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertSyntaxException(SyntaxException::class, SchemaErrorCode.INVALID_FACET_TO_QUERY) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnsupportedFacet::class) {
                 // do nothing
             }
@@ -558,7 +557,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method having parameters should throw an exception`() {
-        assertThrows(SyntaxException::class.java) {
+        assertSyntaxException(SyntaxException::class, SchemaErrorCode.FUNCTION_CAN_NOT_HAVE_VALUE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacetMethodHavingParameter::class) {
                 // do nothing
             }
@@ -583,7 +582,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method having extension function parameter should throw an exception`() {
-        assertThrows(WrongClassStructureSyntaxException::class.java) {
+        assertSyntaxException(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacetMethodHavingExtensionFunctionParameter::class) {
                 // do nothing
             }
@@ -606,7 +605,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with property should throw an exception`() {
-        assertThrows(WrongClassStructureSyntaxException::class.java) {
+        assertSyntaxException(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_CANNOT_HAVE_PROPERTIES) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithProperty::class) {
                 // do nothing
             }
@@ -630,7 +629,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning wrong facet type list should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FACET_RETURN_TYPE_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongFacetTypeList::class) {
                 // do nothing
             }
@@ -654,7 +653,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning wrong facet type should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FACET_RETURN_TYPE_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongFacetType::class) {
                 // do nothing
             }
@@ -678,7 +677,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning wrong facet collection type should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongCollectionType::class) {
                 // do nothing
             }
@@ -702,7 +701,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning collection with nullable values should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningNullableListValue::class) {
                 // do nothing
             }
@@ -726,7 +725,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning collection with generic collection type parameter should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FUNCTION_HAVE_TYPE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningGenericParameterListValue::class) {
                 // do nothing
             }
@@ -750,7 +749,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with method returning value with generic type parameter should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FUNCTION_HAVE_TYPE_PARAMS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningGenericParameterValue::class) {
                 // do nothing
             }
@@ -785,7 +784,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with query method fetching only one of multiple allowed concepts should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FACET_RETURN_TYPE_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod::class) {
                 // do nothing
             }
@@ -820,7 +819,7 @@ class SchemaApiConceptQueryTest {
 
     @Test
     fun `test concept with query method fetching an not referenced concept should throw an exception`() {
-        assertThrows(WrongFunctionSyntaxException::class.java) {
+        assertSyntaxException(WrongFunctionSyntaxException::class, SchemaErrorCode.FACET_RETURN_TYPE_NOT_SUPPORTED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnreferencedConceptQueryMethod::class) {
                 // do nothing
             }

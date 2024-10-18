@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
+import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
@@ -43,20 +44,16 @@ object QueryMethodsValidator {
 
         RelevantMethodFetcher.ownMemberFunctions(schemaDefinitionClass).forEach { memberFunction ->
             val queryConceptClasses = memberFunction.findAnnotation<QueryConcepts>()?.conceptClasses
-                ?: throw WrongConceptQuerySchemaSyntaxException("The method is missing " +
-                        "the annotation ${QueryConcepts::class.shortText()}. Method: $memberFunction")
+                ?: throw WrongConceptQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.MISSING_QUERY_CONCEPT_ANNOTATION)
 
             if(queryConceptClasses.isEmpty()) {
-                throw WrongConceptQuerySchemaSyntaxException("The method has an empty list " +
-                        "for ${QueryConcepts::conceptClasses.name} on ${QueryConcepts::class.shortText()}. Method: $memberFunction")
+                throw WrongConceptQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.NO_CONCEPTS_TO_QUERY)
             }
 
 
             queryConceptClasses.forEach { queryConceptClass ->
                 if(!possibleSchemaConceptClasses.contains(queryConceptClass)) {
-                    throw WrongConceptQuerySchemaSyntaxException("The method has a invalid " +
-                            "concept class '${queryConceptClass.longText()}'. Valid concept classes " +
-                            "are ${possibleSchemaConceptClasses.map { it.longText() }}. Method: $memberFunction")
+                    throw WrongConceptQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.INVALID_CONCEPT_TO_QUERY, queryConceptClass.longText(), possibleSchemaConceptClasses.map { it.longText() })
                 }
             }
 
@@ -64,7 +61,7 @@ object QueryMethodsValidator {
             val returnTypeValueClassInfo = QueryMethodUtil.valueClassInfo(returnTypeClassesInformation)
 
             if(!isInheritanceCompatibleClass(returnTypeValueClassInfo.clazz, queryConceptClasses)) {
-                throw WrongFunctionSyntaxException(memberFunction, "The return type class ${returnTypeValueClassInfo.clazz} must be inheritable for all concepts ${queryConceptClasses.toList()}.")
+                throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_MUST_BE_INHERITABLE, returnTypeValueClassInfo.clazz.longText(), queryConceptClasses.toList().map { it.longText() })
             }
         }
     }
@@ -83,40 +80,24 @@ object QueryMethodsValidator {
                 val queryFacetValue = memberFunction.getAnnotation<QueryFacetValue>()
                 val queryFacetValueClass = queryFacetValue.facetClass
                 if(!facetClassesOfThisConcept.contains(queryFacetValueClass)) {
-                    throw WrongFacetQuerySchemaSyntaxException("The method has a invalid " +
-                            "facet class ${queryFacetValueClass.shortText()}. Valid facet classes " +
-                            "are ${facetClassesOfThisConcept.map { it.shortText() }}. Method: $memberFunction")
+                    throw WrongFacetQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.INVALID_FACET_TO_QUERY, queryFacetValueClass.shortText(), facetClassesOfThisConcept.map { it.shortText() })
                 }
 
                 val supportedValueTypes = getValueTypeForFacet(queryFacetValue)
                 if(!supportedValueTypes.contains(returnTypeValueClassInfo.clazz)) {
-                    throw WrongFunctionSyntaxException(memberFunction,
-                        "The method return type for the facet $queryFacetValueClass was ${returnTypeValueClassInfo.clazz}," +
-                                "which is not a supported value type. " +
-                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. "
-                    )
-
+                    throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.FACET_RETURN_TYPE_NOT_SUPPORTED, queryFacetValueClass.longText(), returnTypeValueClassInfo.clazz.longText(), supportedValueTypes.toList().map { it.shortText() })
                 }
             } else if(memberFunction.hasAnnotation<QueryConceptIdentifierValue>()) {
                 if(returnTypeCollectionClassInfo != null) {
-                    throw WrongFunctionSyntaxException(memberFunction,
-                        "The method return type for a method to fetch a concept identifier " +
-                                "can not return a collection."
-                    )
+                    throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_COLLECTION_TO_FETCH_CONCEPT_IDENTIFIER_NOT_SUPPORTED)
                 }
 
                 val supportedValueTypes = listOf<KClass<*>>(Any::class, String::class, ConceptIdentifier::class)
                 if(!supportedValueTypes.contains(returnTypeValueClassInfo.clazz)) {
-                    throw WrongFunctionSyntaxException(memberFunction,
-                        "The method return type for a method to fetch a concept identifier " +
-                                "was ${returnTypeValueClassInfo.clazz}, which is not a supported value type." +
-                                "Valid return types are ${supportedValueTypes.map { it.shortText() }}. "
-                    )
+                    throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_TO_FETCH_CONCEPT_IDENTIFIER_NOT_SUPPORTED, returnTypeValueClassInfo.clazz.longText(), supportedValueTypes.toList().map { it.shortText() })
                 }
             } else {
-                throw WrongFacetQuerySchemaSyntaxException("The method is missing " +
-                        "one of the annotations ${QueryFacetValue::class.shortText()} " +
-                        "or ${QueryConceptIdentifierValue::class.shortText()}. Method: $memberFunction")
+                throw WrongFacetQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.NO_FACET_TO_QUERY)
             }
         }
     }
@@ -152,11 +133,11 @@ object QueryMethodsValidator {
 
             if(returnTypeCollectionClassInfo != null) {
                 if(supportedCollectionClasses.none { returnTypeCollectionClassInfo.clazz == it  }) {
-                    throw WrongFunctionSyntaxException(memberFunction, "The collection type of the function must be one of $supportedCollectionClasses but was ${returnTypeCollectionClassInfo.clazz}.")
+                    throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS, supportedCollectionClasses, returnTypeCollectionClassInfo.clazz.longText())
                 }
 
                 if(returnTypeValueClassInfo.isValueNullable) {
-                    throw WrongFunctionSyntaxException(memberFunction, "Returning a collection with values marked as nullable (inner generic type) is not allowed.")
+                    throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED)
                 }
             }
         }
@@ -166,13 +147,11 @@ object QueryMethodsValidator {
         val classesInformation = try {
             KTypeUtil.classesInformationFromKType(memberFunction.returnType)
         } catch (ex: IllegalStateException) {
-            throw WrongFunctionSyntaxException(memberFunction, "$definitionClass return type is invalid. ${ex.message}.")
+            throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_IS_INVALID, definitionClass, ex.message ?: "")
         }
 
         if (classesInformation.size > 2 || classesInformation.isEmpty()) {
-            throw WrongFunctionSyntaxException(memberFunction, "$definitionClass return type is invalid. " +
-                    "The return type can only be a class type or a collection ($supportedCollectionClasses) containing " +
-                    "a class type.")
+            throw WrongFunctionSyntaxException(memberFunction, SchemaErrorCode.RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS, definitionClass, supportedCollectionClasses)
         }
         return classesInformation
     }

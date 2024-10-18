@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
     `maven-dependency-repository`
+    `java-test-fixtures`
 }
 
 dependencies {
@@ -10,6 +11,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
+    testFixturesImplementation(libs.junit.jupiter)
 }
 
 tasks.named<Test>("test") {

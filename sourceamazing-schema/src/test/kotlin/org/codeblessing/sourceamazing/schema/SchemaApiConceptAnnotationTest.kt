@@ -4,12 +4,11 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.DuplicateConceptSchemaSyntaxException
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class SchemaApiConceptAnnotationTest {
@@ -35,7 +34,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test unannotated concept class should throw an exception`() {
-        assertThrows(MissingAnnotationSyntaxException::class.java) {
+        assertSyntaxException(MissingClassAnnotationSyntaxException::class, SchemaErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithUnannotatedConcept::class) {
                 // do nothing
             }
@@ -51,7 +50,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept class instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptClassInsteadOfInterface::class) {
                 // do nothing
             }
@@ -67,7 +66,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept enum instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptEnumInsteadOfInterface::class) {
                 // do nothing
             }
@@ -83,7 +82,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept object instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptObjectInsteadOfInterface::class) {
                 // do nothing
             }
@@ -99,7 +98,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept annotation interface instead of interface should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAnnotationInterfaceInsteadOfInterface::class) {
                 // do nothing
             }
@@ -116,7 +115,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test create concept class with a schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptHavingSchemaAnnotation::class) {
                 // do nothing
             }
@@ -134,7 +133,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept class with a facet annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptHavingFacetAnnotation::class) {
                 // do nothing
             }
@@ -154,7 +153,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test duplicate concept classes in schema annotation should throw an exception`() {
-        assertThrows(DuplicateConceptSchemaSyntaxException::class.java) {
+        assertSyntaxException(DuplicateConceptSchemaSyntaxException::class, SchemaErrorCode.DUPLICATE_CONCEPTS_ON_SCHEMA) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithDuplicateConcepts::class) {
                 // do nothing
             }
@@ -174,7 +173,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept with two concept annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoConceptAnnotationsInHierarchy::class) {
                 // do nothing
             }
@@ -193,7 +192,7 @@ class SchemaApiConceptAnnotationTest {
 
     @Test
     fun `test concept with generic type parameter should throw an exception`() {
-        assertThrows(WrongTypeSyntaxException::class.java) {
+        assertSyntaxException(WrongTypeSyntaxException::class, SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTypeParameter::class) {
                 // do nothing
             }
