@@ -2,8 +2,6 @@ package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
@@ -13,25 +11,12 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
-import org.codeblessing.sourceamazing.schema.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
-import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.KTypeKind
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil
-import org.codeblessing.sourceamazing.schema.type.getAnnotation
-import org.codeblessing.sourceamazing.schema.type.typeKind
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.valueParameters
 
 object BuilderAliasValidator {

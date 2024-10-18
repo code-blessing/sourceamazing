@@ -11,7 +11,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberExtensionFunctions
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.superclasses
 
 object ClassCheckerUtil {
 
