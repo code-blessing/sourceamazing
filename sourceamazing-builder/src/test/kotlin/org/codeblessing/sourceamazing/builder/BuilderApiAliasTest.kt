@@ -463,4 +463,86 @@ class BuilderApiAliasTest {
             }
         }
     }
+
+    @Builder
+    private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithFacet::class, declareConceptAlias = "known")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
+        @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class)
+        fun doInjectASubBuilder(
+            @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit,
+        )
+
+
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
+        private interface BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias {
+
+            @Suppress("UNUSED")
+            @BuilderMethod
+            fun doSomething(
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = SchemaWithConceptWithTextFacet.ConceptWithFacet.TextFacet::class) valueForKnown: String,
+            )
+        }
+    }
+
+    @Test
+    fun `test omit alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
+        assertThrows(BuilderMethodSyntaxException::class.java) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias::class
+                ) { builder ->
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithFacet::class, declareConceptAlias = "known")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
+        @WithNewBuilder(builderClass = BuilderMethodReusingAnAliasNameFromSuperiorBuilder::class)
+        fun doInjectASubBuilder(
+            @InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit,
+        )
+
+
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
+        private interface BuilderMethodReusingAnAliasNameFromSuperiorBuilder {
+
+            @Suppress("UNUSED")
+            @BuilderMethod
+            @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithFacet::class, declareConceptAlias = "known")
+            @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+            fun doSomething(
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = SchemaWithConceptWithTextFacet.ConceptWithFacet.TextFacet::class) valueForKnown: String,
+            )
+        }
+    }
+
+    @Test
+    fun `test reuse an alias that is not expected from superior builder should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
+            BuilderApi.withBuilder(
+                schemaContext,
+                BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration::class
+            ) { builder ->
+                // do nothing
+            }
+        }
+    }
 }

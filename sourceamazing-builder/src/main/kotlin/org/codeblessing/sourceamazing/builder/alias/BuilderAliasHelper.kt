@@ -7,14 +7,15 @@ import kotlin.reflect.KFunction
 
 object BuilderAliasHelper {
 
-    fun collectConceptNameByAlias(method: KFunction<*>): Map<Alias, ConceptName> {
+    fun collectNewConceptsByAlias(method: KFunction<*>): Map<Alias, ConceptName> {
         val newConceptsByAlias: MutableMap<Alias, ConceptName> = mutableMapOf()
 
         method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias.toAlias()] = newConceptAnnotation.concept.toConceptName()
+            val alias = newConceptAnnotation.declareConceptAlias.toAlias()
+            val conceptName = newConceptAnnotation.concept.toConceptName()
+            newConceptsByAlias[alias] = conceptName
         }
 
         return newConceptsByAlias
     }
-
 }

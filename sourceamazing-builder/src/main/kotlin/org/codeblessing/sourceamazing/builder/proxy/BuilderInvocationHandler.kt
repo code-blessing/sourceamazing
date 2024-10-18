@@ -1,14 +1,13 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectConceptNameByAlias
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectNewConceptsByAlias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
@@ -26,7 +25,6 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
 import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
@@ -77,7 +75,7 @@ class BuilderInvocationHandler(
     }
 
     private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<Alias, ConceptIdentifier> {
-        val conceptNameByAlias: Map<Alias, ConceptName> = collectConceptNameByAlias(method)
+        val conceptNameByAlias: Map<Alias, ConceptName> = collectNewConceptsByAlias(method)
         val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliasesConceptIdentifiers(method, conceptNameByAlias, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
