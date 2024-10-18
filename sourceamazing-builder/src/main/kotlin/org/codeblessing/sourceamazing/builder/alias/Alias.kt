@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.builder.proxy
+package org.codeblessing.sourceamazing.builder.alias
 
 class Alias private constructor(val name: String) {
     companion object {
@@ -21,6 +21,4 @@ class Alias private constructor(val name: String) {
     override fun hashCode(): Int {
         return name.hashCode()
     }
-
-
 }

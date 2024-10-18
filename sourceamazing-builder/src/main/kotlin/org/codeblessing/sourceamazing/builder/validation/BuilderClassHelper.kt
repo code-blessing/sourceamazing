@@ -166,5 +166,4 @@ object BuilderClassHelper {
 
         return classInformation.clazz
     }
-
 }

@@ -1,5 +1,8 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
+import org.codeblessing.sourceamazing.builder.alias.Alias
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectConceptNameByAlias
+import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
@@ -31,10 +34,6 @@ import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotations
-
-private fun String.toAlias(): Alias {
-    return Alias.of(this)
-}
 
 class BuilderInvocationHandler(
     builderClass: KClass<*>,
@@ -78,7 +77,8 @@ class BuilderInvocationHandler(
     }
 
     private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<Alias, ConceptIdentifier> {
-        val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliases(method, args)
+        val conceptNameByAlias: Map<Alias, ConceptName> = collectConceptNameByAlias(method)
+        val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliasesConceptIdentifiers(method, conceptNameByAlias, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
             conceptDataCollector.existingOrNewConceptData(conceptName, conceptIdentifier)
@@ -167,13 +167,12 @@ class BuilderInvocationHandler(
         ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    private fun collectNewAliases(method: KFunction<*>, args: List<Any?>): Map<Alias, Pair<ConceptName, ConceptIdentifier>> {
-        val newConceptsByAlias: MutableMap<Alias, ConceptName> = mutableMapOf()
+    private fun collectNewAliasesConceptIdentifiers(
+        method: KFunction<*>,
+        newConceptsByAlias: Map<Alias, ConceptName>,
+        args: List<Any?>
+    ): Map<Alias, Pair<ConceptName, ConceptIdentifier>> {
         val newConceptsIdentifierByAlias: MutableMap<Alias, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
-
-        method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
-            newConceptsByAlias[newConceptAnnotation.declareConceptAlias.toAlias()] = newConceptAnnotation.concept.toConceptName()
-        }
 
         method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { setRandomConceptIdentifierValueAnnotation ->
             val conceptAlias = setRandomConceptIdentifierValueAnnotation.conceptToModifyAlias.toAlias()

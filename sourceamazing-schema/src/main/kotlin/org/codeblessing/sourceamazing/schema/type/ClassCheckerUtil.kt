@@ -80,16 +80,4 @@ object ClassCheckerUtil {
             throw WrongClassStructureSyntaxException(classToInspect, "$classDescription must not have any member functions or properties but has ${classToInspect.members}.")
         }
     }
-
-    fun checkHasNoAnnotationOnSuperclasses(classToInspect: KClass<*>, classDescription: String) {
-        val annotationsOnSuperclasses = classToInspect
-            .superclasses
-            .map { superclass -> superclass.annotations }
-            .flatten()
-            .filter { it.isAnnotationFromSourceAmazing() }
-        if(annotationsOnSuperclasses.isNotEmpty()) {
-            throw WrongClassStructureSyntaxException(classToInspect, "$classDescription '${classToInspect.longText()}' can not have annotations on superclasses but has ${annotationsOnSuperclasses}.")
-        }
-    }
-
 }

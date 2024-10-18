@@ -2,11 +2,9 @@ package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
@@ -14,7 +12,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFac
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.FacetType
@@ -28,7 +25,6 @@ import org.codeblessing.sourceamazing.schema.exceptions.SyntaxException
 import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoAnnotationOnSuperclasses
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
@@ -52,13 +48,32 @@ object BuilderValidator {
     @Throws(SyntaxException::class)
     fun validateBuilderMethods(builderClass: KClass<*>, schemaAccess: SchemaAccess) {
         checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION) // this is only valid for top-level builder
-        val allBuilders = mutableSetOf<KClass<*>>()
-        collectBuilderClassesRecursively(allBuilders, builderClass)
-        allBuilders.forEach { validateBuilderClassStructureAndMainMethodSyntax(it) }
-        allBuilders.forEach { validateBuilderMethodSyntaxDetails(it, schemaAccess) }
+        val allBuilders = collectAllBuilderClasses(builderClass)
+        allBuilders.forEach { validateBuilderClassStructureAndMethodSyntax(it, schemaAccess) }
     }
 
-    private fun validateBuilderClassStructureAndMainMethodSyntax(builderClass: KClass<*>) {
+    private fun collectAllBuilderClasses(builderClass: KClass<*>): MutableSet<KClass<*>> {
+        val allBuilders = mutableSetOf<KClass<*>>()
+        collectBuilderClassesRecursively(allBuilders, builderClass)
+        return allBuilders
+    }
+
+    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<KClass<*>>, builderClass: KClass<*>) {
+        validateBuilderClass(builderClass)
+
+        // avoid infinite recursion
+        if(!collectedBuilders.contains(builderClass)) {
+            collectedBuilders.add(builderClass)
+            RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
+                val subBuilderClass = BuilderClassHelper.getSubBuilderClass(method)
+                if(subBuilderClass != null) {
+                    collectBuilderClassesRecursively(collectedBuilders, subBuilderClass)
+                }
+            }
+        }
+    }
+
+    private fun validateBuilderClassStructureAndMethodSyntax(builderClass: KClass<*>, schemaAccess: SchemaAccess) {
         validateBuilderClass(builderClass)
 
         RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
@@ -70,51 +85,13 @@ object BuilderValidator {
                 )
             }
 
+            BuilderAliasValidator.validateBuilderAlias(builderClass)
+            validateCorrectTypesInAnnotations(method, schemaAccess)
+
+
             method.valueParameters.forEachIndexed { index, methodParameter ->
                 val isLastParameter = index == (method.valueParameters.size - 1)
-
-                if(methodParameter.hasAnnotation<IgnoreNullFacetValue>()) {
-
-                    if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
-                        throw BuilderMethodParameterSyntaxException(
-                            method, methodParameter,
-                            "A parameter setting the" +
-                            "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
-                        )
-                    }
-
-                    if(methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw BuilderMethodParameterSyntaxException(
-                            method, methodParameter,
-                            "A parameter with ${InjectBuilder::class.annotationText()} " +
-                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
-                        )
-                    }
-                }
-
-                if(!isLastParameter) {
-                    if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
-                        && !methodParameter.hasAnnotation<SetFacetValue>()) {
-                        throw BuilderMethodParameterSyntaxException(
-                            method, methodParameter,
-                            "A parameter of the method " +
-                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "or ${SetFacetValue::class.annotationText()}"
-                        )
-                    }
-                } else {
-                    if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
-                        && !methodParameter.hasAnnotation<SetFacetValue>()
-                        && !methodParameter.hasAnnotation<InjectBuilder>()) {
-                        throw BuilderMethodParameterSyntaxException(
-                            method, methodParameter,
-                            "The last parameter of the method " +
-                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}"
-                        )
-                    }
-                }
+                validateBuilderMethodParameter(method, methodParameter, schemaAccess, isLastParameter)
             }
         }
     }
@@ -127,193 +104,167 @@ object BuilderValidator {
         checkHasAnnotation(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasExactNumberOfAnnotations(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotations(listOf(Builder::class, ExpectedAliasFromSuperiorBuilder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasNoAnnotationOnSuperclasses(builderClass, BUILDER_CLASS_DESCRIPTION)
     }
 
-
-
-    private fun importedAliasFromSuperiorBuilder(builderClass: KClass<*>): Set<String> {
-        return builderClass.annotations
-            .filterIsInstance<ExpectedAliasFromSuperiorBuilder>()
-            .map { it.conceptAlias }
-            .toSet()
+    private fun validateBuilderMethodParameter(method: KFunction<*>, methodParameter: KParameter, schemaAccess: SchemaAccess, isLastParameter: Boolean) {
+        validateMethodParameterAnnotations(method, methodParameter, isLastParameter)
+        validateCorrectParameterTypes(method, methodParameter, schemaAccess)
     }
 
-    private fun validateAndCollectNewAliases(method: KFunction<*>, importedConceptAliases: Set<String>): Set<String> {
-        val newConceptAliases: MutableSet<String> = mutableSetOf()
+    fun validateMethodParameterAnnotations(method: KFunction<*>, methodParameter: KParameter, isLastParameter: Boolean) {
+        if(methodParameter.hasAnnotation<IgnoreNullFacetValue>()) {
 
-        method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
-            val conceptAlias = newConceptAnnotation.declareConceptAlias
-            val conceptClazz = newConceptAnnotation.concept
-
-            if(newConceptAliases.contains(conceptAlias) || importedConceptAliases.contains(conceptAlias)) {
-                val allAlreadyUsedConceptAliases = newConceptAliases + importedConceptAliases
-                throw BuilderMethodSyntaxException(
-                    method, "The alias '$conceptAlias' introduced " +
-                            "with the annotation ${NewConcept::class.annotationText()} for concept ${conceptClazz.shortText()} " +
-                            "is already used. All already used alias names are ${allAlreadyUsedConceptAliases}. " +
-                            "Choose another alias name. ${defaultAliasHint(conceptAlias)}"
+            if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
+                throw BuilderMethodParameterSyntaxException(
+                    method, methodParameter,
+                    "A parameter setting the" +
+                            "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
+                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
                 )
+            }
 
-            } else {
-                newConceptAliases.add(conceptAlias)
+            if(methodParameter.hasAnnotation<InjectBuilder>()) {
+                throw BuilderMethodParameterSyntaxException(
+                    method, methodParameter,
+                    "A parameter with ${InjectBuilder::class.annotationText()} " +
+                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
+                )
             }
         }
-        return newConceptAliases
-    }
 
-
-    private fun validateBuilderMethodSyntaxDetails(builderClass: KClass<*>, schemaAccess: SchemaAccess) {
-        RelevantMethodFetcher.ownMemberFunctions(builderClass)
-            .filter { method -> method.hasAnnotation<BuilderMethod>() }
-            .forEach { method ->
-                val importedConceptAliases = importedAliasFromSuperiorBuilder(builderClass)
-                val newConceptAliases: Set<String> = validateAndCollectNewAliases(method, importedConceptAliases)
-                validateNoDuplicateConceptIdentifierDeclaration(method)
-                validateUsedAliases(method, importedConceptAliases + newConceptAliases)
-                validateNoMissingConceptIdentifierDeclaration(method, newConceptAliases)
-
-                method.valueParameters.forEach { methodParameter ->
-                    validateCorrectParameterTypes(method, methodParameter, schemaAccess)
-                }
+        if(!isLastParameter) {
+            if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
+                && !methodParameter.hasAnnotation<SetFacetValue>()) {
+                throw BuilderMethodParameterSyntaxException(
+                    method, methodParameter,
+                    "A parameter of the method " +
+                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
+                            "or ${SetFacetValue::class.annotationText()}"
+                )
+            }
+        } else {
+            if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
+                && !methodParameter.hasAnnotation<SetFacetValue>()
+                && !methodParameter.hasAnnotation<InjectBuilder>()) {
+                throw BuilderMethodParameterSyntaxException(
+                    method, methodParameter,
+                    "The last parameter of the method " +
+                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
+                            "or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}"
+                )
+            }
         }
+
     }
 
-    private fun validateNoMissingConceptIdentifierDeclaration(method: KFunction<*>, newConceptAliases: Set<String>) {
-        val conceptAliasesWithConceptIdDeclaration: Set<String> = collectAliasesWithConceptIdentifierDeclaration(method)
-        val conceptAliasesWithoutConceptIdDeclaration = newConceptAliases - conceptAliasesWithConceptIdDeclaration
+    private fun validateCorrectTypesInAnnotations(
+        method: KFunction<*>,
+        schemaAccess: SchemaAccess
+    ) {
 
-        if(conceptAliasesWithoutConceptIdDeclaration.isNotEmpty()) {
-            val defaultAliasHint = conceptAliasesWithoutConceptIdDeclaration
-                .map { conceptAlias -> defaultAliasHint(conceptAlias) }
-                .firstOrNull { it.isNotBlank() } ?: ""
+        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { annotation ->
+            checkFacetType(
+                method = method,
+                annotation = annotation,
+                facetClass = annotation.facetToModify,
+                expectedFacetType = FacetType.BOOLEAN,
+                schemaAccess = schemaAccess,
+            )
+        }
+
+        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { annotation ->
+            checkFacetType(
+                method = method,
+                annotation = annotation,
+                facetClass = annotation.facetToModify,
+                expectedFacetType = FacetType.NUMBER,
+                schemaAccess = schemaAccess,
+            )
+        }
+
+        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { annotation ->
+            checkFacetType(
+                method = method,
+                annotation = annotation,
+                facetClass = annotation.facetToModify,
+                expectedFacetType = FacetType.TEXT,
+                schemaAccess = schemaAccess,
+            )
+        }
+
+        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { annotation ->
+            checkFacetEnumTypeAndValue(
+                method = method,
+                annotation = annotation,
+                facetClass = annotation.facetToModify,
+                enumValue = annotation.value,
+                schemaAccess = schemaAccess,
+            )
+        }
+
+        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { annotation ->
+            checkFacetType(
+                method = method,
+                annotation = annotation,
+                facetClass = annotation.facetToModify,
+                expectedFacetType = FacetType.REFERENCE,
+                schemaAccess = schemaAccess,
+            )
+        }
+
+    }
+
+    private fun checkFacetType(
+        method: KFunction<*>,
+        annotation: Annotation,
+        facetClass: KClass<*>,
+        expectedFacetType: FacetType,
+        schemaAccess: SchemaAccess,
+    ) {
+        val facet = schemaAccess.facetByFacetName(facetClass.toFacetName())
+        if(facet == null) {
             throw BuilderMethodSyntaxException(
-                method, "The concept with alias " +
-                        "$conceptAliasesWithoutConceptIdDeclaration have no corresponding " +
-                        "concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
-                        "or ${SetRandomConceptIdentifierValue::class.annotationText()} to define " +
-                        "a concept identifier. $defaultAliasHint"
+                method,
+                "The method uses a ${annotation::class.annotationText()} with " +
+                        "a facet '${facetClass.longText()}' that is not known/registered."
+            )
+
+        }
+        if(facet.facetType != expectedFacetType) {
+            throw BuilderMethodSyntaxException(
+                method,
+                "The method uses an annotation ${annotation::class.shortText()} with " +
+                        "a facet '${facetClass.longText()}', but the facet is not a " +
+                        "'$expectedFacetType' facet but a '${facet.facetType}' facet."
             )
         }
     }
 
-    private fun collectAliasesWithConceptIdentifierDeclaration(method: KFunction<*>): Set<String> {
-        val conceptAliasesWithConceptIdDeclaration: MutableSet<String> = mutableSetOf()
+    private fun checkFacetEnumTypeAndValue(
+        method: KFunction<*>,
+        annotation: Annotation,
+        facetClass: KClass<*>,
+        schemaAccess: SchemaAccess,
+        enumValue: String,
+    ) {
+        checkFacetType(
+            method = method,
+            annotation = annotation,
+            facetClass = facetClass,
+            expectedFacetType = FacetType.TEXT_ENUMERATION,
+            schemaAccess = schemaAccess,
+        )
 
-        method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { annotation ->
-            conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
+        val facet = requireNotNull(schemaAccess.facetByFacetName(facetClass.toFacetName()))
+        val validEnumerationValues = facet.enumerationValues.map { it.name }
+        if(!validEnumerationValues.contains(enumValue)) {
+            throw BuilderMethodSyntaxException(
+                method,
+                "The method uses an annotation ${annotation::class.shortText()} with " +
+                        "a facet '${facetClass.longText()}', but the facet value '$enumValue' is " +
+                        "not a valid enumeration values. Valid values are: ${validEnumerationValues}."
+            )
         }
-
-        method.valueParameters.forEach { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { annotation ->
-                conceptAliasesWithConceptIdDeclaration.add(annotation.conceptToModifyAlias)
-            }
-        }
-        return conceptAliasesWithConceptIdDeclaration
-    }
-
-    private fun validateNoDuplicateConceptIdentifierDeclaration(method: KFunction<*>) {
-        val usedConceptAliasToSetConceptIdentifier: MutableSet<String> = mutableSetOf()
-        method.annotations
-            .filterIsInstance<SetRandomConceptIdentifierValue>()
-            .forEach { autoRandomConceptIdAnnotation ->
-            val conceptAlias = autoRandomConceptIdAnnotation.conceptToModifyAlias
-
-            if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                throw BuilderMethodSyntaxException(
-                    method, "The alias '$conceptAlias' used " +
-                            "with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()} " +
-                            "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
-                )
-            } else {
-                usedConceptAliasToSetConceptIdentifier.add(conceptAlias)
-            }
-        }
-
-        method.valueParameters.forEach { parameter ->
-            parameter.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdValueAnnotation ->
-                val conceptAlias = conceptIdValueAnnotation.conceptToModifyAlias
-                if(usedConceptAliasToSetConceptIdentifier.contains(conceptAlias)) {
-                    throw BuilderMethodSyntaxException(
-                        method, "The alias '$conceptAlias' used " +
-                                "with the annotation ${SetConceptIdentifierValue::class.annotationText()} " +
-                                "is already used. Choose another alias name. ${defaultAliasHint(conceptAlias)}"
-                    )
-                } else {
-                    usedConceptAliasToSetConceptIdentifier.add(conceptAlias)
-                }
-            }
-        }
-    }
-
-    private fun validateUsedAliases(method: KFunction<*>, knownConceptAlias: Set<String>) {
-        val usedAliasesPerAnnotation = collectAllUsedAliases(method)
-        usedAliasesPerAnnotation.forEach { (annotationClazz, conceptAliases) ->
-            conceptAliases.forEach { conceptAlias ->
-                if(!knownConceptAlias.contains(conceptAlias)) {
-                    throw BuilderMethodSyntaxException(
-                        method, "The alias '$conceptAlias' used " +
-                                "with the annotation ${annotationClazz.annotationText()} " +
-                                "is unknown. Choose a known alias name (${knownConceptAlias}) or declare an alias with " +
-                                "${NewConcept::class.annotationText()}. ${defaultAliasHint(conceptAlias)}"
-                    )
-                }
-            }
-        }
-    }
-
-    private class AnnotationAndAliases {
-        private val annotationAndAliasMap: MutableMap<KClass<out Annotation>, MutableSet<String>> = mutableMapOf()
-
-        fun add(annotationClass: KClass<out Annotation>, conceptAlias: String) {
-            annotationAndAliasMap.getOrPut(annotationClass) { mutableSetOf() }.add(conceptAlias)
-        }
-
-        fun forEach(action: (Map.Entry<KClass<out Annotation>, Set<String>>) -> Unit) {
-            annotationAndAliasMap.forEach(action)
-        }
-    }
-
-    private fun collectAllUsedAliases(method: KFunction<*>): AnnotationAndAliases {
-        val annotationAndAliases = AnnotationAndAliases()
-
-        method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { annotation ->
-            annotationAndAliases.add(SetRandomConceptIdentifierValue::class, annotation.conceptToModifyAlias)
-        }
-
-        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { annotation ->
-            annotationAndAliases.add(SetFixedBooleanFacetValue::class, annotation.conceptToModifyAlias)
-        }
-
-        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { annotation ->
-            annotationAndAliases.add(SetFixedEnumFacetValue::class, annotation.conceptToModifyAlias)
-        }
-
-        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { annotation ->
-            annotationAndAliases.add(SetFixedIntFacetValue::class, annotation.conceptToModifyAlias)
-        }
-
-        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { annotation ->
-            annotationAndAliases.add(SetFixedStringFacetValue::class, annotation.conceptToModifyAlias)
-        }
-
-        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { annotation ->
-            annotationAndAliases.add(SetAliasConceptIdentifierReferenceFacetValue::class, annotation.conceptToModifyAlias)
-            annotationAndAliases.add(SetAliasConceptIdentifierReferenceFacetValue::class, annotation.referencedConceptAlias)
-        }
-
-        method.valueParameters.forEach { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { annotation ->
-                annotationAndAliases.add(SetConceptIdentifierValue::class, annotation.conceptToModifyAlias)
-            }
-        }
-
-        method.valueParameters.forEach { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetFacetValue>().forEach { annotation ->
-                annotationAndAliases.add(SetFacetValue::class, annotation.conceptToModifyAlias)
-            }
-        }
-        return annotationAndAliases
     }
 
     private fun validateCorrectParameterTypes(
@@ -417,27 +368,6 @@ object BuilderValidator {
             else -> throw IllegalStateException("Type '${methodParamType.typeKind()}' not supported.")
         }
         throw BuilderMethodParameterSyntaxException(method, methodParameter, "$parameterWasWrongDescription $detailDescription")
-    }
-
-    private fun collectBuilderClassesRecursively(collectedBuilders: MutableSet<KClass<*>>, builderClass: KClass<*>) {
-        validateBuilderClass(builderClass)
-
-        // avoid infinite recursion
-        if(!collectedBuilders.contains(builderClass)) {
-            collectedBuilders.add(builderClass)
-            RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
-                val subBuilderClass = BuilderClassHelper.getSubBuilderClass(method)
-                if(subBuilderClass != null) {
-                    collectBuilderClassesRecursively(collectedBuilders, subBuilderClass)
-                }
-            }
-        }
-    }
-
-    private fun defaultAliasHint(conceptAlias: String): String {
-        val showHint = conceptAlias == DEFAULT_CONCEPT_ALIAS
-        val hint = "(Hint: The concept alias '${DEFAULT_CONCEPT_ALIAS}' is the default alias and therefore maybe not visible on the annotations)"
-        return if(showHint) hint else ""
     }
 
     private fun parameterWasWrongDescription(methodParameter: KParameter): String {
