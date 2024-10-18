@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
@@ -78,11 +79,7 @@ object BuilderValidator {
 
         RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
             if(!method.hasAnnotation<BuilderMethod>()) {
-                throw BuilderMethodSyntaxException(
-                    method, "The method is missing " +
-                            "the annotation ${BuilderMethod::class.annotationText()}. " +
-                            "This annotation must be on every builder method."
-                )
+                throw BuilderMethodSyntaxException(method, BuilderErrorCode.MISSING_BUILDER_ANNOTATION)
             }
 
             BuilderAliasValidator.validateBuilderAlias(builderClass)
@@ -116,42 +113,25 @@ object BuilderValidator {
 
             if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
                 throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter,
-                    "A parameter setting the" +
-                            "concept identifier with ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
-                )
+                    method, methodParameter, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION)
             }
 
             if(methodParameter.hasAnnotation<InjectBuilder>()) {
                 throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter,
-                    "A parameter with ${InjectBuilder::class.annotationText()} " +
-                            "can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."
-                )
+                    method, methodParameter,BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION)
             }
         }
 
         if(!isLastParameter) {
             if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                 && !methodParameter.hasAnnotation<SetFacetValue>()) {
-                throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter,
-                    "A parameter of the method " +
-                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "or ${SetFacetValue::class.annotationText()}"
-                )
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION)
             }
         } else {
             if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                 && !methodParameter.hasAnnotation<SetFacetValue>()
                 && !methodParameter.hasAnnotation<InjectBuilder>()) {
-                throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter,
-                    "The last parameter of the method " +
-                            "is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} " +
-                            "or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}"
-                )
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION_OR_INJECTION)
             }
         }
 
@@ -223,20 +203,11 @@ object BuilderValidator {
     ) {
         val facet = schemaAccess.facetByFacetName(facetClass.toFacetName())
         if(facet == null) {
-            throw BuilderMethodSyntaxException(
-                method,
-                "The method uses a ${annotation::class.annotationText()} with " +
-                        "a facet '${facetClass.longText()}' that is not known/registered."
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facetClass.longText())
 
         }
         if(facet.facetType != expectedFacetType) {
-            throw BuilderMethodSyntaxException(
-                method,
-                "The method uses an annotation ${annotation::class.shortText()} with " +
-                        "a facet '${facetClass.longText()}', but the facet is not a " +
-                        "'$expectedFacetType' facet but a '${facet.facetType}' facet."
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.WRONG_FACET_TYPE, annotation.annotationClass.annotationText(), facetClass.longText(), expectedFacetType, facet.facetType)
         }
     }
 
@@ -258,12 +229,7 @@ object BuilderValidator {
         val facet = requireNotNull(schemaAccess.facetByFacetName(facetClass.toFacetName()))
         val validEnumerationValues = facet.enumerationValues.map { it.name }
         if(!validEnumerationValues.contains(enumValue)) {
-            throw BuilderMethodSyntaxException(
-                method,
-                "The method uses an annotation ${annotation::class.shortText()} with " +
-                        "a facet '${facetClass.longText()}', but the facet value '$enumValue' is " +
-                        "not a valid enumeration values. Valid values are: ${validEnumerationValues}."
-            )
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.WRONG_FACET_ENUM_VALUE, annotation.annotationClass.annotationText(), facetClass.longText(), enumValue, validEnumerationValues)
         }
     }
 
@@ -293,7 +259,8 @@ object BuilderValidator {
             throw BuilderMethodParameterSyntaxException(
                 method,
                 methodParameter,
-                "$exceptionPreamble must be of type '${ConceptIdentifier::class.shortText()}' but was '${methodParameter.type}'"
+                BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
+                methodParameter.type
             )
         }
         val typeClass = typeClasses.first()
@@ -301,14 +268,15 @@ object BuilderValidator {
             throw BuilderMethodParameterSyntaxException(
                 method,
                 methodParameter,
-                "$exceptionPreamble must be of type '${ConceptIdentifier::class.shortText()}' but was '${typeClass.clazz.longText()}'"
+                BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
+                typeClass.clazz.longText()
             )
         }
         if(typeClass.isValueNullable) {
             throw BuilderMethodParameterSyntaxException(
                 method,
                 methodParameter,
-                "$exceptionPreamble can not be a nullable type."
+                BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE
             )
         }
 
@@ -325,31 +293,31 @@ object BuilderValidator {
 
         val facetName = methodParameter.getAnnotation<SetFacetValue>().facetToModify.toFacetName()
         val facetFromSchema = schemaAccess.facetByFacetName(facetName)
-            ?: throw BuilderMethodParameterSyntaxException(method, methodParameter, "Could not find facet for class '${facetName.clazz}'")
+            ?: throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NO_FACET_FOR_CLASS, facetName.clazz.longText())
 
         when(facetFromSchema.facetType) {
             FacetType.TEXT -> if(typeClass != String::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "To set a value for the text facet '${facetName}', the parameter type must be ${String::class.shortText()}.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE, facetName)
             }
             FacetType.NUMBER -> if(typeClass != Int::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "To set a value for the number facet '${facetName}', the parameter type must be ${Int::class.shortText()}.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,facetName)
             }
             FacetType.BOOLEAN -> if(typeClass != Boolean::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "To set a value for the boolean facet '${facetName}', the parameter type must be ${Boolean::class.shortText()}.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE,facetName)
             }
             FacetType.TEXT_ENUMERATION -> if(typeClass != facetFromSchema.enumerationType) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "To set a value for the enumeration facet '${facetName}', the parameter type must be ${facetFromSchema.enumerationType?.shortText()} and one of the enumeration values ${facetFromSchema.enumerationValues}.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
             }
             FacetType.REFERENCE -> if(typeClass != ConceptIdentifier::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "To set a value for the reference facet '${facetName}', the parameter type must be ${ConceptIdentifier::class.shortText()}.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE, facetName)
             }
         }
 
         if(methodParameter.hasAnnotation<IgnoreNullFacetValue>() && !classInformation.isValueNullable) {
-            throw BuilderMethodParameterSyntaxException(method, methodParameter, "You can not use ${IgnoreNullFacetValue::class.shortText()} with a parameter that does not have a nullable type.")
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_IGNORE_NULL_ANNOTATION_WITHOUT_NULLABLE_TYPE)
         }
         if(!methodParameter.hasAnnotation<IgnoreNullFacetValue>() && classInformation.isValueNullable) {
-            throw BuilderMethodParameterSyntaxException(method, methodParameter, "You can not pass a nullable type. Use ${IgnoreNullFacetValue::class.shortText()} as parameter annotation if you pass a nullable type.")
+            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION)
         }
 
     }
@@ -361,36 +329,23 @@ object BuilderValidator {
             return KTypeUtil.classesInformationFromKType(methodParamType)
         }
 
-        val parameterWasWrongDescription = parameterWasWrongDescription(methodParameter)
         val detailDescription = when(methodParamType.typeKind()) {
             KTypeKind.FUNCTION -> "Type can only be a class but was '${methodParamType}'."
             KTypeKind.OTHER_TYPE, KTypeKind.TYPE_PARAMETER -> "Type can only be a class but was '${methodParamType}'."
             else -> throw IllegalStateException("Type '${methodParamType.typeKind()}' not supported.")
         }
-        throw BuilderMethodParameterSyntaxException(method, methodParameter, "$parameterWasWrongDescription $detailDescription")
-    }
-
-    private fun parameterWasWrongDescription(methodParameter: KParameter): String {
-        if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
-            return "The method parameter '${methodParameter.name}' " +
-                    "to pass a concept identifier (with annotation " +
-                    "${SetConceptIdentifierValue::class.annotationText()}) " +
-                    "was wrong."
-        }
-        if(methodParameter.hasAnnotation<InjectBuilder>()) {
-            return "The method parameter '${methodParameter.name}' " +
-                    "to inject a new builder (with annotation " +
-                    "${InjectBuilder::class.annotationText()}) " +
-                    "was wrong."
+        val builderErrorCode = if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
+            BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_PARAMETER
+        } else if(methodParameter.hasAnnotation<InjectBuilder>()) {
+            BuilderErrorCode.BUILDER_PARAM_WRONG_INJECTION_PARAMETER
+        } else if(methodParameter.hasAnnotation<SetFacetValue>()) {
+            BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER
+        } else {
+            BuilderErrorCode.BUILDER_PARAM_WRONG_PARAMETER
         }
 
-        if(methodParameter.hasAnnotation<SetFacetValue>()) {
-            return "The method parameter '${methodParameter.name}' " +
-                    "to set a facet value (with annotation " +
-                    "${SetFacetValue::class.annotationText()}) " +
-                    "was wrong."
-        }
-        return "The method parameter '${methodParameter.name}' was wrong."
+
+        throw BuilderMethodParameterSyntaxException(method, methodParameter, builderErrorCode, detailDescription)
     }
 
     private fun extractValueClassFromCollectionIfCollection(
@@ -401,7 +356,7 @@ object BuilderValidator {
         val valueClassOrCollectionClass = classesInformation.first()
         return if(valueClassOrCollectionClass.clazz.starProjectedType in SUPPORTED_COLLECTION_TYPES) {
             if(valueClassOrCollectionClass.isValueNullable) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, "You can not pass a nullable collection type.")
+                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE)
             }
             classesInformation.last()
         } else {

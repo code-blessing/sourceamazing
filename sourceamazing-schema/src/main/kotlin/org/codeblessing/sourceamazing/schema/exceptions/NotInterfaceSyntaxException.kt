@@ -1,3 +1,7 @@
 package org.codeblessing.sourceamazing.schema.exceptions
 
-class NotInterfaceSyntaxException(msg: String) : SyntaxException(msg)
+import org.codeblessing.sourceamazing.schema.SchemaErrorCode
+import kotlin.reflect.KClass
+
+class NotInterfaceSyntaxException(clazz: KClass<*>, errorCode: SchemaErrorCode, vararg messageArguments: Any)
+    : SyntaxException(errorCode, "${errorCode.format(*messageArguments)}\n Class: $clazz")

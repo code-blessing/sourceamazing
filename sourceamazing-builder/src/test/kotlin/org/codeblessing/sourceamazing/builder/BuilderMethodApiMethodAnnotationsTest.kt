@@ -10,7 +10,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
@@ -19,7 +18,6 @@ import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BuilderMethodApiMethodAnnotationsTest {
@@ -132,7 +130,7 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     @Test
     fun `test enum facet with fixed values having unknown enum value should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.WRONG_FACET_ENUM_VALUE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongFixedEnumFacetValues::class) { builder ->
                     // do nothing
@@ -154,7 +152,7 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     @Test
     fun `test int facet with fixed boolean value should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.WRONG_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongFixedFacetType::class) { builder ->
                     // do nothing
@@ -175,7 +173,7 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     @Test
     fun `test int facet with fixed value for unregistered facet should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUnregisteredFixedFacetType::class) { builder ->
                     // do nothing

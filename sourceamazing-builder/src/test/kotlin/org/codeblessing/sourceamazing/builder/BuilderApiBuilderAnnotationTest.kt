@@ -6,15 +6,16 @@ import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
+import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BuilderApiBuilderAnnotationTest {
@@ -69,7 +70,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test unannotated builder class should throw an exception`() {
-        assertThrows(MissingAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(MissingClassAnnotationSyntaxException::class, SchemaErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, UnannotatedBuilder::class) { builder ->
                     // do nothing
@@ -83,7 +84,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test abstract class instead of interface builder class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertExceptionWithErrorCode(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, AbstractClassInsteadOfInterfaceBuilder::class) { builder ->
                     // do nothing
@@ -97,7 +98,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test class instead of interface builder class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertExceptionWithErrorCode(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, ClassInsteadOfInterfaceSchema::class) { builder ->
                     // do nothing
@@ -111,7 +112,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test enum class instead of interface builder class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertExceptionWithErrorCode(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, EnumInsteadOfInterfaceBuilder::class) { builder ->
                     // do nothing
@@ -125,7 +126,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test object instead of interface builder class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertExceptionWithErrorCode(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, ObjectInsteadOfInterfaceBuilder::class) { builder ->
                     // do nothing
@@ -139,7 +140,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test annotation instead of interface builder class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertExceptionWithErrorCode(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, AnnotationInsteadOfInterfaceBuilder::class) { builder ->
                     // do nothing
@@ -154,7 +155,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder class with schema annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithSchemaAnnotation::class) { builder ->
                     // do nothing
@@ -169,7 +170,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder class with concept annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithConceptAnnotation::class) { builder ->
                     // do nothing
@@ -184,7 +185,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder class with facet annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithFacetAnnotation::class) { builder ->
                     // do nothing
@@ -199,7 +200,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test top level builder  with ExpectedAliasFromSuperiorBuilder should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class) { builder ->
                     // do nothing
@@ -238,7 +239,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder with two builder annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithTwoBuilderAnnotationsInHierarchyClasses::class) { builder ->
                     // do nothing
@@ -255,7 +256,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder with schema annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithSchemaAnnotationsInHierarchyClasses::class) { builder ->
                     // do nothing
@@ -270,7 +271,7 @@ class BuilderApiBuilderAnnotationTest {
 
     @Test
     fun `test builder class with generic type parameter should throw an exception`() {
-        assertThrows(WrongTypeSyntaxException::class.java) {
+        assertExceptionWithErrorCode(WrongTypeSyntaxException::class, SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderWithGenericTypeParameter::class) { builder ->
                     // do nothing

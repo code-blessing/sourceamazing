@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
@@ -18,7 +17,6 @@ import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BuilderMethodApiParameterTypesTest {
@@ -65,7 +63,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter without ConceptIdentifier class should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithIllegalConceptIdClass::class) { builder ->
                     // do nothing
@@ -87,7 +85,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter as nullable type should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableConceptId::class) { builder ->
                     // do nothing
@@ -109,7 +107,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter as nullable type with IgnoreNullFacetValue annotation should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -132,7 +130,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -156,7 +154,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter as nullable type without IgnoreNullFacetValue should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -223,7 +221,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter with other type than string should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedStringParameter::class) { builder ->
                     // do nothing
@@ -246,7 +244,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test boolean facet parameter with other type than boolean should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedBooleanParameter::class) { builder ->
                     // do nothing
@@ -290,7 +288,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test int facet parameter with other type than int should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedIntParameter::class) { builder ->
                     // do nothing
@@ -313,7 +311,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with other type than enum should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedEnumParameter::class) { builder ->
                     // do nothing
@@ -378,7 +376,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with nullable set of enum instead of single enum should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableSetOfEnumParameter::class) { builder ->
                     // do nothing
@@ -401,7 +399,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test reference facet parameter with other type than a ConceptIdentifier should throw an exception`() {
-        assertThrows(BuilderMethodParameterSyntaxException::class.java) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedReferenceParameter::class) { builder ->
                     // do nothing

@@ -15,7 +15,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetVa
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
@@ -25,7 +24,6 @@ import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class BuilderApiAliasTest {
@@ -75,7 +73,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias for NewConcept annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithDuplicateAliasForNewConcept::class) { builder ->
                     // do nothing
@@ -111,7 +109,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias from superior concept for NewConcept annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias::class) { builder ->
                     // do nothing
@@ -133,7 +131,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias for SetRandomConceptIdentifierValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithDuplicateAliasForRandomConceptIdentifier::class) { builder ->
                     // do nothing
@@ -156,7 +154,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias for ConceptIdentifierValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier::class) { builder ->
                     // do nothing
@@ -176,7 +174,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test missing concept identifier declaration for alias should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithoutConceptIdentifierForAlias::class) { builder ->
                     // do nothing
@@ -200,7 +198,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias with SetRandomConceptIdentifierValue and SetConceptIdentifierValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithDuplicateMixedConceptIdentifier::class) { builder ->
                     // do nothing
@@ -219,7 +217,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetRandomConceptIdentifierValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier::class) { builder ->
                     // do nothing
@@ -239,7 +237,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetConceptIdentifierValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation::class) { builder ->
                     // do nothing
@@ -260,7 +258,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -299,7 +297,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property conceptToModifyAlias on the SetAliasConceptIdentifierReferenceFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias::class) { builder ->
                     // do nothing
@@ -338,7 +336,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property referencedConceptAlias on SetAliasConceptIdentifierReferenceFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias::class) { builder ->
                     // do nothing
@@ -357,7 +355,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedStringFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInDefaultStringFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -376,7 +374,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedBooleanFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -395,7 +393,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedIntFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -418,7 +416,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedEnumFacetValue annotation should throw an error`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -493,7 +491,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test omit alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
-        assertThrows(BuilderMethodSyntaxException::class.java) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(
                     schemaContext,

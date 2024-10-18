@@ -4,11 +4,10 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.exceptions.MissingAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class SchemaApiSchemaAnnotationTest {
@@ -48,7 +47,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test unannotated schema class should throw an exception`() {
-        assertThrows(MissingAnnotationSyntaxException::class.java) {
+        assertSyntaxException(MissingClassAnnotationSyntaxException::class, SchemaErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = UnannotatedSchema::class) {
                 // do nothing
             }
@@ -60,7 +59,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test abstract class instead of interface schema class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class) {
                 // do nothing
             }
@@ -72,7 +71,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test class instead of interface schema class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) {
                 // do nothing
             }
@@ -84,7 +83,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test enum class instead of interface schema class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) {
                 // do nothing
             }
@@ -96,7 +95,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test object instead of interface schema class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) {
                 // do nothing
             }
@@ -108,7 +107,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test annotation instead of interface schema class should throw an exception`() {
-        assertThrows(NotInterfaceSyntaxException::class.java) {
+        assertSyntaxException(NotInterfaceSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class) {
                 // do nothing
             }
@@ -121,7 +120,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema class with concept annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAnnotation::class) {
                 // do nothing
             }
@@ -134,7 +133,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema class with facet annotation should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithFacetAnnotation::class) {
                 // do nothing
             }
@@ -149,7 +148,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema with two schema annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithTwoSchemaAnnotationsInHierarchyClasses::class) {
                 // do nothing
             }
@@ -164,7 +163,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema with concept and schema annotations in hierarchy should throw an exception`() {
-        assertThrows(WrongAnnotationSyntaxException::class.java) {
+        assertSyntaxException(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptAndSchemaAnnotationsInHierarchyClasses::class) {
                 // do nothing
             }
@@ -177,7 +176,7 @@ class SchemaApiSchemaAnnotationTest {
 
     @Test
     fun `test schema class with generic type parameter should throw an exception`() {
-        assertThrows(WrongTypeSyntaxException::class.java) {
+        assertSyntaxException(WrongTypeSyntaxException::class, SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) {
                 // do nothing
             }

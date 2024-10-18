@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.ConceptSchema
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetSchema
 import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
@@ -57,9 +58,7 @@ object SchemaCreator {
             val conceptName = conceptClass.toConceptName()
 
             if(conceptSimpleNames.contains(conceptName.simpleName())) {
-                throw DuplicateConceptSchemaSyntaxException("There is already a concept registered " +
-                        "with name '${conceptName.simpleName()}' on schema '${schemaDefinitionClass.longText()}'. " +
-                        "Can not register concept class '${conceptClass}'.")
+                throw DuplicateConceptSchemaSyntaxException(SchemaErrorCode.DUPLICATE_CONCEPTS_ON_SCHEMA, conceptName.simpleName(), schemaDefinitionClass.longText(), conceptClass)
             } else {
                 conceptSimpleNames.add(conceptName.simpleName())
             }
@@ -71,9 +70,7 @@ object SchemaCreator {
             facetClasses.forEach { facetClass ->
                 val facetName = facetClass.toFacetName()
                 if(facetSimpleNames.contains(facetName.simpleName())) {
-                    throw DuplicateFacetSchemaSyntaxException("There is already a facet registered " +
-                            "with name '${facetName.simpleName()}' on concept '$conceptName'. " +
-                            "Can not register facet class '${facetClass}'.")
+                    throw DuplicateFacetSchemaSyntaxException(SchemaErrorCode.DUPLICATE_FACET_ON_CONCEPT, facetName.simpleName(), conceptName, facetClass.longText())
                 } else {
                     facetSimpleNames.add(facetName.simpleName())
                 }
@@ -241,53 +238,29 @@ object SchemaCreator {
 
 
         if(facetType == FacetType.TEXT_ENUMERATION && (enumerationType == null || !enumerationType.isEnum)) {
-            throw WrongTypeSyntaxException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                        "is declared as type '${FacetType.TEXT_ENUMERATION}' but the enumeration is not " +
-                        "defined or not a real enumeration class (was '$enumerationType')."
-            )
+            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_INVALID, facetName, conceptName, enumerationType ?: "null")
         }
 
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
-            throw WrongTypeSyntaxException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                "is declared as type '${FacetType.REFERENCE}' " +
-                "but the list of concept type is empty."
-            )
+            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST, facetName, conceptName)
         }
 
         if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
-            throw WrongTypeSyntaxException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                "is not declared as type '${FacetType.REFERENCE}' (is '${facetType}') but the list " +
-                "of concept type is not empty (is '${referencedConcepts}')."
-            )
+            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST, facetName, conceptName, facetType, referencedConcepts)
         }
 
         if(minimumOccurrences < 0 || maximumOccurrences < 0) {
-            throw WrongCardinalitySchemaSyntaxException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                "has negative cardinalities. Only number greater/equal zero are allowed, " +
-                "but was $minimumOccurrences/$maximumOccurrences."
-            )
+            throw WrongCardinalitySchemaSyntaxException(SchemaErrorCode.NO_NEGATIVE_FACET_CARDINALITIES, facetName, conceptName, minimumOccurrences, maximumOccurrences)
         }
 
         if(minimumOccurrences > maximumOccurrences) {
-            throw WrongCardinalitySchemaSyntaxException(
-                "Facet '$facetName' on concept '$conceptName' " +
-                "has a greater minimumOccurrences ($minimumOccurrences) " +
-                "than the maximumOccurrences ($maximumOccurrences)."
-            )
+            throw WrongCardinalitySchemaSyntaxException(SchemaErrorCode.WRONG_FACET_CARDINALITIES, facetName, conceptName, minimumOccurrences, maximumOccurrences)
         }
 
         referencedConcepts.forEach { referencedConcept ->
             if(!conceptNames.contains(referencedConcept)) {
-                throw WrongTypeSyntaxException(
-                    "Facet '$facetName' on concept '$conceptName' " +
-                    "has an reference concept '${referencedConcept}' which is not a known concept " +
-                    "(known concepts are '${conceptNames}')."
-                )
+                throw WrongTypeSyntaxException(SchemaErrorCode.FACET_UNKNOWN_REFERENCED_CONCEPT, facetName, conceptName, referencedConcept, conceptNames)
             }
         }
 
