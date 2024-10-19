@@ -14,18 +14,20 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFace
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.schema.toConceptName
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.valueParameters
 
 object BuilderAliasValidator {
 
-    fun validateBuilderAlias(builderClass: KClass<*>) {
+    fun validateBuilderAlias(builderClass: KClass<*>, schemaAccess: SchemaAccess) {
         RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
             val importedConceptAliases = importedAliasFromSuperiorBuilder(builderClass)
-            val newConceptAliases: Set<String> = validateAndCollectNewAliases(method, importedConceptAliases)
+            val newConceptAliases: Set<String> = validateAndCollectNewAliases(method, importedConceptAliases, schemaAccess)
             validateNoDuplicateConceptIdentifierDeclaration(method)
             validateUsedAliases(method, importedConceptAliases + newConceptAliases)
             validateNoMissingConceptIdentifierDeclaration(method, newConceptAliases)
@@ -39,12 +41,16 @@ object BuilderAliasValidator {
             .toSet()
     }
 
-    private fun validateAndCollectNewAliases(method: KFunction<*>, importedConceptAliases: Set<String>): Set<String> {
+    private fun validateAndCollectNewAliases(method: KFunction<*>, importedConceptAliases: Set<String>, schemaAccess: SchemaAccess): Set<String> {
         val newConceptAliases: MutableSet<String> = mutableSetOf()
 
         method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
             val conceptAlias = newConceptAnnotation.declareConceptAlias
             val conceptClazz = newConceptAnnotation.concept
+
+            if(!schemaAccess.hasConceptName(conceptClazz.toConceptName())) {
+                throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_CONCEPT, conceptAlias, conceptClazz.shortText(), defaultAliasHint(conceptAlias))
+            }
 
             if(newConceptAliases.contains(conceptAlias) || importedConceptAliases.contains(conceptAlias)) {
                 val allAlreadyUsedConceptAliases = newConceptAliases + importedConceptAliases

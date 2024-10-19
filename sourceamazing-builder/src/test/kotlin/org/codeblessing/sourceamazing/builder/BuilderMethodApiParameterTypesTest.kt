@@ -118,11 +118,10 @@ class BuilderMethodApiParameterTypesTest {
 
     @Builder
     private interface BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
-        interface MyConceptClass
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(MyConceptClass::class)
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         fun doSomething(
             @IgnoreNullFacetValue @SetConceptIdentifierValue conceptId: ConceptIdentifier,
         )

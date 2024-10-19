@@ -20,6 +20,7 @@ enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
     WRONG_FACET_TYPE("The method uses an annotation %s with a facet '%s', but the facet is not of type '%s' but of type '%s'."),
     WRONG_FACET_ENUM_VALUE("The method uses an annotation %s with a facet '%s', but the facet value '%s' is not a valid enumeration values. Valid values are: %s."),
     ALIAS_IS_ALREADY_USED("The alias '%s' introduced with the annotation ${NewConcept::class.annotationText()} for concept %s is already used. All already used alias names are %s. Choose another alias name. %s"),
+    UNKNOWN_CONCEPT("The alias '%s' introduced with the annotation ${NewConcept::class.annotationText()} points to a unknown concept %s. Register the concept on the schema or use another concept. %s"),
     CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER("The concept with alias %s have no corresponding concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} or ${SetRandomConceptIdentifierValue::class.annotationText()} to define a concept identifier. %s"),
     DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE("The alias '%s' used with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()}  is already used. Choose another alias name. %s"),
     DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE("The alias '%s' used with the annotation ${SetConceptIdentifierValue::class.annotationText()} is already used. Choose another alias name. %s"),

@@ -82,7 +82,7 @@ object BuilderValidator {
                 throw BuilderMethodSyntaxException(method, BuilderErrorCode.MISSING_BUILDER_ANNOTATION)
             }
 
-            BuilderAliasValidator.validateBuilderAlias(builderClass)
+            BuilderAliasValidator.validateBuilderAlias(builderClass, schemaAccess)
             validateCorrectTypesInAnnotations(method, schemaAccess)
 
 
@@ -252,8 +252,6 @@ object BuilderValidator {
     }
 
     private fun validateCorrectConceptIdentifierType(method: KFunction<*>, methodParameter: KParameter) {
-        val exceptionPreamble = "The parameter of the method " +
-                "to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) "
         val typeClasses = validateIsClassParameterType(method, methodParameter)
         if(typeClasses.size != 1) {
             throw BuilderMethodParameterSyntaxException(
