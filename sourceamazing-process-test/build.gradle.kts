@@ -12,6 +12,8 @@ dependencies {
     runtimeOnly(projects.sourceamazingBuilder)
     runtimeOnly(projects.sourceamazingXmlSchema)
 
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
 
     // to run an end-to-end test in junit, we need access to the sourceamazing-schema class
     // directly to bypass calling the main function
