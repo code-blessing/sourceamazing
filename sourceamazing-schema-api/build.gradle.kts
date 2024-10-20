@@ -5,6 +5,9 @@ plugins {
 }
 
 dependencies {
+    compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+
+    testImplementation(libs.kotlin.stdlib)
     testImplementation(libs.junit.jupiter)
 }
 

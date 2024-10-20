@@ -6,6 +6,9 @@ plugins {
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
+
+    compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+    testImplementation(libs.kotlin.stdlib)
 }
 
 tasks.named<Test>("test") {
