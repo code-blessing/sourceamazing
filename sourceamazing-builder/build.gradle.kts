@@ -13,7 +13,11 @@ dependencies {
     implementation(projects.sourceamazingBuilderApi)
     implementation(projects.sourceamazingSchema)
 
-    implementation(libs.kotlin.reflect)
+    compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+    compileOnly(libs.kotlin.reflect) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+
+    testImplementation(libs.kotlin.stdlib)
+    testImplementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(testFixtures(projects.sourceamazingSchema))
