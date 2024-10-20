@@ -9,7 +9,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIde
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator
+import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidator
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
@@ -154,7 +154,7 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun createBuilderProxy(conceptDataCollector: ConceptDataCollector): RootBuilder {
-        BuilderValidator.validateBuilderMethods(RootBuilder::class, createSchemaAccess())
+        BuilderHierarchyValidator.validateTopLevelBuilderMethods(RootBuilder::class, createSchemaAccess())
         return ProxyCreator.createProxy(
             RootBuilder::class,
             BuilderInvocationHandler(RootBuilder::class, conceptDataCollector, emptyMap())

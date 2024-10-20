@@ -208,6 +208,36 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    private interface BuilderMethodWithoutAssignmentOfConceptIdentifier {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        fun doSomething(): NestedBuilder
+
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder("foo")
+        private interface NestedBuilder {
+
+            @Suppress("UNUSED")
+            @BuilderMethod
+            @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+            fun doSomethingNested()
+        }
+    }
+
+    @Test
+    fun `test new concept without assignment of concept identifier should throw an error`() {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodWithoutAssignmentOfConceptIdentifier::class) { builder ->
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -258,7 +288,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFacetValue annotation should throw an error`() {
-        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation::class) { builder ->
                     // do nothing
@@ -491,7 +521,7 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test omit alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
-        assertBuilderMethodSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.UNKNOWN_ALIAS) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(
                     schemaContext,
@@ -543,4 +573,36 @@ class BuilderApiAliasTest {
             }
         }
     }
+
+    @Builder
+    private interface BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        fun doSomething(): NestedBuilder
+
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder("foo")
+        @ExpectedAliasFromSuperiorBuilder("foo")
+        private interface NestedBuilder {
+
+            @Suppress("UNUSED")
+            @BuilderMethod
+            fun doSomethingNested()
+        }
+    }
+
+    @Test
+    fun `test duplicate alias in ExpectedAliasFromSuperiorBuilder annotation should throw an error`() {
+        assertBuilderSyntaxException(BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation::class) { builder ->
+                    // do nothing
+                }
+            }
+        }
+    }
+
 }

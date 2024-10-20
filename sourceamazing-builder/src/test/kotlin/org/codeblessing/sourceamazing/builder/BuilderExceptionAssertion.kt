@@ -2,6 +2,7 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 
 fun assertBuilderMethodSyntaxException(expectedBuilderErrorCode: BuilderErrorCode, executable: () -> Unit) {
@@ -10,5 +11,9 @@ fun assertBuilderMethodSyntaxException(expectedBuilderErrorCode: BuilderErrorCod
 
 fun assertBuilderMethodParameterSyntaxException(expectedBuilderErrorCode: BuilderErrorCode, executable: () -> Unit) {
     assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, expectedBuilderErrorCode, executable)
+}
+
+fun assertBuilderSyntaxException(expectedBuilderErrorCode: BuilderErrorCode, executable: () -> Unit) {
+    assertExceptionWithErrorCode(BuilderSyntaxException::class, expectedBuilderErrorCode, executable)
 }
 

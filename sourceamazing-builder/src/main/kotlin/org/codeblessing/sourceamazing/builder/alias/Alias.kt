@@ -6,7 +6,7 @@ class Alias private constructor(val name: String) {
     }
 
     override fun toString(): String {
-        return "Alias:$name"
+        return name
     }
 
     override fun equals(other: Any?): Boolean {

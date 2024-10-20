@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectNewConceptsByAlias
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectNewConceptAliases
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
@@ -16,8 +16,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassHelper.getBuilderClassFromInjectBuilderParameter
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassHelper.getBuilderClassFromReturnType
+import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromInjectBuilderParameter
+import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromReturnType
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
@@ -39,10 +39,7 @@ class BuilderInvocationHandler(
     superiorAliases: Map<Alias, ConceptIdentifier>
 ): KotlinInvocationHandler()  {
 
-    private val expectedAliasesFromSuperiorBuilder: Set<Alias> = builderClass.annotations
-        .filterIsInstance<ExpectedAliasFromSuperiorBuilder>()
-        .map { it.conceptAlias.toAlias()}
-        .toSet()
+    private val expectedAliasesFromSuperiorBuilder: Set<Alias> = allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations(builderClass).toSet()
 
     private val expectedSuperiorAliases = superiorAliases
         .filterKeys { key -> key in expectedAliasesFromSuperiorBuilder }
@@ -75,7 +72,7 @@ class BuilderInvocationHandler(
     }
 
     private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<Alias, ConceptIdentifier> {
-        val conceptNameByAlias: Map<Alias, ConceptName> = collectNewConceptsByAlias(method)
+        val conceptNameByAlias: Map<Alias, ConceptName> = collectNewConceptAliases(method)
         val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliasesConceptIdentifiers(method, conceptNameByAlias, args)
 
         newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
@@ -178,7 +175,6 @@ class BuilderInvocationHandler(
                 ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
             val conceptIdentifier = ConceptIdentifierUtil.random(conceptName)
             newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
-
         }
 
         method.valueParamsWithValues(args).forEach { (methodParam, argumentValue) ->
@@ -219,6 +215,10 @@ class BuilderInvocationHandler(
     }
 
     private fun facetValues(value: Any): List<Any> {
+        // keep in sync with [org.codeblessing.sourceamazing.builder.validation.BuilderValidator.SUPPORTED_COLLECTION_TYPES]
+
+        // having null values here should throw an exception if not @IgnoreNullValues
+        // but as we don't allow nullable inner values in collection, this is never the case
         return when(value) {
             is List<*> -> value.filterNotNull()
             is Set<*> -> value.filterNotNull().toList()

@@ -105,7 +105,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning no builder but declaring a builder with WithNewBuilder annotation should throw an exception`() {
-        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_USED) {
+        assertBuilderMethodSyntaxException(BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class) { builder ->
                     // do nothing
@@ -309,6 +309,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
+        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class)
         fun doSomething(
             @SetConceptIdentifierValue conceptId: ConceptIdentifier,
             @InjectBuilder builder: EmptyBuilder.() -> Unit,

@@ -12,7 +12,6 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class BuilderApiMultifacetTest {
@@ -114,9 +113,8 @@ class BuilderApiMultifacetTest {
     }
 
     @Test
-    @Disabled
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
-        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.BUILDER_PARAM_NO_FACET_FOR_CLASS) {
+        assertBuilderMethodParameterSyntaxException(BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class) { builder ->
                     // do nothing
