@@ -2,10 +2,11 @@ package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.ConceptData
 import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 
-class ConceptDataCollector {
+class ConceptDataCollector(private val schemaAccess: SchemaAccess) {
 
     private var sequenceNumber: Int = 0
 
@@ -26,6 +27,10 @@ class ConceptDataCollector {
         ConceptDataValidator.validateDuplicateConceptIdentifiers(conceptData.keys, newConceptData)
         conceptData[conceptIdentifier] = newConceptData
         return newConceptData
+    }
+
+    fun validateAfterUpdate(conceptData: ConceptData) {
+        ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(schemaAccess, conceptData)
     }
 
     private fun createNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {

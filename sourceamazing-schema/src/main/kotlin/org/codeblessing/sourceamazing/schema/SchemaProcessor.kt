@@ -22,14 +22,14 @@ class SchemaProcessor(
     constructor(): this(PhysicalFilesFileSystemAccess())
 
     override fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> Unit): S {
-        val schema: SchemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
-        val conceptDataCollector = ConceptDataCollector()
-        val revealedSchemaContext = RevealedSchemaContext(schema, conceptDataCollector, fileSystemAccess, loggerFacade)
+        val schemaAccess: SchemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
+        val conceptDataCollector = ConceptDataCollector(schemaAccess)
+        val revealedSchemaContext = RevealedSchemaContext(schemaAccess, conceptDataCollector, fileSystemAccess, loggerFacade)
 
         schemaUsage(revealedSchemaContext)
 
         val conceptData: List<ConceptData> = conceptDataCollector.provideConceptData()
-        val conceptGraph = ConceptResolver.validateAndResolveConcepts(schema, conceptData)
+        val conceptGraph = ConceptResolver.validateAndResolveConcepts(schemaAccess, conceptData)
         val schemaInstance = ProxyCreator.createProxy(schemaDefinitionClass, SchemaInstanceInvocationHandler(conceptGraph))
         return schemaInstance
 
