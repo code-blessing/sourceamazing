@@ -212,11 +212,13 @@ class BuilderInvocationHandler(
             FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)
             FacetModificationRule.REPLACE -> conceptData.replaceFacetValues(facetName, facetValues)
         }
+        conceptDataCollector.validateAfterUpdate(conceptData)
     }
 
+    /**
+     * keep in sync with [org.codeblessing.sourceamazing.builder.validation.BuilderValidator.SUPPORTED_COLLECTION_TYPES]
+     */
     private fun facetValues(value: Any): List<Any> {
-        // keep in sync with [org.codeblessing.sourceamazing.builder.validation.BuilderValidator.SUPPORTED_COLLECTION_TYPES]
-
         // having null values here should throw an exception if not @IgnoreNullValues
         // but as we don't allow nullable inner values in collection, this is never the case
         return when(value) {

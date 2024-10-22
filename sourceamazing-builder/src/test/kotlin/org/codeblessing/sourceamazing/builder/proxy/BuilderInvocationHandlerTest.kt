@@ -243,7 +243,7 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun createDataCollector(): ConceptDataCollector {
-        return ConceptDataCollector()
+        return ConceptDataCollector(createSchemaAccess())
     }
 
     private fun createSchemaAccess(): SchemaAccess {

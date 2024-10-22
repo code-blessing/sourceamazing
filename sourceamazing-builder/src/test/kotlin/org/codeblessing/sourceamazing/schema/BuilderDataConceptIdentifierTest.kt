@@ -99,4 +99,18 @@ class BuilderDataConceptIdentifierTest {
         }
     }
 
+    @Test
+    fun `test quick validation throws the exception immediately on the wrong builder method`() {
+        val myConceptId = ConceptIdentifier.of("My-Id")
+
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConcepts::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderToAddConcepts::class) { builder ->
+                builder.createConceptOne(myConceptId)
+                assertThrows<DuplicateConceptIdentifierException> {
+                    builder.createConceptTwo(myConceptId)
+                }
+            }
+        }
+    }
+
 }
