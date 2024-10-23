@@ -31,6 +31,7 @@ enum class SchemaErrorCode(override val messageFormat: String): ErrorCode {
     FUNCTION_MUST_HAVE_RETURN_TYPE("%s must have a return type."),
     FUNCTION_CAN_NOT_HAVE_VALUE_PARAMS("%s has parameters. This is not allowed."),
     FACET_ENUM_INVALID("Facet '%s' on concept '%s' is declared as a enumeration facet but the enumeration is not defined or not a real enumeration class (was '%s')."),
+    FACET_ENUM_HAS_PRIVATE_MODIFIER("Facet '%s' on concept '%s' is declared as a enumeration facet ('%s') with a private modifier. Change to public modifier."),
     FACET_REFERENCE_EMPTY_CONCEPT_LIST("Facet '%s' on concept '%s' is declared as a reference facet but the list of concept types is empty."),
     FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST("Facet '%s' on concept '%s' is declared is not a reference facet (is '%s') but the list of concept type is not empty (is %s)"),
     FACET_UNKNOWN_REFERENCED_CONCEPT("Facet '%s' on concept '%s' has an reference concept '%s' which is not a known concept (known concepts are '%s')"),

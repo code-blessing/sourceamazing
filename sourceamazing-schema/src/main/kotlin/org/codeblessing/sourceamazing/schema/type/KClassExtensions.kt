@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.type
 
+import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.superclasses
@@ -29,6 +30,9 @@ val KClass<*>.isInterface: Boolean
 val KClass<*>.isEnum: Boolean
     get() = java.isEnum
 
+val KClass<*>.isPrivate: Boolean
+    get() = Modifier.isPrivate(java.modifiers)
+
 val KClass<*>.isAnnotation: Boolean
     get() = java.isAnnotation
 
@@ -36,7 +40,7 @@ val KClass<*>.isRegularClass: Boolean
     get() = !isInterface && !isEnum && !isAnnotation
 
 val  KClass<*>.enumValues: List<Enum<*>>
-    get() = java.enumConstants?.map { it as Enum<*> }?.toList() ?: emptyList()
+    get() = java.enumConstants?.filterIsInstance<Enum<*>>()?.toList() ?: emptyList()
 
 val KClass<*>.packageName: String
     get() = ClassNameUtil.packageFromQualifiedName(this.qualifiedName)

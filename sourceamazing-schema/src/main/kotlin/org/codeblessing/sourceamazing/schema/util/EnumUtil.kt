@@ -1,24 +1,43 @@
 package org.codeblessing.sourceamazing.schema.util
 
+import org.codeblessing.sourceamazing.schema.type.enumValues
+import org.codeblessing.sourceamazing.schema.type.isEnum
 import kotlin.reflect.KClass
 
 object EnumUtil {
 
-    fun fromStringToEnum(enumStringValue: String, enumerationType: KClass<*>): Any? {
-        return enumConstants(enumerationType)
+    fun fromStringToEnum(enumStringValue: String, enumerationType: KClass<*>): Enum<*>? {
+        return enumConstantList(enumerationType)
             .firstOrNull { enumConstant -> enumConstant.toString() == enumStringValue }
     }
 
-    fun isEnumerationType(enumFacetValue: Any, enumerationType: KClass<*>): Boolean {
-        return enumFacetValue.javaClass.isAssignableFrom(enumerationType.java)
+    fun fromAnyToEnum(value: Any, enumerationType: KClass<*>): Enum<*>? {
+        val enumValueAsString = when (value) {
+            is String -> value
+            is Enum<*> -> value.name
+            else -> null
+        } ?: return null
+
+        return fromStringToEnum(enumValueAsString, enumerationType)
     }
 
-    fun enumConstantStringList(facetEnumType: KClass<*>): List<String> {
-        return enumConstants(facetEnumType).map { it.toString() }
+    fun isEnumerationType(enumValue: Any, enumerationType: KClass<*>): Boolean {
+        return enumValue.javaClass.isAssignableFrom(enumerationType.java)
     }
 
-    private fun enumConstants(facetEnumType: KClass<*>): Array<out Any> {
-        return facetEnumType.java.enumConstants
+    fun enumConstantList(enumClass: KClass<*>): List<Enum<*>> {
+        return enumClass.enumValues
+    }
+
+    fun isSameOrSubsetEnumerationClass(fullEnumClass: KClass<*>, fullOrSubsetEnumClass: KClass<*>): Boolean {
+        if(fullEnumClass == fullOrSubsetEnumClass) {
+            return true
+        }
+        if(!fullEnumClass.isEnum || !fullOrSubsetEnumClass.isEnum) {
+            return false
+        }
+        return enumConstantList(fullOrSubsetEnumClass)
+            .all { subsetEnumValue: Enum<*> -> fromStringToEnum(subsetEnumValue.name, fullEnumClass) != null }
     }
 
 }

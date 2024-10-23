@@ -34,7 +34,7 @@ class BuilderApiAliasTest {
     @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
-        private enum class MyEnumeration {
+        enum class MyEnumeration {
             @Suppress("UNUSED") A,
             @Suppress("UNUSED") B,
             @Suppress("UNUSED") C,

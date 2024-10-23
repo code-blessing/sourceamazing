@@ -48,7 +48,7 @@ enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
     BUILDER_PARAM_WRONG_TEXT_FACET_TYPE("To set a value for the text facet '%s', the parameter type must be ${String::class.shortText()} (or a collection %s of ${String::class.shortText()})."),
     BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE("To set a value for the boolean facet '%s', the parameter type must be ${Boolean::class.shortText()} (or a collection %s of ${Boolean::class.shortText()})."),
     BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE("To set a value for the number facet '%s', the parameter type must be ${Int::class.shortText()} (or a collection %s of ${Int::class.shortText()})."),
-    BUILDER_PARAM_WRONG_ENUM_FACET_TYPE("To set a value for the enumeration facet '%s', the parameter type must be %s (or a collection %s of this enum type) and one of the enumeration values %s."),
+    BUILDER_PARAM_WRONG_ENUM_FACET_TYPE("To set a value for the enumeration facet '%s', the parameter type must be %s (or a collection %s of this enum type) and one of the enumeration values %s. You can also use another enumeration type with a subset of the values."),
     BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE("To set a value for the reference facet '%s', the parameter type must be ${ConceptIdentifier::class.shortText()} (or a collection %s of ${ConceptIdentifier::class.shortText()})."),
     BUILDER_PARAM_IGNORE_NULL_ANNOTATION_WITHOUT_NULLABLE_TYPE("You can not use ${IgnoreNullFacetValue::class.shortText()} with a parameter that does not have a nullable type."),
     BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION("You can not pass a nullable type. Use ${IgnoreNullFacetValue::class.shortText()} as parameter annotation if you pass a nullable type."),
