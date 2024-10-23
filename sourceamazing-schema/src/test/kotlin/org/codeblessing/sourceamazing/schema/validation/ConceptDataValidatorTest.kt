@@ -42,6 +42,7 @@ class ConceptDataValidatorTest {
 
     enum class MyEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
     enum class OtherEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
+    enum class IncompatibleEnumeration { @Suppress("UNUSED") A,@Suppress("UNUSED") B, @Suppress("UNUSED") C }
 
     @Concept(facets = [
         OtherConceptTextFacetClass::class,
@@ -187,11 +188,20 @@ class ConceptDataValidatorTest {
     }
 
     @Test
-    fun `validate that a wrong enum type throws an exception`() {
+    fun `validate that a compatible enum type does return without exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
         val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, OtherEnumeration.Y)
+        ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
+    }
+
+    @Test
+    fun `validate that a incompatible enum type throws an exception`() {
+        val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
+        conceptData.addFacetValue(someEnumsFacetName, IncompatibleEnumeration.B)
         Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
         }

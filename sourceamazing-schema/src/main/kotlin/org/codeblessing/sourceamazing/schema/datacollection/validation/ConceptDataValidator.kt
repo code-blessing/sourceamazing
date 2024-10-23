@@ -18,6 +18,7 @@ import org.codeblessing.sourceamazing.schema.datacollection.validation.exception
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.type.enumValues
+import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 
 
@@ -291,11 +292,7 @@ object ConceptDataValidator {
 
     private fun isValidEnumValue(enumFacetValue: Any, facetSchema: FacetSchema): Boolean {
         val enumerationType = facetEnumType(facetSchema)
-        return when (enumFacetValue) {
-            is Enum<*> -> enumerationType.enumValues.contains(enumFacetValue)
-            is String -> enumerationType.enumValues.map { it.name }.contains(enumFacetValue)
-            else -> false
-        }
+        return EnumUtil.fromAnyToEnum(enumFacetValue, enumerationType) != null
     }
 
     private fun validateForFacetCardinality(

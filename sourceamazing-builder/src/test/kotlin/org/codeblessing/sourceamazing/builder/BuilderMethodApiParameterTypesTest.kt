@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.BuilderMethodApiParameterTypesTest.SchemaWithConceptWithFacets.MyOtherEnum
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
@@ -24,19 +23,33 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class BuilderMethodApiParameterTypesTest {
+    enum class MyEnum {
+        @Suppress("UNUSED") A,
+        @Suppress("UNUSED") B,
+        @Suppress("UNUSED") C,
+    }
+
+    enum class MyExactSameEnum {
+        @Suppress("UNUSED") A,
+        @Suppress("UNUSED") B,
+        @Suppress("UNUSED") C,
+    }
+
+    enum class MySubsetEnum {
+        @Suppress("UNUSED") A,
+        @Suppress("UNUSED") C,
+    }
+
+    enum class MyOtherIncompatibleEnum {
+        @Suppress("UNUSED") A,
+        @Suppress("UNUSED") B,
+        @Suppress("UNUSED") C,
+        @Suppress("UNUSED") D,
+    }
+
 
     @Schema(concepts = [SchemaWithConceptWithFacets.ConceptWithFacets::class])
     private interface SchemaWithConceptWithFacets {
-        enum class MyEnum {
-            @Suppress("UNUSED") A,
-            @Suppress("UNUSED") B,
-        }
-
-        enum class MyOtherEnum {
-            @Suppress("UNUSED") A,
-            @Suppress("UNUSED") B,
-        }
-
         @Concept(facets = [
             ConceptWithFacets.TextFacet::class,
             ConceptWithFacets.BoolFacet::class,
@@ -511,22 +524,64 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    private interface BuilderMethodWithOtherEnumParameter {
+    private interface BuilderMethodWithOtherCompatibleEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: MyOtherEnum,
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: MySubsetEnum,
         )
     }
 
     @Test
-    fun `test enum facet parameter with other enum instead of correct enum should throw an exception`() {
+    fun `test enum facet parameter with other compatible enum instead of same enum should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherCompatibleEnumParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodWithExactSameEnumParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: MyExactSameEnum,
+        )
+    }
+
+    @Test
+    fun `test enum facet parameter with exact copy of enum instead of same enum should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodWithExactSameEnumParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodWithOtherIncompatibleEnumParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: MyOtherIncompatibleEnum,
+        )
+    }
+
+    @Test
+    fun `test enum facet parameter with other incompatible enum instead of correct enum should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherEnumParameter::class) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherIncompatibleEnumParameter::class) {
                     // do nothing
                 }
             }
@@ -564,7 +619,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: SchemaWithConceptWithFacets.MyEnum,
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnum: MyEnum,
         )
     }
 
@@ -585,7 +640,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnums: Set<SchemaWithConceptWithFacets.MyEnum>,
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnums: Set<MyEnum>,
         )
     }
 
@@ -606,7 +661,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnums: Set<SchemaWithConceptWithFacets.MyEnum>?,
+            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class) myEnums: Set<MyEnum>?,
         )
     }
 

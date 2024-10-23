@@ -35,6 +35,7 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdina
 import org.codeblessing.sourceamazing.schema.type.getAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.schema.type.hasAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.schema.type.isEnum
+import org.codeblessing.sourceamazing.schema.type.isPrivate
 import kotlin.reflect.KClass
 
 object SchemaCreator {
@@ -237,10 +238,15 @@ object SchemaCreator {
             .map { it.toConceptName() }.toSet()
 
 
-        if(facetType == FacetType.TEXT_ENUMERATION && (enumerationType == null || !enumerationType.isEnum)) {
-            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_INVALID, facetName, conceptName, enumerationType ?: "null")
-        }
+        if(facetType == FacetType.TEXT_ENUMERATION) {
+            if(enumerationType == null || !enumerationType.isEnum) {
+                throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_INVALID, facetName, conceptName, enumerationType ?: "null")
+            }
 
+            if(enumerationType.isPrivate) {
+                throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER, facetName, conceptName, enumerationType)
+            }
+        }
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
             throw WrongTypeSyntaxException(SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST, facetName, conceptName)

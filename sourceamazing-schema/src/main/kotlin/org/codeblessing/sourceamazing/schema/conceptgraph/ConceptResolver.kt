@@ -8,6 +8,7 @@ import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 
 object ConceptResolver {
@@ -72,17 +73,9 @@ object ConceptResolver {
     }
 
     private fun transformEnumFacetValue(enumerationType: KClass<*>, value: Any): Enum<*> {
-        if(value is String) {
-            val enumConstants = enumerationType.java.enumConstants
-            return enumerationType.java.enumConstants.filterIsInstance<Enum<*>>().firstOrNull {
-                it.name == value
-            } ?: throw IllegalStateException("Could not convert enum value '$value' to enum constants $enumConstants of $enumerationType")
+        return requireNotNull(EnumUtil.fromAnyToEnum(value, enumerationType)) {
+            "Could not convert enum value '$value' to enum constants ${EnumUtil.enumConstantList(enumerationType)} of $enumerationType"
         }
-        if(value is Enum<*>) {
-            return value
-        }
-
-        throw IllegalStateException("Could not convert enum value '$value' to enum constants of $enumerationType")
     }
 
     private fun transformReferenceFacetValues(

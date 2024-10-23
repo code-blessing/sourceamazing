@@ -42,10 +42,12 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdina
 import org.codeblessing.sourceamazing.schema.type.KTypeKind
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.getAnnotation
+import org.codeblessing.sourceamazing.schema.type.isEnum
 import org.codeblessing.sourceamazing.schema.type.receiverParameter
 import org.codeblessing.sourceamazing.schema.type.returnTypeOrNull
 import org.codeblessing.sourceamazing.schema.type.typeKind
 import org.codeblessing.sourceamazing.schema.type.valueParameters
+import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -222,7 +224,7 @@ object BuilderValidator {
             FacetType.BOOLEAN -> if(typeClass != Boolean::class) {
                 throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
             }
-            FacetType.TEXT_ENUMERATION -> if(typeClass != facetFromSchema.enumerationType) {
+            FacetType.TEXT_ENUMERATION -> if(!isEnumType(facetFromSchema.enumerationType, typeClass) || !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)) {
                 throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
             }
             FacetType.REFERENCE -> if(typeClass != ConceptIdentifier::class) {
@@ -236,6 +238,14 @@ object BuilderValidator {
         if(!methodParameter.hasAnnotation<IgnoreNullFacetValue>() && classInformation.isValueNullable) {
             throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION)
         }
+    }
+
+    private fun isEnumType(enumerationType: KClass<*>?, actualType: KClass<*>): Boolean {
+        return enumerationType != null && actualType.isEnum
+    }
+
+    private fun isCompatibleEnum(enumerationType: KClass<*>?, actualType: KClass<*>): Boolean {
+        return enumerationType != null && EnumUtil.isSameOrSubsetEnumerationClass(fullEnumClass = enumerationType, fullOrSubsetEnumClass = actualType)
     }
 
     private fun extractValueClassFromCollectionIfCollection(
@@ -475,8 +485,6 @@ object BuilderValidator {
             } else {
                 throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facet.clazz.longText())
             }
-
-
         }
     }
 
