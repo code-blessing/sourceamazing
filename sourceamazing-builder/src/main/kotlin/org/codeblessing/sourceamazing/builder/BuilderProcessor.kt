@@ -11,9 +11,16 @@ import kotlin.reflect.KClass
 class BuilderProcessor(): BuilderProcessorApi {
 
     override fun <I : Any> withBuilder(schemaContext: SchemaContext, builderClass: KClass<I>, builderUsage: (builder: I) -> Unit) {
-        BuilderHierarchyValidator.validateTopLevelBuilderMethods(builderClass, schemaContext.toRevealedSchemaContext().schema)
+        val schemaAccess = schemaContext.toRevealedSchemaContext().schema
+        BuilderHierarchyValidator.validateTopLevelBuilderMethods(builderClass, schemaAccess)
         val schemaContextImplementation = schemaContext.toRevealedSchemaContext()
-        val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(builderClass, schemaContextImplementation.conceptDataCollector, emptyMap()))
+        val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(
+            schemaAccess = schemaAccess,
+            builderClass = builderClass,
+            conceptDataCollector = schemaContextImplementation.conceptDataCollector,
+            superiorConcepts = emptyMap(),
+            superiorConceptIds = emptyMap()
+        ))
         builderUsage(builderImplementation)
     }
 }

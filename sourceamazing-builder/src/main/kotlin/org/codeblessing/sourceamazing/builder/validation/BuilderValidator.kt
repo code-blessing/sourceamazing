@@ -1,36 +1,35 @@
 package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
+import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
-import org.codeblessing.sourceamazing.builder.alias.toAlias
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
+import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
+import org.codeblessing.sourceamazing.builder.facetvalue.EnumFacetValueAnnotationContent
+import org.codeblessing.sourceamazing.builder.facetvalue.FacetValueAnnotationBaseData
+import org.codeblessing.sourceamazing.builder.facetvalue.FacetValueAnnotationContent
+import org.codeblessing.sourceamazing.builder.facetvalue.ReferenceFacetValueAnnotationContent
+import org.codeblessing.sourceamazing.builder.validation.BuilderCollectionHelper.SUPPORTED_COLLECTION_TYPES
+import org.codeblessing.sourceamazing.builder.validation.BuilderCollectionHelper.extractValueClassFromCollectionIfCollection
 import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
-import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
@@ -41,7 +40,7 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyA
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
 import org.codeblessing.sourceamazing.schema.type.KTypeKind
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
-import org.codeblessing.sourceamazing.schema.type.getAnnotation
+import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
 import org.codeblessing.sourceamazing.schema.type.isEnum
 import org.codeblessing.sourceamazing.schema.type.receiverParameter
 import org.codeblessing.sourceamazing.schema.type.returnTypeOrNull
@@ -51,19 +50,18 @@ import org.codeblessing.sourceamazing.schema.util.EnumUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.KType
 import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.starProjectedType
-import kotlin.reflect.full.valueParameters
 
 object BuilderValidator {
     private const val BUILDER_CLASS_DESCRIPTION = "Builder class"
-    private val SUPPORTED_COLLECTION_TYPES = setOf(List::class.starProjectedType, Set::class.starProjectedType, Array::class.starProjectedType)
 
     fun validateHasOnlyBuilderAnnotation(builderClass: KClass<*>) {
         checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION) // this is only valid for top-level builder
     }
 
-    fun validateBuilderClassStructure(builderClass: KClass<*>) {
+    fun validateBuilderClassStructure(builderClassInterpreter: BuilderClassInterpreter) {
+        val builderClass = builderClassInterpreter.builderClass
         checkIsOrdinaryInterface(builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasNoGenericTypeParameters(builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasNoExtensionFunctions(builderClass, BUILDER_CLASS_DESCRIPTION)
@@ -79,7 +77,8 @@ object BuilderValidator {
         }
     }
 
-    fun validateMethodReturnType(method: KFunction<*>) {
+    fun validateBuilderMethodReturnType(builderMethodInterpreter: BuilderMethodInterpreter) {
+        val method = builderMethodInterpreter.method
         if(method.returnTypeOrNull() == null) {
             return
         }
@@ -98,63 +97,104 @@ object BuilderValidator {
         }
     }
 
-    fun validateIgnoreNullFacetValueMethodParameterAnnotation(method: KFunction<*>, methodParameter: KParameter) {
-        if(methodParameter.hasAnnotation<IgnoreNullFacetValue>()) {
-            if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
+    fun validateBuilderMethodParameter(builderMethodInterpreter: BuilderMethodInterpreter, methodParameter: KParameter, schemaAccess: SchemaAccess, isLastParameter: Boolean) {
+        validateInjectBuilderMethodParameterAnnotations(builderMethodInterpreter, methodParameter, isLastParameter)
+        validateExpectedMethodParameterAnnotations(builderMethodInterpreter, methodParameter, isLastParameter)
+        validateInjectBuilderMethodParamType(builderMethodInterpreter, methodParameter)
+        validateIgnoreNullFacetValueMethodParameterAnnotation(builderMethodInterpreter, methodParameter)
+    }
+
+    fun validateCorrectConceptIdentifierTypes(builderMethodInterpreter: BuilderMethodInterpreter) {
+        builderMethodInterpreter.getManualAssignedConceptIdentifierAnnotationContent().forEach { conceptIdentifierAnnotationData ->
+            val methodLocation = conceptIdentifierAnnotationData.methodLocation
+
+            if(conceptIdentifierAnnotationData.ignoreNullValue) {
                 throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION)
+                    methodLocation, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION)
             }
 
-            if(methodParameter.hasAnnotation<InjectBuilder>()) {
+            val typeClasses = validateIsClassParameterType(conceptIdentifierAnnotationData.type, methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_PARAMETER)
+            if(typeClasses.size != 1) {
                 throw BuilderMethodParameterSyntaxException(
-                    method, methodParameter,BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION)
+                    methodLocation,
+                    BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
+                    conceptIdentifierAnnotationData.type
+                )
+            }
+            val typeClass = typeClasses.first()
+            if(typeClass.clazz != ConceptIdentifier::class) {
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation,
+                    BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
+                    typeClass.clazz.longText()
+                )
+            }
+            if(typeClass.isValueNullable) {
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation,
+                    BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE
+                )
             }
         }
     }
 
-    fun validateExpectedMethodParameterAnnotations(method: KFunction<*>, methodParameter: KParameter, isLastParameter: Boolean) {
+    private fun validateIgnoreNullFacetValueMethodParameterAnnotation(builderMethodInterpreter: BuilderMethodInterpreter, methodParameter: KParameter) {
+        if(methodParameter.hasAnnotation<IgnoreNullFacetValue>()) {
+            if(methodParameter.hasAnnotation<InjectBuilder>()) {
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION,
+                )
+            }
+        }
+    }
+
+    private fun validateExpectedMethodParameterAnnotations(builderMethodInterpreter: BuilderMethodInterpreter, methodParameter: KParameter, isLastParameter: Boolean) {
         if(!isLastParameter) {
             if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                 && !methodParameter.hasAnnotation<SetFacetValue>()) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION)
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION,
+                )
             }
         } else {
             if(!methodParameter.hasAnnotation<SetConceptIdentifierValue>()
                 && !methodParameter.hasAnnotation<SetFacetValue>()
                 && !methodParameter.hasAnnotation<InjectBuilder>()) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION_OR_INJECTION)
-            }
-        }
-    }
-
-    fun validateInjectBuilderMethodParameterAnnotations(method: KFunction<*>, methodParameter: KParameter, isLastParameter: Boolean) {
-        if(methodParameter.hasAnnotation<InjectBuilder>()) {
-            if(!isLastParameter) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION_OR_INJECTION,
                 )
             }
         }
     }
 
-    fun validateInjectBuilderMethodParamType(method: KFunction<*>, methodParameter: KParameter) {
+    private fun validateInjectBuilderMethodParameterAnnotations(builderMethodInterpreter: BuilderMethodInterpreter, methodParameter: KParameter, isLastParameter: Boolean) {
+        if(methodParameter.hasAnnotation<InjectBuilder>()) {
+            if(!isLastParameter) {
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION
+                )
+            }
+        }
+    }
+
+    private fun validateInjectBuilderMethodParamType(builderMethodInterpreter: BuilderMethodInterpreter, methodParameter: KParameter) {
         if(methodParameter.hasAnnotation<InjectBuilder>()) {
             val injectionBuilderKType = methodParameter.type
             if (injectionBuilderKType.isMarkedNullable) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE
                 )
             }
 
             if (injectionBuilderKType.returnTypeOrNull() != null) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE
                 )
             }
 
@@ -162,9 +202,8 @@ object BuilderValidator {
 
             if (receiverParameterType == null || injectionBuilderKType.valueParameters().isNotEmpty()) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID
                 )
             }
 
@@ -172,17 +211,15 @@ object BuilderValidator {
                 KTypeUtil.kTypeFromProjection(receiverParameterType)
             } catch (ex: IllegalStateException) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM,
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM,
                     ex.message ?: ""
                 )
             }
             if (receiverParameterKType.isMarkedNullable) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_NOT_NULLABLE_RECEIVER_PARAM
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_NOT_NULLABLE_RECEIVER_PARAM
                 )
             }
 
@@ -190,53 +227,67 @@ object BuilderValidator {
                 KTypeUtil.classFromType(receiverParameterKType)
             } catch (ex: IllegalStateException) {
                 throw BuilderMethodParameterSyntaxException(
-                    method,
-                    methodParameter,
-                    BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM,
+                    methodLocation = builderMethodInterpreter.createMethodLocation(methodParameter),
+                    errorCode = BuilderErrorCode.BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM,
                     ex.message ?: ""
                 )
             }
         }
     }
 
-    fun validateCorrectFacetValueType(
-        method: KFunction<*>,
-        methodParameter: KParameter,
+    private fun getTypeClass(facetValueAnnotationContent: FacetValueAnnotationContent): KTypeClassInformation {
+        if(facetValueAnnotationContent.base.typeClass != null) {
+            return KTypeUtil.classInformationFromClass(facetValueAnnotationContent.base.typeClass, false)
+        }
+        val methodLocation = facetValueAnnotationContent.base.methodLocation
+
+        val type = facetValueAnnotationContent.base.type
+        if(type != null) {
+            val classInformationIncludingCollection = validateIsClassParameterType(type, methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER)
+            val classInformation = extractValueClassFromCollectionIfCollection(classInformationIncludingCollection, methodLocation)
+            return classInformation
+        }
+
+        throw RuntimeException("Neither the 'type' nor the 'type class' were defined for $facetValueAnnotationContent")
+    }
+
+    fun validateCorrectFacetValueTypes(
+        builderMethodInterpreter: BuilderMethodInterpreter,
         schemaAccess: SchemaAccess
     ) {
+        builderMethodInterpreter.getFacetValueAnnotationContent().forEach { facetValueAnnotationContent ->
+            val methodLocation = facetValueAnnotationContent.base.methodLocation
+            val facetName = facetValueAnnotationContent.base.facetName
+            val facetFromSchema = schemaAccess.facetByFacetName(facetName)
+                ?: throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.UNKNOWN_FACET, SetFacetValue::class.annotationText(), facetName.clazz.longText())
 
-        val classInformation = extractValueClassFromCollectionIfCollection(method, methodParameter,
-            validateIsClassParameterType(method, methodParameter)
-        )
-        val typeClass = classInformation.clazz
+            val classInformation = getTypeClass(facetValueAnnotationContent)
+            val typeClass: KClass<*> = classInformation.clazz
 
-        val facetName = methodParameter.getAnnotation<SetFacetValue>().facetToModify.toFacetName()
-        val facetFromSchema = schemaAccess.facetByFacetName(facetName)
-            ?: throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.UNKNOWN_FACET, SetFacetValue::class.annotationText(), facetName.clazz.longText())
+            when(facetFromSchema.facetType) {
+                FacetType.TEXT -> if(typeClass != String::class) {
+                    throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                }
+                FacetType.NUMBER -> if(typeClass != Int::class) {
+                    throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                }
+                FacetType.BOOLEAN -> if(typeClass != Boolean::class) {
+                    throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                }
+                FacetType.TEXT_ENUMERATION -> if(!isEnumType(facetFromSchema.enumerationType, typeClass) || !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)) {
+                    throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
+                }
+                FacetType.REFERENCE -> if(typeClass != ConceptIdentifier::class) {
+                    throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                }
+            }
 
-        when(facetFromSchema.facetType) {
-            FacetType.TEXT -> if(typeClass != String::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+            if(facetValueAnnotationContent.base.ignoreNullValue && !classInformation.isValueNullable) {
+                throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_IGNORE_NULL_ANNOTATION_WITHOUT_NULLABLE_TYPE)
             }
-            FacetType.NUMBER -> if(typeClass != Int::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+            if(!facetValueAnnotationContent.base.ignoreNullValue && classInformation.isValueNullable) {
+                throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION)
             }
-            FacetType.BOOLEAN -> if(typeClass != Boolean::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
-            }
-            FacetType.TEXT_ENUMERATION -> if(!isEnumType(facetFromSchema.enumerationType, typeClass) || !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
-            }
-            FacetType.REFERENCE -> if(typeClass != ConceptIdentifier::class) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
-            }
-        }
-
-        if(methodParameter.hasAnnotation<IgnoreNullFacetValue>() && !classInformation.isValueNullable) {
-            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_IGNORE_NULL_ANNOTATION_WITHOUT_NULLABLE_TYPE)
-        }
-        if(!methodParameter.hasAnnotation<IgnoreNullFacetValue>() && classInformation.isValueNullable) {
-            throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION)
         }
     }
 
@@ -248,80 +299,24 @@ object BuilderValidator {
         return enumerationType != null && EnumUtil.isSameOrSubsetEnumerationClass(fullEnumClass = enumerationType, fullOrSubsetEnumClass = actualType)
     }
 
-    private fun extractValueClassFromCollectionIfCollection(
-        method: KFunction<*>,
-        methodParameter: KParameter,
-        classesInformation: List<KTypeUtil.KTypeClassInformation>
-    ): KTypeUtil.KTypeClassInformation {
-        val valueClassOrCollectionClass = classesInformation.first()
-        return if(valueClassOrCollectionClass.clazz.starProjectedType in SUPPORTED_COLLECTION_TYPES) {
-            if(valueClassOrCollectionClass.isValueNullable) {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE)
-            }
-            classesInformation.last()
-        } else {
-            valueClassOrCollectionClass
+    private fun validateIsClassParameterType(type: KType, methodLocation: MethodLocation, builderErrorCode: BuilderErrorCode): List<KTypeUtil.KTypeClassInformation> {
+        if(type.typeKind() == KTypeKind.KCLASS) {
+            return KTypeUtil.classesInformationFromKType(type)
         }
+
+        val detailDescription = when(type.typeKind()) {
+            KTypeKind.FUNCTION -> "Type can only be a class but was '${type}'."
+            KTypeKind.OTHER_TYPE, KTypeKind.TYPE_PARAMETER -> "Type can only be a class but was '${type}'."
+            else -> throw IllegalStateException("Type '${type.typeKind()}' not supported.")
+        }
+
+        throw BuilderMethodParameterSyntaxException(methodLocation, builderErrorCode, detailDescription)
     }
 
-    fun validateCorrectConceptIdentifierType(method: KFunction<*>, methodParameter: KParameter) {
-        val typeClasses = validateIsClassParameterType(method, methodParameter)
-        if(typeClasses.size != 1) {
-            throw BuilderMethodParameterSyntaxException(
-                method,
-                methodParameter,
-                BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
-                methodParameter.type
-            )
-        }
-        val typeClass = typeClasses.first()
-        if(typeClass.clazz != ConceptIdentifier::class) {
-            throw BuilderMethodParameterSyntaxException(
-                method,
-                methodParameter,
-                BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
-                typeClass.clazz.longText()
-            )
-        }
-        if(typeClass.isValueNullable) {
-            throw BuilderMethodParameterSyntaxException(
-                method,
-                methodParameter,
-                BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE
-            )
-        }
-
-    }
-
-    private fun validateIsClassParameterType(method: KFunction<*>, methodParameter: KParameter): List<KTypeUtil.KTypeClassInformation> {
-        val methodParamType = methodParameter.type
-
-        if(methodParamType.typeKind() == KTypeKind.KCLASS) {
-            return KTypeUtil.classesInformationFromKType(methodParamType)
-        }
-
-        val detailDescription = when(methodParamType.typeKind()) {
-            KTypeKind.FUNCTION -> "Type can only be a class but was '${methodParamType}'."
-            KTypeKind.OTHER_TYPE, KTypeKind.TYPE_PARAMETER -> "Type can only be a class but was '${methodParamType}'."
-            else -> throw IllegalStateException("Type '${methodParamType.typeKind()}' not supported.")
-        }
-        val builderErrorCode = if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
-            BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_PARAMETER
-        } else if(methodParameter.hasAnnotation<InjectBuilder>()) {
-            BuilderErrorCode.BUILDER_PARAM_WRONG_INJECTION_PARAMETER
-        } else if(methodParameter.hasAnnotation<SetFacetValue>()) {
-            BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER
-        } else {
-            BuilderErrorCode.BUILDER_PARAM_WRONG_PARAMETER
-        }
-
-
-        throw BuilderMethodParameterSyntaxException(method, methodParameter, builderErrorCode, detailDescription)
-    }
-
-    fun validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClass: KClass<*>, newConceptsFromSuperiorMethod: Map<Alias, ConceptName>) {
-        val expectedAliases = allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations(builderClass).toSet()
-        val providedAliases = newConceptsFromSuperiorMethod.keys
+    fun validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter: BuilderClassInterpreter) {
+        val builderClass = builderClassInterpreter.builderClass
+        val expectedAliases = builderClassInterpreter.expectedAliasesFromSuperiorBuilder()
+        val providedAliases = builderClassInterpreter.newConceptAliasesFromSuperiorBuilder()
         expectedAliases.forEach { expectedAlias ->
             if(expectedAlias !in providedAliases) {
                 throw BuilderSyntaxException(builderClass, BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, expectedAlias, defaultAliasHint(expectedAlias))
@@ -329,36 +324,34 @@ object BuilderValidator {
         }
     }
 
-    fun validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClass: KClass<*>) {
-        val aliases = allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations(builderClass)
-        val duplicateAlias = firstDuplicateAlias(aliases)
+    fun validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter: BuilderClassInterpreter) {
+        val builderClass = builderClassInterpreter.builderClass
+        val aliasesIncludingDuplicates = builderClassInterpreter.expectedAliasesFromSuperiorBuilderIncludingDuplicates()
+        val duplicateAlias = firstDuplicateAlias(aliasesIncludingDuplicates)
 
         if(duplicateAlias != null) {
             throw BuilderSyntaxException(builderClass, BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, duplicateAlias, defaultAliasHint(duplicateAlias))
         }
     }
 
-    fun validateNoDuplicateAliasInNewConceptAnnotation(method: KFunction<*>, aliasesFromSuperiorBuilder: Set<Alias>) {
-        val alreadyUsedAliases: MutableSet<Alias> = aliasesFromSuperiorBuilder.toMutableSet()
-        val allNewConceptAnnotations = method.annotations.filterIsInstance<NewConcept>()
-        val allAliasesFromNewConceptAnnotations = allNewConceptAnnotations.map { it.declareConceptAlias.toAlias()}
-        val duplicateAlias = firstDuplicateAlias(alreadyUsedAliases.toList() + allAliasesFromNewConceptAnnotations)
+    fun validateNoDuplicateAliasInNewConceptAnnotation(builderMethodInterpreter: BuilderMethodInterpreter) {
+        val method = builderMethodInterpreter.method
+        val aliasesFromSuperiorBuilder: Set<Alias> = builderMethodInterpreter.builderClassInterpreter.expectedAliasesFromSuperiorBuilder()
+        val allAliasesFromNewConceptAnnotations = builderMethodInterpreter.newConceptAliasesIncludingDuplicates()
+        val allUsedAliasesIncludingDuplicates = aliasesFromSuperiorBuilder.toList() + allAliasesFromNewConceptAnnotations
+        val duplicateAlias = firstDuplicateAlias(allUsedAliasesIncludingDuplicates)
 
         if(duplicateAlias != null) {
-            val allUsedAliases = aliasesFromSuperiorBuilder + allAliasesFromNewConceptAnnotations
-            val concept = allNewConceptAnnotations
-                .filter { it.declareConceptAlias.toAlias() == duplicateAlias}
-                .map { it.concept.toConceptName() }
-                .last()
-            throw BuilderMethodSyntaxException(method, BuilderErrorCode.ALIAS_IS_ALREADY_USED, duplicateAlias, concept.clazz.longText(),  allUsedAliases, defaultAliasHint(duplicateAlias))
+            val concept = builderMethodInterpreter.newConceptByAlias(duplicateAlias)
+            throw BuilderMethodSyntaxException(method, BuilderErrorCode.ALIAS_IS_ALREADY_USED, duplicateAlias, concept.clazz.longText(),  allUsedAliasesIncludingDuplicates.toSet(), defaultAliasHint(duplicateAlias))
         }
     }
 
-    fun validateConceptIdentifierAssignment(method: KFunction<*>, aliasesFromNewConceptAssignment: Set<Alias>) {
+    fun validateConceptIdentifierAssignment(builderMethodInterpreter: BuilderMethodInterpreter) {
+        val method: KFunction<*> = builderMethodInterpreter.method
+        val aliasesFromNewConceptAssignment: Set<Alias> = builderMethodInterpreter.newConceptAliases()
         // check no duplicate alias in all @SetRandomConceptIdentifierValue
-        val setRandomConceptIdentifierAliases = method.annotations
-            .filterIsInstance<SetRandomConceptIdentifierValue>()
-            .map { it.conceptToModifyAlias.toAlias()}
+        val setRandomConceptIdentifierAliases = builderMethodInterpreter.aliasesToSetRandomConceptIdentifierValueIncludingDuplicates()
         val duplicateRandomConceptIdentifierAlias = firstDuplicateAlias(setRandomConceptIdentifierAliases)
 
         if(duplicateRandomConceptIdentifierAlias != null) {
@@ -366,10 +359,7 @@ object BuilderValidator {
         }
 
         // check no duplicate alias in all @SetConceptIdentifierValue
-        val setConceptIdentifierValueAliases = method
-            .valueParameters
-            .flatMap { parameter -> parameter.annotations.filterIsInstance<SetConceptIdentifierValue>() }
-            .map { it.conceptToModifyAlias.toAlias()}
+        val setConceptIdentifierValueAliases = builderMethodInterpreter.aliasesToSetConceptIdentifierValueAliasesIncludingDuplicates()
         val duplicateSetConceptIdentifierValueAlias = firstDuplicateAlias(setConceptIdentifierValueAliases)
 
         if(duplicateSetConceptIdentifierValueAlias != null) {
@@ -401,80 +391,63 @@ object BuilderValidator {
         }
     }
 
-    fun validateUsedAliasesAndFacets(method: KFunction<*>, knownAliases: Map<Alias, ConceptName>, schemaAccess: SchemaAccess) {
-        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { annotation ->
-            val alias = annotation.conceptToModifyAlias.toAlias()
-            val facet = annotation.facetToModify.toFacetName()
-            validateIsValidAlias(method, methodParameter=null, annotation, alias, knownAliases)
-            validateIsValidFacet(method, methodParameter=null, annotation, alias, knownAliases, facet, schemaAccess)
-        }
+    fun validateUsedAliases(builderMethodInterpreter: BuilderMethodInterpreter) {
+        val knownValidAliases: Map<Alias, ConceptName> = builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
 
-        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { annotation ->
-            val alias = annotation.conceptToModifyAlias.toAlias()
-            val facet = annotation.facetToModify.toFacetName()
-            validateIsValidAlias(method, methodParameter=null, annotation, alias, knownAliases)
-            validateIsValidFacet(method, methodParameter=null, annotation, alias, knownAliases, facet, schemaAccess)
-        }
-
-        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { annotation ->
-            val alias = annotation.conceptToModifyAlias.toAlias()
-            val facet = annotation.facetToModify.toFacetName()
-            validateIsValidAlias(method, methodParameter=null, annotation, alias, knownAliases)
-            validateIsValidFacet(method, methodParameter=null, annotation, alias, knownAliases, facet, schemaAccess)
-        }
-
-        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { annotation ->
-            val alias = annotation.conceptToModifyAlias.toAlias()
-            val facet = annotation.facetToModify.toFacetName()
-            validateIsValidAlias(method, methodParameter=null, annotation, alias, knownAliases)
-            validateIsValidFacet(method, methodParameter=null, annotation, alias, knownAliases, facet, schemaAccess)
-        }
-
-        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { annotation ->
-            val alias = annotation.conceptToModifyAlias.toAlias()
-            val referencedAlias = annotation.referencedConceptAlias.toAlias()
-            val facet = annotation.facetToModify.toFacetName()
-            validateIsValidAlias(method, methodParameter=null, annotation, alias, knownAliases)
-            validateIsValidAlias(method, methodParameter=null, annotation, referencedAlias, knownAliases)
-            validateIsValidFacet(method, methodParameter=null, annotation, alias, knownAliases, facet, schemaAccess)
-        }
-
-
-        method.valueParameters.forEach { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetFacetValue>().forEach { annotation ->
-                val alias = annotation.conceptToModifyAlias.toAlias()
-                val facet = annotation.facetToModify.toFacetName()
-                validateIsValidAlias(method, methodParameter=methodParameter, annotation, alias, knownAliases)
-                validateIsValidFacet(method, methodParameter=methodParameter, annotation, alias, knownAliases, facet, schemaAccess)
+        builderMethodInterpreter.getFacetValueAnnotationContent().forEach { facetValue ->
+            validateIsValidAlias(facetValue.base, facetValue.base.alias, knownValidAliases)
+            if(facetValue is ReferenceFacetValueAnnotationContent && facetValue.referencedAlias != null) {
+                validateIsValidAlias(facetValue.base, facetValue.referencedAlias, knownValidAliases)
             }
         }
     }
 
+
+    fun validateUsedFacets(builderMethodInterpreter: BuilderMethodInterpreter, schemaAccess: SchemaAccess) {
+        val knownValidAliases: Map<Alias, ConceptName> = builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
+
+        builderMethodInterpreter.getFacetValueAnnotationContent().forEach { facetValue ->
+            validateIsValidFacet(facetValue.base, knownValidAliases, schemaAccess)
+        }
+    }
+
     private fun validateIsValidAlias(
-        method: KFunction<*>,
-        methodParameter: KParameter?,
-        annotation: Annotation,
+        annotationBaseData: FacetValueAnnotationBaseData,
         alias: Alias,
         knownConceptAliases: Map<Alias, ConceptName>
     ) {
+
         if(alias !in knownConceptAliases) {
+            val method = annotationBaseData.methodLocation.method
+            val methodParameter = annotationBaseData.methodLocation.methodParameter
+            val annotation = annotationBaseData.annotation
+
             if(methodParameter == null) {
                 throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_ALIAS, alias.name, annotation.annotationClass.annotationText(), knownConceptAliases.keys, defaultAliasHint(alias))
             } else {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.UNKNOWN_ALIAS, alias.name, annotation.annotationClass.annotationText(), knownConceptAliases.keys, defaultAliasHint(alias))
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation = annotationBaseData.methodLocation,
+                    errorCode = BuilderErrorCode.UNKNOWN_ALIAS,
+                    alias.name,
+                    annotation.annotationClass.annotationText(),
+                    knownConceptAliases.keys,
+                    defaultAliasHint(alias)
+                )
             }
         }
     }
 
     private fun validateIsValidFacet(
-        method: KFunction<*>,
-        methodParameter: KParameter?,
-        annotation: Annotation,
-        alias: Alias,
+        annotationBaseData: FacetValueAnnotationBaseData,
         knownConceptAliases: Map<Alias, ConceptName>,
-        facet: FacetName,
         schemaAccess: SchemaAccess
     ) {
+        val method = annotationBaseData.methodLocation.method
+        val methodParameter = annotationBaseData.methodLocation.methodParameter
+        val annotation = annotationBaseData.annotation
+        val alias = annotationBaseData.alias
+        val facet = annotationBaseData.facetName
+
         val conceptName = requireNotNull(knownConceptAliases[alias]) {
             "Concept for ${alias.name} does not exist"
         }
@@ -483,16 +456,19 @@ object BuilderValidator {
             if(methodParameter == null) {
                 throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facet.clazz.longText())
             } else {
-                throw BuilderMethodParameterSyntaxException(method, methodParameter, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facet.clazz.longText())
+                throw BuilderMethodParameterSyntaxException(
+                    methodLocation = annotationBaseData.methodLocation,
+                    errorCode = BuilderErrorCode.UNKNOWN_FACET,
+                    annotation.annotationClass.annotationText(),
+                    facet.clazz.longText()
+                )
             }
         }
     }
 
-    fun validateKnownConceptsFromNewConceptAnnotation(method: KFunction<*>, schemaAccess: SchemaAccess) {
-        method.annotations.filterIsInstance<NewConcept>().forEach { newConceptAnnotation ->
-            val conceptAlias = newConceptAnnotation.declareConceptAlias.toAlias()
-            val conceptName = newConceptAnnotation.concept.toConceptName()
-
+    fun validateKnownConceptsFromNewConceptAnnotation(builderMethodInterpreter: BuilderMethodInterpreter, schemaAccess: SchemaAccess) {
+        val method = builderMethodInterpreter.method
+        builderMethodInterpreter.newConcepts().forEach { (conceptAlias, conceptName) ->
             if(!schemaAccess.hasConceptName(conceptName)) {
                 throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_CONCEPT, conceptAlias, conceptName.clazz.longText(), defaultAliasHint(conceptAlias))
             }
@@ -501,115 +477,64 @@ object BuilderValidator {
 
 
     fun validateCorrectTypesInMethodAnnotations(
-        method: KFunction<*>,
+        builderMethodInterpreter: BuilderMethodInterpreter,
         schemaAccess: SchemaAccess
     ) {
-
-        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { annotation ->
+        builderMethodInterpreter.getFacetValueAnnotationContent().forEach { facetValue ->
             checkFacetType(
-                method = method,
-                annotation = annotation,
-                facetClass = annotation.facetToModify,
-                expectedFacetType = FacetType.BOOLEAN,
+                annotationBaseData = facetValue.base,
+                expectedFacetType = facetValue.expectedFacetType,
                 schemaAccess = schemaAccess,
             )
-        }
 
-        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { annotation ->
-            checkFacetType(
-                method = method,
-                annotation = annotation,
-                facetClass = annotation.facetToModify,
-                expectedFacetType = FacetType.NUMBER,
-                schemaAccess = schemaAccess,
-            )
-        }
+            if(facetValue is EnumFacetValueAnnotationContent) {
+                checkFacetEnumValue(
+                    annotationBaseData = facetValue.base,
+                    enumValue = facetValue.fixedEnumValue,
+                    schemaAccess = schemaAccess,
+                )
 
-        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { annotation ->
-            checkFacetType(
-                method = method,
-                annotation = annotation,
-                facetClass = annotation.facetToModify,
-                expectedFacetType = FacetType.TEXT,
-                schemaAccess = schemaAccess,
-            )
-        }
-
-        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { annotation ->
-            checkFacetEnumTypeAndValue(
-                method = method,
-                annotation = annotation,
-                facetClass = annotation.facetToModify,
-                enumValue = annotation.value,
-                schemaAccess = schemaAccess,
-            )
-        }
-
-        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { annotation ->
-            checkFacetType(
-                method = method,
-                annotation = annotation,
-                facetClass = annotation.facetToModify,
-                expectedFacetType = FacetType.REFERENCE,
-                schemaAccess = schemaAccess,
-            )
+            }
         }
     }
 
     private fun checkFacetType(
-        method: KFunction<*>,
-        annotation: Annotation,
-        facetClass: KClass<*>,
-        expectedFacetType: FacetType,
+        annotationBaseData: FacetValueAnnotationBaseData,
+        expectedFacetType: FacetType?,
         schemaAccess: SchemaAccess,
     ) {
-        val facet = schemaAccess.facetByFacetName(facetClass.toFacetName())
-        if(facet == null) {
-            throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facetClass.longText())
+        val method: KFunction<*> = annotationBaseData.methodLocation.method
+        val annotation: Annotation = annotationBaseData.annotation
+        val facetClass: KClass<*> = annotationBaseData.facetName.clazz
 
-        }
-        if(facet.facetType != expectedFacetType) {
+        val facet = schemaAccess.facetByFacetName(facetClass.toFacetName())
+            ?: throw BuilderMethodSyntaxException(method, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facetClass.longText())
+
+        if(expectedFacetType != null && facet.facetType != expectedFacetType) {
             throw BuilderMethodSyntaxException(method, BuilderErrorCode.WRONG_FACET_TYPE, annotation.annotationClass.annotationText(), facetClass.longText(), expectedFacetType, facet.facetType)
         }
     }
 
-    private fun checkFacetEnumTypeAndValue(
-        method: KFunction<*>,
-        annotation: Annotation,
-        facetClass: KClass<*>,
+    private fun checkFacetEnumValue(
+        annotationBaseData: FacetValueAnnotationBaseData,
         schemaAccess: SchemaAccess,
-        enumValue: String,
+        enumValue: String?,
     ) {
-        checkFacetType(
-            method = method,
-            annotation = annotation,
-            facetClass = facetClass,
-            expectedFacetType = FacetType.TEXT_ENUMERATION,
-            schemaAccess = schemaAccess,
-        )
+        val annotation: Annotation = annotationBaseData.annotation
+        val facetClass: KClass<*> = annotationBaseData.facetName.clazz
 
-        val facet = requireNotNull(schemaAccess.facetByFacetName(facetClass.toFacetName()))
+        val facet = requireNotNull(schemaAccess.facetByFacetName(annotationBaseData.facetName))
         val validEnumerationValues = facet.enumerationValues.map { it.name }
+
         if(!validEnumerationValues.contains(enumValue)) {
-            throw BuilderMethodSyntaxException(method, BuilderErrorCode.WRONG_FACET_ENUM_VALUE, annotation.annotationClass.annotationText(), facetClass.longText(), enumValue, validEnumerationValues)
+            throw BuilderMethodSyntaxException(
+                annotationBaseData.methodLocation.method,
+                BuilderErrorCode.WRONG_FACET_ENUM_VALUE,
+                annotation.annotationClass.annotationText(),
+                facetClass.longText(),
+                enumValue ?: "<no-value>",
+                validEnumerationValues
+            )
         }
     }
-
-    private fun firstDuplicateAlias(listOfAlias: List<Alias>): Alias? {
-        val alreadyUsedAliases: MutableSet<Alias> = mutableSetOf()
-        for(alias in listOfAlias) {
-            if(alias in alreadyUsedAliases) {
-                return alias
-            }
-            alreadyUsedAliases.add(alias)
-        }
-
-        return null // no duplicate
-    }
-
-    private fun firstMissingAlias(listOfAlias: Collection<Alias>, listOfMaybeMissingAliases: Collection<Alias>): Alias? {
-        return listOfAlias.firstOrNull { alias -> alias !in listOfMaybeMissingAliases }
-    }
-
-
 }

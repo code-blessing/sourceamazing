@@ -155,10 +155,11 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun createBuilderProxy(conceptDataCollector: ConceptDataCollector): RootBuilder {
-        BuilderHierarchyValidator.validateTopLevelBuilderMethods(RootBuilder::class, createSchemaAccess())
+        val schemaAccess = createSchemaAccess()
+        BuilderHierarchyValidator.validateTopLevelBuilderMethods(RootBuilder::class, schemaAccess)
         return ProxyCreator.createProxy(
             RootBuilder::class,
-            BuilderInvocationHandler(RootBuilder::class, conceptDataCollector, emptyMap())
+            BuilderInvocationHandler(schemaAccess, RootBuilder::class, conceptDataCollector, emptyMap(), emptyMap())
         )
     }
 
