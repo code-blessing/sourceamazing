@@ -13,6 +13,10 @@ object KTypeUtil {
         val isValueNullable: Boolean,
     )
 
+    fun classInformationFromClass(kClass: KClass<*>, isNullable: Boolean): KTypeClassInformation {
+        return KTypeClassInformation(kClass, isNullable)
+    }
+
     fun classesInformationFromKType(kType: KType): List<KTypeClassInformation> {
         val classInfos: MutableList<KTypeClassInformation> = mutableListOf()
         val classifier = classFromType(kType)

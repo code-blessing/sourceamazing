@@ -1,60 +1,65 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectNewConceptAliases
-import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.update.BuilderMethodInterpreterDataCollector
+import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassInterpreter
+import org.codeblessing.sourceamazing.builder.validation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromInjectBuilderParameter
 import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromReturnType
 import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.hasAnnotation
 import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
-import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.full.findAnnotations
 
 class BuilderInvocationHandler(
+    private val schemaAccess: SchemaAccess,
     builderClass: KClass<*>,
     private val conceptDataCollector: ConceptDataCollector,
-    superiorAliases: Map<Alias, ConceptIdentifier>
+    superiorConcepts: Map<Alias, ConceptName>,
+    private val superiorConceptIds: Map<Alias, ConceptIdentifier>
 ): KotlinInvocationHandler()  {
 
-    private val expectedAliasesFromSuperiorBuilder: Set<Alias> = allAliasesFromExpectedAliasFromSuperiorBuilderAnnotations(builderClass).toSet()
-
-    private val expectedSuperiorAliases = superiorAliases
-        .filterKeys { key -> key in expectedAliasesFromSuperiorBuilder }
+    private val builderClassInterpreter = BuilderClassInterpreter(
+        builderClass = builderClass,
+        newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
+    )
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         val args = function.valueParamsWithValues(arguments)
         if(function.hasAnnotation(BuilderMethod::class)){
-            val myAliases = updateConceptDataCollector(function, args)
 
-            val expectedSuperiorAndMyAliases = mergeMaps(expectedSuperiorAliases, myAliases)
+            val builderMethodInterpreter = BuilderMethodInterpreter(
+                schemaAccess = schemaAccess,
+                builderClassInterpreter = builderClassInterpreter,
+                method = function,
+            )
+
+            val builderMethodInterpreterDataCollector = BuilderMethodInterpreterDataCollector(
+                conceptDataCollector = conceptDataCollector,
+                functionArguments =  args,
+                newConceptIdsFromSuperiorBuilder = superiorConceptIds,
+            )
+
+            BuilderUpdater.updateConceptDataCollector(builderMethodInterpreter, builderMethodInterpreterDataCollector)
+
+            val expectedSuperiorAndMyConcepts = builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
+            val expectedSuperiorAndMyConceptIds = builderMethodInterpreterDataCollector.newConceptIdsAndSuperiorConceptIds()
+
 
             val subBuilderClassFromInjectBuilderAnnotation = getBuilderClassFromInjectBuilderParameter(function)
             if(subBuilderClassFromInjectBuilderAnnotation != null) {
-                val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyAliases)
+                val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)
                 injectBuilderToParamMethod(function, args, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
             }
@@ -62,7 +67,7 @@ class BuilderInvocationHandler(
             val subBuilderClassFromReturnType = getBuilderClassFromReturnType(function)
             if (subBuilderClassFromReturnType != null) {
                 // if the return type is the same class as the proxy , we could also return the proxy itself
-                val builderForReturnValue: Any = createNewBuilderProxy(subBuilderClassFromReturnType, conceptDataCollector, expectedSuperiorAndMyAliases)
+                val builderForReturnValue: Any = createNewBuilderProxy(subBuilderClassFromReturnType, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)
                 return builderForReturnValue
             }
 
@@ -73,170 +78,22 @@ class BuilderInvocationHandler(
         throw IllegalArgumentException("Method $function has not the supported annotations (${BuilderMethod::class.shortText()}.")
     }
 
-    private fun updateConceptDataCollector(method: KFunction<*>, args: Map<KParameter, Any?>): Map<Alias, ConceptIdentifier> {
-        val conceptNameByAlias: Map<Alias, ConceptName> = collectNewConceptAliases(method)
-        val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliasesConceptIdentifiers(method, conceptNameByAlias, args)
-
-        newConceptAliasData.values.forEach { (conceptName, conceptIdentifier) ->
-            conceptDataCollector.newConceptData(conceptName, conceptIdentifier)
-        }
-
-        val newConceptAliases: Map<Alias, ConceptIdentifier> = newConceptAliasData.mapValues { it.value.second }
-
-        method.annotations.filterIsInstance<SetFixedBooleanFacetValue>().forEach { defaultBooleanAnnotation ->
-            updateConceptData(
-                conceptAlias = defaultBooleanAnnotation.conceptToModifyAlias.toAlias(),
-                facetClazz = defaultBooleanAnnotation.facetToModify,
-                value = defaultBooleanAnnotation.value,
-                facetModificationRule = defaultBooleanAnnotation.facetModificationRule,
-                newConceptAliases = newConceptAliases
-            )
-        }
-        method.annotations.filterIsInstance<SetFixedEnumFacetValue>().forEach { defaultEnumAnnotation ->
-            updateConceptData(
-                conceptAlias = defaultEnumAnnotation.conceptToModifyAlias.toAlias(),
-                facetClazz = defaultEnumAnnotation.facetToModify,
-                value = defaultEnumAnnotation.value,
-                facetModificationRule = defaultEnumAnnotation.facetModificationRule,
-                newConceptAliases = newConceptAliases
-            )
-        }
-        method.annotations.filterIsInstance<SetFixedIntFacetValue>().forEach { defaultIntAnnotation ->
-            updateConceptData(
-                conceptAlias = defaultIntAnnotation.conceptToModifyAlias.toAlias(),
-                facetClazz = defaultIntAnnotation.facetToModify,
-                value = defaultIntAnnotation.value,
-                facetModificationRule = defaultIntAnnotation.facetModificationRule,
-                newConceptAliases = newConceptAliases
-            )
-        }
-        method.annotations.filterIsInstance<SetFixedStringFacetValue>().forEach { defaultStringAnnotation ->
-            updateConceptData(
-                conceptAlias = defaultStringAnnotation.conceptToModifyAlias.toAlias(),
-                facetClazz = defaultStringAnnotation.facetToModify,
-                value = defaultStringAnnotation.value,
-                facetModificationRule = defaultStringAnnotation.facetModificationRule,
-                newConceptAliases = newConceptAliases
-            )
-        }
-        method.annotations.filterIsInstance<SetAliasConceptIdentifierReferenceFacetValue>().forEach { referenceValueAnnotation ->
-            val referenceConceptId = conceptIdByAlias(referenceValueAnnotation.referencedConceptAlias.toAlias(), newConceptAliases)
-
-            updateConceptData(
-                conceptAlias = referenceValueAnnotation.conceptToModifyAlias.toAlias(),
-                facetClazz = referenceValueAnnotation.facetToModify,
-                value = referenceConceptId,
-                facetModificationRule = referenceValueAnnotation.facetModificationRule,
-                newConceptAliases = newConceptAliases
-            )
-        }
-
-        args.forEach { (param, argumentValue) ->
-
-            if(!param.hasAnnotation(SetFacetValue::class)) {
-                return@forEach
-            }
-            if(argumentValue==null) {
-                if(param.hasAnnotation(IgnoreNullFacetValue::class)) {
-                    return@forEach // skip null values silently
-                } else {
-                    throw IllegalArgumentException("Can not pass null values for parameter '${param.name}' " +
-                            "on method $method. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'")
-                }
-            }
-
-            param.findAnnotations<SetFacetValue>().forEach { facetValueAnnotation ->
-                updateConceptData(
-                    conceptAlias = facetValueAnnotation.conceptToModifyAlias.toAlias(),
-                    facetClazz = facetValueAnnotation.facetToModify,
-                    value = argumentValue,
-                    facetModificationRule = facetValueAnnotation.facetModificationRule,
-                    newConceptAliases = newConceptAliases
-                )
-            }
-        }
-
-        return newConceptAliases
-    }
-
-    private fun conceptIdByAlias(conceptAlias: Alias, newConceptAliases: Map<Alias, ConceptIdentifier>): ConceptIdentifier {
-        return newConceptAliases[conceptAlias] ?: expectedSuperiorAliases[conceptAlias]
-        ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
-    }
-
-    private fun collectNewAliasesConceptIdentifiers(
-        method: KFunction<*>,
-        newConceptsByAlias: Map<Alias, ConceptName>,
-        args: Map<KParameter, Any?>
-    ): Map<Alias, Pair<ConceptName, ConceptIdentifier>> {
-        val newConceptsIdentifierByAlias: MutableMap<Alias, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
-
-        method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().forEach { setRandomConceptIdentifierValueAnnotation ->
-            val conceptAlias = setRandomConceptIdentifierValueAnnotation.conceptToModifyAlias.toAlias()
-            val conceptName = newConceptsByAlias[conceptAlias]
-                ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
-            val conceptIdentifier = ConceptIdentifierUtil.random(conceptName)
-            newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
-        }
-
-        args.forEach { (methodParam, argumentValue) ->
-            methodParam.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdentifierValueAnnotation ->
-                val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias.toAlias()
-                val conceptName = newConceptsByAlias[conceptAlias]
-                    ?: throw IllegalStateException("Can not find concept name on parameter for alias '$conceptAlias' on method $method")
-                if(argumentValue == null) {
-                    throw IllegalArgumentException("Can not pass null value as concept identifier argument for parameter '${methodParam.name}' on method $method")
-                }
-                val conceptIdentifier = when(argumentValue) {
-                    is ConceptIdentifier -> argumentValue
-                    is String -> ConceptIdentifier.of(argumentValue)
-                    else -> throw IllegalArgumentException("Concept identifier must be a ${String::class} or a ${ConceptIdentifier::class}.")
-                }
-                newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
-            }
-        }
-
-        return newConceptsIdentifierByAlias
-    }
-
-    private fun updateConceptData(
-        conceptAlias: Alias,
-        facetClazz: KClass<*>,
-        value: Any,
-        facetModificationRule: FacetModificationRule,
-        newConceptAliases: Map<Alias, ConceptIdentifier>
-    ) {
-        val conceptId: ConceptIdentifier = conceptIdByAlias(conceptAlias, newConceptAliases)
-        val conceptData = conceptDataCollector.existingConceptData(conceptId)
-        val facetName = facetClazz.toFacetName()
-        val facetValues = facetValues(value)
-        when(facetModificationRule) {
-            FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)
-            FacetModificationRule.REPLACE -> conceptData.replaceFacetValues(facetName, facetValues)
-        }
-        conceptDataCollector.validateAfterUpdate(conceptData)
-    }
-
-    /**
-     * keep in sync with [org.codeblessing.sourceamazing.builder.validation.BuilderValidator.SUPPORTED_COLLECTION_TYPES]
-     */
-    private fun facetValues(value: Any): List<Any> {
-        // having null values here should throw an exception if not @IgnoreNullValues
-        // but as we don't allow nullable inner values in collection, this is never the case
-        return when(value) {
-            is List<*> -> value.filterNotNull()
-            is Set<*> -> value.filterNotNull().toList()
-            is Array<*> -> value.filterNotNull().toList()
-            else -> listOf(value)
-        }
-    }
-
     private fun createNewBuilderProxy(
         builderClass: KClass<*>,
         dataCollector: ConceptDataCollector,
+        aliasToConceptMap: Map<Alias, ConceptName>,
         aliasToConceptIdMap: Map<Alias, ConceptIdentifier>
     ): Any {
-        return ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(builderClass,dataCollector, aliasToConceptIdMap))
+        return ProxyCreator.createProxy(
+            definitionClass = builderClass,
+            invocationHandler = BuilderInvocationHandler(
+                schemaAccess = schemaAccess,
+                builderClass = builderClass,
+                conceptDataCollector = dataCollector,
+                superiorConcepts = aliasToConceptMap,
+                superiorConceptIds = aliasToConceptIdMap
+            ),
+        )
     }
 
     private fun injectBuilderToParamMethod(
@@ -265,9 +122,5 @@ class BuilderInvocationHandler(
             }
         }
         return null
-    }
-
-    private fun mergeMaps(firstMap: Map<Alias, ConceptIdentifier>, secondDominantMap: Map<Alias, ConceptIdentifier>): Map<Alias, ConceptIdentifier> {
-        return firstMap.toMutableMap().also { it.putAll(secondDominantMap)}
     }
 }

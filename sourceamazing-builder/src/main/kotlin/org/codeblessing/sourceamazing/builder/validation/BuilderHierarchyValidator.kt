@@ -2,29 +2,22 @@ package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.collectNewConceptAliases
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.filterOnlyExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateAllExpectedAliasesFromSuperiorBuilderAreProvided
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateBuilderClassStructure
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateBuilderMethodParameter
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateBuilderMethodReturnType
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateConceptIdentifierAssignment
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateCorrectConceptIdentifierType
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateCorrectFacetValueType
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateCorrectConceptIdentifierTypes
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateCorrectFacetValueTypes
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateCorrectTypesInMethodAnnotations
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateExpectedMethodParameterAnnotations
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateHasBuilderMethodAnnotation
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateHasOnlyBuilderAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateIgnoreNullFacetValueMethodParameterAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateInjectBuilderMethodParamType
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateInjectBuilderMethodParameterAnnotations
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateKnownConceptsFromNewConceptAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateMethodReturnType
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateNoDuplicateAliasInNewConceptAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateUsedAliasesAndFacets
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateUsedAliases
+import org.codeblessing.sourceamazing.builder.validation.BuilderValidator.validateUsedFacets
 import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromInjectBuilderParameter
 import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromReturnType
 import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromWithNewBuilderAnnotation
@@ -33,51 +26,75 @@ import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
 
 object BuilderHierarchyValidator {
 
     fun validateTopLevelBuilderMethods(topLevelBuilderClass: KClass<*>, schemaAccess: SchemaAccess) {
         validateHasOnlyBuilderAnnotation(topLevelBuilderClass)
-        validateBuilderClassStructureAndMethodSyntax(topLevelBuilderClass, emptyMap(), RecursionDetector(), schemaAccess)
+        val builderClassInterpreter = BuilderClassInterpreter(
+            builderClass = topLevelBuilderClass,
+            newConceptNamesWithAliasFromSuperiorBuilder = emptyMap(),
+        )
+
+        validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
     }
 
-    private fun validateBuilderClassStructureAndMethodSyntax(builderClass: KClass<*>, newConceptsFromSuperiorMethod: Map<Alias, ConceptName>, recursionDetector: RecursionDetector, schemaAccess: SchemaAccess) {
-        validateBuilderClassStructure(builderClass)
-        validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClass)
-        validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClass, newConceptsFromSuperiorMethod)
+    private fun validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter: BuilderClassInterpreter, recursionDetector: RecursionDetector, schemaAccess: SchemaAccess) {
+        validateBuilderClassStructure(builderClassInterpreter)
+        validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter)
+        validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter)
 
-        val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName> = filterOnlyExpectedAliasFromSuperiorBuilder(builderClass, newConceptsFromSuperiorMethod)
-        val expectedAliasesFromSuperiorMethod: Set<Alias> = expectedConceptsFromSuperiorMethod.keys.toSet()
+        val expectedConceptsFromSuperiorBuilder: Map<Alias, ConceptName> = builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
 
-        RelevantMethodFetcher.ownMemberFunctions(builderClass).forEach { method ->
-            if(recursionDetector.pushMethodOntoStack(method, expectedConceptsFromSuperiorMethod)) {
+        RelevantMethodFetcher.ownMemberFunctions(builderClassInterpreter.builderClass).forEach { method ->
+            if(recursionDetector.pushMethodOntoStack(method, expectedConceptsFromSuperiorBuilder)) {
+
                 validateHasBuilderMethodAnnotation(method)
-                validateNoDuplicateAliasInNewConceptAnnotation(method, expectedAliasesFromSuperiorMethod)
-                validateKnownConceptsFromNewConceptAnnotation(method, schemaAccess)
+                val builderMethodInterpreter = BuilderMethodInterpreter(
+                    schemaAccess = schemaAccess,
+                    builderClassInterpreter = builderClassInterpreter,
+                    method = method,
+                )
+                validateMethodWithBuilderMethodAnnotation(builderMethodInterpreter, schemaAccess)
 
-                val newConceptsFromMethod: Map<Alias, ConceptName> = collectNewConceptAliases(method)
-
-                validateConceptIdentifierAssignment(method, newConceptsFromMethod.keys)
-                validateUsedAliasesAndFacets(method, newConceptsFromMethod + expectedConceptsFromSuperiorMethod, schemaAccess)
-                validateCorrectTypesInMethodAnnotations(method, schemaAccess)
-
-                method.valueParameters.forEachIndexed { index, methodParameter ->
-                    val isLastParameter = index == (method.valueParameters.size - 1)
-                    validateBuilderMethodParameter(method, methodParameter, schemaAccess, isLastParameter)
-                }
-
-                validateMethodReturnType(method)
-
+                val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName> = builderMethodInterpreter.builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
                 val subBuilderClass = validateAndGetSubBuilderClass(method)
                 if(subBuilderClass != null) {
-                    validateBuilderClassStructureAndMethodSyntax(subBuilderClass, expectedConceptsFromSuperiorMethod + newConceptsFromMethod, recursionDetector, schemaAccess)
+                    val subBuilderClassInterpreter = BuilderClassInterpreter(
+                        builderClass = subBuilderClass,
+                        newConceptNamesWithAliasFromSuperiorBuilder = expectedConceptsFromSuperiorMethod + builderMethodInterpreter.newConcepts(),
+                    )
+
+                    validateBuilderClassStructureAndMethodSyntax(subBuilderClassInterpreter, recursionDetector, schemaAccess)
                 }
                 recursionDetector.removeLastMethodFromStack()
             }
         }
+    }
+
+    private fun validateMethodWithBuilderMethodAnnotation(
+        builderMethodInterpreter: BuilderMethodInterpreter,
+        schemaAccess: SchemaAccess
+    ) {
+        val method = builderMethodInterpreter.method
+
+        validateNoDuplicateAliasInNewConceptAnnotation(builderMethodInterpreter)
+        validateKnownConceptsFromNewConceptAnnotation(builderMethodInterpreter, schemaAccess)
+
+        validateConceptIdentifierAssignment(builderMethodInterpreter)
+        validateUsedAliases(builderMethodInterpreter)
+        validateUsedFacets(builderMethodInterpreter, schemaAccess)
+        validateCorrectTypesInMethodAnnotations(builderMethodInterpreter, schemaAccess)
+
+        method.valueParameters.forEachIndexed { index, methodParameter ->
+            val isLastParameter = index == (method.valueParameters.size - 1)
+            validateBuilderMethodParameter(builderMethodInterpreter, methodParameter, schemaAccess, isLastParameter)
+        }
+        validateCorrectConceptIdentifierTypes(builderMethodInterpreter)
+        validateCorrectFacetValueTypes(builderMethodInterpreter, schemaAccess)
+
+        validateBuilderMethodReturnType(builderMethodInterpreter)
     }
 
     private fun validateAndGetSubBuilderClass(method: KFunction<*>): KClass<*>? {
@@ -109,33 +126,5 @@ object BuilderHierarchyValidator {
         }
 
         return subBuilderClass
-    }
-
-
-
-    private fun validateBuilderMethodParameter(method: KFunction<*>, methodParameter: KParameter, schemaAccess: SchemaAccess, isLastParameter: Boolean) {
-        validateInjectBuilderMethodParameterAnnotations(method, methodParameter, isLastParameter)
-        validateExpectedMethodParameterAnnotations(method, methodParameter, isLastParameter)
-        validateInjectBuilderMethodParamType(method, methodParameter)
-        validateIgnoreNullFacetValueMethodParameterAnnotation(method, methodParameter)
-        validateCorrectParameterTypes(method, methodParameter, schemaAccess)
-    }
-
-    private fun validateCorrectParameterTypes(
-        method: KFunction<*>,
-        methodParameter: KParameter,
-        schemaAccess: SchemaAccess
-    ) {
-        if(methodParameter.hasAnnotation<InjectBuilder>()) {
-            return
-        }
-        if(methodParameter.hasAnnotation<SetConceptIdentifierValue>()) {
-            validateCorrectConceptIdentifierType(method, methodParameter)
-            return
-        }
-        if(methodParameter.hasAnnotation<SetFacetValue>()) {
-            validateCorrectFacetValueType(method, methodParameter, schemaAccess)
-            return
-        }
     }
 }
