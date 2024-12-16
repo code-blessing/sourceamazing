@@ -31,6 +31,7 @@ import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotations
 
 class BuilderInvocationHandler(
@@ -45,15 +46,16 @@ class BuilderInvocationHandler(
         .filterKeys { key -> key in expectedAliasesFromSuperiorBuilder }
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
+        val args = function.valueParamsWithValues(arguments)
         if(function.hasAnnotation(BuilderMethod::class)){
-            val myAliases = updateConceptDataCollector(function, arguments)
+            val myAliases = updateConceptDataCollector(function, args)
 
             val expectedSuperiorAndMyAliases = mergeMaps(expectedSuperiorAliases, myAliases)
 
             val subBuilderClassFromInjectBuilderAnnotation = getBuilderClassFromInjectBuilderParameter(function)
             if(subBuilderClassFromInjectBuilderAnnotation != null) {
                 val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyAliases)
-                injectBuilderToParamMethod(function, arguments, builderForInjection)
+                injectBuilderToParamMethod(function, args, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
             }
 
@@ -71,7 +73,7 @@ class BuilderInvocationHandler(
         throw IllegalArgumentException("Method $function has not the supported annotations (${BuilderMethod::class.shortText()}.")
     }
 
-    private fun updateConceptDataCollector(method: KFunction<*>, args: List<Any?>): Map<Alias, ConceptIdentifier> {
+    private fun updateConceptDataCollector(method: KFunction<*>, args: Map<KParameter, Any?>): Map<Alias, ConceptIdentifier> {
         val conceptNameByAlias: Map<Alias, ConceptName> = collectNewConceptAliases(method)
         val newConceptAliasData: Map<Alias, Pair<ConceptName, ConceptIdentifier>> = collectNewAliasesConceptIdentifiers(method, conceptNameByAlias, args)
 
@@ -129,7 +131,7 @@ class BuilderInvocationHandler(
             )
         }
 
-        method.valueParamsWithValues(args).forEach { (param, argumentValue) ->
+        args.forEach { (param, argumentValue) ->
 
             if(!param.hasAnnotation(SetFacetValue::class)) {
                 return@forEach
@@ -165,7 +167,7 @@ class BuilderInvocationHandler(
     private fun collectNewAliasesConceptIdentifiers(
         method: KFunction<*>,
         newConceptsByAlias: Map<Alias, ConceptName>,
-        args: List<Any?>
+        args: Map<KParameter, Any?>
     ): Map<Alias, Pair<ConceptName, ConceptIdentifier>> {
         val newConceptsIdentifierByAlias: MutableMap<Alias, Pair<ConceptName, ConceptIdentifier>> = mutableMapOf()
 
@@ -177,7 +179,7 @@ class BuilderInvocationHandler(
             newConceptsIdentifierByAlias[conceptAlias] = Pair(conceptName, conceptIdentifier)
         }
 
-        method.valueParamsWithValues(args).forEach { (methodParam, argumentValue) ->
+        args.forEach { (methodParam, argumentValue) ->
             methodParam.annotations.filterIsInstance<SetConceptIdentifierValue>().forEach { conceptIdentifierValueAnnotation ->
                 val conceptAlias = conceptIdentifierValueAnnotation.conceptToModifyAlias.toAlias()
                 val conceptName = newConceptsByAlias[conceptAlias]
@@ -239,7 +241,7 @@ class BuilderInvocationHandler(
 
     private fun injectBuilderToParamMethod(
         method: KFunction<*>,
-        args: List<Any?>,
+        args: Map<KParameter, Any?>,
         builder: Any
     ) {
         getBuilderInjectionParameterFunctionOrNull(method, args)?.let { conceptBuilderFunctionParameter ->
@@ -247,8 +249,8 @@ class BuilderInvocationHandler(
         }
     }
 
-    private fun getBuilderInjectionParameterFunctionOrNull(method: KFunction<*>, args: List<Any?>): ((Any) -> Unit)? {
-        method.valueParamsWithValues(args).forEach { (parameter, argument) ->
+    private fun getBuilderInjectionParameterFunctionOrNull(method: KFunction<*>, args: Map<KParameter, Any?>): ((Any) -> Unit)? {
+        args.forEach { (parameter, argument) ->
             if(parameter.hasAnnotation(InjectBuilder::class)) {
                 val builderToInjectFunction = argument ?: throw IllegalStateException(
                     "Parameter with Annotation ${InjectBuilder::class} found but was null on method: $method",

@@ -44,7 +44,7 @@ object BuilderHierarchyValidator {
         validateBuilderClassStructureAndMethodSyntax(topLevelBuilderClass, emptyMap(), RecursionDetector(), schemaAccess)
     }
 
-    fun validateBuilderClassStructureAndMethodSyntax(builderClass: KClass<*>, newConceptsFromSuperiorMethod: Map<Alias, ConceptName>, recursionDetector: RecursionDetector, schemaAccess: SchemaAccess) {
+    private fun validateBuilderClassStructureAndMethodSyntax(builderClass: KClass<*>, newConceptsFromSuperiorMethod: Map<Alias, ConceptName>, recursionDetector: RecursionDetector, schemaAccess: SchemaAccess) {
         validateBuilderClassStructure(builderClass)
         validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClass)
         validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClass, newConceptsFromSuperiorMethod)
