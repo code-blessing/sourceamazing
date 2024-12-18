@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.builder.validation
+package org.codeblessing.sourceamazing.builder.interpretation
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias

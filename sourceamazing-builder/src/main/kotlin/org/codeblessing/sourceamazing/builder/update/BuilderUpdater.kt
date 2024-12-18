@@ -3,8 +3,8 @@ package org.codeblessing.sourceamazing.builder.update
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.validation.BuilderCollectionHelper
-import org.codeblessing.sourceamazing.builder.validation.BuilderMethodInterpreter
+import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper
+import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
@@ -33,7 +33,6 @@ object BuilderUpdater {
             val conceptIdentifier = conceptIdentifierAnnotationData.conceptIdentifier
                 ?: throw IllegalArgumentException("Can not pass null value as concept identifier argument on method $method")
             builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
-
         }
     }
 

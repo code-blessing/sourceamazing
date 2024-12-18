@@ -3,12 +3,15 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.BuilderSmokeTest.SmokeTestSchema.PersonConcept.PersonSex
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
@@ -93,7 +96,7 @@ class BuilderSmokeTest {
         @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class)
         fun newPerson(
-            @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
+            @ProvideBuilderData conceptIdentifier: PersonConceptIdentifier,
             @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
             @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class) sex: PersonSex,
         ): PersonConceptBuilder
@@ -103,7 +106,7 @@ class BuilderSmokeTest {
         @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class)
         fun newPerson(
-            @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
+            @ProvideBuilderData conceptIdentifier: PersonConceptIdentifier,
             @InjectBuilder builder: PersonConceptBuilder.() -> Unit,
         )
 
@@ -138,7 +141,7 @@ class BuilderSmokeTest {
             @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
             fun skill(
-                @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
+                @ProvideBuilderData skillConceptIdentifier: SkillConceptIdentifier,
             ): SkillConceptBuilder
 
             // DSL style
@@ -146,7 +149,7 @@ class BuilderSmokeTest {
             @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
             fun skill(
-                @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
+                @ProvideBuilderData skillConceptIdentifier: SkillConceptIdentifier,
                 @InjectBuilder builder: SkillConceptBuilder.() -> Unit,
             )
 
@@ -176,13 +179,29 @@ class BuilderSmokeTest {
         }
     }
 
+    @BuilderDataProvider
+    class PersonConceptIdentifier(private val conceptIdentifier: String) {
+
+        @BuilderData
+        @SetProvidedConceptIdentifierValue()
+        fun getConceptId() = ConceptIdentifier.of(conceptIdentifier)
+    }
+
+    @BuilderDataProvider
+    class SkillConceptIdentifier(private val conceptIdentifier: String) {
+
+        @BuilderData
+        @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "skill")
+        fun getConceptId() = ConceptIdentifier.of(conceptIdentifier)
+    }
+
     @Test
     fun `test sourceamazing builder as smoke test`() {
-        val jamesConceptIdentifier = ConceptIdentifier.of("James")
-        val cookingConceptIdentifier = ConceptIdentifier.of("Cooking")
-        val skateboardConceptIdentifier = ConceptIdentifier.of("Skateboard")
-        val lindaConceptIdentifier = ConceptIdentifier.of("Linda")
-        val judoConceptIdentifier = ConceptIdentifier.of("Judo")
+        val jamesConceptIdentifier = PersonConceptIdentifier("James")
+        val cookingConceptIdentifier = SkillConceptIdentifier("Cooking")
+        val skateboardConceptIdentifier = SkillConceptIdentifier("Skateboard")
+        val lindaConceptIdentifier = PersonConceptIdentifier("Linda")
+        val judoConceptIdentifier = SkillConceptIdentifier("Judo")
 
 
         val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) { schemaContext ->
@@ -218,18 +237,18 @@ class BuilderSmokeTest {
         Assertions.assertEquals(2, personList.size)
         Assertions.assertEquals(3, skills.size)
 
-        val james = personList.first { it.getConceptId() == jamesConceptIdentifier }
+        val james = personList.first { it.getConceptId() == jamesConceptIdentifier.getConceptId() }
         Assertions.assertEquals("James", james.getFirstname())
         Assertions.assertEquals(18, james.getAge())
         Assertions.assertEquals(PersonSex.MALE, james.getSex())
 
 
-        val linda = personList.first { it.getConceptId() == lindaConceptIdentifier }
+        val linda = personList.first { it.getConceptId() == lindaConceptIdentifier.getConceptId() }
         Assertions.assertEquals("Linda", linda.getFirstname())
         Assertions.assertEquals(29, linda.getAge())
         Assertions.assertEquals(PersonSex.FEMALE, linda.getSex())
 
-        val judo = skills.first { it.getSkillConceptIdentifier() == judoConceptIdentifier.name }
+        val judo = skills.first { it.getSkillConceptIdentifier() == judoConceptIdentifier.getConceptId().name }
         Assertions.assertEquals("Judo", judo.getSkillDescription())
         Assertions.assertEquals(true, judo.isStillFullyEnjoyingAboutThatSkill())
 

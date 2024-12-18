@@ -3,12 +3,10 @@ package org.codeblessing.sourceamazing.builder.proxy
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
+import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.builder.update.BuilderMethodInterpreterDataCollector
 import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassInterpreter
-import org.codeblessing.sourceamazing.builder.validation.BuilderMethodInterpreter
-import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromInjectBuilderParameter
-import org.codeblessing.sourceamazing.builder.validation.SubBuilderHelper.getBuilderClassFromReturnType
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
@@ -57,14 +55,14 @@ class BuilderInvocationHandler(
             val expectedSuperiorAndMyConceptIds = builderMethodInterpreterDataCollector.newConceptIdsAndSuperiorConceptIds()
 
 
-            val subBuilderClassFromInjectBuilderAnnotation = getBuilderClassFromInjectBuilderParameter(function)
+            val subBuilderClassFromInjectBuilderAnnotation = builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
             if(subBuilderClassFromInjectBuilderAnnotation != null) {
                 val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)
                 injectBuilderToParamMethod(function, args, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
             }
 
-            val subBuilderClassFromReturnType = getBuilderClassFromReturnType(function)
+            val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
             if (subBuilderClassFromReturnType != null) {
                 // if the return type is the same class as the proxy , we could also return the proxy itself
                 val builderForReturnValue: Any = createNewBuilderProxy(subBuilderClassFromReturnType, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)

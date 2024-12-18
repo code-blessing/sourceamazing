@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.builder.facetvalue
+package org.codeblessing.sourceamazing.builder.interpretation.facetvalue
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.schema.FacetType
