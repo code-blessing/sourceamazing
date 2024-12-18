@@ -1,12 +1,16 @@
 package org.codeblessing.sourceamazing.builder
 
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.ErrorCode
@@ -42,6 +46,9 @@ enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
     BUILDER_PARAM_INJECTION_PARAMS_INVALID("An injected builder (parameter with ${InjectBuilder::class.annotationText()}) must have as single parameter a receiver parameter (extension function) type. Its declaration must be \'<Builder>.() -> Unit\'."),
     BUILDER_PARAM_INJECTION_INVALID_RECEIVER_PARAM("The receiver type of the injected builder is invalid. %s"),
     BUILDER_PARAM_INJECTION_NOT_NULLABLE_RECEIVER_PARAM("The receiver type of the injected builder can not be nullable."),
+    BUILDER_PARAM_DATA_PROVIDER_CANNOT_BE_NULLABLE("A builder data provider (parameter with ${ProvideBuilderData::class.annotationText()}) can not be marked as nullable."),
+    BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID("A builder data provider (parameter with ${ProvideBuilderData::class.annotationText()}) can only be a class instance."),
+    BUILDER_PARAM_DATA_PROVIDER_AND_IGNORE_NULL_ANNOTATION("A parameter with ${ProvideBuilderData::class.annotationText()} can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."),
     BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE("You can not pass a nullable collection type."),
     BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE("The parameter of the method to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) must be of type '${ConceptIdentifier::class.shortText()}' but was '%s'"),
     BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE("The parameter of the method to pass a concept identifier (with annotation ${SetConceptIdentifierValue::class.annotationText()}) can not be a nullable type."),
@@ -56,7 +63,10 @@ enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
     BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER("The method parameter to set a facet value (with annotation ${SetFacetValue::class.annotationText()}) was wrong. %s"),
     BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION("A parameter setting the concept identifier with ${SetConceptIdentifierValue::class.annotationText()} can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."),
     BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION("A parameter with ${InjectBuilder::class.annotationText()} can not have ${IgnoreNullFacetValue::class.annotationText()} at the same time."),
-    BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION("A parameter of the method is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} or ${SetFacetValue::class.annotationText()}"),
-    BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION_OR_INJECTION("The last parameter of the method is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()}  or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()}"),
+    BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION("A parameter of the method is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()} or ${SetFacetValue::class.annotationText()} or ${ProvideBuilderData::class.annotationText()}"),
+    BUILDER_PARAM_MISSING_CONCEPT_IDENTIFIER_OR_SET_FACET_ANNOTATION_OR_INJECTION("The last parameter of the method is missing one of annotations ${SetConceptIdentifierValue::class.annotationText()}  or ${SetFacetValue::class.annotationText()} or ${InjectBuilder::class.annotationText()} or ${ProvideBuilderData::class.annotationText()}"),
+    BUILDER_DATA_PROVIDER_FUNCTION_HAS_PARAMETERS("A builder data provider (method annotated with ${BuilderData::class.annotationText()} can not have parameters."),
+    BUILDER_DATA_PROVIDER_FUNCTION_RETURNS_NOTHING("A builder data provider (method annotated with ${BuilderData::class.annotationText()} to set a facet value with ${SetProvidedFacetValue::class.annotationText()} or a concept identifier with ${SetProvidedConceptIdentifierValue::class.annotationText()} must have a matching return type."),
+    BUILDER_DATA_PROVIDER_FUNCTION_CAN_NOT_BE_EXTENSION_FUNCTION("A builder data provider (method annotated with ${BuilderData::class.annotationText()}) can not have parameters."),
     ;
 }

@@ -11,7 +11,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetV
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
@@ -249,7 +248,7 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     @Test
     fun `test reference facet with function instead of ConceptIdentifier should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithFunctionInsteadOfConceptIdentifierReference::class) {
                     // do nothing
@@ -274,7 +273,7 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     @Test
     fun `test reference facet with string instead of ConceptIdentifier should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithStringInsteadOfConceptIdentifierReference::class) {
                     // do nothing

@@ -2,13 +2,19 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
+import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreProvidedNullFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
@@ -52,6 +58,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface SchemaWithConceptWithFacets {
         @Concept(facets = [
             ConceptWithFacets.TextFacet::class,
+            ConceptWithFacets.OtherTextFacet::class,
             ConceptWithFacets.BoolFacet::class,
             ConceptWithFacets.NumberFacet::class,
             ConceptWithFacets.EnumerationFacet::class,
@@ -60,6 +67,8 @@ class BuilderMethodApiParameterTypesTest {
         interface ConceptWithFacets {
             @StringFacet
             interface TextFacet
+            @StringFacet
+            interface OtherTextFacet
             @BooleanFacet
             interface BoolFacet
             @IntFacet
@@ -84,9 +93,42 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter without ConceptIdentifier class should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithIllegalConceptIdClass::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithIllegalConceptIdClass {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedConceptIdentifierValue
+            fun getConceptIdentifier(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test concept id parameter without ConceptIdentifier in data provider class should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithIllegalConceptIdClass::class) {
                     // do nothing
                 }
             }
@@ -106,9 +148,42 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter as nullable type should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableConceptId::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithNullableConceptId {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedConceptIdentifierValue
+            fun getConceptIdentifier(): ConceptIdentifier? {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test concept id parameter as nullable type in data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNullableConceptId::class) {
                     // do nothing
                 }
             }
@@ -128,9 +203,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test concept id parameter as nullable type with IgnoreNullFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedConceptIdentifierValue
+            @IgnoreProvidedNullFacetValue
+            fun getConceptIdentifier(): ConceptIdentifier? {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test concept id parameter as nullable type with IgnoreNullFacetValue annotation in data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation::class) {
                     // do nothing
                 }
             }
@@ -150,15 +259,48 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class) { 
+                BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class) {
                     // do nothing
                 }
             }
         }
     }
 
+    @Builder
+    private interface BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedConceptIdentifierValue
+            @IgnoreProvidedNullFacetValue
+            fun getConceptIdentifier(): ConceptIdentifier {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test IgnoreNullFacetValue annotation and ConceptIdentifierValue annotation on same method in data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
 
     @Builder
     private interface BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
@@ -174,9 +316,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter as nullable type without IgnoreNullFacetValue should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyText(): String? {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter as nullable type without IgnoreNullFacetValue in data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation::class) {
                     // do nothing
                 }
             }
@@ -207,6 +383,39 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
+    private interface BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            @IgnoreProvidedNullFacetValue
+            fun getMyText(): String? {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter as nullable type with IgnoreNullFacetValue on data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
     private interface BuilderMethodWithCollectionTypedStringParameter {
 
         @Suppress("UNUSED")
@@ -221,7 +430,39 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter with collection type instead of string should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderMethodWithCollectionTypedStringParameter::class) { 
+            BuilderApi.withBuilder(schemaContext, BuilderMethodWithCollectionTypedStringParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithCollectionTypedStringParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyTexts(): List<String> {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with collection type instead of string on data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithCollectionTypedStringParameter::class) {
                 // do nothing
             }
         }
@@ -249,6 +490,79 @@ class BuilderMethodApiParameterTypesTest {
         }
     }
 
+    @Builder
+    private interface BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyText1(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyText2(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+
+        }
+    }
+
+    @Test
+    fun `test multiple assignments via data provider for the same facet should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.OtherTextFacet::class)
+            fun getMyText(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test multiple assignments via the same data provider method for different facets should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod::class) {
+                // do nothing
+            }
+        }
+    }
+
 
     @Builder
     private interface BuilderMethodWithSortedSetStringCollectionParameter {
@@ -264,9 +578,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter with SortedSet collection of string should throw an exception as only List, Set and Array are supported`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithSortedSetStringCollectionParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithSortedSetStringCollectionParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getSortedTexts(): SortedSet<String> {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with SortedSet collection of string on data provider should throw an exception as only List, Set and Array are supported`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithSortedSetStringCollectionParameter::class) {
                     // do nothing
                 }
             }
@@ -287,9 +635,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter with collection type of nullable string should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithCollectionTypedNullableStringParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyTexts(): List<String?> {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with collection type of nullable string on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithCollectionTypedNullableStringParameter::class) {
                     // do nothing
                 }
             }
@@ -318,6 +700,39 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
+    private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            @IgnoreProvidedNullFacetValue
+            fun getMyTexts(): List<String?> {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with collection type of nullable string and IgnoreNullFacetValue annotation on data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
     private interface BuilderMethodWithWrongTypedStringParameter {
 
         @Suppress("UNUSED")
@@ -331,9 +746,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter with other type than string should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedStringParameter::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithWrongTypedStringParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyText(): Int {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with other type than string on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithWrongTypedStringParameter::class) {
                     // do nothing
                 }
             }
@@ -354,9 +803,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test string facet parameter with a function returning a string should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongFunctionReturningStringParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithWrongFunctionReturningStringParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class)
+            fun getMyText(): () -> String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test string facet parameter with a function returning a string on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithWrongFunctionReturningStringParameter::class) {
                     // do nothing
                 }
             }
@@ -377,7 +860,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test boolean facet parameter with other type than boolean should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedBooleanParameter::class) { 
                     // do nothing
@@ -408,6 +891,38 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
+    private interface BuilderMethodDataProviderWithArrayOfBooleanParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.BoolFacet::class)
+            fun getMyBooleans(): Array<Boolean> {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test boolean facet parameter with array of boolean instead of boolean with data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithArrayOfBooleanParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
     private interface BuilderMethodWithWrongTypedIntParameter {
 
         @Suppress("UNUSED")
@@ -421,7 +936,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test int facet parameter with other type than int should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedIntParameter::class) { 
                     // do nothing
@@ -444,9 +959,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test int facet parameter with long type should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithLongInsteadOfIntParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithLongInsteadOfIntParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.NumberFacet::class)
+            fun getMyInt(): Long {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test int facet parameter with long type on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithLongInsteadOfIntParameter::class) {
                     // do nothing
                 }
             }
@@ -467,9 +1016,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test int facet parameter with Number type should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNumberParameterInsteadOfIntParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.NumberFacet::class)
+            fun getMyInt(): Number {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test int facet parameter with Number type on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter::class) {
                     // do nothing
                 }
             }
@@ -491,7 +1074,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test int facet parameter with Any type should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithAnyParameterInsteadOfIntParameter::class) {
                     // do nothing
@@ -514,7 +1097,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with wrong int type instead of enum should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithIntInsteadOfEnumParameter::class) {
                     // do nothing
@@ -539,6 +1122,38 @@ class BuilderMethodApiParameterTypesTest {
     fun `test enum facet parameter with other compatible enum instead of same enum should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
             BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherCompatibleEnumParameter::class) {
+                // do nothing
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithOtherCompatibleEnumParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class)
+            fun getMyEnum(): MySubsetEnum {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test enum facet parameter with other compatible enum instead of same enum on data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithOtherCompatibleEnumParameter::class) {
                 // do nothing
             }
         }
@@ -579,7 +1194,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with other incompatible enum instead of correct enum should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherIncompatibleEnumParameter::class) {
                     // do nothing
@@ -602,9 +1217,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with string instead of enum should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithStringInsteadOfEnumParameter::class) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithStringInsteadOfEnumParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class)
+            fun getMyEnum(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test enum facet parameter with string instead of enum on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithStringInsteadOfEnumParameter::class) {
                     // do nothing
                 }
             }
@@ -667,7 +1316,7 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test enum facet parameter with nullable set of enum instead of single enum should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableSetOfEnumParameter::class) { 
                     // do nothing
@@ -690,9 +1339,43 @@ class BuilderMethodApiParameterTypesTest {
 
     @Test
     fun `test reference facet parameter with other type than a ConceptIdentifier should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedReferenceParameter::class) { 
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Builder
+    private interface BuilderMethodDataProviderWithWrongTypedReferenceParameter {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class)
+            fun getMyRef(): String {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test reference facet parameter with other type than a ConceptIdentifier on data provider should throw an exception`() {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithWrongTypedReferenceParameter::class) {
                     // do nothing
                 }
             }
@@ -741,4 +1424,35 @@ class BuilderMethodApiParameterTypesTest {
         }
     }
 
+    @Builder
+    private interface BuilderMethodDataProviderWithConceptIdentifier {
+
+        @Suppress("UNUSED")
+        @BuilderMethod
+        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
+        @SetRandomConceptIdentifierValue
+        fun doSomething(
+            @ProvideBuilderData data: DataProvider,
+        )
+
+        @BuilderDataProvider
+        class DataProvider {
+
+            @Suppress("UNUSED")
+            @BuilderData
+            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class)
+            fun getMyRef(): ConceptIdentifier {
+                throw UnsupportedOperationException("Never called in validation phase")
+            }
+        }
+    }
+
+    @Test
+    fun `test reference facet parameter with correct ConceptIdentifier type on data provider should not fail`() {
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacets::class) { schemaContext ->
+            BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithConceptIdentifier::class) {
+                // do nothing
+            }
+        }
+    }
 }

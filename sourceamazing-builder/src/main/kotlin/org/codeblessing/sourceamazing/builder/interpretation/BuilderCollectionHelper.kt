@@ -1,8 +1,8 @@
-package org.codeblessing.sourceamazing.builder.validation
+package org.codeblessing.sourceamazing.builder.interpretation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
 import kotlin.reflect.full.starProjectedType
 
@@ -30,7 +30,7 @@ object BuilderCollectionHelper {
         val valueClassOrCollectionClass = classesInformation.first()
         return if(valueClassOrCollectionClass.clazz.starProjectedType in SUPPORTED_COLLECTION_TYPES) {
             if(valueClassOrCollectionClass.isValueNullable) {
-                throw BuilderMethodParameterSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE)
+                throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE)
             }
             classesInformation.last()
         } else {

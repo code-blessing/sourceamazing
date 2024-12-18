@@ -7,7 +7,11 @@ import kotlin.reflect.full.memberFunctions
 
 object RelevantMethodFetcher {
     fun ownMemberFunctions(definitionClass: KClass<*>): List<KFunction<*>> {
-        return definitionClass.memberFunctions.filterNot { it.isFromKotlinAnyClass() }
+        return filterOwnFunctions(definitionClass.memberFunctions)
+    }
+
+    fun filterOwnFunctions(functions: Collection<KFunction<*>>): List<KFunction<*>> {
+        return functions.filterNot { it.isFromKotlinAnyClass() }
     }
 
 }

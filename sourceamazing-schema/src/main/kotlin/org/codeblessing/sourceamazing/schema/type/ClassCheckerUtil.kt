@@ -2,9 +2,11 @@ package org.codeblessing.sourceamazing.schema.type
 
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.schema.exceptions.CanNotBeAnnotationTypeSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.WrongClassModifierSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import kotlin.reflect.KClass
@@ -13,6 +15,18 @@ import kotlin.reflect.full.declaredMemberExtensionFunctions
 import kotlin.reflect.full.memberProperties
 
 object ClassCheckerUtil {
+
+    fun checkIsNotAnnotation(classToInspect: KClass<*>, classDescription: String) {
+        if(classToInspect.isAnnotation) {
+            throw CanNotBeAnnotationTypeSyntaxException(classToInspect, SchemaErrorCode.CLASS_CANNOT_BE_ANNOTATION, classDescription)
+        }
+    }
+
+    fun checkIsNotPrivate(classToInspect: KClass<*>, classDescription: String) {
+        if(classToInspect.isPrivate) {
+            throw WrongClassModifierSyntaxException(classToInspect, SchemaErrorCode.CLASS_CANNOT_BE_PRIVATE, classDescription)
+        }
+    }
 
     fun checkIsOrdinaryInterface(classToInspect: KClass<*>, classDescription: String) {
         if(!classToInspect.isInterface || classToInspect.isAnnotation) {

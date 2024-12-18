@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
@@ -158,7 +158,7 @@ class BuilderDataSubsetEnumTest {
 
     @Test
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
-        assertThrows<BuilderMethodParameterSyntaxException> {
+        assertThrows<BuilderMethodSyntaxException> {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithEnumerationFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(
                     schemaContext,

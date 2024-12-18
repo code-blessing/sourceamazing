@@ -14,6 +14,8 @@ enum class SchemaErrorCode(override val messageFormat: String): ErrorCode {
     NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS("%s can not have more than %s annotation %s."),
     CAN_NOT_HAVE_ANNOTATION("%s can not have annotation of type %s."),
     CLASS_MUST_BE_AN_INTERFACE("%s must be an interface."),
+    CLASS_CANNOT_BE_PRIVATE("%s can not be private. Change to modifier of the class to public or default."),
+    CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
     CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
     CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
     CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),

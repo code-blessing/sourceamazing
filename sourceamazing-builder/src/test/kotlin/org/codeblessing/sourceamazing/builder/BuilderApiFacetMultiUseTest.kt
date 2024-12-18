@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodParameterSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
@@ -116,7 +116,7 @@ class BuilderApiFacetMultiUseTest {
 
     @Test
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodParameterSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
                 BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class) { 
                     // do nothing
