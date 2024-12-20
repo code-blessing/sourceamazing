@@ -18,12 +18,10 @@ class PhysicalFilesFileSystemAccess: FileSystemAccess {
     }
 
     override fun createDirectory(directoryPath: Path) {
-        FileUtil.checkFileWritable(directoryPath)
         directoryPath.toFile().mkdirs()
     }
 
     override fun writeFile(filePath: Path, fileContent: String) {
-        FileUtil.checkFileWritable(filePath)
         createDirectory(filePath.parent)
         filePath.toFile().writeText(fileContent)
     }
