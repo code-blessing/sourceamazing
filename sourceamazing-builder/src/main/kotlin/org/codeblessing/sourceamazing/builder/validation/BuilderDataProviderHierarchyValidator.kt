@@ -21,11 +21,11 @@ object BuilderDataProviderHierarchyValidator {
     private const val BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION = "Builder data provider class"
 
 
-    fun validateTopLevelBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter, schemaAccess: SchemaAccess) {
-        validateBuilderDataProvider(builderDataProviderInterpreter, schemaAccess)
+    fun validateTopLevelBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
+        validateBuilderDataProvider(builderDataProviderInterpreter)
     }
 
-    private fun validateBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter, schemaAccess: SchemaAccess) {
+    private fun validateBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
         val builderDataProviderClass = builderDataProviderInterpreter.dataProviderClass
 
         checkIsNotAnnotation(builderDataProviderClass, BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION)

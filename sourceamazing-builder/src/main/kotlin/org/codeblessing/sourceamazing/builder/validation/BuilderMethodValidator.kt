@@ -286,7 +286,6 @@ object BuilderMethodValidator {
             )
             BuilderDataProviderHierarchyValidator.validateTopLevelBuilderDataProvider(
                 builderDataProviderInterpreter = builderDataProviderInterpreter,
-                schemaAccess = schemaAccess
             )
         }
     }
