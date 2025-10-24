@@ -26,19 +26,19 @@ class ConceptDataValidatorTest {
 
     @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
     private interface OptionalTextFacetClass
-    private val optionalTextFacetName = FacetName.of(OptionalTextFacetClass::class)
+    private val optionalTextFacetName = FacetName.of("OptionalTextFacetClass")
 
     @StringFacet(minimumOccurrences = 1, maximumOccurrences = 1)
     private interface MandatoryTextFacetClass
-    private val mandatoryTextFacetName = FacetName.of(MandatoryTextFacetClass::class)
+    private val mandatoryTextFacetName = FacetName.of("MandatoryTextFacetClass")
 
     @EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = MyEnumeration::class)
     private interface SomeEnumsFacetClass
-    private val someEnumsFacetName = FacetName.of(SomeEnumsFacetClass::class)
+    private val someEnumsFacetName = FacetName.of("SomeEnumsFacetClass")
 
     @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 1, referencedConcepts = [OtherConcept::class])
     private interface MandatoryReferenceToOtherConceptFacetClass
-    private val mandatoryRefToOneConceptFacetName = FacetName.of(MandatoryReferenceToOtherConceptFacetClass::class)
+    private val mandatoryRefToOneConceptFacetName = FacetName.of("MandatoryReferenceToOtherConceptFacetClass")
 
     enum class MyEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
     enum class OtherEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }

@@ -65,9 +65,9 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedStringFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class, value = "fixed value")
+        @SetFixedStringFacetValue(facetToModify = "TextFacet", value = "fixed value")
         fun doSomething(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class) myText: String,
+            @SetFacetValue(facetToModify = "TextFacet") myText: String,
         )
     }
 
@@ -87,8 +87,8 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedStringFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class, value = "fixed value 1")
-        @SetFixedStringFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.TextFacet::class, value = "fixed value 2")
+        @SetFixedStringFacetValue(facetToModify = "TextFacet", value = "fixed value 1")
+        @SetFixedStringFacetValue(facetToModify = "TextFacet", value = "fixed value 2")
         fun doSomething()
     }
 
@@ -108,7 +108,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedEnumFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class, value = "A")
+        @SetFixedEnumFacetValue(facetToModify = "EnumerationFacet", value = "A")
         fun doSomething()
     }
 
@@ -128,7 +128,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedEnumFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.EnumerationFacet::class, value = "NOT_A_NOR_B")
+        @SetFixedEnumFacetValue(facetToModify = "EnumerationFacet", value = "NOT_A_NOR_B")
         fun doSomething()
     }
 
@@ -150,7 +150,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedBooleanFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.NumberFacet::class, value = true)
+        @SetFixedBooleanFacetValue(facetToModify = "NumberFacet", value = true)
         fun doSomething()
     }
 
@@ -172,7 +172,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
-        @SetFixedIntFacetValue(facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.UnregisteredFacet::class, value = 42)
+        @SetFixedIntFacetValue(facetToModify = "UnregisteredFacet", value = 42)
         fun doSomething()
     }
 
@@ -196,7 +196,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class, referencedConceptAlias = "bar")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "foo", facetToModify = "SelfRefFacet", referencedConceptAlias = "bar")
         fun doSomething()
     }
 
@@ -219,7 +219,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class) myReference: ConceptIdentifier
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "SelfRefFacet") myReference: ConceptIdentifier
         )
     }
 
@@ -242,7 +242,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class) myReference: () -> ConceptIdentifier
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "SelfRefFacet") myReference: () -> ConceptIdentifier
         )
     }
 
@@ -267,7 +267,7 @@ class BuilderMethodApiMethodAnnotationsTest {
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacets.ConceptWithFacets.SelfRefFacet::class) myReference: String
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "SelfRefFacet") myReference: String
         )
     }
 

@@ -269,7 +269,7 @@ class BuilderMethodApiDataProviderTest {
             }
 
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithTextFacet.ConceptWithTextFacet.TextFacet::class)
+            @SetProvidedFacetValue(facetToModify = "TextFacet")
             fun getText(): String {
                 return "hallo"
             }
@@ -301,7 +301,7 @@ class BuilderMethodApiDataProviderTest {
             private val data: T,
         ) {
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithTextFacet.ConceptWithTextFacet.TextFacet::class)
+            @SetProvidedFacetValue(facetToModify = "TextFacet")
             fun getGenericValue(): T {
                 return data
             }
@@ -337,7 +337,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderDataProvider
         class BuilderDataProviderThrowingException {
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = SchemaWithConceptWithTextFacet.ConceptWithTextFacet.TextFacet::class)
+            @SetProvidedFacetValue(facetToModify = "TextFacet")
             fun getText(): String {
                 throw NoSuchElementException("This facet value is not available.")
             }

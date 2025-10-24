@@ -37,10 +37,10 @@ class BuilderDataNestingBuildersTest {
             interface NumberFacet
 
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTexts(): List<String>
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumbers(): List<Int>
 
         }
@@ -61,7 +61,7 @@ class BuilderDataNestingBuildersTest {
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -71,7 +71,7 @@ class BuilderDataNestingBuildersTest {
         interface NestedSubBuilder {
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
                 numberValue: Int
             ): NestedBuilder
         }

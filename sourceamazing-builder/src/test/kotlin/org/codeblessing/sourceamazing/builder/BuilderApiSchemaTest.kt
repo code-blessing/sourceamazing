@@ -97,7 +97,7 @@ class BuilderApiSchemaTest {
         @NewConcept(SchemaWithConceptWithFacet.KnownConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.UnknownConceptWithFacet.UnknownFacet::class) myValue: String
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet") myValue: String
         )
     }
 
@@ -119,7 +119,7 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.KnownConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.UnknownConceptWithFacet.UnknownFacet::class, value = "hello")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet", value = "hello")
         fun doSomething()
     }
 
@@ -142,7 +142,7 @@ class BuilderApiSchemaTest {
         @NewConcept(SchemaWithConceptWithFacet.KnownConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.AlsoKnownConceptWithFacet.AlsoKnownFacet::class) myValue: String
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet") myValue: String
         )
     }
 
@@ -164,7 +164,7 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.KnownConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.AlsoKnownConceptWithFacet.AlsoKnownFacet::class, value = "hello")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet", value = "hello")
         fun doSomething()
     }
 
@@ -196,7 +196,7 @@ class BuilderApiSchemaTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingNested(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.KnownConceptWithFacet.KnownFacet::class) myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet") myValue: String
             )
         }
     }
@@ -226,7 +226,7 @@ class BuilderApiSchemaTest {
 
             @Suppress("UNUSED")
             @BuilderMethod
-            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.KnownConceptWithFacet.KnownFacet::class, value = "hello")
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet", value = "hello")
             fun doSomethingNested()
         }
     }
@@ -257,13 +257,13 @@ class BuilderApiSchemaTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWrongFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.AlsoKnownConceptWithFacet.AlsoKnownFacet::class) myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet") myValue: String
             )
 
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingCorrectFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.KnownConceptWithFacet.KnownFacet::class) myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet") myValue: String
             )
 
         }
@@ -296,12 +296,12 @@ class BuilderApiSchemaTest {
 
             @Suppress("UNUSED")
             @BuilderMethod
-            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.AlsoKnownConceptWithFacet.AlsoKnownFacet::class, value = "hello")
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet", value = "hello")
             fun doSomethingWrongFacet()
 
             @Suppress("UNUSED")
             @BuilderMethod
-            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.KnownConceptWithFacet.KnownFacet::class, value = "hello")
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet", value = "hello")
             fun doSomethingCorrectFacet()
 
         }

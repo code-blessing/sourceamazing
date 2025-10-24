@@ -563,7 +563,7 @@ class BuilderApiAliasTest {
         @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class) value: String
+            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet") value: String
         )
     }
 
@@ -593,7 +593,7 @@ class BuilderApiAliasTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+            @SetProvidedFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet")
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
             }
@@ -634,7 +634,7 @@ class BuilderApiAliasTest {
             @BuilderMethod
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
-                facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.RefFacet::class,
+                facetToModify = "RefFacet",
                 referencedConceptAlias = "known"
             )
             fun doSomething()
@@ -671,7 +671,7 @@ class BuilderApiAliasTest {
             @BuilderData
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
-                facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.RefFacet::class,
+                facetToModify = "RefFacet",
                 referencedConceptAlias = "known"
             )
             fun getFacetValue(): String {
@@ -712,7 +712,7 @@ class BuilderApiAliasTest {
             @BuilderMethod
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
-                facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.RefFacet::class,
+                facetToModify = "RefFacet",
                 referencedConceptAlias = "unknown"
             )
             fun doSomething()
@@ -748,7 +748,7 @@ class BuilderApiAliasTest {
             @BuilderData
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
-                facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.RefFacet::class,
+                facetToModify = "RefFacet",
                 referencedConceptAlias = "unknown"
             )
             fun getFacetValue(): String {
@@ -773,7 +773,7 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class, value = "some text")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet", value = "some text")
         fun doSomething()
     }
 
@@ -792,7 +792,7 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class, value = "some text")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet", value = "some text")
         fun doSomething()
     }
 
@@ -820,7 +820,7 @@ class BuilderApiAliasTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetFixedBooleanFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.BoolFacet::class, value = false)
+            @SetFixedBooleanFacetValue(conceptToModifyAlias = "unknown", facetToModify = "BoolFacet", value = false)
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
             }
@@ -842,7 +842,7 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class, value = 42)
+        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = "NumberFacet", value = 42)
         fun doSomething()
     }
 
@@ -863,7 +863,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @SetFixedEnumFacetValue(
             conceptToModifyAlias = "unknown",
-            facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.EnumerationFacet::class,
+            facetToModify = "EnumerationFacet",
             value = "A"
         )
         fun doSomething()
@@ -903,7 +903,7 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class) value: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") value: String,
             )
         }
     }
@@ -939,7 +939,7 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class) valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") valueForKnown: String,
             )
         }
     }
@@ -982,7 +982,7 @@ class BuilderApiAliasTest {
             @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class) valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") valueForKnown: String,
             )
         }
     }

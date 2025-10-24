@@ -36,7 +36,7 @@ class BuilderDataSubsetEnumTest {
             @EnumFacet(AllDatatypesEnum::class)
             interface AllDatatypesEnumerationFacet
 
-            @QueryFacetValue(AllDatatypesEnumerationFacet::class)
+            @QueryFacetValue("AllDatatypesEnumerationFacet")
             fun getEnumFacetValue(): AllDatatypesEnum
         }
 
@@ -52,7 +52,7 @@ class BuilderDataSubsetEnumTest {
         @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets.AllDatatypesEnumerationFacet::class)
+            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
             enumValue: AllDatatypesEnum,
         )
     }
@@ -83,7 +83,7 @@ class BuilderDataSubsetEnumTest {
         @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets.AllDatatypesEnumerationFacet::class)
+            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
             enumValue: CompatibleNumericDatatypesEnum,
         )
     }
@@ -117,7 +117,7 @@ class BuilderDataSubsetEnumTest {
         @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets.AllDatatypesEnumerationFacet::class)
+            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
             enumValue: ExactCopyOfAllDatatypesEnum,
         )
     }
@@ -151,7 +151,7 @@ class BuilderDataSubsetEnumTest {
         @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets.AllDatatypesEnumerationFacet::class)
+            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
             enumValue: IncompatibleWithNumericDatatypesEnum,
         )
     }

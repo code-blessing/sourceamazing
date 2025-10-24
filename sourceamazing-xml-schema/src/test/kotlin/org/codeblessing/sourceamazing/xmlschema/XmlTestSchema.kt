@@ -13,12 +13,12 @@ import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 object XmlTestSchema {
 
     val testEntityConceptName = ConceptName.of(TestEntityConcept::class)
-    val testEntityNameFacetName = FacetName.of(TestEntityConcept.Name::class)
-    val testEntityKotlinModelClassnameFacetName = FacetName.of(TestEntityConcept.KotlinModelClassname::class)
-    val testEntityKotlinModelPackageFacetName = FacetName.of(TestEntityConcept.KotlinModelPackage::class)
+    val testEntityNameFacetName = FacetName.of("Name")
+    val testEntityKotlinModelClassnameFacetName = FacetName.of("KotlinModelClassname")
+    val testEntityKotlinModelPackageFacetName = FacetName.of("KotlinModelPackage")
     val testEntityAttributeConceptName = ConceptName.of(TestEntityAttributeConcept::class)
-    val testEntityAttributeNameFacetName = FacetName.of(TestEntityAttributeConcept.Name::class)
-    val testEntityAttributeTypeFacetName = FacetName.of(TestEntityAttributeConcept.Type::class)
+    val testEntityAttributeNameFacetName = FacetName.of("Name")
+    val testEntityAttributeTypeFacetName = FacetName.of("Type")
 
 
     fun createSchema(): SchemaAccess {

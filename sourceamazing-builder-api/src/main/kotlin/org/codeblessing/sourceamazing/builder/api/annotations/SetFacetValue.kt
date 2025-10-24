@@ -33,6 +33,6 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 annotation class SetFacetValue(
     val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    val facetToModify: KClass<*>,
+    val facetToModify: String,
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
 )

@@ -314,7 +314,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         fun doSomething(
             @SetConceptIdentifierValue conceptId: ConceptIdentifier,
             @InjectBuilder builder: EmptyBuilder.() -> Unit,
-            @SetFacetValue(facetToModify = SchemaWithConceptWithTextFacet.ConceptWithTextFacet.TextFacet::class) myValue: String,
+            @SetFacetValue(facetToModify = "TextFacet") myValue: String,
         )
     }
 

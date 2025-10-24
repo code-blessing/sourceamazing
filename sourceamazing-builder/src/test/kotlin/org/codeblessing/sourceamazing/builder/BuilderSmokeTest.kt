@@ -51,13 +51,13 @@ class BuilderSmokeTest {
             @QueryConceptIdentifierValue
             fun getConceptId(): ConceptIdentifier
 
-            @QueryFacetValue(PersonFirstnameFacet::class)
+            @QueryFacetValue("PersonFirstnameFacet")
             fun getFirstname(): String
 
-            @QueryFacetValue(PersonAgeFacet::class)
+            @QueryFacetValue("PersonAgeFacet")
             fun getAge(): Int
 
-            @QueryFacetValue(PersonSexFacet::class)
+            @QueryFacetValue("PersonSexFacet")
             fun getSex(): PersonSex
 
         }
@@ -72,10 +72,10 @@ class BuilderSmokeTest {
             @QueryConceptIdentifierValue
             fun getSkillConceptIdentifier(): String
 
-            @QueryFacetValue(SkillDescriptionFacet::class)
+            @QueryFacetValue("SkillDescriptionFacet")
             fun getSkillDescription(): String
 
-            @QueryFacetValue(SkillStillEnjoyingFacet::class)
+            @QueryFacetValue("SkillStillEnjoyingFacet")
             fun isStillFullyEnjoyingAboutThatSkill(): Boolean
 
         }
@@ -97,8 +97,8 @@ class BuilderSmokeTest {
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class)
         fun newPerson(
             @ProvideBuilderData conceptIdentifier: PersonConceptIdentifier,
-            @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
-            @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class) sex: PersonSex,
+            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
+            @SetFacetValue(facetToModify = "PersonSexFacet") sex: PersonSex,
         ): PersonConceptBuilder
 
         // DSL style
@@ -117,23 +117,23 @@ class BuilderSmokeTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun firstname(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+                @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun age(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+                @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun sex(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonSexFacet::class)  sex: PersonSex,
+                @SetFacetValue(facetToModify = "PersonSexFacet")  sex: PersonSex,
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun firstnameAndAge(
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
-                @SetFacetValue(facetToModify = SmokeTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+                @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
+                @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
             ): PersonConceptBuilder
 
             // Builder style
@@ -162,18 +162,18 @@ class BuilderSmokeTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun descriptionAndStillEnjoying(
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = SmokeTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = SmokeTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
             ): SkillConceptBuilder
 
             @BuilderMethod
             fun description(
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = SmokeTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
             ): SkillConceptBuilder
 
             @BuilderMethod
             fun stillEnjoying(
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = SmokeTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
             ): SkillConceptBuilder
 
         }

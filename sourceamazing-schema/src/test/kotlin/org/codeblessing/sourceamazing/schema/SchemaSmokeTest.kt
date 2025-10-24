@@ -42,15 +42,15 @@ class SchemaSmokeTest {
             fun getConceptId(): ConceptIdentifier
 
             @Suppress("UNUSED")
-            @QueryFacetValue(PersonFirstnameFacet::class)
+            @QueryFacetValue("PersonFirstnameFacet")
             fun getFirstname(): String
 
             @Suppress("UNUSED")
-            @QueryFacetValue(PersonAgeFacet::class)
+            @QueryFacetValue("PersonAgeFacet")
             fun getAge(): Int
 
             @Suppress("UNUSED")
-            @QueryFacetValue(PersonSexFacet::class)
+            @QueryFacetValue("PersonSexFacet")
             fun getSex(): PersonSex
 
         }
@@ -67,11 +67,11 @@ class SchemaSmokeTest {
             fun getSkillConceptIdentifier(): String
 
             @Suppress("UNUSED")
-            @QueryFacetValue(SkillDescriptionFacet::class)
+            @QueryFacetValue("SkillDescriptionFacet")
             fun getSkillDescription(): String
 
             @Suppress("UNUSED")
-            @QueryFacetValue(SkillStillEnjoyingFacet::class)
+            @QueryFacetValue("SkillStillEnjoyingFacet")
             fun isStillFullyEnjoyingAboutThatSkill(): Boolean
 
         }

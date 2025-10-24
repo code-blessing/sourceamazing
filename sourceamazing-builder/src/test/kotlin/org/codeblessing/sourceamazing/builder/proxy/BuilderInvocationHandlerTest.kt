@@ -77,7 +77,7 @@ class BuilderInvocationHandlerTest {
         @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
         fun newPerson(
             @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
         ): PersonConceptBuilder
 
         // DSL style
@@ -97,18 +97,18 @@ class BuilderInvocationHandlerTest {
         @Suppress("UNUSED")
         @BuilderMethod
         fun firstname(
-            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
+            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun age(
-            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+            @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun firstnameAndAge(
-            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class) firstname: String,
-            @SetFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonAgeFacet::class)  age: Int,
+            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
+            @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
         ): PersonConceptBuilder
 
         // Builder style
@@ -138,18 +138,18 @@ class BuilderInvocationHandlerTest {
 
         @BuilderMethod
         fun descriptionAndStillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun description(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class) description: String,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun stillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = BuilderTestSchema.SkillConcept.SkillStillEnjoyingFacet::class) stillEnjoying: Boolean,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
     }
@@ -218,10 +218,10 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun checkAssertions(conceptDataCollector: ConceptDataCollector) {
-        val personFirstnameFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonFirstnameFacet::class)
-        val personAgeFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonAgeFacet::class)
-        val personSkillReferenceFacet = FacetName.of(BuilderTestSchema.PersonConcept.PersonSkillsReference::class)
-        val skillDescriptionFacet = FacetName.of(BuilderTestSchema.SkillConcept.SkillDescriptionFacet::class)
+        val personFirstnameFacet = FacetName.of("PersonFirstnameFacet")
+        val personAgeFacet = FacetName.of("PersonAgeFacet")
+        val personSkillReferenceFacet = FacetName.of("PersonSkillsReference")
+        val skillDescriptionFacet = FacetName.of("SkillDescriptionFacet")
 
         val conceptDataList = conceptDataCollector.provideConceptData()
         Assertions.assertEquals(5, conceptDataList.size)

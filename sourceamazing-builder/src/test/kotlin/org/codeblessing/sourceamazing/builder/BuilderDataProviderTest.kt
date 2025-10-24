@@ -41,10 +41,10 @@ class BuilderDataProviderTest {
             @QueryConceptIdentifierValue()
             fun getConceptId(): ConceptIdentifier
 
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextValue(): String
 
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberValue(): Int
 
         }
@@ -58,7 +58,7 @@ class BuilderDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderData
-        @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+        @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "TextFacet")
         fun getFacetText(): String {
             return text
         }
@@ -79,7 +79,7 @@ class BuilderDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderData
-        @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+        @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "TextFacet")
         fun getMyFacetValue(): String {
             return "$facetData"
         }
@@ -109,14 +109,14 @@ class BuilderDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderData
-        @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+        @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "TextFacet")
         fun getTextFacetValue(): String {
             return text
         }
 
         @Suppress("UNUSED")
         @BuilderData
-        @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class)
+        @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "NumberFacet")
         fun getNumberFacetValue(): Int {
             return number
         }
@@ -129,7 +129,7 @@ class BuilderDataProviderTest {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class, value = 23)
+        @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "NumberFacet", value = 23)
         fun doSomethingWithTheProvidedTextValue(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
             @ProvideBuilderData myDataParameter: MyFacetTextData,
@@ -138,7 +138,7 @@ class BuilderDataProviderTest {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class, value = 24)
+        @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "NumberFacet", value = 24)
         fun doSomethingWithTheProvidedTextValue(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
             @ProvideBuilderData myDataParameter: MyGenericFacetData<String>,

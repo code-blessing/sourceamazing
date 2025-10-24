@@ -31,7 +31,7 @@ class BuilderDataCardinalityTest {
             @StringFacet(minimumOccurrences = 1, maximumOccurrences = 3)
             interface ListOfZeroToThreeTextFacet
 
-            @QueryFacetValue(ListOfZeroToThreeTextFacet::class)
+            @QueryFacetValue("ListOfZeroToThreeTextFacet")
             fun getTextFacetAsList(): List<String>
 
         }
@@ -55,7 +55,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addText(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.ListOfZeroToThreeTextFacet::class,
+                    facetToModify = "ListOfZeroToThreeTextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -65,7 +65,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addTexts(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.ListOfZeroToThreeTextFacet::class,
+                    facetToModify = "ListOfZeroToThreeTextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )

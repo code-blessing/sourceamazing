@@ -821,7 +821,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
             @BuilderData
             @NewConcept(concept = SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-            @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class)
+            @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "ConceptWithTextFacet")
             fun getText() {
                 // nothing to return
             }

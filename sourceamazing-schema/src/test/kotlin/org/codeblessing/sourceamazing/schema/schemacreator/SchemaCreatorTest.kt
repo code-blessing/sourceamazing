@@ -53,7 +53,7 @@ class SchemaCreatorTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithTextFacetClass::class)
         assertEquals(1, schema.numberOfConcepts())
         val concept = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet::class))
-        assertTrue(concept.hasFacet(FacetName.of(SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet.TextFacetClass::class)))
+        assertTrue(concept.hasFacet(FacetName.of("TextFacetClass")))
     }
 
     @Schema(concepts = [SchemaWithConceptWithCorrectCardinalityFacets.ConceptWithFacets::class])
@@ -106,7 +106,7 @@ class SchemaCreatorTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEmptyEnumFacet::class)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
+        val enumFacetName = FacetName.of("MyEnumFacet")
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -140,9 +140,9 @@ class SchemaCreatorTest {
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets::class))
         assertEquals(3, conceptSchema.facets.size)
 
-        val textFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.TextFacetClass::class)
-        val booleanFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.BooleanFacetClass::class)
-        val numberFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets.NumberFacetClass::class)
+        val textFacetName = FacetName.of("TextFacetClass")
+        val booleanFacetName = FacetName.of("BooleanFacetClass")
+        val numberFacetName = FacetName.of("NumberFacetClass")
 
         assertEquals(textFacetName, conceptSchema.facets[0].facetName)
         assertEquals(booleanFacetName, conceptSchema.facets[1].facetName)
@@ -184,7 +184,7 @@ class SchemaCreatorTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEnumFacet::class)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet.MyEnumFacet::class)
+        val enumFacetName = FacetName.of("MyEnumFacet")
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -218,7 +218,7 @@ class SchemaCreatorTest {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithReferenceFacet::class)
 
         val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithReferenceFacet.ConceptClassWithReferenceFacet::class))
-        val referenceFacetName = FacetName.of(SchemaWithConceptWithReferenceFacet.ConceptClassWithReferenceFacet.MyReferenceFacet::class)
+        val referenceFacetName = FacetName.of("MyReferenceFacet")
         val otherReferencedConceptName = ConceptName.of(SchemaWithConceptWithReferenceFacet.OtherConcept::class)
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
         assertEquals(referenceFacetName, referenceFacetSchema.facetName)
@@ -263,7 +263,7 @@ class SchemaCreatorTest {
         val conceptSchema = schema.conceptByConceptName(
             ConceptName.of(
                 SchemaWithConceptWithReferenceFacetToMultipleConcepts.ConceptClassWithReferenceFacet::class))
-        val referenceFacetName = FacetName.of(SchemaWithConceptWithReferenceFacetToMultipleConcepts.ConceptClassWithReferenceFacet.MyReferenceFacet::class)
+        val referenceFacetName = FacetName.of("MyReferenceFacet")
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
 
         val referencedConceptName1 = ConceptName.of(SchemaWithConceptWithReferenceFacetToMultipleConcepts.OtherConcept::class)

@@ -78,7 +78,7 @@ object QueryMethodsValidator {
 
             if(memberFunction.hasAnnotation<QueryFacetValue>()) {
                 val queryFacetValue = memberFunction.getAnnotation<QueryFacetValue>()
-                val queryFacetValueClass = queryFacetValue.facetClass
+                val queryFacetValueClass = queryFacetValue.facetName
                 if(!facetClassesOfThisConcept.contains(queryFacetValueClass)) {
                     throw WrongFacetQuerySchemaSyntaxException(memberFunction, SchemaErrorCode.INVALID_FACET_TO_QUERY, queryFacetValueClass.shortText(), facetClassesOfThisConcept.map { it.shortText() })
                 }
@@ -103,7 +103,7 @@ object QueryMethodsValidator {
     }
 
     private fun getValueTypeForFacet(queryFacetValue: QueryFacetValue): List<KClass<*>> {
-        val queryFacetValueClass = queryFacetValue.facetClass
+        val queryFacetValueClass = queryFacetValue.facetName
         if(queryFacetValueClass.hasAnnotation<StringFacet>()) {
             return listOf(Any::class, String::class)
         } else if (queryFacetValueClass.hasAnnotation<BooleanFacet>()) {

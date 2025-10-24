@@ -38,10 +38,10 @@ interface FormSchema {
         @QueryConceptIdentifierValue
         fun getFormId(): String
 
-        @QueryFacetValue(FormTitle::class)
+        @QueryFacetValue("FormTitle")
         fun getFormTitle(): String
 
-        @QueryFacetValue(FormControl::class)
+        @QueryFacetValue("FormControl")
         fun getFormControls(): List<FormSchema.FormControl>
     }
 
@@ -63,13 +63,13 @@ interface FormSchema {
         @QueryConceptIdentifierValue
         fun getFormControlName(): String
 
-        @QueryFacetValue(DisplayName::class)
+        @QueryFacetValue("DisplayName")
         fun getFormControlDisplayName(): String
 
-        @QueryFacetValue(ValueRequired::class)
+        @QueryFacetValue("ValueRequired")
         fun isValueRequired(): Boolean
 
-        @QueryFacetValue(Label::class)
+        @QueryFacetValue("Label")
         fun getLabels(): List<String>
     }
 
@@ -83,7 +83,7 @@ interface FormSchema {
         @EnumFacet(enumerationClass = TextInputFormatHint::class)
         interface FormatHint
 
-        @QueryFacetValue(FormatHint::class)
+        @QueryFacetValue("FormatHint")
         @Suppress("UNUSED")
         fun getFormatHint(): TextInputFormatHint
 
@@ -110,10 +110,10 @@ interface FormSchema {
         @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 5, referencedConcepts = [SelectDropdownEntryConcept::class])
         interface SelectDropdownEntry
 
-        @QueryFacetValue(DefaultValue::class)
+        @QueryFacetValue("DefaultValue")
         fun getDefaultValue(): String?
 
-        @QueryFacetValue(SelectDropdownEntry::class)
+        @QueryFacetValue("SelectDropdownEntry")
         fun getSelectDropdownEntries(): List<SelectDropdownEntryConcept>
 
     }
@@ -128,10 +128,10 @@ interface FormSchema {
         @StringFacet()
         interface DisplayValue
 
-        @QueryFacetValue(Value::class)
+        @QueryFacetValue("Value")
         fun getValue(): String
 
-        @QueryFacetValue(DisplayValue::class)
+        @QueryFacetValue("DisplayValue")
         fun getDisplayValue(): String
     }
 }

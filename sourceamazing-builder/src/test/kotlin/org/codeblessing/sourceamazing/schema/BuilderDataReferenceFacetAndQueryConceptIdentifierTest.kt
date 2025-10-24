@@ -37,16 +37,16 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             @QueryConceptIdentifierValue
             fun getConceptId(): ConceptIdentifier
 
-            @QueryFacetValue(ConceptReferenceFacet::class)
+            @QueryFacetValue("ConceptReferenceFacet")
             fun getConceptReferenceFacet(): ConceptWithFacet?
 
-            @QueryFacetValue(ConceptReferenceFacet::class)
+            @QueryFacetValue("ConceptReferenceFacet")
             fun getConceptReferenceFacetAsAny(): Any?
 
-            @QueryFacetValue(ConceptReferenceFacet::class)
+            @QueryFacetValue("ConceptReferenceFacet")
             fun getConceptReferenceFacetAsList(): List<ConceptWithFacet>
 
-            @QueryFacetValue(ConceptReferenceFacet::class)
+            @QueryFacetValue("ConceptReferenceFacet")
             fun getConceptReferenceFacetAsAnyList(): List<Any>
         }
 
@@ -71,7 +71,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             @BuilderMethod
             fun addReference(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.ConceptReferenceFacet::class,
+                    facetToModify = "ConceptReferenceFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )

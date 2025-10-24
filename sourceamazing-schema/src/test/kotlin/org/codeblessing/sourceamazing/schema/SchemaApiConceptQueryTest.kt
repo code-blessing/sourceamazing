@@ -40,7 +40,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("UNUSED")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getMyStrings(): List<String>
         }
     }
@@ -84,7 +84,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getFacetValue(): List<Any> {
                 return emptyList()
             }
@@ -109,7 +109,7 @@ class SchemaApiConceptQueryTest {
             interface ValidAnnotatedQueryMethodFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(ValidAnnotatedQueryMethodFacet::class)
+            @QueryFacetValue("ValidAnnotatedQueryMethodFacet")
             fun getFacetValue(): List<Any>
         }
     }
@@ -203,7 +203,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(OneFacet::class)
+            @QueryFacetValue("OneFacet")
             fun getFacetValueWithoutReturnType()
         }
     }
@@ -249,7 +249,7 @@ class SchemaApiConceptQueryTest {
             interface UnsupportedFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(UnsupportedFacet::class)
+            @QueryFacetValue("UnsupportedFacet")
             fun getFacetValue(): List<Any>
         }
     }
@@ -312,223 +312,223 @@ class SchemaApiConceptQueryTest {
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsListOfString(): List<String>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsSetOfString(): Set<String>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsString(): String
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = TextFacet::class)
+            @QueryFacetValue(facetName = "TextFacet")
             fun getTextFacetAsNullableString(): String?
 
 
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsListOfInt(): List<Int>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsSetOfInt(): Set<Int>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsInt(): Int
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = NumberFacet::class)
+            @QueryFacetValue(facetName = "NumberFacet")
             fun getNumberFacetAsNullableInt(): Int?
 
 
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsListOfBoolean(): List<Boolean>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsSetOfBoolean(): Set<Boolean>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsBoolean(): Boolean
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = BoolFacet::class)
+            @QueryFacetValue(facetName = "BoolFacet")
             fun getBoolFacetAsNullableBoolean(): Boolean?
 
 
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsListOfEnums(): List<MyEnumeration>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsSetOfEnums(): Set<MyEnumeration>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsListOfStrings(): List<String>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsSetOfStrings(): Set<String>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsEnum(): MyEnumeration
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsString(): String
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsNullableEnum(): MyEnumeration?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = EnumerationFacet::class)
+            @QueryFacetValue(facetName = "EnumerationFacet")
             fun getEnumerationFacetAsNullableString(): String?
 
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsListOfCommonConceptInterface(): List<SecondConcept>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsSetOfCommonConceptInterface(): Set<SecondConcept>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsCommonConceptInterface(): SecondConcept
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = SingleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "SingleConceptReferenceFacet")
             fun getSingleConceptReferenceFacetAsNullableCommonConceptInterface(): SecondConcept?
 
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsListOfAny(): List<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsSetOfAny(): Set<Any>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsListOfCommonConceptInterface(): List<CommonConceptInterface>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsSetOfCommonConceptInterface(): Set<CommonConceptInterface>
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsAny(): Any
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsCommonConceptInterface(): CommonConceptInterface
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsNullableAny(): Any?
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MultipleConceptReferenceFacet::class)
+            @QueryFacetValue(facetName = "MultipleConceptReferenceFacet")
             fun getMultipleConceptReferenceFacetAsNullableCommonConceptInterface(): CommonConceptInterface?
         }
     }
@@ -550,7 +550,7 @@ class SchemaApiConceptQueryTest {
             interface FacetMethodHavingParameter
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = FacetMethodHavingParameter::class)
+            @QueryFacetValue(facetName = FacetMethodHavingParameter::class)
             fun getMyFacetValuesAsListOfAny(myParam: Int): List<Any>
         }
     }
@@ -575,7 +575,7 @@ class SchemaApiConceptQueryTest {
             interface FacetMethodHavingExtensionFunctionParameter
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = FacetMethodHavingExtensionFunctionParameter::class)
+            @QueryFacetValue(facetName = FacetMethodHavingExtensionFunctionParameter::class)
             fun MyInterface.getMyFacetValuesAsListOfAny(): List<Any>
         }
     }
@@ -622,7 +622,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getMyFacetValuesAsListOfInt(): List<Int>
         }
     }
@@ -646,7 +646,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getMyFacetValuesAsInt(): Int
         }
     }
@@ -670,7 +670,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getMyFacetValuesAsListOfString(): SortedSet<String>
         }
     }
@@ -694,7 +694,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun getMyFacetValuesAsListOfString(): List<String?>
         }
     }
@@ -718,7 +718,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun <A> getMyFacetValuesAsListOfString(): List<A>
         }
     }
@@ -742,7 +742,7 @@ class SchemaApiConceptQueryTest {
             interface OneFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = OneFacet::class)
+            @QueryFacetValue(facetName = "OneFacet")
             fun <A> getMyFacetValueAsGenericParameter(): A
         }
     }
@@ -777,7 +777,7 @@ class SchemaApiConceptQueryTest {
             interface MyReferenceFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MyReferenceFacet::class)
+            @QueryFacetValue(facetName = "MyReferenceFacet")
             fun getReferencedConcepts(): List<ConceptOne>
         }
     }
@@ -812,7 +812,7 @@ class SchemaApiConceptQueryTest {
             interface MyReferenceFacet
 
             @Suppress("Unused")
-            @QueryFacetValue(facetClass = MyReferenceFacet::class)
+            @QueryFacetValue(facetName = "MyReferenceFacet")
             fun getReferencedConcepts(): List<NotReferencedConcept>
         }
     }

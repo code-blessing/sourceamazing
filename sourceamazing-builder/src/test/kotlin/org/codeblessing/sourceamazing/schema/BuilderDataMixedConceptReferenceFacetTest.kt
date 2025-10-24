@@ -37,7 +37,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
             @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 10, referencedConcepts = [ConceptAlpha::class, ConceptBeta::class])
             interface AlphaAndBetaReferenceFacet
 
-            @QueryFacetValue(AlphaAndBetaReferenceFacet::class)
+            @QueryFacetValue("AlphaAndBetaReferenceFacet")
             fun getAlphaAndBetaAsList(): List<AlphaAndBeta>
         }
 
@@ -97,7 +97,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
             @BuilderMethod
             fun addReference(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.MainConcept.AlphaAndBetaReferenceFacet::class,
+                    facetToModify = "AlphaAndBetaReferenceFacet",
                     conceptToModifyAlias = "mainConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )

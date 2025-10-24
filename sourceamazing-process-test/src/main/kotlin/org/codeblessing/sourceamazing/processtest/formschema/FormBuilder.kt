@@ -19,7 +19,7 @@ interface FormBuilder {
     @NewConcept(FormSchema.FormConcept::class, "form")
     fun createNewForm(
         @SetConceptIdentifierValue("form") conceptIdentifier: ConceptIdentifier,
-        @SetFacetValue("form", FormSchema.FormConcept.FormTitle::class) formTitle: String
+        @SetFacetValue("form", "FormTitle") formTitle: String
     ): FormConceptBuilder
 
     @Builder
@@ -28,24 +28,24 @@ interface FormBuilder {
 
         @BuilderMethod
         @NewConcept(FormSchema.TextInputFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue("form", FormSchema.FormConcept.FormControl::class, referencedConceptAlias = "formControl")
+        @SetAliasConceptIdentifierReferenceFacetValue("form", "FormControl", referencedConceptAlias = "formControl")
         @WithNewBuilder(FormControlBuilder::class)
         fun addTextInputFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue("formControl", FormSchema.FormControl.DisplayName::class) displayName: String,
-            @SetFacetValue("formControl", FormSchema.FormControl.ValueRequired::class) valueRequired: Boolean = true,
-            @SetFacetValue("formControl", FormSchema.TextInputFormControlConcept.FormatHint::class) formatHint: FormSchema.TextInputFormControlConcept.TextInputFormatHint
+            @SetFacetValue("formControl", "DisplayName") displayName: String,
+            @SetFacetValue("formControl", "ValueRequired") valueRequired: Boolean = true,
+            @SetFacetValue("formControl", "FormatHint") formatHint: FormSchema.TextInputFormControlConcept.TextInputFormatHint
         ): FormControlBuilder
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue("form", FormSchema.FormConcept.FormControl::class, referencedConceptAlias = "formControl")
+        @SetAliasConceptIdentifierReferenceFacetValue("form", "FormControl", referencedConceptAlias = "formControl")
         @WithNewBuilder(SelectDropdownEntryConceptBuilder::class)
         fun addSelectDropdownFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue("formControl", FormSchema.FormControl.DisplayName::class) displayName: String,
-            @SetFacetValue("formControl", FormSchema.FormControl.ValueRequired::class) valueRequired: Boolean = true,
-            @SetFacetValue("formControl", FormSchema.SelectDropdownFormControlConcept.DefaultValue::class) defaultValue: String
+            @SetFacetValue("formControl", "DisplayName") displayName: String,
+            @SetFacetValue("formControl", "ValueRequired") valueRequired: Boolean = true,
+            @SetFacetValue("formControl", "DefaultValue") defaultValue: String
         ): SelectDropdownEntryConceptBuilder
     }
 
@@ -53,22 +53,22 @@ interface FormBuilder {
 
         @BuilderMethod
         fun addLabel(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) label: String,
+            @SetFacetValue("formControl", "Label") label: String,
         ): FormControlBuilder
 
         @BuilderMethod
         fun addLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: List<String>,
+            @SetFacetValue("formControl", "Label") labels: List<String>,
         ): FormControlBuilder
 
         @BuilderMethod
         fun addLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: Array<String>,
+            @SetFacetValue("formControl", "Label") labels: Array<String>,
         ): FormControlBuilder
 
         @BuilderMethod
         fun addVariableAmountOfLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) vararg labels: String,
+            @SetFacetValue("formControl", "Label") vararg labels: String,
         ): FormControlBuilder
 
     }
@@ -85,10 +85,10 @@ interface FormBuilder {
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")
         @SetRandomConceptIdentifierValue("dropdownEntry")
-        @SetAliasConceptIdentifierReferenceFacetValue("formControl", FormSchema.SelectDropdownFormControlConcept.SelectDropdownEntry::class, referencedConceptAlias = "dropdownEntry")
+        @SetAliasConceptIdentifierReferenceFacetValue("formControl", "SelectDropdownEntry", referencedConceptAlias = "dropdownEntry")
         fun setValue(
-            @SetFacetValue("dropdownEntry", FormSchema.SelectDropdownEntryConcept.Value::class) value: String,
-            @SetFacetValue("dropdownEntry", FormSchema.SelectDropdownEntryConcept.DisplayValue::class) displayValue: String = value,
+            @SetFacetValue("dropdownEntry", "Value") value: String,
+            @SetFacetValue("dropdownEntry", "DisplayValue") displayValue: String = value,
         ): SelectDropdownEntryConceptBuilder
     }
 

@@ -36,9 +36,9 @@ class BuilderDataMixedFacetsTest {
             NotSharedFacet::class,
         ])
         interface ConceptOneUsingSharedFacet {
-            @QueryFacetValue(SharedFacet::class)
+            @QueryFacetValue("SharedFacet")
             fun getSharedFacetValue(): String
-            @QueryFacetValue(NotSharedFacet::class)
+            @QueryFacetValue("NotSharedFacet")
             fun getNotSharedFacetValue(): Int
         }
 
@@ -46,7 +46,7 @@ class BuilderDataMixedFacetsTest {
             SharedFacet::class,
         ])
         interface ConceptTwoUsingSharedFacet {
-            @QueryFacetValue(SharedFacet::class)
+            @QueryFacetValue("SharedFacet")
             fun getSharedFacetValueForConceptTwo(): String
         }
 
@@ -68,7 +68,7 @@ class BuilderDataMixedFacetsTest {
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptOneUsingSharedFacet::class, declareConceptAlias = "conceptWithSharedFacet")
         @SetRandomConceptIdentifierValue("conceptWithSharedFacet")
         fun createConceptOne(
-            @SetFacetValue(conceptToModifyAlias = "conceptWithSharedFacet", facetToModify = SchemaWithConceptWithFacet.NotSharedFacet::class)
+            @SetFacetValue(conceptToModifyAlias = "conceptWithSharedFacet", facetToModify = "NotSharedFacet")
             myValueForNotSharedFacet: Int
         ): NestedSharedBuilder
 
@@ -82,7 +82,7 @@ class BuilderDataMixedFacetsTest {
         interface NestedSharedBuilder {
             @BuilderMethod
             fun addSharedValue(
-                @SetFacetValue(conceptToModifyAlias = "conceptWithSharedFacet", facetToModify = SchemaWithConceptWithFacet.SharedFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "conceptWithSharedFacet", facetToModify = "SharedFacet")
                 mySharedValue: String
             ): NestedSharedBuilder
         }

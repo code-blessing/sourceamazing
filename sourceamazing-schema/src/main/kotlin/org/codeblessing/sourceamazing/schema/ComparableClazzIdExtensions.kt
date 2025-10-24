@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.schema
 
 import kotlin.reflect.KClass
 
-fun KClass<*>.toFacetName(): FacetName {
+fun String.toFacetName(): FacetName {
     return FacetName.of(this)
 }
 

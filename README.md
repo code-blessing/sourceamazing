@@ -72,10 +72,10 @@ interface Employee {
     @ReferenceFacet(minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[PhoneNumber::class])
     interface PhoneNumbersOfEmployee
 
-    @QueryFacetValue(EmployeeName::class)
+    @QueryFacetValue("EmployeeName")
     fun getEmployeeName(): String?
 
-    @QueryFacetValue(PhoneNumbersOfEmployee::class)
+    @QueryFacetValue("PhoneNumbersOfEmployee")
     fun getPhoneNumbers(): List<PhoneNumber>
 }
 
@@ -95,10 +95,10 @@ interface PhoneNumber {
     @StringFacet
     interface PhoneNumber
 
-    @QueryFacetValue(PhoneType::class)
+    @QueryFacetValue("PhoneType")
     fun getPhoneType(): PhoneTypeEnum
 
-    @QueryFacetValue(PhoneNumber::class)
+    @QueryFacetValue("PhoneNumber")
     fun getPhoneNumber(): String
 }
 

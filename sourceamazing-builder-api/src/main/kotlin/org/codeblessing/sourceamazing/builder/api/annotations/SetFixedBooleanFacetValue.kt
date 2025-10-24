@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
 @Repeatable
 annotation class SetFixedBooleanFacetValue(
     val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
-    val facetToModify: KClass<*>,
+    val facetToModify: String,
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
     val value: Boolean,
 )

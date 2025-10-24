@@ -67,11 +67,11 @@ class NestedConceptsBuilderTest {
             interface BusinessObjectFields
 
 
-            @QueryFacetValue(BusinessObjectName::class)
+            @QueryFacetValue("BusinessObjectName")
             fun name(): String
 
 
-            @QueryFacetValue(BusinessObjectFields::class)
+            @QueryFacetValue("BusinessObjectFields")
             fun fields(): List<Field>
 
         }
@@ -79,7 +79,7 @@ class NestedConceptsBuilderTest {
         sealed interface Field {
             @StringFacet()
             interface FieldName
-            @QueryFacetValue(FieldName::class)
+            @QueryFacetValue("FieldName")
             fun fieldName(): String
 
         }
@@ -102,10 +102,10 @@ class NestedConceptsBuilderTest {
             interface SingleValueType
 
             @Suppress("UNUSED")
-            @QueryFacetValue(Nullable::class)
+            @QueryFacetValue("Nullable")
             fun nullable(): Boolean
 
-            @QueryFacetValue(SingleValueType::class)
+            @QueryFacetValue("SingleValueType")
             fun singleValueType(): FieldType
 
         }
@@ -119,7 +119,7 @@ class NestedConceptsBuilderTest {
             @EnumFacet(enumerationClass = CollectionKindEnum::class)
             interface CollectionKind
 
-            @QueryFacetValue(CollectionKind::class)
+            @QueryFacetValue("CollectionKind")
             fun collectionKind(): CollectionKindEnum
 
             enum class CollectionKindEnum {
@@ -133,7 +133,7 @@ class NestedConceptsBuilderTest {
             )
             interface CollectionValuesType
 
-            @QueryFacetValue(CollectionValuesType::class)
+            @QueryFacetValue("CollectionValuesType")
             fun collectionValuesType(): FieldType
         }
 
@@ -146,7 +146,7 @@ class NestedConceptsBuilderTest {
             @EnumFacet(enumerationClass = BuiltinTypeEnum::class)
             interface BuiltinType
 
-            @QueryFacetValue(BuiltinType::class)
+            @QueryFacetValue("BuiltinType")
             fun builtinType(): BuiltinTypeEnum
 
             enum class BuiltinTypeEnum {
@@ -162,7 +162,7 @@ class NestedConceptsBuilderTest {
             @ReferenceFacet(referencedConcepts = [BusinessObjectConcept::class])
             interface ReferencedBusinessObject
 
-            @QueryFacetValue(ReferencedBusinessObject::class)
+            @QueryFacetValue("ReferencedBusinessObject")
             fun referencedBusinessObject(): BusinessObjectConcept
         }
     }

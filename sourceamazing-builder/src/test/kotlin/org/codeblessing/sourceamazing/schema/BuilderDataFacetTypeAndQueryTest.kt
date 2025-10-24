@@ -51,52 +51,52 @@ class BuilderDataFacetTypeAndQueryTest {
             @EnumFacet(minimumOccurrences = 0, maximumOccurrences = 3, enumerationClass = MyEnum::class)
             interface EnumerationFacet
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTextFacetAsList(): List<String>
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTextFacet(): String
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTextFacetNullable(): String?
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTextFacetAsNullableAny(): Any?
 
-            @QueryFacetValue(BoolFacet::class)
+            @QueryFacetValue("BoolFacet")
             fun getBoolFacetAsList(): List<Boolean>
 
-            @QueryFacetValue(BoolFacet::class)
+            @QueryFacetValue("BoolFacet")
             fun getBoolFacet(): Boolean
 
-            @QueryFacetValue(BoolFacet::class)
+            @QueryFacetValue("BoolFacet")
             fun getBoolFacetNullable(): Boolean?
 
-            @QueryFacetValue(BoolFacet::class)
+            @QueryFacetValue("BoolFacet")
             fun getBoolFacetAsNullableAny(): Any?
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumberFacetAsList(): List<Int>
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumberFacet(): Int
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumberFacetNullable(): Int?
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumberFacetAsNullableAny(): Any?
 
-            @QueryFacetValue(EnumerationFacet::class)
+            @QueryFacetValue("EnumerationFacet")
             fun getEnumerationFacetAsList(): List<MyEnum>
 
-            @QueryFacetValue(EnumerationFacet::class)
+            @QueryFacetValue("EnumerationFacet")
             fun getEnumerationFacet(): MyEnum
 
-            @QueryFacetValue(EnumerationFacet::class)
+            @QueryFacetValue("EnumerationFacet")
             fun getEnumerationFacetNullable(): MyEnum?
 
-            @QueryFacetValue(EnumerationFacet::class)
+            @QueryFacetValue("EnumerationFacet")
             fun getEnumerationFacetAsNullableAny(): Any?
 
         }
@@ -120,25 +120,25 @@ class BuilderDataFacetTypeAndQueryTest {
             @BuilderMethod
             fun addFacetValues(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myTextValue: String,
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.BoolFacet::class,
+                    facetToModify = "BoolFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myBoolValue: Boolean,
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class,
+                    facetToModify = "NumberFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myNumberValue: Int,
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.EnumerationFacet::class,
+                    facetToModify = "EnumerationFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )

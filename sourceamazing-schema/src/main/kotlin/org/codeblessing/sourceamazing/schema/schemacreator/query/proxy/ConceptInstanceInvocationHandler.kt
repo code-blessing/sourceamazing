@@ -17,7 +17,7 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): Ko
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         function.findAnnotation<QueryFacetValue>()?.let {
-            val facetClass = it.facetClass
+            val facetClass = it.facetName
             val facetNameToQuery = facetClass.toFacetName()
             val facetValues = requireNotNull(conceptNode.facetValues[facetNameToQuery]) {
                 "Facet values not found for facet ${facetClass}."

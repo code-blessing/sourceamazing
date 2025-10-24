@@ -38,10 +38,10 @@ class BuilderDataAliasTest {
             interface NumberFacet
 
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getText(): String
 
-            @QueryFacetValue(NumberFacet::class)
+            @QueryFacetValue("NumberFacet")
             fun getNumber(): Int
 
         }
@@ -62,7 +62,7 @@ class BuilderDataAliasTest {
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -73,7 +73,7 @@ class BuilderDataAliasTest {
 
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
                 numberValue: Int
             )
         }
@@ -108,9 +108,9 @@ class BuilderDataAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
-            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class, value = 42)
+            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet", value = 42)
             fun setTextAndFixedNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -122,7 +122,7 @@ class BuilderDataAliasTest {
             @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
             @SetRandomConceptIdentifierValue("myConcept")
             fun createConceptAndSetText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
                 textValue: String
             ): NestedSubSubBuilder
         }
@@ -132,7 +132,7 @@ class BuilderDataAliasTest {
         interface NestedSubSubBuilder {
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.NumberFacet::class)
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
                 numberValue: Int
             )
         }

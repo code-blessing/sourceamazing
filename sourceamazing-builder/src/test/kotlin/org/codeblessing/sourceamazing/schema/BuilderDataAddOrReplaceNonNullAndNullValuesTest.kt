@@ -30,7 +30,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @StringFacet(minimumOccurrences = 0, maximumOccurrences = 10)
             interface TextFacet
 
-            @QueryFacetValue(TextFacet::class)
+            @QueryFacetValue("TextFacet")
             fun getTextFacetAsList(): List<String>
 
         }
@@ -54,7 +54,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setText(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -64,7 +64,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setTextNullable(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -75,7 +75,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setTexts(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -85,7 +85,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setNullableTexts(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -96,7 +96,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addText(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -106,7 +106,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addTextNullable(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -117,7 +117,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addTexts(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -127,7 +127,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addNullableTexts(
                 @SetFacetValue(
-                    facetToModify = SchemaWithConceptWithFacet.ConceptWithFacet.TextFacet::class,
+                    facetToModify = "TextFacet",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
