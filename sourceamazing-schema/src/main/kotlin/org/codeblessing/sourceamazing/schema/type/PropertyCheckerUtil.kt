@@ -33,9 +33,9 @@ object PropertyCheckerUtil {
     }
 
     fun checkHasReturnType(propertyToInspect: KProperty<*>, propertyDescription: String) {
-        val returnType = propertyToInspect.returnType.returnTypeOrNull()
-        if(returnType == null || returnType.isUnitType()) {
-            throw WrongPropertySyntaxException(propertyToInspect, SchemaErrorCode.FUNCTION_MUST_HAVE_RETURN_TYPE, propertyDescription)
+        val returnType = propertyToInspect.returnType
+        if(returnType.isUnitType()) {
+            throw WrongPropertySyntaxException(propertyToInspect, SchemaErrorCode.PROPERTY_MUST_HAVE_RETURN_TYPE, propertyDescription)
         }
     }
 }

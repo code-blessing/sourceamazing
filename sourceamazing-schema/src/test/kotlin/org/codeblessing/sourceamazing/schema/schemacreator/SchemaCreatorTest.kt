@@ -1,13 +1,17 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.ConceptSchema
 import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.FacetSchema
 import org.codeblessing.sourceamazing.schema.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,96 +21,89 @@ import org.junit.jupiter.api.Test
 
 class SchemaCreatorTest {
 
-    @Schema(concepts = [])
     private interface EmptySchemaDefinitionClass
 
     @Test
     fun `test create an empty schema from an empty schema interface`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(EmptySchemaDefinitionClass::class)
-        assertEquals(0, schema.numberOfConcepts())
+        assertEquals(1, schema.numberOfConcepts())
     }
 
-    @Schema(concepts = [SchemaWithEmptyConceptClass.EmptyConceptClass::class])
     private interface SchemaWithEmptyConceptClass {
 
-        @Concept(facets = [])
         interface EmptyConceptClass
+
+        @Suppress("UNUSED")
+        @Facet
+        val oneConcept: EmptyConceptClass
     }
 
     @Test
     fun `test create an schema with an empty concept class`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithEmptyConceptClass::class)
-        assertEquals(1, schema.numberOfConcepts())
+        assertEquals(2, schema.numberOfConcepts())
     }
 
-    @Schema(concepts = [SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet::class])
     private interface SchemaWithConceptWithTextFacetClass {
-        @Concept(facets = [ConceptClassWithTextFacet.TextFacetClass::class])
-        interface ConceptClassWithTextFacet {
-            @StringFacet
-            interface TextFacetClass
-        }
+        @Suppress("UNUSED")
+        @Facet
+        val myText: String
     }
 
     @Test
     fun `test create an schema with concept class having a text facet`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithTextFacetClass::class)
         assertEquals(1, schema.numberOfConcepts())
-        val concept = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithTextFacetClass.ConceptClassWithTextFacet::class))
-        assertTrue(concept.hasFacet(FacetName.of("TextFacetClass")))
+        val concept = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithTextFacetClass::class))
+        assertTrue(concept.hasFacet(FacetName.of(SchemaWithConceptWithTextFacetClass::myText.name)))
     }
 
-    @Schema(concepts = [SchemaWithConceptWithCorrectCardinalityFacets.ConceptWithFacets::class])
     private interface SchemaWithConceptWithCorrectCardinalityFacets {
-        @Concept(facets = [
-            ConceptWithFacets.TextFacet::class,
-            ConceptWithFacets.BoolFacet::class,
-            ConceptWithFacets.NumberFacet::class,
-        ])
-        interface ConceptWithFacets {
-            @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
-            interface TextFacet
-            @BooleanFacet(minimumOccurrences = 1, maximumOccurrences = 1)
-            interface BoolFacet
-            @IntFacet(minimumOccurrences = 2, maximumOccurrences = 5)
-            interface NumberFacet
-        }
+        @Suppress("UNUSED")
+        @Facet
+        val myText: String?
+
+        @Suppress("UNUSED")
+        @Facet
+        val myBoolean: Boolean
+
+        @Suppress("UNUSED")
+        @Facet
+        val myNumbers: Set<Int>
     }
 
     @Test
     fun `test concept having three facets with correct cardinalities`() {
+        val myTextFacetName = FacetName.of(SchemaWithConceptWithCorrectCardinalityFacets::myText.name)
+        val myBooleanFacetName = FacetName.of(SchemaWithConceptWithCorrectCardinalityFacets::myBoolean.name)
+        val myNumbersFacetName = FacetName.of(SchemaWithConceptWithCorrectCardinalityFacets::myNumbers.name)
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithCorrectCardinalityFacets::class)
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithCorrectCardinalityFacets.ConceptWithFacets::class))
+        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithCorrectCardinalityFacets::class))
 
-        assertEquals(0, conceptSchema.facets[0].minimumOccurrences)
-        assertEquals(1, conceptSchema.facets[0].maximumOccurrences)
+        assertEquals(0, conceptSchema.facetByName(myTextFacetName).minimumOccurrences)
+        assertEquals(1, conceptSchema.facetByName(myTextFacetName).maximumOccurrences)
 
-        assertEquals(1, conceptSchema.facets[1].minimumOccurrences)
-        assertEquals(1, conceptSchema.facets[1].maximumOccurrences)
+        assertEquals(1, conceptSchema.facetByName(myBooleanFacetName).minimumOccurrences)
+        assertEquals(1, conceptSchema.facetByName(myBooleanFacetName).maximumOccurrences)
 
-        assertEquals(2, conceptSchema.facets[2].minimumOccurrences)
-        assertEquals(5, conceptSchema.facets[2].maximumOccurrences)
+        assertEquals(0, conceptSchema.facetByName(myNumbersFacetName).minimumOccurrences)
+        assertEquals(Int.MAX_VALUE, conceptSchema.facetByName(myNumbersFacetName).maximumOccurrences)
     }
 
-    @Schema(concepts = [SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class])
     private interface SchemaWithConceptWithEmptyEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MyEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = EmptyEnumeration::class)
-            interface MyEnumFacet
-        }
-
         enum class EmptyEnumeration
+
+        @Suppress("UNUSED")
+        @Facet
+        val myEnum: EmptyEnumeration
     }
 
     @Test
     fun `test concept having an empty enumeration facet should not throw an exception`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEmptyEnumFacet::class)
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of("MyEnumFacet")
+        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet::class))
+        val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet::myEnum.name)
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -115,21 +112,19 @@ class SchemaCreatorTest {
     }
 
 
-    @Schema(concepts = [SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets::class])
     private interface SchemaWithConceptWithPrimitiveFacetClasses {
-        @Concept(facets = [
-            ConceptClassWithFacets.TextFacetClass::class,
-            ConceptClassWithFacets.BooleanFacetClass::class,
-            ConceptClassWithFacets.NumberFacetClass::class,
-        ])
-        interface ConceptClassWithFacets {
-            @StringFacet
-            interface TextFacetClass
-            @BooleanFacet
-            interface BooleanFacetClass
-            @IntFacet
-            interface NumberFacetClass
-        }
+        @Suppress("UNUSED")
+        @Facet
+        val myText: String
+
+        @Suppress("UNUSED")
+        @Facet
+        val myBoolean: Boolean
+
+        @Suppress("UNUSED")
+        @Facet
+        val myNumber: Int
+
     }
 
     @Test
@@ -137,39 +132,34 @@ class SchemaCreatorTest {
         val schema =
             SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithPrimitiveFacetClasses::class)
         assertEquals(1, schema.numberOfConcepts())
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithPrimitiveFacetClasses.ConceptClassWithFacets::class))
+        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithPrimitiveFacetClasses::class))
         assertEquals(3, conceptSchema.facets.size)
 
-        val textFacetName = FacetName.of("TextFacetClass")
-        val booleanFacetName = FacetName.of("BooleanFacetClass")
-        val numberFacetName = FacetName.of("NumberFacetClass")
+        val textFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses::myText.name)
+        val booleanFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses::myBoolean.name)
+        val numberFacetName = FacetName.of(SchemaWithConceptWithPrimitiveFacetClasses::myNumber.name)
 
-        assertEquals(textFacetName, conceptSchema.facets[0].facetName)
-        assertEquals(booleanFacetName, conceptSchema.facets[1].facetName)
-        assertEquals(numberFacetName, conceptSchema.facets[2].facetName)
+        assertEquals(textFacetName, conceptSchema.facetByName(textFacetName).facetName)
+        assertEquals(booleanFacetName, conceptSchema.facetByName(booleanFacetName).facetName)
+        assertEquals(numberFacetName, conceptSchema.facetByName(numberFacetName).facetName)
 
-        assertEquals(FacetType.TEXT, conceptSchema.facets[0].facetType)
-        assertEquals(FacetType.BOOLEAN, conceptSchema.facets[1].facetType)
-        assertEquals(FacetType.NUMBER, conceptSchema.facets[2].facetType)
+        assertEquals(FacetType.TEXT, conceptSchema.facetByName(textFacetName).facetType)
+        assertEquals(FacetType.BOOLEAN, conceptSchema.facetByName(booleanFacetName).facetType)
+        assertEquals(FacetType.NUMBER, conceptSchema.facetByName(numberFacetName).facetType)
 
-        assertNull(conceptSchema.facets[0].enumerationType)
-        assertNull(conceptSchema.facets[1].enumerationType)
-        assertNull(conceptSchema.facets[2].enumerationType)
+        assertNull(conceptSchema.facetByName(textFacetName).enumerationType)
+        assertNull(conceptSchema.facetByName(booleanFacetName).enumerationType)
+        assertNull(conceptSchema.facetByName(numberFacetName).enumerationType)
 
-        assertEquals(0, conceptSchema.facets[0].enumerationValues.size)
-        assertEquals(0, conceptSchema.facets[1].enumerationValues.size)
-        assertEquals(0, conceptSchema.facets[2].enumerationValues.size)
+        assertEquals(0, conceptSchema.facetByName(textFacetName).enumerationValues.size)
+        assertEquals(0, conceptSchema.facetByName(booleanFacetName).enumerationValues.size)
+        assertEquals(0, conceptSchema.facetByName(numberFacetName).enumerationValues.size)
     }
 
-    @Schema(concepts = [SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class])
     private interface SchemaWithConceptWithEnumFacet {
-        @Concept(facets = [
-            ConceptClassWithEnumFacet.MyEnumFacet::class,
-        ])
-        interface ConceptClassWithEnumFacet {
-            @EnumFacet(enumerationClass = SeasonEnumeration::class)
-            interface MyEnumFacet
-        }
+        @Suppress("UNUSED")
+        @Facet
+        val mySeasonEnum: SeasonEnumeration
 
         enum class SeasonEnumeration {
             WINTER,
@@ -183,8 +173,8 @@ class SchemaCreatorTest {
     fun `test concept having a enumeration facet`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithEnumFacet::class)
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet.ConceptClassWithEnumFacet::class))
-        val enumFacetName = FacetName.of("MyEnumFacet")
+        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet::class))
+        val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet::mySeasonEnum.name)
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
@@ -196,20 +186,11 @@ class SchemaCreatorTest {
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.FALL, enumFacetSchema.enumerationValues[3])
     }
 
-    @Schema(concepts = [
-        SchemaWithConceptWithReferenceFacet.ConceptClassWithReferenceFacet::class,
-        SchemaWithConceptWithReferenceFacet.OtherConcept::class,
-    ])
     private interface SchemaWithConceptWithReferenceFacet {
-        @Concept(facets = [
-            ConceptClassWithReferenceFacet.MyReferenceFacet::class,
-        ])
-        interface ConceptClassWithReferenceFacet {
-            @ReferenceFacet(referencedConcepts = [OtherConcept::class])
-            interface MyReferenceFacet
-        }
+        @Suppress("UNUSED")
+        @Facet
+        val myReference: OtherConcept
 
-        @Concept(facets = [])
         interface OtherConcept
     }
 
@@ -217,8 +198,8 @@ class SchemaCreatorTest {
     fun `test concept having a reference facet referencing one concept`() {
         val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaWithConceptWithReferenceFacet::class)
 
-        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithReferenceFacet.ConceptClassWithReferenceFacet::class))
-        val referenceFacetName = FacetName.of("MyReferenceFacet")
+        val conceptSchema = schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithReferenceFacet::class))
+        val referenceFacetName = FacetName.of(SchemaWithConceptWithReferenceFacet::myReference.name)
         val otherReferencedConceptName = ConceptName.of(SchemaWithConceptWithReferenceFacet.OtherConcept::class)
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
         assertEquals(referenceFacetName, referenceFacetSchema.facetName)
@@ -227,31 +208,16 @@ class SchemaCreatorTest {
         assertEquals(otherReferencedConceptName, referenceFacetSchema.referencingConcepts.first())
     }
 
-    @Schema(concepts = [
-        SchemaWithConceptWithReferenceFacetToMultipleConcepts.ConceptClassWithReferenceFacet::class,
-        SchemaWithConceptWithReferenceFacetToMultipleConcepts.OtherConcept::class,
-        SchemaWithConceptWithReferenceFacetToMultipleConcepts.AndAnotherConcept::class,
-        SchemaWithConceptWithReferenceFacetToMultipleConcepts.AndJustOneAnotherConcept::class,
-    ])
     private interface SchemaWithConceptWithReferenceFacetToMultipleConcepts {
-        @Concept(facets = [
-            ConceptClassWithReferenceFacet.MyReferenceFacet::class,
-        ])
-        interface ConceptClassWithReferenceFacet {
-            @ReferenceFacet(
-                referencedConcepts = [OtherConcept::class, AndAnotherConcept::class, AndJustOneAnotherConcept::class])
-            interface MyReferenceFacet
-        }
+        @Suppress("UNUSED")
+        @References([OtherConcept::class, AndAnotherConcept::class, AndJustOneAnotherConcept::class])
+        @Facet
+        val myReference: CommonInterface
 
-        @Concept(facets = [])
-        interface OtherConcept
-
-        @Concept(facets = [])
-        interface AndAnotherConcept
-
-        @Concept(facets = [])
-        interface AndJustOneAnotherConcept
-
+        interface CommonInterface
+        interface OtherConcept: CommonInterface
+        interface AndAnotherConcept: CommonInterface
+        interface AndJustOneAnotherConcept: CommonInterface
     }
 
     @Test
@@ -262,8 +228,8 @@ class SchemaCreatorTest {
 
         val conceptSchema = schema.conceptByConceptName(
             ConceptName.of(
-                SchemaWithConceptWithReferenceFacetToMultipleConcepts.ConceptClassWithReferenceFacet::class))
-        val referenceFacetName = FacetName.of("MyReferenceFacet")
+                SchemaWithConceptWithReferenceFacetToMultipleConcepts::class))
+        val referenceFacetName = FacetName.of(SchemaWithConceptWithReferenceFacetToMultipleConcepts::myReference.name)
         val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
 
         val referencedConceptName1 = ConceptName.of(SchemaWithConceptWithReferenceFacetToMultipleConcepts.OtherConcept::class)

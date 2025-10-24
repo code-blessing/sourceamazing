@@ -6,7 +6,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
 object QueryMethodUtil {
-    val supportedCollectionClasses: List<KClass<*>> = listOf(List::class, Set::class, Collection::class, Iterable::class)
 
     fun adaptResultToFunctionReturnType(kFunction: KFunction<*>, resultList: List<Any>): Any? {
         val returnTypeClassesInformation = KTypeUtil.classesInformationFromKType(kFunction.returnType)

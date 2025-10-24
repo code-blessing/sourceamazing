@@ -3,11 +3,7 @@ package org.codeblessing.sourceamazing.schema.validation
 import org.codeblessing.sourceamazing.schema.ConceptName
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
@@ -24,44 +20,25 @@ import kotlin.reflect.KClass
 
 class ConceptDataValidatorTest {
 
-    @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
-    private interface OptionalTextFacetClass
-    private val optionalTextFacetName = FacetName.of("OptionalTextFacetClass")
-
-    @StringFacet(minimumOccurrences = 1, maximumOccurrences = 1)
-    private interface MandatoryTextFacetClass
-    private val mandatoryTextFacetName = FacetName.of("MandatoryTextFacetClass")
-
-    @EnumFacet(minimumOccurrences = 1, maximumOccurrences = 5, enumerationClass = MyEnumeration::class)
-    private interface SomeEnumsFacetClass
-    private val someEnumsFacetName = FacetName.of("SomeEnumsFacetClass")
-
-    @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 1, referencedConcepts = [OtherConcept::class])
-    private interface MandatoryReferenceToOtherConceptFacetClass
-    private val mandatoryRefToOneConceptFacetName = FacetName.of("MandatoryReferenceToOtherConceptFacetClass")
-
     enum class MyEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
     enum class OtherEnumeration { @Suppress("UNUSED") X,@Suppress("UNUSED") Y, @Suppress("UNUSED") Z }
     enum class IncompatibleEnumeration { @Suppress("UNUSED") A,@Suppress("UNUSED") B, @Suppress("UNUSED") C }
 
-    @Concept(facets = [
-        OtherConceptTextFacetClass::class,
-    ])
-    interface OtherConcept
+    interface OtherConcept {
+        @Suppress("UNUSED")
+        @Facet
+        val otherConceptTextFacet: String?
+    }
 
-    @StringFacet(minimumOccurrences = 0, maximumOccurrences = 1)
-    private interface OtherConceptTextFacetClass
-
-    @Concept(facets = [])
     interface OtherThanTheOtherConcept
 
 
-    @Schema(concepts = [
-        SchemaForEmptyConceptValidation.EmptyConcept::class,
-    ])
     private interface SchemaForEmptyConceptValidation {
-        @Concept(facets = [])
         interface EmptyConcept
+
+        @Suppress("UNUSED")
+        @Facet
+        val theOnlyConcept: EmptyConcept
 
     }
 
@@ -90,22 +67,20 @@ class ConceptDataValidatorTest {
         }
     }
 
-    @Schema(concepts = [
-        SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class,
-    ])
     private interface SchemaForOneMandatoryTextFacetValidation {
-        @Concept(facets = [
-            MandatoryTextFacetClass::class,
-        ])
-        interface ConceptClassWithFacets
-
+        @Suppress("UNUSED")
+        @Facet
+        val myMandatoryText: String
     }
+    private val mandatoryTextFacetName = FacetName.of(SchemaForOneMandatoryTextFacetValidation::myMandatoryText.name)
+    private val optionalTextFacetName = FacetName.of("myOptionalText")
+
 
     @Test
     fun `validate unknown facet throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(
             SchemaForOneMandatoryTextFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation::class)
         conceptData.addFacetValue(mandatoryTextFacetName, "my text")
         conceptData.addFacetValue(optionalTextFacetName, "my text") // here we add values for an unknown facet
         Assertions.assertThrows(UnknownFacetNameException::class.java) {
@@ -117,7 +92,7 @@ class ConceptDataValidatorTest {
     fun `validate a valid entry does return without exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(
             SchemaForOneMandatoryTextFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation::class)
         conceptData.addFacetValue(mandatoryTextFacetName, "my text")
         ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
     }
@@ -126,7 +101,7 @@ class ConceptDataValidatorTest {
     fun `validate a entry with wrong type does throw an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(
             SchemaForOneMandatoryTextFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation::class)
         conceptData.addFacetValue(mandatoryTextFacetName, 42) // here we add a number instead of text
         Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -137,7 +112,7 @@ class ConceptDataValidatorTest {
     fun `validate missing mandatory text facet throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(
             SchemaForOneMandatoryTextFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation::class)
         // here we do not add the mandatory text facet
         Assertions.assertThrows(WrongCardinalityForFacetValueException::class.java) {
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -148,7 +123,7 @@ class ConceptDataValidatorTest {
     fun `validate too much values on facet throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(
             SchemaForOneMandatoryTextFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForOneMandatoryTextFacetValidation::class)
         conceptData.addFacetValue(mandatoryTextFacetName, "my text")
         conceptData.addFacetValue(mandatoryTextFacetName, "my text number two")
         Assertions.assertThrows(WrongCardinalityForFacetValueException::class.java) {
@@ -156,21 +131,19 @@ class ConceptDataValidatorTest {
         }
     }
 
-    @Schema(concepts = [
-        SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class,
-    ])
     private interface SchemaForSomeEnumsFacetValidation {
-        @Concept(facets = [
-            SomeEnumsFacetClass::class,
-        ])
-        interface ConceptClassWithFacets
-
+        @Suppress("UNUSED")
+        @Facet
+        val someEnumsFacetClass: Set<MyEnumeration>
     }
+
+    private val someEnumsFacetName = FacetName.of(SchemaForSomeEnumsFacetValidation::someEnumsFacetClass.name)
+
 
     @Test
     fun `validate that a correct enum does return without exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.Y)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
@@ -180,7 +153,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate that a correct enum as String does return without exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.Y.toString())
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X.toString())
@@ -190,7 +163,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate that a compatible enum type does return without exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, OtherEnumeration.Y)
         ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -199,7 +172,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate that a incompatible enum type throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, IncompatibleEnumeration.B)
         Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
@@ -210,7 +183,7 @@ class ConceptDataValidatorTest {
     @Test
     fun `validate that a wrong enum type as string throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForSomeEnumsFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForSomeEnumsFacetValidation::class)
         conceptData.addFacetValue(someEnumsFacetName, MyEnumeration.X)
         conceptData.addFacetValue(someEnumsFacetName, "x") // lowercase is wrong
         Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
@@ -218,23 +191,20 @@ class ConceptDataValidatorTest {
         }
     }
 
-    @Schema(concepts = [
-        SchemaForReferenceFacetValidation.ConceptClassWithFacets::class,
-        OtherConcept::class,
-        OtherThanTheOtherConcept::class,
-    ])
     private interface SchemaForReferenceFacetValidation {
-        @Concept(facets = [
-            MandatoryReferenceToOtherConceptFacetClass::class,
-        ])
-        interface ConceptClassWithFacets
 
+        @Suppress("UNUSED")
+        @Facet
+        val mandatoryReferenceToOtherConcept: OtherConcept
     }
+
+    private val mandatoryRefToOneConceptFacetName = FacetName.of(SchemaForReferenceFacetValidation::mandatoryReferenceToOtherConcept.name)
+
 
     @Test
     fun `validate that a wrong type for reference throws an exception`() {
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
-        val conceptData = createEmptyConceptData(SchemaForReferenceFacetValidation.ConceptClassWithFacets::class)
+        val conceptData = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptData.addFacetValue(mandatoryRefToOneConceptFacetName, "Bar")
         Assertions.assertThrows(WrongTypeForFacetValueException::class.java) {
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptData))
@@ -245,7 +215,7 @@ class ConceptDataValidatorTest {
     fun `validate that a reference pointing to a missing concept throws an exception`() {
         val conceptIdentifier = ConceptIdentifier.of("Bar")
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
-        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation.ConceptClassWithFacets::class)
+        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptDataReferencing.addFacetValue(mandatoryRefToOneConceptFacetName, conceptIdentifier)
 
         Assertions.assertThrows(MissingReferencedConceptFacetValueException::class.java) {
@@ -257,7 +227,7 @@ class ConceptDataValidatorTest {
     fun `validate that a reference pointing to an available concept does return without exception`() {
         val conceptIdentifier = ConceptIdentifier.of("Bar")
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
-        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation.ConceptClassWithFacets::class)
+        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptDataReferencing.addFacetValue(mandatoryRefToOneConceptFacetName, conceptIdentifier)
         val conceptDataReferenced = createEmptyConceptData(OtherConcept::class, conceptIdentifier)
         ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptDataReferencing, conceptDataReferenced))
@@ -267,7 +237,7 @@ class ConceptDataValidatorTest {
     fun `validate that a reference pointing to an available concept with wrong type throws an exception`() {
         val conceptIdentifier = ConceptIdentifier.of("Bar")
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
-        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation.ConceptClassWithFacets::class)
+        val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptDataReferencing.addFacetValue(mandatoryRefToOneConceptFacetName, conceptIdentifier)
         val conceptDataReferenced = createEmptyConceptData(OtherThanTheOtherConcept::class, conceptIdentifier) // wrong concept type
         Assertions.assertThrows(WrongReferencedConceptFacetValueException::class.java) {

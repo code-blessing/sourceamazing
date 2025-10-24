@@ -1,86 +1,51 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class SchemaSmokeTest {
 
-    @Schema(concepts = [
-        SmokeTestSchema.PersonConcept::class,
-        SmokeTestSchema.SkillConcept::class,
-    ])
     interface SmokeTestSchema {
-        @Concept(facets = [
-            PersonConcept.PersonFirstnameFacet::class,
-            PersonConcept.PersonAgeFacet::class,
-            PersonConcept.PersonSexFacet::class
-        ])
         interface PersonConcept {
 
             enum class PersonSex { @Suppress("UNUSED") MALE, @Suppress("UNUSED") FEMALE }
 
-            @StringFacet()
-            interface PersonFirstnameFacet
-            @IntFacet
-            interface PersonAgeFacet
-            @EnumFacet(enumerationClass = PersonSex::class)
-            interface PersonSexFacet
+            @Suppress("UNUSED")
+            @Facet
+            val firstname: String
 
             @Suppress("UNUSED")
-            @QueryConceptIdentifierValue
-            fun getConceptId(): ConceptIdentifier
+            @Facet
+            val age: Int
 
             @Suppress("UNUSED")
-            @QueryFacetValue("PersonFirstnameFacet")
-            fun getFirstname(): String
-
-            @Suppress("UNUSED")
-            @QueryFacetValue("PersonAgeFacet")
-            fun getAge(): Int
-
-            @Suppress("UNUSED")
-            @QueryFacetValue("PersonSexFacet")
-            fun getSex(): PersonSex
+            @Facet
+            val sex: PersonSex
 
         }
-        @Concept(facets = [
-            SkillConcept.SkillDescriptionFacet::class,
-            SkillConcept.SkillStillEnjoyingFacet::class,
-        ])
         interface SkillConcept {
-            @StringFacet() interface SkillDescriptionFacet
-            @BooleanFacet() interface SkillStillEnjoyingFacet
 
             @Suppress("UNUSED")
-            @QueryConceptIdentifierValue
-            fun getSkillConceptIdentifier(): String
+            @Facet
+            val skillConceptIdentifier: String
 
             @Suppress("UNUSED")
-            @QueryFacetValue("SkillDescriptionFacet")
-            fun getSkillDescription(): String
+            @Facet
+            val skillDescription: String
 
             @Suppress("UNUSED")
-            @QueryFacetValue("SkillStillEnjoyingFacet")
-            fun isStillFullyEnjoyingAboutThatSkill(): Boolean
+            @Facet
+            val isStillFullyEnjoyingAboutThatSkill: Boolean
 
         }
 
-        @QueryConcepts(conceptClasses = [PersonConcept::class])
-        fun getPersonList(): List<PersonConcept>
+        @Facet
+        val personList: List<PersonConcept>
 
-        @QueryConcepts(conceptClasses = [SkillConcept::class])
-        fun getSkills(): List<SkillConcept>
+        @Facet
+        val skills: List<SkillConcept>
 
     }
 
@@ -90,7 +55,7 @@ class SchemaSmokeTest {
             // do nothing
         }
 
-        Assertions.assertEquals(0, schemaInstance.getPersonList().size)
-        Assertions.assertEquals(0, schemaInstance.getSkills().size)
+        Assertions.assertEquals(0, schemaInstance.personList.size)
+        Assertions.assertEquals(0, schemaInstance.skills.size)
     }
 }

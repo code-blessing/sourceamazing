@@ -11,7 +11,8 @@ import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSynta
 import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.declaredMemberExtensionFunctions
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.memberProperties
 
@@ -29,14 +30,22 @@ object ClassCheckerUtil {
         }
     }
 
+    fun isOrdinaryInterface(classToInspect: KClass<*>): Boolean {
+        return classToInspect.isInterface && !classToInspect.isAnnotation
+    }
+
     fun checkIsOrdinaryInterface(classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.isInterface || classToInspect.isAnnotation) {
+        if(!isOrdinaryInterface(classToInspect)) {
             throw NotInterfaceSyntaxException(classToInspect, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE, classDescription)
         }
     }
 
+    fun hasGenericTypeParameters(classToInspect: KClass<*>): Boolean {
+        return classToInspect.typeParameters.isNotEmpty()
+    }
+
     fun checkHasNoGenericTypeParameters(classToInspect: KClass<*>, classDescription: String) {
-        if(!classToInspect.typeParameters.isEmpty()) {
+        if(hasGenericTypeParameters(classToInspect)) {
             throw WrongTypeSyntaxException(SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER, classDescription, classToInspect.typeParameters)
         }
     }
@@ -53,10 +62,6 @@ object ClassCheckerUtil {
         }
     }
 
-    fun checkHasOnlyAnnotation(permittedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
-        checkHasOnlyAnnotations(listOf(permittedAnnotation), classToInspect, classDescription)
-    }
-
     fun checkHasOnlyAnnotations(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
         classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
@@ -67,19 +72,13 @@ object ClassCheckerUtil {
             }
     }
 
-    fun checkHasExactlyOneOfAnnotation(annotations: List<KClass<out Annotation>>, classToInspect: KClass<*>, classDescription: String) {
-        val numberOfAnnotations = annotations.count { annotation -> classToInspect.hasAnnotationIncludingSuperclasses(annotation) }
-
-        if(numberOfAnnotations < 1) {
-            throw MissingClassAnnotationSyntaxException(classToInspect, SchemaErrorCode.MUST_HAVE_ONE_OF_THE_FOLLOWING_ANNOTATIONS, classDescription, annotations.joinToString { it.annotationText() })
-        } else if(numberOfAnnotations > 1) {
-            throw WrongAnnotationSyntaxException(classToInspect, SchemaErrorCode.NOT_MULTIPLE_ANNOTATIONS, classDescription, annotations.joinToString { it.annotationText() })
-        }
+    fun hasMemberExtensionFunctions(classToInspect: KClass<*>): Boolean {
+        return classToInspect.memberExtensionFunctions.isNotEmpty()
     }
 
     fun checkHasNoExtensionFunctions(classToInspect: KClass<*>, classDescription: String) {
-        if(classToInspect.declaredMemberExtensionFunctions.isNotEmpty()) {
-            throw WrongClassStructureSyntaxException(classToInspect, SchemaErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS, classDescription, classToInspect.declaredMemberExtensionFunctions)
+        if(classToInspect.memberExtensionFunctions.isNotEmpty()) {
+            throw WrongClassStructureSyntaxException(classToInspect, SchemaErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS, classDescription, classToInspect.memberExtensionFunctions)
         }
     }
 
@@ -89,8 +88,12 @@ object ClassCheckerUtil {
         }
     }
 
+    fun hasMemberFunctions(classToInspect: KClass<*>): Boolean {
+        return classToInspect.memberFunctions.filterNot { it.isFromKotlinAnyClass() }.isNotEmpty()
+    }
+
     fun checkHasNoFunctions(classToInspect: KClass<*>, classDescription: String) {
-        if(classToInspect.memberFunctions.isNotEmpty()) {
+        if(hasMemberFunctions(classToInspect)) {
             throw WrongClassStructureSyntaxException(classToInspect, SchemaErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS, classDescription, classToInspect.memberFunctions)
         }
     }

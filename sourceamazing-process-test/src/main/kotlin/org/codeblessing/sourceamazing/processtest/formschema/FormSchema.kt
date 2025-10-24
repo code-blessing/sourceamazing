@@ -1,91 +1,39 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.*
 
-@Schema(concepts = [
-    FormSchema.FormConcept::class,
-    FormSchema.TextInputFormControlConcept::class,
-    FormSchema.SelectDropdownFormControlConcept::class,
-    FormSchema.SelectDropdownEntryConcept::class,
-])
 interface FormSchema {
-    @QueryConcepts(conceptClasses = [FormConcept::class])
-    fun getForms(): List<FormConcept>
+    @Suppress("UNUSED")
+    @Facet val forms: List<FormConcept>
 
-
-    @Concept(facets = [
-        FormConcept.FormTitle::class,
-        FormConcept.FormControl::class,
-    ])
     interface FormConcept {
-        @StringFacet
-        interface FormTitle
+        @Suppress("UNUSED")
+        @Facet val formTitle: String
 
-        @ReferenceFacet(
-            minimumOccurrences = 1,
-            maximumOccurrences = Int.MAX_VALUE,
-            referencedConcepts = [TextInputFormControlConcept::class, SelectDropdownFormControlConcept::class])
-        interface FormControl
-
-        @QueryConceptIdentifierValue
-        fun getFormId(): String
-
-        @QueryFacetValue("FormTitle")
-        fun getFormTitle(): String
-
-        @QueryFacetValue("FormControl")
-        fun getFormControls(): List<FormSchema.FormControl>
+        @Suppress("UNUSED")
+        @Facet
+        @References([TextInputFormControlConcept::class, SelectDropdownFormControlConcept::class])
+        val formControls: List<FormSchema.FormControl>
     }
 
     interface FormControl {
+        @Suppress("UNUSED")
+        @Facet
+        val displayName: String
 
-        @StringFacet
-        interface DisplayName
+        @Suppress("UNUSED")
+        @Facet
+        val valueRequired: Boolean
 
-        @BooleanFacet
-        interface ValueRequired
-
-        @StringFacet(
-            minimumOccurrences = 0,
-            maximumOccurrences = 5,
-        )
-        interface Label
-
-
-        @QueryConceptIdentifierValue
-        fun getFormControlName(): String
-
-        @QueryFacetValue("DisplayName")
-        fun getFormControlDisplayName(): String
-
-        @QueryFacetValue("ValueRequired")
-        fun isValueRequired(): Boolean
-
-        @QueryFacetValue("Label")
-        fun getLabels(): List<String>
+        @Suppress("UNUSED")
+        @Facet
+        val labels: List<String>
     }
 
-    @Concept(facets = [
-        FormControl.DisplayName::class,
-        FormControl.ValueRequired::class,
-        FormControl.Label::class,
-        TextInputFormControlConcept.FormatHint::class,
-    ])
     interface TextInputFormControlConcept: FormControl {
-        @EnumFacet(enumerationClass = TextInputFormatHint::class)
-        interface FormatHint
-
-        @QueryFacetValue("FormatHint")
         @Suppress("UNUSED")
-        fun getFormatHint(): TextInputFormatHint
+        @Facet
+        val formatHint: TextInputFormatHint
 
         enum class TextInputFormatHint(@Suppress("UNUSED") val hint: String) {
             PLAIN(""),
@@ -95,44 +43,24 @@ interface FormSchema {
 
     }
 
-    @Concept(facets = [
-        FormControl.DisplayName::class,
-        FormControl.ValueRequired::class,
-        FormControl.Label::class,
-        SelectDropdownFormControlConcept.DefaultValue::class,
-        SelectDropdownFormControlConcept.SelectDropdownEntry::class,
-    ])
-
     interface SelectDropdownFormControlConcept: FormControl {
-        @StringFacet(minimumOccurrences = 0)
-        interface DefaultValue
+        @Suppress("UNUSED")
+        @Facet
+        val defaultValue: String?
 
-        @ReferenceFacet(minimumOccurrences = 1, maximumOccurrences = 5, referencedConcepts = [SelectDropdownEntryConcept::class])
-        interface SelectDropdownEntry
-
-        @QueryFacetValue("DefaultValue")
-        fun getDefaultValue(): String?
-
-        @QueryFacetValue("SelectDropdownEntry")
-        fun getSelectDropdownEntries(): List<SelectDropdownEntryConcept>
-
+        @Suppress("UNUSED")
+        @Facet
+        val selectDropdownEntries: List<SelectDropdownEntryConcept>
     }
 
-    @Concept(facets = [
-        SelectDropdownEntryConcept.Value::class,
-        SelectDropdownEntryConcept.DisplayValue::class,
-    ])
     interface SelectDropdownEntryConcept {
-        @StringFacet()
-        interface Value
-        @StringFacet()
-        interface DisplayValue
+        @Suppress("UNUSED")
+        @Facet
+        val value: String
 
-        @QueryFacetValue("Value")
-        fun getValue(): String
-
-        @QueryFacetValue("DisplayValue")
-        fun getDisplayValue(): String
+        @Suppress("UNUSED")
+        @Facet
+        val displayValue: String
     }
 }
 

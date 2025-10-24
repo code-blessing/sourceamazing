@@ -146,9 +146,9 @@ class SourceamazingProcessTest {
             }
         }
 
-        Assertions.assertEquals(2, formSchema.getForms().size)
-        val formCitySurveyHtml = ProcesstestTemplate.formContent(formSchema.getForms()[0])
-        val formSummaryHtml = ProcesstestTemplate.formsSummary(formSchema.getForms())
+        Assertions.assertEquals(2, formSchema.forms.size)
+        val formCitySurveyHtml = ProcesstestTemplate.formContent(formSchema.forms[0])
+        val formSummaryHtml = ProcesstestTemplate.formsSummary(formSchema.forms)
 
         Assertions.assertEquals(expectedSummaryTemplateOutput, formSummaryHtml)
         Assertions.assertEquals(expectedHtmlTemplateOutput, formCitySurveyHtml)

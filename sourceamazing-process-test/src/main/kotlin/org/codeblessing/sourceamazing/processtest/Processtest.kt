@@ -18,9 +18,9 @@ fun main() {
         }
     }
 
-    formSchema.getForms().forEach { form ->
+    formSchema.forms.forEach { form ->
         println("----------------")
-        println(form.getFormId())
+        println(form.formTitle)
         println("----------------")
         println(ProcesstestTemplate.formContent(form))
     }
