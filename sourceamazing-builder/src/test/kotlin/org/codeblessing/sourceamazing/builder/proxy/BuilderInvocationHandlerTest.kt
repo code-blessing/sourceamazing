@@ -115,7 +115,7 @@ class BuilderInvocationHandlerTest {
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = "PersonSkillsReference", referencedConceptAlias = "skill")
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
         ): SkillConceptBuilder
@@ -124,7 +124,7 @@ class BuilderInvocationHandlerTest {
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = BuilderTestSchema.PersonConcept.PersonSkillsReference::class, referencedConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = "PersonSkillsReference", referencedConceptAlias = "skill")
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
             @InjectBuilder builder: SkillConceptBuilder.() -> Unit,

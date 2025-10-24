@@ -18,6 +18,7 @@ enum class SchemaErrorCode(override val messageFormat: String): ErrorCode {
     CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
     CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
     CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
+    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS("%s must not have member functions but has %s."),
     CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),
     RETURN_TYPE_MUST_BE_INHERITABLE("The return type class %s must be inheritable for all concepts %s."),
     FACET_RETURN_TYPE_NOT_SUPPORTED("The method return type for the facet %s was %s which is not a supported value type. Valid return types are %s."),

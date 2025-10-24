@@ -175,7 +175,7 @@ class NestedConceptsBuilderTest {
         @NewConcept(NestedConceptsSchema.BusinessObjectConcept::class, declareConceptAlias = "bizObj")
         fun newBusinessObject(
             @SetConceptIdentifierValue(conceptToModifyAlias = "bizObj") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "bizObj", facetToModify = BusinessObjectName::class) name: String,
+            @SetFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectName") name: String,
             @InjectBuilder builder: BusinessObjectConceptBuilder.() -> Unit
         )
 
@@ -188,10 +188,10 @@ class NestedConceptsBuilderTest {
             @WithNewBuilder(builderClass = FieldTypeForSingleFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.SingleValueFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = BusinessObjectFields::class, referencedConceptAlias = "field")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectFields", referencedConceptAlias = "field")
             fun addSingleValueField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = FieldName::class) fieldName: String,
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = Nullable::class) nullable: Boolean = false,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "FieldName") fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "Nullable") nullable: Boolean = false,
                 @InjectBuilder builder: FieldTypeForSingleFieldConceptBuilder.() -> Unit,
             )
 
@@ -199,10 +199,10 @@ class NestedConceptsBuilderTest {
             @WithNewBuilder(builderClass = FieldTypeForCollectionFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.CollectionOfValuesFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = BusinessObjectFields::class, referencedConceptAlias = "field")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectFields", referencedConceptAlias = "field")
             fun addCollectionOfValuesField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = FieldName::class) fieldName: String,
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = CollectionKind::class) collectionKind: CollectionKindEnum,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "FieldName") fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionKind") collectionKind: CollectionKindEnum,
                 @InjectBuilder builder: FieldTypeForCollectionFieldConceptBuilder.() -> Unit,
             )
 
@@ -215,17 +215,17 @@ class NestedConceptsBuilderTest {
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = SingleValueType::class, referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "SingleValueType", referencedConceptAlias = "fieldType")
             fun builtinType(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = BuiltinType::class) builtinType: BuiltinTypeEnum,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "BuiltinType") builtinType: BuiltinTypeEnum,
             )
 
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = SingleValueType::class, referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "SingleValueType", referencedConceptAlias = "fieldType")
             fun reference(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = ReferencedBusinessObject::class) id: ConceptIdentifier,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "ReferencedBusinessObject") id: ConceptIdentifier,
             )
         }
 
@@ -236,17 +236,17 @@ class NestedConceptsBuilderTest {
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = CollectionValuesType::class, referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionValuesType", referencedConceptAlias = "fieldType")
             fun builtinType(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = BuiltinType::class) builtinType: BuiltinTypeEnum,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "BuiltinType") builtinType: BuiltinTypeEnum,
             )
 
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = CollectionValuesType::class, referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionValuesType", referencedConceptAlias = "fieldType")
             fun reference(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = ReferencedBusinessObject::class) id: ConceptIdentifier,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "ReferencedBusinessObject") id: ConceptIdentifier,
             )
         }
     }

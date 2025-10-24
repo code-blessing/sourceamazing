@@ -46,7 +46,7 @@ class SchemaTraverserTest {
     @Test
     fun createSchemaFromRootDefinitionClass() {
 
-        val schema = SchemaTraverser.createSchemaFromRootDefinitionClass(MySchema::class)
+        val schema = SchemaCreator.createSchemaFromSchemaDefinitionClass(MySchema::class)
         val rootConcept = schema.conceptByConceptName(ConceptName.of(MySchema::class))
 
         assertEquals(FacetType.TEXT, rootConcept.facets[0].facetType)

@@ -72,7 +72,7 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithMultiUsedFacet.FacetAlpha::class) myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "FacetAlpha") myValue: String
             )
         }
     }
@@ -109,7 +109,7 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = SchemaWithConceptWithMultiUsedFacet.FacetAlpha::class) myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "FacetAlpha") myValue: String
             )
         }
     }
