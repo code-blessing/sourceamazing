@@ -29,7 +29,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
-import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.KTypeKind
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
@@ -314,26 +313,26 @@ object BuilderMethodValidator {
             val methodLocation = facetValueAnnotationContent.base.methodLocation
             val facetName = facetValueAnnotationContent.base.facetName
             val facetFromSchema = schemaAccess.facetByFacetName(facetName)
-                ?: throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.UNKNOWN_FACET, SetFacetValue::class.annotationText(), facetName.clazz.longText())
+                ?: throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.UNKNOWN_FACET, SetFacetValue::class.annotationText(), facetName.longText())
 
             val classInformation = getTypeClass(facetValueAnnotationContent)
             val typeClass: KClass<*> = classInformation.clazz
 
             when(facetFromSchema.facetType) {
                 FacetType.TEXT -> if(typeClass != String::class) {
-                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE, facetName.longText(), SUPPORTED_COLLECTION_TYPES)
                 }
                 FacetType.NUMBER -> if(typeClass != Int::class) {
-                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE, facetName.longText(), SUPPORTED_COLLECTION_TYPES)
                 }
                 FacetType.BOOLEAN -> if(typeClass != Boolean::class) {
-                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE, facetName.longText(), SUPPORTED_COLLECTION_TYPES)
                 }
                 FacetType.TEXT_ENUMERATION -> if(!isEnumType(facetFromSchema.enumerationType, typeClass) || !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)) {
-                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
+                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE, facetName.longText(), SUPPORTED_COLLECTION_TYPES, facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>", facetFromSchema.enumerationValues)
                 }
                 FacetType.REFERENCE -> if(typeClass != ConceptIdentifier::class) {
-                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE, facetName.clazz.longText(), SUPPORTED_COLLECTION_TYPES)
+                    throw BuilderMethodSyntaxException(methodLocation, BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE, facetName.longText(), SUPPORTED_COLLECTION_TYPES)
                 }
             }
 
@@ -481,7 +480,7 @@ object BuilderMethodValidator {
                 methodLocation = annotationBaseData.methodLocation,
                 errorCode = BuilderErrorCode.UNKNOWN_FACET,
                 annotation.annotationClass.annotationText(),
-                facet.clazz.longText()
+                facet.longText()
             )
         }
     }
@@ -523,13 +522,13 @@ object BuilderMethodValidator {
         schemaAccess: SchemaAccess,
     ) {
         val annotation: Annotation = annotationBaseData.annotation
-        val facetClass: KClass<*> = annotationBaseData.facetName.clazz
+        val facetName = annotationBaseData.facetName
 
-        val facet = schemaAccess.facetByFacetName(facetClass.toFacetName())
-            ?: throw BuilderMethodSyntaxException(annotationBaseData.methodLocation, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facetClass.longText())
+        val facet = schemaAccess.facetByFacetName(facetName)
+            ?: throw BuilderMethodSyntaxException(annotationBaseData.methodLocation, BuilderErrorCode.UNKNOWN_FACET, annotation.annotationClass.annotationText(), facetName.longText())
 
         if(expectedFacetType != null && facet.facetType != expectedFacetType) {
-            throw BuilderMethodSyntaxException(annotationBaseData.methodLocation, BuilderErrorCode.WRONG_FACET_TYPE, annotation.annotationClass.annotationText(), facetClass.longText(), expectedFacetType, facet.facetType)
+            throw BuilderMethodSyntaxException(annotationBaseData.methodLocation, BuilderErrorCode.WRONG_FACET_TYPE, annotation.annotationClass.annotationText(), facetName.longText(), expectedFacetType, facet.facetType)
         }
     }
 
@@ -539,9 +538,9 @@ object BuilderMethodValidator {
         enumValue: String?,
     ) {
         val annotation: Annotation = annotationBaseData.annotation
-        val facetClass: KClass<*> = annotationBaseData.facetName.clazz
+        val facetName = annotationBaseData.facetName
 
-        val facet = requireNotNull(schemaAccess.facetByFacetName(annotationBaseData.facetName))
+        val facet = requireNotNull(schemaAccess.facetByFacetName(facetName))
         val validEnumerationValues = facet.enumerationValues.map { it.name }
 
         if(!validEnumerationValues.contains(enumValue)) {
@@ -549,7 +548,7 @@ object BuilderMethodValidator {
                 annotationBaseData.methodLocation,
                 BuilderErrorCode.WRONG_FACET_ENUM_VALUE,
                 annotation.annotationClass.annotationText(),
-                facetClass.longText(),
+                facetName.longText(),
                 enumValue ?: "<no-value>",
                 validEnumerationValues
             )
