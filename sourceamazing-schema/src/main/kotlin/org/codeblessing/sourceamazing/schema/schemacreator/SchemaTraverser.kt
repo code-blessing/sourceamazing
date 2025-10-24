@@ -62,7 +62,7 @@ object SchemaTraverser {
         conceptName: ConceptName,
         facetProperty: KProperty1<out Any, *>,
     ): FacetSchema {
-        val facetName = FacetName.of(conceptName.clazz) // TODO thats bullshit
+        val facetName = FacetName.of(facetProperty.name)
         val returningType = facetProperty.returnType
 
         val classifierClass = returningType.classifier as KClass<*>
