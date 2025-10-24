@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.config.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
+    `kotlin-code-formatting`
 }
 
 repositories {
@@ -9,20 +12,26 @@ repositories {
 
 
 dependencies {
+    compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+    compileOnly(libs.kotlin.reflect) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
+
     implementation(projects.sourceamazingSchemaApi)
     implementation(projects.sourceamazingBuilderApi)
     implementation(projects.sourceamazingSchema)
-
-    compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
-    compileOnly(libs.kotlin.reflect) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
 
     testImplementation(libs.kotlin.stdlib)
     testImplementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
-    testImplementation(testFixtures(projects.sourceamazingSchema))
+    testImplementation(testFixtures(projects.sourceamazingSchemaApiTests))
 }
 
+kotlin {
+    compilerOptions {
+        // do use java default methods on interfaces
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
 
 
 tasks.named<Test>("test") {

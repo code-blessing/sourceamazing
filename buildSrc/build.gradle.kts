@@ -1,5 +1,6 @@
 plugins {
     `kotlin-dsl`
+    kotlin("jvm") version "1.9.0"
 }
 
 repositories {
@@ -8,3 +9,7 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    // Provides Spotless core + plugin implementation classes
+    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.1.0")
+}

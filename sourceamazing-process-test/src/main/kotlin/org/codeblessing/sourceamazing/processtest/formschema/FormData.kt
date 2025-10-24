@@ -1,39 +1,38 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-
 object FormData {
 
     fun collectFormData(dataCollector: FormBuilder) {
 
-        val employeePreferencesForm = dataCollector
-            .createNewForm(
-                conceptIdentifier = ConceptIdentifier.of("EmployeeWorkPreferencesForm"),
-                formTitle = "Employee Work Preferences")
+        val employeePreferencesForm =
+            dataCollector.createNewForm(
+                clazzModelId = ItemId.of("EmployeeWorkPreferencesForm"),
+                formTitle = "Employee Work Preferences",
+            )
 
         employeePreferencesForm
             .addTextInputFormControl(
-                conceptIdentifier = ConceptIdentifier.of("EmployeeFirstname"),
+                clazzModelId = ItemId.of("EmployeeFirstname"),
                 displayName = "Firstname",
                 valueRequired = true,
-                formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.PLAIN,
+                formatHint = FormSchema.TextInputFormControlClazz.TextInputFormatHint.PLAIN,
             )
             .addLabel("names")
             .addLabel("person-info")
         employeePreferencesForm
             .addTextInputFormControl(
-                conceptIdentifier = ConceptIdentifier.of("EmployeeLastname"),
+                clazzModelId = ItemId.of("EmployeeLastname"),
                 displayName = "Lastname",
                 valueRequired = true,
-                formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.PLAIN,
+                formatHint = FormSchema.TextInputFormControlClazz.TextInputFormatHint.PLAIN,
             )
             .addLabels(listOf("names", "person-info"))
         employeePreferencesForm
             .addTextInputFormControl(
-                conceptIdentifier = ConceptIdentifier.of("EmployeeBirthday"),
+                clazzModelId = ItemId.of("EmployeeBirthday"),
                 displayName = "Birthday",
                 valueRequired = false,
-                formatHint = FormSchema.TextInputFormControlConcept.TextInputFormatHint.DATE,
+                formatHint = FormSchema.TextInputFormControlClazz.TextInputFormatHint.DATE,
             )
             .addLabel("person-info")
             .addLabels(arrayOf("birthday", "Birthday", "BIRTHDAY"))
@@ -42,12 +41,12 @@ object FormData {
 
         employeePreferencesForm
             .addSelectDropdownFormControl(
-                conceptIdentifier = ConceptIdentifier.of("WorkplacePreference"),
+                clazzModelId = ItemId.of("WorkplacePreference"),
                 displayName = "Workplace Preference",
                 valueRequired = false,
-                defaultValue = "company")
+                defaultValue = "company",
+            )
             .setValue("home", "Home Office")
             .setValue("company", "Company Office")
     }
-
 }

@@ -1,90 +1,208 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.alias.Alias
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import org.codeblessing.sourceamazing.builder.Alias
+import org.codeblessing.sourceamazing.builder.api.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.builder.factories.BuilderFactoriesHolder
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
+import org.codeblessing.sourceamazing.builder.interpretation.BuilderRedeclarationHelper
+import org.codeblessing.sourceamazing.builder.utils.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateBuilderClass
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateTopLevelBuilderClass
 import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.validateBuilderMethod
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
-import org.codeblessing.sourceamazing.schema.SchemaAccess
-import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.builder.validation.NonBuilderMethodValidator.validateNonBuilderMethod
+import org.codeblessing.sourceamazing.schema.typesafeapi.Clazz
+import org.codeblessing.sourceamazing.schema.typesafeapi.schemaaccess.TypeSafeSchemaAccess
 
 object BuilderHierarchyValidator {
 
-    fun validateTopLevelBuilderMethods(topLevelBuilderClass: KClass<*>, schemaAccess: SchemaAccess) {
-        val builderClassInterpreter = BuilderClassInterpreter(
-            builderClass = topLevelBuilderClass,
-            newConceptNamesWithAliasFromSuperiorBuilder = emptyMap(),
-        )
-        validateTopLevelBuilderClass(builderClassInterpreter)
-        validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
+    fun validateTopLevelBuilderMethods(
+        builderClass: KClass<*>,
+        builderFactoriesHolder: BuilderFactoriesHolder,
+        schemaAccess: TypeSafeSchemaAccess,
+        superiorClazzes: Map<Alias, Clazz>,
+    ) {
+        val validationData =
+            createRootValidationData(builderClass, builderFactoriesHolder, schemaAccess, superiorClazzes)
+        validateBuilderClassStructureAndMethodSyntax(validationData)
     }
 
-    /**
-     * This method is called by recursion.
-     */
-    private fun validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter: BuilderClassInterpreter, recursionDetector: RecursionDetector, schemaAccess: SchemaAccess) {
-        validateBuilderClass(builderClassInterpreter)
+    /** This method is called by recursion. */
+    private fun validateBuilderClassStructureAndMethodSyntax(builderClassValidationData: BuilderClassValidationData) {
+        validateBuilderClassSyntax(builderClassValidationData)
 
-        val expectedConceptsFromSuperiorBuilder: Map<Alias, ConceptName> = builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
+        forEachMethod(builderClassValidationData) { method ->
+            builderClassValidationData.ifNotAlreadyProcessed(method) {
+                val builderMethodValidationData = builderClassValidationData.builderMethod(method)
 
-        RelevantMethodFetcher.ownMemberFunctions(builderClassInterpreter.builderClass).forEach { method ->
-            if(recursionDetector.pushMethodOntoStack(method, expectedConceptsFromSuperiorBuilder)) {
-
-                val builderMethodInterpreter = BuilderMethodInterpreter(
-                    schemaAccess = schemaAccess,
-                    builderClassInterpreter = builderClassInterpreter,
-                    method = method,
-                )
-                validateBuilderMethod(builderMethodInterpreter, schemaAccess)
-
-                val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName> = builderMethodInterpreter.builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
-                val subBuilderClass = validateAndGetSubBuilderClass(builderMethodInterpreter)
-                if(subBuilderClass != null) {
-                    val subBuilderClassInterpreter = BuilderClassInterpreter(
-                        builderClass = subBuilderClass,
-                        newConceptNamesWithAliasFromSuperiorBuilder = expectedConceptsFromSuperiorMethod + builderMethodInterpreter.newConcepts(),
-                    )
-
-                    validateBuilderClassStructureAndMethodSyntax(subBuilderClassInterpreter, recursionDetector, schemaAccess)
+                if (builderMethodValidationData.isBuilderMethod()) {
+                    validateBuilderMethodSyntax(builderMethodValidationData)
+                    val subBuilderClass = validateSubBuilderClassAndGet(builderMethodValidationData)
+                    if (subBuilderClass != null) {
+                        val subBuilderClassValidationData = builderMethodValidationData.subBuilderClass(subBuilderClass)
+                        validateBuilderClassStructureAndMethodSyntax(subBuilderClassValidationData)
+                    }
+                } else {
+                    validateNonBuilderMethodSyntax(builderMethodValidationData)
                 }
+            }
+        }
+    }
+
+    private fun validateBuilderClassSyntax(builderClassValidationData: BuilderClassValidationData) {
+        validateBuilderClass(builderClassValidationData.builderClassInterpreter)
+    }
+
+    private fun forEachMethod(
+        builderClassValidationData: BuilderClassValidationData,
+        block: (method: KFunction<*>) -> Unit,
+    ) {
+        RelevantMethodFetcher.ownMemberFunctions(builderClassValidationData.builderClass).forEach { method ->
+            block(method)
+        }
+    }
+
+    private fun validateBuilderMethodSyntax(builderMethodValidationData: BuilderMethodValidationData) {
+        validateBuilderMethod(
+            builderMethodInterpreter = builderMethodValidationData.builderMethodInterpreter,
+            schemaAccess = builderMethodValidationData.builderClassValidationData.schemaAccess,
+        )
+    }
+
+    private fun validateNonBuilderMethodSyntax(builderMethodValidationData: BuilderMethodValidationData) {
+        validateNonBuilderMethod(
+            builderMethodInterpreter = builderMethodValidationData.builderMethodInterpreter,
+            builderFactoriesHolder = builderMethodValidationData.builderClassValidationData.builderFactoriesHolder,
+        )
+    }
+
+    private fun validateSubBuilderClassAndGet(builderMethodValidationData: BuilderMethodValidationData): KClass<*>? {
+        val builderMethodReturnType = builderMethodValidationData.builderMethodReturnType()
+
+        if (builderMethodReturnType.hasNoSubBuilder()) {
+            return null
+        }
+
+        return builderMethodReturnType.subBuilderClass()
+    }
+
+    private fun createRootValidationData(
+        builderClass: KClass<*>,
+        builderFactoriesHolder: BuilderFactoriesHolder,
+        schemaAccess: TypeSafeSchemaAccess,
+        superiorClazzes: Map<Alias, Clazz>,
+    ): BuilderClassValidationData {
+        return BuilderClassValidationData(
+            builderClass = builderClass,
+            builderFactoriesHolder = builderFactoriesHolder,
+            builderClassInterpreter =
+                BuilderClassInterpreter(
+                    builderClass = builderClass,
+                    newClazzesWithAliasFromSuperiorBuilder = superiorClazzes,
+                ),
+            schemaAccess = schemaAccess,
+            recursionDetector = RecursionDetector(),
+        )
+    }
+
+    private class BuilderClassValidationData(
+        val builderClass: KClass<*>,
+        val builderFactoriesHolder: BuilderFactoriesHolder,
+        val builderClassInterpreter: BuilderClassInterpreter,
+        val schemaAccess: TypeSafeSchemaAccess,
+        val recursionDetector: RecursionDetector,
+    ) {
+        fun builderMethod(method: KFunction<*>): BuilderMethodValidationData {
+            return BuilderMethodValidationData(method = method, builderClassValidationData = this)
+        }
+
+        fun ifNotAlreadyProcessed(method: KFunction<*>, block: () -> Unit) {
+            val expectedClazzesFromSuperiorBuilder: Map<Alias, Clazz> =
+                builderClassInterpreter.newClazzesFromSuperiorBuilderFilteredByExpectedAliases()
+            val isNotProcessed = recursionDetector.pushMethodOntoStack(method, expectedClazzesFromSuperiorBuilder)
+            if (isNotProcessed) {
+                block()
                 recursionDetector.removeLastMethodFromStack()
             }
         }
     }
 
-    private fun validateAndGetSubBuilderClass(builderMethodInterpreter: BuilderMethodInterpreter): KClass<*>? {
-        val subBuilderClassFromNewBuilderAnnotation = builderMethodInterpreter.getBuilderClassFromWithNewBuilderAnnotation()
-        val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
-        val subBuilderClassFromInjectBuilderAnnotation = builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
+    private class BuilderMethodValidationData(
+        val method: KFunction<*>,
+        val builderClassValidationData: BuilderClassValidationData,
+    ) {
+        val builderMethodInterpreter: BuilderMethodInterpreter =
+            BuilderMethodInterpreter(
+                schemaAccess = builderClassValidationData.schemaAccess,
+                builderClassInterpreter = builderClassValidationData.builderClassInterpreter,
+                method = method,
+            )
 
-        if(subBuilderClassFromReturnType == null
-            && subBuilderClassFromInjectBuilderAnnotation == null
-            && subBuilderClassFromNewBuilderAnnotation == null) {
-            return null
+        fun isBuilderMethod(): Boolean {
+            return builderMethodInterpreter.isBuilderMethod()
         }
 
-        if(subBuilderClassFromReturnType != null && subBuilderClassFromInjectBuilderAnnotation != null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME)
+        fun subBuilderClass(subBuilderClass: KClass<*>): BuilderClassValidationData {
+            val expectedClazzesFromSuperiorMethod: Map<Alias, Clazz> =
+                builderClassValidationData.builderClassInterpreter
+                    .newClazzesFromSuperiorBuilderFilteredByExpectedAliases()
+
+            val newClazzesWithAliasFromSuperiorBuilder =
+                BuilderRedeclarationHelper.mapRedeclarations(
+                    sourceAliasMap = expectedClazzesFromSuperiorMethod + builderMethodInterpreter.newClazzes(),
+                    aliasRedeclarations = builderMethodInterpreter.aliasRedeclarations(),
+                )
+            val subBuilderClassInterpreter =
+                BuilderClassInterpreter(
+                    builderClass = subBuilderClass,
+                    newClazzesWithAliasFromSuperiorBuilder = newClazzesWithAliasFromSuperiorBuilder,
+                )
+            return BuilderClassValidationData(
+                builderClass = subBuilderClass,
+                builderFactoriesHolder = builderClassValidationData.builderFactoriesHolder,
+                builderClassInterpreter = subBuilderClassInterpreter,
+                schemaAccess = builderClassValidationData.schemaAccess,
+                recursionDetector = builderClassValidationData.recursionDetector,
+            )
         }
 
-        if(subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED)
+        fun builderMethodReturnType(): BuilderMethodReturnTypeValidationData {
+            val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
+            val subBuilderClassFromInjectBuilderAnnotation =
+                builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
+
+            return BuilderMethodReturnTypeValidationData(
+                builderMethodInterpreter = builderMethodInterpreter,
+                subBuilderClassFromReturnType = subBuilderClassFromReturnType,
+                subBuilderClassFromInjectBuilderAnnotation = subBuilderClassFromInjectBuilderAnnotation,
+            )
+        }
+    }
+
+    private class BuilderMethodReturnTypeValidationData(
+        private val builderMethodInterpreter: BuilderMethodInterpreter,
+        private val subBuilderClassFromReturnType: KClass<*>?,
+        private val subBuilderClassFromInjectBuilderAnnotation: KClass<*>?,
+    ) {
+        fun hasNoSubBuilder(): Boolean {
+            return subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null
         }
 
-        val subBuilderClass = subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation
-
-
-        if(subBuilderClassFromNewBuilderAnnotation != null) {
-            if (subBuilderClassFromNewBuilderAnnotation != subBuilderClass) {
-                throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME)
-            }
+        fun hasReturnTypeAndBuilderClassInjectAnnotation(): Boolean {
+            return subBuilderClassFromReturnType != null && subBuilderClassFromInjectBuilderAnnotation != null
         }
 
-        return subBuilderClass
+        fun subBuilderClass(): KClass<*> {
+            return requireNotNull(subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation)
+        }
+
+        fun throwWithBuilderErrorCode(errorCode: BuilderErrorCode): Nothing {
+            throw BuilderMethodSyntaxException(
+                builderMethodInterpreter.methodLocation,
+                errorCode.withFormattedMessage(),
+            )
+        }
     }
 }

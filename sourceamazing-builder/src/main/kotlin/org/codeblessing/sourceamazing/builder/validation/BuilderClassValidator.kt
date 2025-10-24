@@ -1,68 +1,57 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedClazzModelFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
 
 object BuilderClassValidator {
-    private const val BUILDER_CLASS_DESCRIPTION = "Builder class"
-
-    fun validateTopLevelBuilderClass(builderClassInterpreter: BuilderClassInterpreter) {
-        validateHasOnlyBuilderAnnotation(builderClassInterpreter)  // this is only valid for top-level builder
-        validateBuilderClass(builderClassInterpreter)
-    }
 
     fun validateBuilderClass(builderClassInterpreter: BuilderClassInterpreter) {
-        validateBuilderClassStructure(builderClassInterpreter)
-        validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter)
-        validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter)
+        with(builderClassChecker(builderClassInterpreter)) {
+            validateBuilderClassStructure()
+            validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter)
+            validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter)
+            validateAllExpectedAliasesFromSuperiorBuilderHaveMatchingClazzes(builderClassInterpreter)
+        }
     }
 
-    private fun validateHasOnlyBuilderAnnotation(builderClassInterpreter: BuilderClassInterpreter) {
-        val builderClass = builderClassInterpreter.builderClass
-        checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
+    private fun BuilderClassChecker.validateBuilderClassStructure() {
+        checkIsOrdinaryInterface()
+        checkHasNoGenericTypeParameters()
+        checkHasNoExtensionFunctions()
+        checkHasNoProperties()
+        checkHasAnnotation(Builder::class)
+        checkHasExactNumberOfAnnotations(Builder::class, numberOf = 1)
+        checkHasOnlyAnnotations(listOf(Builder::class, ExpectedClazzModelFromSuperiorBuilder::class))
     }
 
-    private fun validateBuilderClassStructure(builderClassInterpreter: BuilderClassInterpreter) {
-        val builderClass = builderClassInterpreter.builderClass
-        checkIsOrdinaryInterface(builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasNoGenericTypeParameters(builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasNoExtensionFunctions(builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasNoProperties(builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasAnnotation(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasExactNumberOfAnnotations(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
-        checkHasOnlyAnnotations(listOf(Builder::class, ExpectedAliasFromSuperiorBuilder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
-    }
-
-    private fun validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter: BuilderClassInterpreter) {
-        val builderClass = builderClassInterpreter.builderClass
+    private fun BuilderClassChecker.validateAllExpectedAliasesFromSuperiorBuilderAreProvided(
+        builderClassInterpreter: BuilderClassInterpreter
+    ) {
         val expectedAliases = builderClassInterpreter.expectedAliasesFromSuperiorBuilder()
-        val providedAliases = builderClassInterpreter.newConceptAliasesFromSuperiorBuilder()
-        expectedAliases.forEach { expectedAlias ->
-            if(expectedAlias !in providedAliases) {
-                throw BuilderSyntaxException(builderClass, BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, expectedAlias, defaultAliasHint(expectedAlias))
-            }
-        }
+        val providedAliases = builderClassInterpreter.newClazzAliasesFromSuperiorBuilder()
+        checkAllExpectedAliasesAreProvided(expectedAliases, providedAliases)
     }
 
-    private fun validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter: BuilderClassInterpreter) {
-        val builderClass = builderClassInterpreter.builderClass
-        val aliasesIncludingDuplicates = builderClassInterpreter.expectedAliasesFromSuperiorBuilderIncludingDuplicates()
-        val duplicateAlias = firstDuplicateAlias(aliasesIncludingDuplicates)
+    private fun BuilderClassChecker.validateAllExpectedAliasesFromSuperiorBuilderHaveMatchingClazzes(
+        builderClassInterpreter: BuilderClassInterpreter
+    ) {
+        val expectedAliasesAndClazzes = builderClassInterpreter.expectedAliasesAndClazzesFromSuperiorBuilder()
+        val providedAliasesAndClazzes = builderClassInterpreter.newClazzesFromSuperiorBuilderFilteredByExpectedAliases()
+        checkAllExpectedAliasesAreMatchingProvidedAliasOnClazzes(
+            expectedAliases = expectedAliasesAndClazzes,
+            providedAliases = providedAliasesAndClazzes,
+        )
+    }
 
-        if(duplicateAlias != null) {
-            throw BuilderSyntaxException(builderClass, BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, duplicateAlias, defaultAliasHint(duplicateAlias))
-        }
+    private fun BuilderClassChecker.validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(
+        builderClassInterpreter: BuilderClassInterpreter
+    ) {
+        val aliasesIncludingDuplicates = builderClassInterpreter.expectedAliasesFromSuperiorBuilderIncludingDuplicates()
+        checkNoDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation(aliasesIncludingDuplicates)
+    }
+
+    private fun builderClassChecker(builderClassInterpreter: BuilderClassInterpreter): BuilderClassChecker {
+        return BuilderClassChecker(builderClassInterpreter.builderClass)
     }
 }

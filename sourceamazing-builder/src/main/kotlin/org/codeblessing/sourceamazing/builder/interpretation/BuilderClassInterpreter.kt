@@ -1,34 +1,43 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
-import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.toAlias
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.schema.ConceptName
 import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.builder.Alias
+import org.codeblessing.sourceamazing.builder.alias.toAlias
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedClazzModelFromSuperiorBuilder
+import org.codeblessing.sourceamazing.schema.typesafeapi.Clazz
+import org.codeblessing.sourceamazing.schema.typesafeapi.toClazz
 
 class BuilderClassInterpreter(
     val builderClass: KClass<*>,
-    private val newConceptNamesWithAliasFromSuperiorBuilder: Map<Alias, ConceptName>,
-    ) {
+    private val newClazzesWithAliasFromSuperiorBuilder: Map<Alias, Clazz>,
+) {
 
     fun expectedAliasesFromSuperiorBuilderIncludingDuplicates(): List<Alias> {
-        return builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().map { it.conceptAlias.toAlias() }
+        return builderClass.annotations.filterIsInstance<ExpectedClazzModelFromSuperiorBuilder>().map {
+            it.alias.toAlias()
+        }
     }
 
     fun expectedAliasesFromSuperiorBuilder(): Set<Alias> {
         return expectedAliasesFromSuperiorBuilderIncludingDuplicates().toSet()
     }
 
-    private fun newConceptNamesFromSuperiorBuilder(): Map<Alias, ConceptName> {
-        return newConceptNamesWithAliasFromSuperiorBuilder
+    private fun newClazzesFromSuperiorBuilder(): Map<Alias, Clazz> {
+        return newClazzesWithAliasFromSuperiorBuilder
     }
 
-    fun newConceptAliasesFromSuperiorBuilder(): Set<Alias> {
-        return newConceptNamesFromSuperiorBuilder().keys
+    fun newClazzAliasesFromSuperiorBuilder(): Set<Alias> {
+        return newClazzesFromSuperiorBuilder().keys
     }
 
-    fun newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases(): Map<Alias, ConceptName> {
+    fun expectedAliasesAndClazzesFromSuperiorBuilder(): Map<Alias, Clazz> {
+        return builderClass.annotations.filterIsInstance<ExpectedClazzModelFromSuperiorBuilder>().associate {
+            Pair(it.alias.toAlias(), it.clazz.toClazz())
+        }
+    }
+
+    fun newClazzesFromSuperiorBuilderFilteredByExpectedAliases(): Map<Alias, Clazz> {
         val expectedAliases = expectedAliasesFromSuperiorBuilder()
-        return newConceptNamesFromSuperiorBuilder().filterKeys { key -> key in expectedAliases }
+        return newClazzesFromSuperiorBuilder().filterKeys { key -> key in expectedAliases }
     }
 }

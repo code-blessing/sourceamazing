@@ -1,51 +1,48 @@
 package org.codeblessing.sourceamazing.builder.update
 
-import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.schema.ConceptData
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import kotlin.reflect.KParameter
+import org.codeblessing.sourceamazing.builder.Alias
+import org.codeblessing.sourceamazing.schema.typesafeapi.Clazz
+import org.codeblessing.sourceamazing.schema.typesafeapi.ClazzModelId
+import org.codeblessing.sourceamazing.schema.typesafeapi.datacollection.TypeSafeClazzModel
+import org.codeblessing.sourceamazing.schema.typesafeapi.datacollection.TypeSafeClazzModelCollector
 
 class BuilderMethodInterpreterDataCollector(
-    private val conceptDataCollector: ConceptDataCollector,
+    private val clazzModelCollector: TypeSafeClazzModelCollector,
     val functionArguments: Map<KParameter, Any?>,
-    val newConceptIdsFromSuperiorBuilder: Map<Alias, ConceptIdentifier>,
-): InterpreterDataCollector {
+    val newClazzModelIdsFromSuperiorBuilder: Map<Alias, ClazzModelId>,
+) {
 
-    private val newConceptIds: MutableMap<Alias, ConceptIdentifier> = mutableMapOf()
+    private val newClazzModelIds: MutableMap<Alias, ClazzModelId> = mutableMapOf()
 
-    private fun newConceptIds(): Map<Alias, ConceptIdentifier> {
-        return newConceptIds
+    private fun newClazzModelIds(): Map<Alias, ClazzModelId> {
+        return newClazzModelIds
     }
 
-    fun newConceptIdsAndSuperiorConceptIds(): Map<Alias, ConceptIdentifier> {
-        return newConceptIdsFromSuperiorBuilder + newConceptIds()
+    fun newClazzModelIdsAndSuperiorClazzModelIds(): Map<Alias, ClazzModelId> {
+        return newClazzModelIdsFromSuperiorBuilder + newClazzModelIds()
     }
 
-    fun conceptIdByAlias(conceptAlias: Alias): ConceptIdentifier {
-        return newConceptIds[conceptAlias] ?: newConceptIdsFromSuperiorBuilder[conceptAlias]
-        ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
+    fun clazzModelIdByAlias(clazzAlias: Alias): ClazzModelId {
+        return newClazzModelIds[clazzAlias]
+            ?: newClazzModelIdsFromSuperiorBuilder[clazzAlias]
+            ?: throw IllegalStateException("Can not find clazz id for alias '$clazzAlias'.")
     }
 
-    fun newConceptData(alias: Alias, conceptName: ConceptName, conceptIdentifier: ConceptIdentifier) {
-        newConceptIds[alias] = conceptIdentifier
-        conceptDataCollector.newConceptData(conceptName, conceptIdentifier)
+    fun newClazzData(alias: Alias, clazz: Clazz, clazzModelId: ClazzModelId) {
+        newClazzModelIds[alias] = clazzModelId
+        clazzModelCollector.newClazzModel(clazz, clazzModelId)
     }
 
-    fun existingConceptData(conceptId: ConceptIdentifier): ConceptData {
-        return conceptDataCollector.existingConceptData(conceptId)
+    fun existingClazzData(clazzModelId: ClazzModelId): TypeSafeClazzModel {
+        return clazzModelCollector.existingClazzModel(clazzModelId)
     }
 
-    fun validateAfterUpdate(conceptData: ConceptData) {
-        conceptDataCollector.validateAfterUpdate(conceptData)
+    fun validateAfterUpdate(clazzModelData: TypeSafeClazzModel) {
+        clazzModelCollector.validateAfterUpdate(clazzModelData)
     }
-
 
     fun getDataContext(): DataContext {
-        return DataContext(
-            functionArguments = functionArguments,
-            newConceptIds = newConceptIds,
-        )
+        return DataContext(functionArguments = functionArguments, newClazzModelIds = newClazzModelIds)
     }
 }

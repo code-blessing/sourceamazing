@@ -1,96 +1,73 @@
 package org.codeblessing.sourceamazing.processtest.formschema
 
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 
 @Builder
+@ExpectedClazzModelFromSuperiorBuilder(clazz = FormSchema::class, alias = "root")
 interface FormBuilder {
 
     @BuilderMethod
-    @WithNewBuilder(FormConceptBuilder::class)
-    @NewConcept(FormSchema.FormConcept::class, "form")
+    @NewClazzModel(FormSchema.FormClazz::class, "form")
+    @SetClazzModelOfAlias("root", "forms", referencedAlias = "form")
     fun createNewForm(
-        @SetConceptIdentifierValue("form") conceptIdentifier: ConceptIdentifier,
-        @SetFacetValue("form", FormSchema.FormConcept.FormTitle::class) formTitle: String
-    ): FormConceptBuilder
+        @SetAsClazzModelId("form") clazzModelId: ItemId,
+        @SetAsValue("form", "formTitle") formTitle: String,
+    ): FormClazzBuilder
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("form")
-    interface FormConceptBuilder {
+    @ExpectedClazzModelFromSuperiorBuilder(clazz = FormSchema.FormClazz::class, alias = "form")
+    interface FormClazzBuilder {
 
         @BuilderMethod
-        @NewConcept(FormSchema.TextInputFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue("form", FormSchema.FormConcept.FormControl::class, referencedConceptAlias = "formControl")
-        @WithNewBuilder(FormControlBuilder::class)
+        @NewClazzModel(FormSchema.TextInputFormControlClazz::class, "formControl")
+        @SetClazzModelOfAlias("form", "formControls", referencedAlias = "formControl")
         fun addTextInputFormControl(
-            @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue("formControl", FormSchema.FormControl.DisplayName::class) displayName: String,
-            @SetFacetValue("formControl", FormSchema.FormControl.ValueRequired::class) valueRequired: Boolean = true,
-            @SetFacetValue("formControl", FormSchema.TextInputFormControlConcept.FormatHint::class) formatHint: FormSchema.TextInputFormControlConcept.TextInputFormatHint
+            @SetAsClazzModelId("formControl") clazzModelId: ItemId,
+            @SetAsValue("formControl", "displayName") displayName: String,
+            @SetAsValue("formControl", "valueRequired") valueRequired: Boolean = true,
+            @SetAsValue("formControl", "formatHint")
+            formatHint: FormSchema.TextInputFormControlClazz.TextInputFormatHint,
         ): FormControlBuilder
 
         @BuilderMethod
-        @NewConcept(FormSchema.SelectDropdownFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue("form", FormSchema.FormConcept.FormControl::class, referencedConceptAlias = "formControl")
-        @WithNewBuilder(SelectDropdownEntryConceptBuilder::class)
+        @NewClazzModel(FormSchema.SelectDropdownFormControlClazz::class, "formControl")
+        @SetClazzModelOfAlias("form", "formControls", referencedAlias = "formControl")
         fun addSelectDropdownFormControl(
-            @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue("formControl", FormSchema.FormControl.DisplayName::class) displayName: String,
-            @SetFacetValue("formControl", FormSchema.FormControl.ValueRequired::class) valueRequired: Boolean = true,
-            @SetFacetValue("formControl", FormSchema.SelectDropdownFormControlConcept.DefaultValue::class) defaultValue: String
-        ): SelectDropdownEntryConceptBuilder
+            @SetAsClazzModelId("formControl") clazzModelId: ItemId,
+            @SetAsValue("formControl", "displayName") displayName: String,
+            @SetAsValue("formControl", "valueRequired") valueRequired: Boolean = true,
+            @SetAsValue("formControl", "defaultValue") defaultValue: String,
+        ): SelectDropdownEntryClazzBuilder
     }
 
-    interface FormControlBuilderMethods {
+    interface FormControlBuilderMethods<T> {
 
-        @BuilderMethod
-        fun addLabel(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) label: String,
-        ): FormControlBuilder
+        @BuilderMethod fun addLabel(@SetAsValue("formControl", "labels") label: String): T
 
-        @BuilderMethod
-        fun addLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: List<String>,
-        ): FormControlBuilder
+        @BuilderMethod fun addLabels(@SetAsValue("formControl", "labels") labels: List<String>): T
 
-        @BuilderMethod
-        fun addLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) labels: Array<String>,
-        ): FormControlBuilder
+        @BuilderMethod fun addLabels(@SetAsValue("formControl", "labels") labels: Array<String>): T
 
-        @BuilderMethod
-        fun addVariableAmountOfLabels(
-            @SetFacetValue("formControl", FormSchema.FormControl.Label::class) vararg labels: String,
-        ): FormControlBuilder
-
+        @BuilderMethod fun addVariableAmountOfLabels(@SetAsValue("formControl", "labels") vararg labels: String): T
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
-    interface FormControlBuilder: FormControlBuilderMethods
-
+    @ExpectedClazzModelFromSuperiorBuilder(clazz = FormSchema.TextInputFormControlClazz::class, alias = "formControl")
+    interface FormControlBuilder : FormControlBuilderMethods<FormControlBuilder>
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
-    interface SelectDropdownEntryConceptBuilder: FormControlBuilderMethods {
+    @ExpectedClazzModelFromSuperiorBuilder(
+        clazz = FormSchema.SelectDropdownFormControlClazz::class,
+        alias = "formControl",
+    )
+    interface SelectDropdownEntryClazzBuilder : FormControlBuilderMethods<SelectDropdownEntryClazzBuilder> {
 
         @BuilderMethod
-        @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")
-        @SetRandomConceptIdentifierValue("dropdownEntry")
-        @SetAliasConceptIdentifierReferenceFacetValue("formControl", FormSchema.SelectDropdownFormControlConcept.SelectDropdownEntry::class, referencedConceptAlias = "dropdownEntry")
+        @NewClazzModel(FormSchema.SelectDropdownEntryClazz::class, "dropdownEntry")
+        @SetClazzModelOfAlias("formControl", "selectDropdownEntries", referencedAlias = "dropdownEntry")
         fun setValue(
-            @SetFacetValue("dropdownEntry", FormSchema.SelectDropdownEntryConcept.Value::class) value: String,
-            @SetFacetValue("dropdownEntry", FormSchema.SelectDropdownEntryConcept.DisplayValue::class) displayValue: String = value,
-        ): SelectDropdownEntryConceptBuilder
+            @SetAsValue("dropdownEntry", "value") value: String,
+            @SetAsValue("dropdownEntry", "displayValue") displayValue: String = value,
+        ): SelectDropdownEntryClazzBuilder
     }
-
 }
-

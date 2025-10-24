@@ -6,7 +6,10 @@ build
 db/**
 tmp
 
+*.todo.txt
+*.prompt.txt
 
 sourceamazing-process-test/input-data/schema/*
 sourceamazing-process-test/output-data/*
 
+.claude

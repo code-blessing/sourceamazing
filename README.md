@@ -2,104 +2,43 @@
 
 ## What is SourceAmazing
 
-SourceAmazing is a small framework to read data from sources like XML, 
-Java/Kotlin Builders or Java/Kotlin DSLs into Java/Kotlin classes.
-You write a schema with help of Java/Kotlin interfaces with some annotations 
-and SourceAmazing provides all the necessary corresponding implementations 
-to get your data into this schema, including 
-* XSD-schemas, if you want to read from XML files
-* implementations of Builders and/or DSLs, if you want to read from Java/Kotlin code
-* the validation of the data concerning data types, nullability and data references
+SourceAmazing is a small kotlin framework to read data like configurations or 
+data for code generation with easy to read DSLs and builders, without having to 
+implement them.
 
-### A brief example to have an idea
+You write your DSL with help of kotlin interfaces with some annotations 
+and SourceAmazing provides all the necessary corresponding implementations
+dynamically.
 
-To have an idea how this works, let's make a small example.
-We will read some phone book data of employees of a company.
+### How it works
 
 The process is always the following:
+1. Your first define your data classes as kotlin classes or interfaces.
+2. You define Builder/DSL interfaces, how your data is collected.
+3. You collect your data.
 
-#### Define your Data Schema
+To have an idea how this works, we will make a small example and read 
+some *phone book data of employees* of a company.
 
-You define your data schema as annotated kotlin/java interfaces.
-The tools you have to define this data schema are: 
-* _facets_: attributes/properties of a certain type, like String, Boolean, Integer, Reference to other concepts, Enum
-* _concepts_: data entities, which group some facets. 
-* _schema_: Root entry point which bundle all concepts together.
+#### 1. Define your data classes
 
-That might look like this:
+You define your data schema as kotlin classes or interfaces.
 
 ```kotlin
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+// this class is the entry point
+data class EmployeePhonebook(
+    val employees: List<Employee>
+)
 
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+data class Employee(
+    val employeeName: String,
+    val phoneNumbers: List<PhoneNumber>,
+)
 
-//
-// Schema (entry point)
-//
-
-@Schema(concepts = [
-    Employee::class,
-    PhoneNumber::class,
-])
-interface EmployeePhonebook {
-  
-    @QueryConcepts(conceptClasses = [Employee::class])
-    fun getAllEmployees(): List<Employee>
-}
-
-//
-// Employee
-//
-
-@Concept(facets = [
-    Employee.EmployeeName::class,
-    Employee.PhoneNumbersOfEmployee::class,
-])
-interface Employee {
-
-    @StringFacet(minimumOccurences=0)
-    interface EmployeeName
-
-    @ReferenceFacet(minimumOccurrences=0, maximumOccurrences=10, referencedConcepts=[PhoneNumber::class])
-    interface PhoneNumbersOfEmployee
-
-    @QueryFacetValue(EmployeeName::class)
-    fun getEmployeeName(): String?
-
-    @QueryFacetValue(PhoneNumbersOfEmployee::class)
-    fun getPhoneNumbers(): List<PhoneNumber>
-}
-
-//
-// PhoneNumber of an Employee
-//
-
-@Concept(facets = [
-    PhoneNumber.PhoneType::class,
-    PhoneNumber.PhoneNumber::class,
-])
 interface PhoneNumber {
-    
-    @EnumFacet(enumerationClass = PhoneTypeEnum::class)
-    interface PhoneType
-
-    @StringFacet
-    interface PhoneNumber
-
-    @QueryFacetValue(PhoneType::class)
-    fun getPhoneType(): PhoneTypeEnum
-
-    @QueryFacetValue(PhoneNumber::class)
-    fun getPhoneNumber(): String
+    val phoneType: PhoneTypeEnum
+    val phoneNumber: String
 }
 
 enum class PhoneTypeEnum {
@@ -110,135 +49,80 @@ enum class PhoneTypeEnum {
 
 ```
 
-To get data into your application, you have to use a short snippet of code to read and
-validate this data.
+### 2. Define the DSL/Builders how your data is collected
 
-We will use here a file path to an XML file to import the data from the file `phonebook-data.xml`.
-
-```kotlin
-import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.SchemaContext
-import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
-import java.nio.file.Paths
-import java.nio.file.Path
-
-fun readPhonebookData() {
-    val pathToXmlFile: Path = Paths.get("phonebook-data.xml")
-
-    val phonebook: EmployeePhonebook = SchemaApi.withSchema(EmployeePhonebook::class) { schemaContext: SchemaContext ->
-        XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, pathToXmlFile)
-    }
-
-    println("My Employees: ${phonebook.getAllEmployees()}")
-}
-
-```
-
-#### Write data in an XML file
-
-With help of the schema interfaces, the framework generates for you an XML schema 
-(at `./schema/sourceamazing-xml-schema.xsd`) that helps you to enter 
-your data in one (or many) XML files.
-
-Here an example XML file with some written phonebook data:
-```
-<?xml version="1.0" encoding="utf-8" ?>
-<!-- File: phonebook-data.xml -->
-<sourceamazing xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema"
-               xsi:schemaLocation="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema ./schema/sourceamazing-xml-schema.xsd">
-    <definitions>
-        <employee employeeName="John Doe">
-            <phoneNumbersOfEmployee>
-                <phoneNumber phoneType="MOBILE" phoneNumber="+1 (555) 555-1234" />
-                <phoneNumber phoneType="LANDLINE" phoneNumber="+1 (555) 789-6543" />
-            </phoneNumbersOfEmployee>
-        </employee>
-        <employee>
-            ...
-        </employee>
-    </definitions>
-</sourceamazing>
-
-```
-The employees written in the XML file(s) are read and provided in kotlin/java 
-dynamically as implementations of the handwritten interfaces. You can 
-access this data model in your Java/Kotlin application by using the methods 
-annotated with @Query... (QueryFacetValue, @QueryConcepts, ...)
-
-### Write data as Kotlin Builders or DSLs
-
-Maybe you prefer to write your employees and their phone numbers as 
-kotlin Builders or as a Kotlin DSL instead of the XML file.
-
-To define the builder syntax, we write some additional interface classes 
-using the annotations provided to declare, what the builder methods have 
-to do, when they are called.
+Define the builder/DSL as regular kotlin interfaces with method calls and
+add the instructions, how this data is assigned to your data with help of annotations.
 
 ```kotlin
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+//import org.codeblessing.sourceamazing.builder.api.annotations.Builder
+//import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+//import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedClazzModelFromSuperiorBuilder
+//import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+//import org.codeblessing.sourceamazing.builder.api.annotations.NewClazzModel
+//import org.codeblessing.sourceamazing.builder.api.annotations.SetAsValue
+//import org.codeblessing.sourceamazing.builder.api.annotations.SetClazzModelOfAlias
 
 
 @Builder
-interface EmployeePhonebookBuilder {
-  
+@ExpectedClazzModelFromSuperiorBuilder(clazz = EmployeePhonebook::class, alias = "root")
+interface PhonebookDsl {
+
     @BuilderMethod
-    @NewConcept(Employee::class, "theEmployee") // when calling this method, create a new Employee concept instance
-    @SetRandomConceptIdentifierValue("theEmployee") // every concept instance needs a mandatory concept identifier, set a random one
-    @WithNewBuilder(PhoneNumberBuilder::class) // define what this method will return
-    fun addEmployee(
-        @SetFacetValue("theEmployee", Employee.EmployeeName::class) @IgnoreNullFacetValue employeeName: String? // the employeeName is not mandatory, so declare that null values are ok
-    ): PhoneNumberBuilder
+    @NewClazzModel(clazz = Employee::class, alias = "employee")
+    @SetClazzModelOfAlias(alias = "root", clazzProperty = "employees", referencedAlias = "employee")
+    fun employee(
+        @SetAsValue(alias = "employee", clazzProperty = "employeeName") 
+        name: String,
+        @InjectBuilder builder: EmployeeDsl.() -> Unit,
+    ): PhonebookDsl
 }
 
 @Builder
-@ExpectedAliasFromSuperiorBuilder("theEmployee")
-interface PhoneNumberBuilder {
-    
-    @BuilderMethod
-    @NewConcept(PhoneNumber::class, "thePhoneNumber") // when calling this method, create a new PhoneNumber concept instance
-    @SetRandomConceptIdentifierValue("thePhoneNumber") // every concept instance needs a mandatory concept identifier, set a random one
-    @SetAliasConceptIdentifierReferenceFacetValue("theEmployee", Employee.PhoneNumbersOfEmployee::class, "thePhoneNumber") // attach the new created 'thePhoneNumber' concept to the concept 'theEmployee' (to facet 'PhoneNumbersOfEmployee') 
-    @WithNewBuilder(PhoneNumberBuilder::class) // define what this method will return
-    fun addPhoneNumber(
-        @SetFacetValue("thePhoneNumber", PhoneNumber.PhoneType::class) type: PhoneTypeEnum,
-        @SetFacetValue("thePhoneNumber", PhoneNumber.PhoneNumber::class) phoneNumber: String,
-    ): PhoneNumberBuilder
-}
-```
+@ExpectedClazzModelFromSuperiorBuilder(clazz = Employee::class, alias = "employee")
+interface EmployeeDsl {
 
-Now as the builder syntax is declared, we can use those interfaces and write some phonebook entries using the builders:
+    @BuilderMethod
+    @NewClazzModel(clazz = PhoneNumber::class, alias = "phoneEntry")
+    @SetClazzModelOfAlias(alias = "employee", clazzProperty = "phoneNumbers", referencedAlias = "phoneEntry")
+    fun phoneNumber(
+        @SetAsValue(alias = "phoneEntry", clazzProperty = "phoneType") 
+        type: PhoneTypeEnum,
+        @SetAsValue(alias = "phoneEntry", clazzProperty = "phoneNumber") 
+        phoneNumber: String,
+    ): EmployeeDsl
+}
+
+```
+## Collect your data with your Builder/DSL
+
+Then use previously defined DSL/builders:
 
 ```kotlin
-import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.SchemaContext
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
+//import org.codeblessing.sourceamazing.schema.api.SchemaApi
+//import org.codeblessing.sourceamazing.builder.api.BuilderApi
 
-fun readPhonebookData() {
-    val phonebook: EmployeePhonebook = SchemaApi.withSchema(EmployeePhonebook::class) { schemaContext: SchemaContext ->
+    fun collectAndPrintSomePhonebookData() {
+        val employeePhonebook: EmployeePhonebook =
+            SchemaApi.withSchema(EmployeePhonebook::class) { schemaContext ->
+                BuilderApi.withBuilder(schemaContext, PhonebookDsl::class) { dsl ->
+                    dsl
+                        .employee("John Smith") {
+                            phoneNumber(PhoneTypeEnum.MOBILE, "+41-123-45-67")
+                            phoneNumber(PhoneTypeEnum.LANDLINE, "+41-345-67-89")
+                        }
+                        .employee("Maggie Smith") {
+                            phoneNumber(PhoneTypeEnum.FAX, "+1-258-987-65-43")
+                        }
+                }
+            }
 
-        BuilderApi.withBuilder(schemaContext, EmployeePhonebookBuilder::class) { builder: EmployeePhonebookBuilder ->
-            builder
-                .addEmployee("John Doe")
-                    .addPhoneNumber(PhoneTypeEnum.MOBILE, "+1 (555) 555-1234")
-                    .addPhoneNumber(PhoneTypeEnum.LANDLINE, "+1 (555) 789-6543")
-
-            // ...                
-            //builder.addEmployee("Other employee").addPhoneNumber(...)
-        }
+        println("Maggie's phone number: ${employeePhonebook.employees.last().phoneNumbers.first().phoneNumber}")
     }
-
-    println("My Employees: ${phonebook.getAllEmployees()}")
-}
-
 ```
-Of course, you can mix as many different XML data imports and Builders/DSL imports as you like. 
+
+As you can see, there is nighter the need to implement the Builder/DSL interfaces nor to write code to create and wire up 
+the data classes.
 
 ## Setup, Documentation and Examples
 

@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.schema.ConceptName
 import kotlin.reflect.KFunction
+import org.codeblessing.sourceamazing.builder.Alias
+import org.codeblessing.sourceamazing.schema.typesafeapi.Clazz
 
 class RecursionDetector {
 
@@ -10,19 +10,14 @@ class RecursionDetector {
 
     private val validatedBuilderClasses: MutableList<InspectedMethod> = mutableListOf()
 
-    data class InspectedMethod(
-        val method: KFunction<*>,
-        val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>
-    )
+    data class InspectedMethod(val method: KFunction<*>, val expectedClazzesFromSuperiorMethod: Map<Alias, Clazz>)
 
-    /**
-     * @return is item to process
-     */
-    fun pushMethodOntoStack(method: KFunction<*>, expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>) : Boolean {
-        val inspectedMethod = InspectedMethod(method, expectedConceptsFromSuperiorMethod)
+    /** @return is item to process */
+    fun pushMethodOntoStack(method: KFunction<*>, expectedClazzesFromSuperiorMethod: Map<Alias, Clazz>): Boolean {
+        val inspectedMethod = InspectedMethod(method, expectedClazzesFromSuperiorMethod)
         val isProcessItem = inspectedMethod !in validatedBuilderClasses
         validatedBuilderClasses.add(inspectedMethod)
-        if(printTrace) {
+        if (printTrace) {
             println("${if(isProcessItem) "Process" else "Skip"} item: $inspectedMethod")
         }
         return isProcessItem
@@ -31,9 +26,8 @@ class RecursionDetector {
     fun removeLastMethodFromStack() {
         require(validatedBuilderClasses.isNotEmpty()) { "At least one method must be removed from the stack" }
         val inspectedMethod = validatedBuilderClasses.removeLast()
-        if(printTrace) {
+        if (printTrace) {
             println("Remove item: $inspectedMethod")
         }
     }
-
 }

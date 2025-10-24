@@ -19,9 +19,9 @@ dependencyResolutionManagement {
 }
 
 include("sourceamazing-schema-api")
+include("sourceamazing-schema-api-tests")
 include("sourceamazing-schema")
 include("sourceamazing-builder-api")
+include("sourceamazing-builder-api-tests")
 include("sourceamazing-builder")
-include("sourceamazing-xml-schema-api")
-include("sourceamazing-xml-schema")
 include("sourceamazing-process-test")

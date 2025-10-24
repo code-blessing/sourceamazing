@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
     `maven-dependency-repository`
+    `kotlin-code-formatting`
 }
 
 dependencies {

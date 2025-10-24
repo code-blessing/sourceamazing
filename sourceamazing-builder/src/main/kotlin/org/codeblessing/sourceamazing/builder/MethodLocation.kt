@@ -1,15 +1,14 @@
 package org.codeblessing.sourceamazing.builder
 
+import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.jvm.jvmName
 
 // In the future, there will be the whole call stack for data provider
-class MethodLocation private constructor(
-    private val method: KFunction<*>,
-    private val locationElements: List<LocationElement>
-) {
+class MethodLocation
+private constructor(private val method: KFunction<*>, private val locationElements: List<LocationElement>) {
     companion object {
         private const val LOCATION_ELEMENT_SEPARATOR = "\n  -> "
 
@@ -18,14 +17,22 @@ class MethodLocation private constructor(
         }
     }
 
-    private data class LocationElement(
-        val locationKElement: Any,
-        val elementDescription: String,
-    )
+    private data class LocationElement(val locationKElement: KAnnotatedElement, val elementDescription: String)
+
+    fun getMostSpecificElement(): KAnnotatedElement {
+        return if (locationElements.isEmpty()) {
+            return method
+        } else {
+            locationElements.last().locationKElement
+        }
+    }
 
     fun locationDescription(): String {
-        val locationElementsDescription = locationElements.joinToString(separator = LOCATION_ELEMENT_SEPARATOR) { it.elementDescription }
-        val locationWithPrefixSeparator = if(locationElementsDescription.isBlank()) "" else "${LOCATION_ELEMENT_SEPARATOR}$locationElementsDescription"
+        val locationElementsDescription =
+            locationElements.joinToString(separator = LOCATION_ELEMENT_SEPARATOR) { it.elementDescription }
+        val locationWithPrefixSeparator =
+            if (locationElementsDescription.isBlank()) ""
+            else "${LOCATION_ELEMENT_SEPARATOR}$locationElementsDescription"
         return "Location:${LOCATION_ELEMENT_SEPARATOR}Builder-Method:[$method]$locationWithPrefixSeparator"
     }
 
@@ -48,5 +55,4 @@ class MethodLocation private constructor(
         val locationElement = LocationElement(functionToAdd, "Function:[${functionToAdd}]")
         return extendWithLocationElement(locationElement)
     }
-
 }

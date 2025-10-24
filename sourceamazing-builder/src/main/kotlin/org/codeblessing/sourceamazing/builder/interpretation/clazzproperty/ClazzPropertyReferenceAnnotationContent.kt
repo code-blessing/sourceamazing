@@ -1,0 +1,3 @@
+package org.codeblessing.sourceamazing.builder.interpretation.clazzproperty
+
+sealed interface ClazzPropertyReferenceAnnotationContent : ClazzPropertyAnnotationContent

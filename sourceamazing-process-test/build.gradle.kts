@@ -2,15 +2,14 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     `maven-dependency-repository`
     application
+    `kotlin-code-formatting`
 }
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
     implementation(projects.sourceamazingBuilderApi)
-    implementation(projects.sourceamazingXmlSchemaApi)
     runtimeOnly(projects.sourceamazingSchema)
     runtimeOnly(projects.sourceamazingBuilder)
-    runtimeOnly(projects.sourceamazingXmlSchema)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)

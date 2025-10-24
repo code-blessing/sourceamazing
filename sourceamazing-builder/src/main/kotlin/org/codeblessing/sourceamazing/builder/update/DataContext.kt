@@ -1,17 +1,15 @@
 package org.codeblessing.sourceamazing.builder.update
 
-import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import kotlin.reflect.KParameter
+import org.codeblessing.sourceamazing.builder.Alias
+import org.codeblessing.sourceamazing.schema.typesafeapi.ClazzModelId
 
 class DataContext(
     private val functionArguments: Map<KParameter, Any?>,
-    private val newConceptIds: MutableMap<Alias, ConceptIdentifier>,
+    private val newClazzModelIds: MutableMap<Alias, ClazzModelId>,
 ) {
-    fun conceptIdByAlias(alias: Alias): ConceptIdentifier {
-        return requireNotNull(newConceptIds[alias]) {
-            "No concept found for alias: $alias"
-        }
+    fun clazzModelIdByAlias(alias: Alias): ClazzModelId {
+        return requireNotNull(newClazzModelIds[alias]) { "No clazz found for alias: $alias" }
     }
 
     fun valueForMethodParameter(methodParameter: KParameter): Any? {

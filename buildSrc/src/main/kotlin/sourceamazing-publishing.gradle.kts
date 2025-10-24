@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    signing
+//    signing
 }
 
 group = "org.codeblessing.sourceamazing"
@@ -62,9 +62,9 @@ publishingExtension.publications {
 }
 
 
-configure<SigningExtension> {
-    sign(publishingExtension.publications[publicationName])
-}
+//configure<SigningExtension> {
+//    sign(publishingExtension.publications[publicationName])
+//}
 
 tasks.getByName<Javadoc>("javadoc") {
     if (JavaVersion.current().isJava9Compatible) {
