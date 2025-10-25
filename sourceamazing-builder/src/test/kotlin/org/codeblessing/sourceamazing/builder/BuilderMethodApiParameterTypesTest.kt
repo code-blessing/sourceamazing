@@ -1,29 +1,11 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreProvidedNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -54,30 +36,31 @@ class BuilderMethodApiParameterTypesTest {
     }
 
 
-    @Schema(concepts = [SchemaWithConceptWithFacets.ConceptWithFacets::class])
     private interface SchemaWithConceptWithFacets {
-        @Concept(facets = [
-            ConceptWithFacets.TextFacet::class,
-            ConceptWithFacets.OtherTextFacet::class,
-            ConceptWithFacets.BoolFacet::class,
-            ConceptWithFacets.NumberFacet::class,
-            ConceptWithFacets.EnumerationFacet::class,
-            ConceptWithFacets.SelfRefFacet::class,
-        ])
         interface ConceptWithFacets {
-            @StringFacet
-            interface TextFacet
-            @StringFacet
-            interface OtherTextFacet
-            @BooleanFacet
-            interface BoolFacet
-            @IntFacet
-            interface NumberFacet
-            @EnumFacet(MyEnum::class)
-            interface EnumerationFacet
-            @ReferenceFacet([ConceptWithFacets::class])
-            interface SelfRefFacet
+            @Suppress("UNUSED")
+            @Facet
+            val textFacet: String
+            @Suppress("UNUSED")
+            @Facet
+            val otherTextFacet: String
+            @Suppress("UNUSED")
+            @Facet
+            val boolFacet: Boolean
+            @Suppress("UNUSED")
+            @Facet
+            val numberFacet: Int
+            @Suppress("UNUSED")
+            @Facet
+            val enumerationFacet: MyEnum
+            @Suppress("UNUSED")
+            @Facet
+            val selfRefFacet: ConceptWithFacets
         }
+
+        @Suppress("UNUSED")
+        @Facet
+        val concept: ConceptWithFacets
     }
 
     @Builder
@@ -310,7 +293,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myText: String?,
+            @SetFacetValue(facetToModify = "textFacet") myText: String?,
         )
     }
 
@@ -341,7 +324,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyText(): String? {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -368,7 +351,7 @@ class BuilderMethodApiParameterTypesTest {
         @SetRandomConceptIdentifierValue
         fun doSomething(
             @IgnoreNullFacetValue
-            @SetFacetValue(facetToModify = "TextFacet")
+            @SetFacetValue(facetToModify = "textFacet")
             myText: String?,
         )
     }
@@ -398,7 +381,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             @IgnoreProvidedNullFacetValue
             fun getMyText(): String? {
                 throw UnsupportedOperationException("Never called in validation phase")
@@ -423,7 +406,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myTexts: List<String>,
+            @SetFacetValue(facetToModify = "textFacet") myTexts: List<String>,
         )
     }
 
@@ -452,7 +435,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyTexts(): List<String> {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -476,8 +459,8 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myText1: String,
-            @SetFacetValue(facetToModify = "TextFacet") myText2: String,
+            @SetFacetValue(facetToModify = "textFacet") myText1: String,
+            @SetFacetValue(facetToModify = "textFacet") myText2: String,
         )
     }
 
@@ -506,14 +489,14 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyText1(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyText2(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -546,8 +529,8 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
-            @SetProvidedFacetValue(facetToModify = "OtherTextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
+            @SetProvidedFacetValue(facetToModify = "otherTextFacet")
             fun getMyText(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -572,7 +555,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myTexts: SortedSet<String>,
+            @SetFacetValue(facetToModify = "textFacet") myTexts: SortedSet<String>,
         )
     }
 
@@ -603,7 +586,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getSortedTexts(): SortedSet<String> {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -629,7 +612,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myTexts: List<String?>,
+            @SetFacetValue(facetToModify = "textFacet") myTexts: List<String?>,
         )
     }
 
@@ -660,7 +643,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyTexts(): List<String?> {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -686,7 +669,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @IgnoreNullFacetValue @SetFacetValue(facetToModify = "TextFacet") myTexts: List<String?>,
+            @IgnoreNullFacetValue @SetFacetValue(facetToModify = "textFacet") myTexts: List<String?>,
         )
     }
 
@@ -715,7 +698,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             @IgnoreProvidedNullFacetValue
             fun getMyTexts(): List<String?> {
                 throw UnsupportedOperationException("Never called in validation phase")
@@ -740,7 +723,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myText: Int,
+            @SetFacetValue(facetToModify = "textFacet") myText: Int,
         )
     }
 
@@ -771,7 +754,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyText(): Int {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -797,7 +780,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "TextFacet") myText: () -> String,
+            @SetFacetValue(facetToModify = "textFacet") myText: () -> String,
         )
     }
 
@@ -828,7 +811,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "textFacet")
             fun getMyText(): () -> String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -854,7 +837,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "BoolFacet") myBoolean: Int,
+            @SetFacetValue(facetToModify = "boolFacet") myBoolean: Int,
         )
     }
 
@@ -877,7 +860,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "BoolFacet") myBooleans: Array<Boolean>,
+            @SetFacetValue(facetToModify = "boolFacet") myBooleans: Array<Boolean>,
         )
     }
 
@@ -906,7 +889,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "BoolFacet")
+            @SetProvidedFacetValue(facetToModify = "boolFacet")
             fun getMyBooleans(): Array<Boolean> {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -930,7 +913,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "NumberFacet") myInt: String,
+            @SetFacetValue(facetToModify = "numberFacet") myInt: String,
         )
     }
 
@@ -953,7 +936,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "NumberFacet") myInt: Long,
+            @SetFacetValue(facetToModify = "numberFacet") myInt: Long,
         )
     }
 
@@ -984,7 +967,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "NumberFacet")
+            @SetProvidedFacetValue(facetToModify = "numberFacet")
             fun getMyInt(): Long {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -1010,7 +993,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "NumberFacet") myInt: Number,
+            @SetFacetValue(facetToModify = "numberFacet") myInt: Number,
         )
     }
 
@@ -1041,7 +1024,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "NumberFacet")
+            @SetProvidedFacetValue(facetToModify = "numberFacet")
             fun getMyInt(): Number {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -1068,7 +1051,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "NumberFacet") myInt: Any,
+            @SetFacetValue(facetToModify = "numberFacet") myInt: Any,
         )
     }
 
@@ -1091,7 +1074,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: Int,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: Int,
         )
     }
 
@@ -1114,7 +1097,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: MySubsetEnum,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: MySubsetEnum,
         )
     }
 
@@ -1143,7 +1126,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "EnumerationFacet")
+            @SetProvidedFacetValue(facetToModify = "enumerationFacet")
             fun getMyEnum(): MySubsetEnum {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -1167,7 +1150,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: MyExactSameEnum,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: MyExactSameEnum,
         )
     }
 
@@ -1188,7 +1171,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: MyOtherIncompatibleEnum,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: MyOtherIncompatibleEnum,
         )
     }
 
@@ -1211,7 +1194,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: String,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: String,
         )
     }
 
@@ -1242,7 +1225,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "EnumerationFacet")
+            @SetProvidedFacetValue(facetToModify = "enumerationFacet")
             fun getMyEnum(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -1268,7 +1251,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnum: MyEnum,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnum: MyEnum,
         )
     }
 
@@ -1289,7 +1272,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnums: Set<MyEnum>,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnums: Set<MyEnum>,
         )
     }
 
@@ -1310,7 +1293,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "EnumerationFacet") myEnums: Set<MyEnum>?,
+            @SetFacetValue(facetToModify = "enumerationFacet") myEnums: Set<MyEnum>?,
         )
     }
 
@@ -1333,7 +1316,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "SelfRefFacet") myRef: String,
+            @SetFacetValue(facetToModify = "selfRefFacet") myRef: String,
         )
     }
 
@@ -1364,7 +1347,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "SelfRefFacet")
+            @SetProvidedFacetValue(facetToModify = "selfRefFacet")
             fun getMyRef(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
@@ -1390,7 +1373,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "SelfRefFacet") vararg myRefs: ConceptIdentifier,
+            @SetFacetValue(facetToModify = "selfRefFacet") vararg myRefs: ConceptIdentifier,
         )
     }
 
@@ -1411,7 +1394,7 @@ class BuilderMethodApiParameterTypesTest {
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class)
         @SetRandomConceptIdentifierValue
         fun doSomething(
-            @SetFacetValue(facetToModify = "SelfRefFacet") myRef: ConceptIdentifier,
+            @SetFacetValue(facetToModify = "selfRefFacet") myRef: ConceptIdentifier,
         )
     }
 
@@ -1440,7 +1423,7 @@ class BuilderMethodApiParameterTypesTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "SelfRefFacet")
+            @SetProvidedFacetValue(facetToModify = "selfRefFacet")
             fun getMyRef(): ConceptIdentifier {
                 throw UnsupportedOperationException("Never called in validation phase")
             }

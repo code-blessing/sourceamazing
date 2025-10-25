@@ -1,18 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -26,22 +18,10 @@ class BuilderDataSubsetEnumTest {
         @Suppress("UNUSED") UUID,
     }
 
-    @Schema(concepts = [SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class])
     private interface SchemaWithConceptWithEnumerationFacet {
 
-        @Concept(facets = [
-            ConceptWithEnumFacets.AllDatatypesEnumerationFacet::class,
-        ])
-        interface ConceptWithEnumFacets {
-            @EnumFacet(AllDatatypesEnum::class)
-            interface AllDatatypesEnumerationFacet
-
-            @QueryFacetValue("AllDatatypesEnumerationFacet")
-            fun getEnumFacetValue(): AllDatatypesEnum
-        }
-
-        @QueryConcepts([ConceptWithEnumFacets::class])
-        fun getConcepts(): List<ConceptWithEnumFacets>
+        @Facet
+        val enumFacetValue: AllDatatypesEnum
     }
 
     @Builder
@@ -49,7 +29,7 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
+        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
             @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
@@ -65,8 +45,7 @@ class BuilderDataSubsetEnumTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(AllDatatypesEnum.INT, concept.getEnumFacetValue())
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
     }
 
     enum class CompatibleNumericDatatypesEnum {
@@ -80,7 +59,7 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
+        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
             @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
@@ -96,8 +75,7 @@ class BuilderDataSubsetEnumTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(AllDatatypesEnum.INT, concept.getEnumFacetValue())
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
 
     }
 
@@ -114,7 +92,7 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
+        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
             @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
@@ -130,9 +108,7 @@ class BuilderDataSubsetEnumTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(AllDatatypesEnum.INT, concept.getEnumFacetValue())
-
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
     }
 
 
@@ -148,7 +124,7 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumFacets::class)
+        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
         @SetRandomConceptIdentifierValue
         fun doSetEnumValue(
             @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")

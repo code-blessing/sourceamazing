@@ -1,21 +1,12 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -23,52 +14,27 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataMixedConceptReferenceFacetTest {
 
-    @Schema(concepts = [
-        SchemaWithConceptWithFacet.MainConcept::class,
-        SchemaWithConceptWithFacet.ConceptAlpha::class,
-        SchemaWithConceptWithFacet.ConceptBeta::class,
-        SchemaWithConceptWithFacet.ConceptGamma::class,
-    ])
     private interface SchemaWithConceptWithFacet {
-        @Concept(facets = [
-            MainConcept.AlphaAndBetaReferenceFacet::class,
-        ])
-        interface MainConcept {
-            @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 10, referencedConcepts = [ConceptAlpha::class, ConceptBeta::class])
-            interface AlphaAndBetaReferenceFacet
 
-            @QueryFacetValue("AlphaAndBetaReferenceFacet")
-            fun getAlphaAndBetaAsList(): List<AlphaAndBeta>
-        }
+        @Facet
+        @References([ConceptAlpha::class, ConceptBeta::class])
+        val alphaAndBetaAsList: List<AlphaAndBeta>
 
         interface AlphaAndBeta {
-            @QueryConceptIdentifierValue
-            fun getAlphaOrBetaConceptId(): ConceptIdentifier
+            @Facet
+            val id: String
         }
 
-        @Concept(facets = [])
         interface ConceptAlpha: AlphaAndBeta
 
-        @Concept(facets = [])
         interface ConceptBeta: AlphaAndBeta
 
-        @Concept(facets = [])
         interface ConceptGamma
-
-        @QueryConcepts(conceptClasses = [MainConcept::class])
-        fun getMainConcepts(): List<MainConcept>
     }
 
 
     @Builder
     private interface BuilderToAddReferences {
-
-        @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacet.MainConcept::class, declareConceptAlias = "mainConcept")
-        fun createMainConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "mainConcept")
-            conceptIdentifier: ConceptIdentifier,
-        ): NestedBuilder
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptAlpha::class, declareConceptAlias = "alphaConcept")
@@ -91,24 +57,19 @@ class BuilderDataMixedConceptReferenceFacetTest {
             conceptIdentifier: ConceptIdentifier,
         )
 
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "mainConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun addReference(
-                @SetFacetValue(
-                    facetToModify = "AlphaAndBetaReferenceFacet",
-                    conceptToModifyAlias = "mainConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                conceptIdentifier: ConceptIdentifier,
-            ): NestedBuilder
-        }
+        @BuilderMethod
+        fun addReference(
+            @SetFacetValue(
+                facetToModify = "AlphaAndBetaReferenceFacet",
+                conceptToModifyAlias = "mainConcept",
+                facetModificationRule = FacetModificationRule.ADD,
+            )
+            conceptIdentifier: ConceptIdentifier,
+        ): BuilderToAddReferences
     }
 
     @Test
     fun `test mixed concept of alpha and beta references`() {
-        val mainConceptIdentifier = ConceptIdentifier.of("Main-Id")
         val alpha1ConceptIdentifier = ConceptIdentifier.of("Alpha1-Id")
         val alpha2ConceptIdentifier = ConceptIdentifier.of("Alpha2-Id")
         val beta1ConceptIdentifier = ConceptIdentifier.of("Beta1-Id")
@@ -122,23 +83,20 @@ class BuilderDataMixedConceptReferenceFacetTest {
                 builder.createBetaConcept(beta2ConceptIdentifier)
                 builder.createGammaConcept(gamma1ConceptIdentifier)
 
-                builder.createMainConcept(mainConceptIdentifier)
+                builder
                     .addReference(alpha1ConceptIdentifier)
                     .addReference(beta1ConceptIdentifier)
                     .addReference(alpha1ConceptIdentifier)
                     .addReference(alpha2ConceptIdentifier)
             }
         }
-        val expectedConceptIdentifiers = listOf(alpha1ConceptIdentifier, beta1ConceptIdentifier, alpha1ConceptIdentifier, alpha2ConceptIdentifier)
+        val expectedConceptIdentifiers = listOf(alpha1ConceptIdentifier, beta1ConceptIdentifier, alpha1ConceptIdentifier, alpha2ConceptIdentifier).map { it.name }
 
-        assertEquals(1, schemaInstance.getMainConcepts().size)
-        val mainConcept = schemaInstance.getMainConcepts().first()
-        assertEquals(expectedConceptIdentifiers, mainConcept.getAlphaAndBetaAsList().map { it.getAlphaOrBetaConceptId()})
+        assertEquals(expectedConceptIdentifiers, schemaInstance.alphaAndBetaAsList.map { it.id})
     }
 
     @Test
     fun `test mixed concept of alpha and beta and invalid gamma references`() {
-        val mainConceptIdentifier = ConceptIdentifier.of("Main-Id")
         val alpha1ConceptIdentifier = ConceptIdentifier.of("Alpha1-Id")
         val alpha2ConceptIdentifier = ConceptIdentifier.of("Alpha2-Id")
         val beta1ConceptIdentifier = ConceptIdentifier.of("Beta1-Id")
@@ -154,7 +112,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
                     builder.createBetaConcept(beta2ConceptIdentifier)
                     builder.createGammaConcept(gamma1ConceptIdentifier)
 
-                    builder.createMainConcept(mainConceptIdentifier)
+                    builder
                         .addReference(alpha1ConceptIdentifier)
                         .addReference(beta1ConceptIdentifier)
                         .addReference(alpha1ConceptIdentifier)

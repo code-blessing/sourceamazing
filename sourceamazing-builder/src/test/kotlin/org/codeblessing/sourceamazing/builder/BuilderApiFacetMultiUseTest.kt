@@ -1,51 +1,46 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.junit.jupiter.api.Test
 
 class BuilderApiFacetMultiUseTest {
-    @Schema(concepts = [
-        SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlphaAndBeta::class,
-        SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class,
-        SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class,
-    ])
     private interface SchemaWithConceptWithMultiUsedFacet {
 
-        @Concept(facets = [
-            FacetAlpha::class,
-            FacetBeta::class,
-        ])
-        interface ConceptWithFacetAlphaAndBeta
+        interface ConceptWithFacetAlphaAndBeta {
+            @Suppress("UNUSED")
+            @Facet
+            val facetAlpha: String
+            @Suppress("UNUSED")
+            @Facet
+            val facetBeta: String
+        }
 
-        @Concept(facets = [
-            FacetAlpha::class,
-        ])
-        interface ConceptWithFacetAlpha
+        interface ConceptWithFacetAlpha {
+            @Suppress("UNUSED")
+            @Facet
+            val facetAlpha: String
+        }
 
-        @Concept(facets = [
-            FacetBeta::class,
-        ])
-        interface ConceptWithFacetBeta
+        interface ConceptWithFacetBeta {
+            @Suppress("UNUSED")
+            @Facet
+            val facetBeta: String
+        }
 
-        @StringFacet
-        interface FacetAlpha
-
-        @StringFacet
-        interface FacetBeta
-
+        @Suppress("UNUSED")
+        @Facet
+        val conceptAlphaAndBeta: ConceptWithFacetAlphaAndBeta
+        @Suppress("UNUSED")
+        @Facet
+        val conceptAlpha: ConceptWithFacetAlpha
+        @Suppress("UNUSED")
+        @Facet
+        val conceptBeta: ConceptWithFacetBeta
     }
 
     @Builder
@@ -72,7 +67,7 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "FacetAlpha") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
             )
         }
     }
@@ -109,7 +104,7 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "FacetAlpha") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
             )
         }
     }

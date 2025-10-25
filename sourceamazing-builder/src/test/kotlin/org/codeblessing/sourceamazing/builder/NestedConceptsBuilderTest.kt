@@ -1,169 +1,84 @@
 package org.codeblessing.sourceamazing.builder
 
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BuiltinFieldTypeConcept.BuiltinType
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BuiltinFieldTypeConcept.BuiltinTypeEnum
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BusinessObjectConcept.BusinessObjectFields
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.BusinessObjectConcept.BusinessObjectName
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionKind
 import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionKindEnum
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.CollectionOfValuesFieldConcept.CollectionValuesType
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.Field.FieldName
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.ReferenceFieldTypeConcept.ReferencedBusinessObject
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.SingleValueFieldConcept.Nullable
-import org.codeblessing.sourceamazing.builder.NestedConceptsBuilderTest.NestedConceptsSchema.SingleValueFieldConcept.SingleValueType
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class NestedConceptsBuilderTest {
 
-    @Schema(concepts = [
-        NestedConceptsSchema.BusinessObjectConcept::class,
-        NestedConceptsSchema.SingleValueFieldConcept::class,
-        NestedConceptsSchema.CollectionOfValuesFieldConcept::class,
-        NestedConceptsSchema.BuiltinFieldTypeConcept::class,
-        NestedConceptsSchema.ReferenceFieldTypeConcept::class,
-    ])
     private interface NestedConceptsSchema {
 
-        @QueryConcepts(conceptClasses = [BusinessObjectConcept::class])
-        fun getBusinessObjects(): List<BusinessObjectConcept>
+        @Facet
+        val businessObjects: List<BusinessObjectConcept>
 
-        @Concept(facets = [
-            BusinessObjectName::class,
-            BusinessObjectFields::class
-        ])
         interface BusinessObjectConcept {
+            @Suppress("UNUSED")
+            @Facet
+            val name: String
 
-            @StringFacet()
-            interface BusinessObjectName
-
-            @ReferenceFacet(
-                minimumOccurrences = 0,
-                maximumOccurrences = 100,
-                referencedConcepts = [SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class]
-            )
-            interface BusinessObjectFields
-
-
-            @QueryFacetValue("BusinessObjectName")
-            fun name(): String
-
-
-            @QueryFacetValue("BusinessObjectFields")
-            fun fields(): List<Field>
-
+            @Suppress("UNUSED")
+            @Facet
+            @References([SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class])
+            val fields: List<Field>
         }
 
         sealed interface Field {
-            @StringFacet()
-            interface FieldName
-            @QueryFacetValue("FieldName")
-            fun fieldName(): String
-
-        }
-
-        @Concept(facets = [
-            FieldName::class,
-            Nullable::class,
-            SingleValueType::class,
-        ])
-        interface SingleValueFieldConcept: Field {
-
-            @BooleanFacet()
-            interface Nullable
-
-            @ReferenceFacet(
-                minimumOccurrences = 0,
-                maximumOccurrences = 100,
-                referencedConcepts = [BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class]
-            )
-            interface SingleValueType
-
             @Suppress("UNUSED")
-            @QueryFacetValue("Nullable")
-            fun nullable(): Boolean
-
-            @QueryFacetValue("SingleValueType")
-            fun singleValueType(): FieldType
-
+            @Facet
+            val fieldName: String
         }
 
-        @Concept(facets = [
-            FieldName::class,
-            CollectionKind::class,
-            CollectionValuesType::class,
-        ])
-        interface CollectionOfValuesFieldConcept: Field {
-            @EnumFacet(enumerationClass = CollectionKindEnum::class)
-            interface CollectionKind
+        interface SingleValueFieldConcept: Field {
+            @Suppress("UNUSED")
+            @Facet
+            val nullable: Boolean
+            
+            @Suppress("UNUSED")
+            @Facet
+            @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
+            val singleValueType: FieldType
+        }
 
-            @QueryFacetValue("CollectionKind")
-            fun collectionKind(): CollectionKindEnum
+        interface CollectionOfValuesFieldConcept: Field {
+            @Suppress("UNUSED")
+            @Facet
+            val collectionKind: CollectionKindEnum
 
             enum class CollectionKindEnum {
                 LIST, SET;
             }
 
-            @ReferenceFacet(
-                minimumOccurrences = 0,
-                maximumOccurrences = 100,
-                referencedConcepts = [BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class]
-            )
-            interface CollectionValuesType
-
-            @QueryFacetValue("CollectionValuesType")
-            fun collectionValuesType(): FieldType
+            @Suppress("UNUSED")
+            @Facet
+            @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
+            val collectionValuesType: FieldType
         }
 
         sealed interface FieldType
 
-        @Concept(facets = [
-            BuiltinType::class,
-        ])
         interface BuiltinFieldTypeConcept: FieldType {
-            @EnumFacet(enumerationClass = BuiltinTypeEnum::class)
-            interface BuiltinType
-
-            @QueryFacetValue("BuiltinType")
-            fun builtinType(): BuiltinTypeEnum
+            @Suppress("UNUSED")
+            @Facet
+            val builtinType: BuiltinTypeEnum
 
             enum class BuiltinTypeEnum {
                 STRING, INTEGER;
             }
         }
 
-        @Concept(facets = [
-            ReferencedBusinessObject::class,
-        ])
         interface ReferenceFieldTypeConcept: FieldType {
-
-            @ReferenceFacet(referencedConcepts = [BusinessObjectConcept::class])
-            interface ReferencedBusinessObject
-
-            @QueryFacetValue("ReferencedBusinessObject")
-            fun referencedBusinessObject(): BusinessObjectConcept
+            @Suppress("UNUSED")
+            @Facet
+            val referencedBusinessObject: BusinessObjectConcept
         }
     }
 
@@ -175,7 +90,7 @@ class NestedConceptsBuilderTest {
         @NewConcept(NestedConceptsSchema.BusinessObjectConcept::class, declareConceptAlias = "bizObj")
         fun newBusinessObject(
             @SetConceptIdentifierValue(conceptToModifyAlias = "bizObj") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectName") name: String,
+            @SetFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "name") name: String,
             @InjectBuilder builder: BusinessObjectConceptBuilder.() -> Unit
         )
 
@@ -188,10 +103,10 @@ class NestedConceptsBuilderTest {
             @WithNewBuilder(builderClass = FieldTypeForSingleFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.SingleValueFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectFields", referencedConceptAlias = "field")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "fields", referencedConceptAlias = "field")
             fun addSingleValueField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "FieldName") fieldName: String,
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "Nullable") nullable: Boolean = false,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName") fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "nullable") nullable: Boolean = false,
                 @InjectBuilder builder: FieldTypeForSingleFieldConceptBuilder.() -> Unit,
             )
 
@@ -199,10 +114,10 @@ class NestedConceptsBuilderTest {
             @WithNewBuilder(builderClass = FieldTypeForCollectionFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.CollectionOfValuesFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "BusinessObjectFields", referencedConceptAlias = "field")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "fields", referencedConceptAlias = "field")
             fun addCollectionOfValuesField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "FieldName") fieldName: String,
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionKind") collectionKind: CollectionKindEnum,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName") fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "collectionKind") collectionKind: CollectionKindEnum,
                 @InjectBuilder builder: FieldTypeForCollectionFieldConceptBuilder.() -> Unit,
             )
 
@@ -215,17 +130,17 @@ class NestedConceptsBuilderTest {
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "SingleValueType", referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "singleValueType", referencedConceptAlias = "fieldType")
             fun builtinType(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "BuiltinType") builtinType: BuiltinTypeEnum,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "builtinType") builtinType: BuiltinTypeEnum,
             )
 
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "SingleValueType", referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "singleValueType", referencedConceptAlias = "fieldType")
             fun reference(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "ReferencedBusinessObject") id: ConceptIdentifier,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "referencedBusinessObject") id: ConceptIdentifier,
             )
         }
 
@@ -236,17 +151,17 @@ class NestedConceptsBuilderTest {
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionValuesType", referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "collectionValuesType", referencedConceptAlias = "fieldType")
             fun builtinType(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "BuiltinType") builtinType: BuiltinTypeEnum,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "builtinType") builtinType: BuiltinTypeEnum,
             )
 
             @BuilderMethod
             @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "CollectionValuesType", referencedConceptAlias = "fieldType")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "field", facetToModify = "collectionValuesType", referencedConceptAlias = "fieldType")
             fun reference(
-                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "ReferencedBusinessObject") id: ConceptIdentifier,
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "referencedBusinessObject") id: ConceptIdentifier,
             )
         }
     }
@@ -279,10 +194,10 @@ class NestedConceptsBuilderTest {
             }
         }
 
-        assertEquals(1, schemaInstance.getBusinessObjects().size)
-        val firstBusinessObject = schemaInstance.getBusinessObjects().first()
-        assertEquals("the person business object", firstBusinessObject.name())
-        val fields = firstBusinessObject.fields()
+        assertEquals(1, schemaInstance.businessObjects.size)
+        val firstBusinessObject = schemaInstance.businessObjects.first()
+        assertEquals("the person business object", firstBusinessObject.name)
+        val fields = firstBusinessObject.fields
         assertEquals(5, fields.size)
         assertTrue(fields[0] is NestedConceptsSchema.SingleValueFieldConcept)
         assertTrue(fields[1] is NestedConceptsSchema.SingleValueFieldConcept)
@@ -297,26 +212,26 @@ class NestedConceptsBuilderTest {
         val childrenField = fields[4] as NestedConceptsSchema.CollectionOfValuesFieldConcept
 
 
-        assertEquals("firstname", firstnameField.fieldName())
-        val firstnameType = firstnameField.singleValueType() as NestedConceptsSchema.BuiltinFieldTypeConcept
-        assertEquals(BuiltinTypeEnum.STRING, firstnameType.builtinType())
+        assertEquals("firstname", firstnameField.fieldName)
+        val firstnameType = firstnameField.singleValueType as NestedConceptsSchema.BuiltinFieldTypeConcept
+        assertEquals(BuiltinTypeEnum.STRING, firstnameType.builtinType)
 
-        assertEquals("age", ageField.fieldName())
-        val ageType = ageField.singleValueType() as NestedConceptsSchema.BuiltinFieldTypeConcept
-        assertEquals(BuiltinTypeEnum.INTEGER, ageType.builtinType())
+        assertEquals("age", ageField.fieldName)
+        val ageType = ageField.singleValueType as NestedConceptsSchema.BuiltinFieldTypeConcept
+        assertEquals(BuiltinTypeEnum.INTEGER, ageType.builtinType)
 
-        assertEquals("spouse", spouseReferenceField.fieldName())
-        val spouseType = spouseReferenceField.singleValueType() as NestedConceptsSchema.ReferenceFieldTypeConcept
-        assertEquals("the person business object", spouseType.referencedBusinessObject().name())
+        assertEquals("spouse", spouseReferenceField.fieldName)
+        val spouseType = spouseReferenceField.singleValueType as NestedConceptsSchema.ReferenceFieldTypeConcept
+        assertEquals("the person business object", spouseType.referencedBusinessObject.name)
 
-        assertEquals("nicknames", nicknamesField.fieldName())
-        assertEquals(CollectionKindEnum.LIST, nicknamesField.collectionKind())
-        val nicknameType = nicknamesField.collectionValuesType() as NestedConceptsSchema.BuiltinFieldTypeConcept
-        assertEquals(BuiltinTypeEnum.STRING, nicknameType.builtinType())
+        assertEquals("nicknames", nicknamesField.fieldName)
+        assertEquals(CollectionKindEnum.LIST, nicknamesField.collectionKind)
+        val nicknameType = nicknamesField.collectionValuesType as NestedConceptsSchema.BuiltinFieldTypeConcept
+        assertEquals(BuiltinTypeEnum.STRING, nicknameType.builtinType)
 
-        assertEquals("children", childrenField.fieldName())
-        assertEquals(CollectionKindEnum.SET, childrenField.collectionKind())
-        val childrenType = childrenField.collectionValuesType() as NestedConceptsSchema.ReferenceFieldTypeConcept
-        assertEquals("the person business object", childrenType.referencedBusinessObject().name())
+        assertEquals("children", childrenField.fieldName)
+        assertEquals(CollectionKindEnum.SET, childrenField.collectionKind)
+        val childrenType = childrenField.collectionValuesType as NestedConceptsSchema.ReferenceFieldTypeConcept
+        assertEquals("the person business object", childrenType.referencedBusinessObject.name)
     }
 }

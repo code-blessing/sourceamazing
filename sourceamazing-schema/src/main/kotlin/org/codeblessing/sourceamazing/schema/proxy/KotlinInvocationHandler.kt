@@ -43,7 +43,6 @@ abstract class KotlinInvocationHandler: InvocationHandler {
         requireNotNull(method) {
             "Proxy $this can only handle methods, not field invocations."
         }
-
         return requireNotNull(method.kotlinFunction) {
             "Can not adapt java method $method to a kotlin function."
         }

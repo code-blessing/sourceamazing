@@ -1,41 +1,16 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedBooleanFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedEnumFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.junit.jupiter.api.Test
 
 class BuilderApiAliasTest {
-    @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
         enum class MyEnumeration {
@@ -44,25 +19,28 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED") C,
         }
 
-        @Concept(facets = [
-            ConceptWithFacet.TextFacet::class,
-            ConceptWithFacet.BoolFacet::class,
-            ConceptWithFacet.NumberFacet::class,
-            ConceptWithFacet.EnumerationFacet::class,
-            ConceptWithFacet.RefFacet::class,
-        ])
         interface ConceptWithFacet {
-            @StringFacet
-            interface TextFacet
-            @BooleanFacet
-            interface BoolFacet
-            @IntFacet
-            interface NumberFacet
-            @EnumFacet(enumerationClass = MyEnumeration::class)
-            interface EnumerationFacet
-            @ReferenceFacet(referencedConcepts = [ConceptWithFacet::class])
-            interface RefFacet
+            @Suppress("UNUSED")
+            @Facet
+            val text: String
+            @Suppress("UNUSED")
+            @Facet
+            val bool: Boolean
+            @Suppress("UNUSED")
+            @Facet
+            val number: Int
+            @Suppress("UNUSED")
+            @Facet
+            val enumeration: MyEnumeration
+            @Suppress("UNUSED")
+            @Facet
+            val reference: ConceptWithFacet
         }
+
+        @Suppress("UNUSED")
+        @Facet
+        val concept: ConceptWithFacet
+
     }
 
     @Builder

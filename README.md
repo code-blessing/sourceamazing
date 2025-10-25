@@ -29,18 +29,18 @@ The tools you have to define this data schema are:
 That might look like this:
 
 ```kotlin
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
+//import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+//import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+//
+//import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+//import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
+//import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+//import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
+//import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
+//
+//import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
+//import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
+//import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 
 //
 // Schema (entry point)

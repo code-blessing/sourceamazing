@@ -1,42 +1,24 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
 
-    @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            ConceptWithFacet.TextFacet::class,
-        ])
         interface ConceptWithFacet {
-            @StringFacet(minimumOccurrences = 0, maximumOccurrences = 10)
-            interface TextFacet
-
-            @QueryFacetValue("TextFacet")
-            fun getTextFacetAsList(): List<String>
+            @Facet
+            val texts: List<String>
 
         }
 
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
 
@@ -54,7 +36,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setText(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -64,7 +46,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setTextNullable(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -75,7 +57,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setTexts(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -85,7 +67,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun setNullableTexts(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.REPLACE,
                 )
@@ -96,7 +78,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addText(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -106,7 +88,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addTextNullable(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -117,7 +99,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addTexts(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -127,7 +109,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             @BuilderMethod
             fun addNullableTexts(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -149,9 +131,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(1, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[0])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(1, concept.texts.size)
+        Assertions.assertEquals("hallo3", concept.texts[0])
     }
 
     @Test
@@ -164,10 +146,10 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(2, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[1])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(2, concept.texts.size)
+        Assertions.assertEquals("hallo2", concept.texts[0])
+        Assertions.assertEquals("hallo3", concept.texts[1])
     }
 
     @Test
@@ -180,10 +162,10 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(2, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[1])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(2, concept.texts.size)
+        Assertions.assertEquals("hallo2", concept.texts[0])
+        Assertions.assertEquals("hallo3", concept.texts[1])
     }
 
     @Test
@@ -196,8 +178,8 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(0, concept.getTextFacetAsList().size)
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(0, concept.texts.size)
     }
 
     @Test
@@ -212,9 +194,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(1, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[0])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(1, concept.texts.size)
+        Assertions.assertEquals("hallo2", concept.texts[0])
     }
 
     @Test
@@ -228,11 +210,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(3, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[1])
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[2])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(3, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
+        Assertions.assertEquals("hallo2", concept.texts[1])
+        Assertions.assertEquals("hallo3", concept.texts[2])
     }
 
     @Test
@@ -245,11 +227,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(3, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[1])
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[2])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(3, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
+        Assertions.assertEquals("hallo2", concept.texts[1])
+        Assertions.assertEquals("hallo3", concept.texts[2])
     }
 
     @Test
@@ -262,11 +244,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(3, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[1])
-        Assertions.assertEquals("hallo3", concept.getTextFacetAsList()[2])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(3, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
+        Assertions.assertEquals("hallo2", concept.texts[1])
+        Assertions.assertEquals("hallo3", concept.texts[2])
     }
 
     @Test
@@ -279,9 +261,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(1, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(1, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
     }
 
     @Test
@@ -296,9 +278,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(2, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[1])
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(2, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
+        Assertions.assertEquals("hallo2", concept.texts[1])
     }
 }

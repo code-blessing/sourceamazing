@@ -1,25 +1,19 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Test
 
 class BuilderApiRecursionTest {
-    @Schema(concepts = [
-        SchemaWithConcept.OneConcept::class,
-    ])
     private interface SchemaWithConcept {
 
-        @Concept(facets = [])
         interface OneConcept
+
+        @Suppress("UNUSED")
+        @Facet
+        val concept: OneConcept
     }
 
     @Builder

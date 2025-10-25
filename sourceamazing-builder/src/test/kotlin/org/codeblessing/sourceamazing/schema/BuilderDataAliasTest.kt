@@ -1,52 +1,25 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedIntFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class BuilderDataAliasTest {
 
-    @Schema(concepts = [
-        SchemaWithConceptWithFacet.ConceptWithFacet::class,
-    ])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            ConceptWithFacet.TextFacet::class,
-            ConceptWithFacet.NumberFacet::class,
-        ])
         interface ConceptWithFacet {
-
-            @StringFacet
-            interface TextFacet
-
-            @IntFacet
-            interface NumberFacet
-
-
-            @QueryFacetValue("TextFacet")
-            fun getText(): String
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumber(): Int
+            @Facet
+            val text: String
+            @Facet
+            val number: Int
 
         }
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
     @Builder
@@ -62,7 +35,7 @@ class BuilderDataAliasTest {
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -73,7 +46,7 @@ class BuilderDataAliasTest {
 
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number")
                 numberValue: Int
             )
         }
@@ -89,11 +62,11 @@ class BuilderDataAliasTest {
                     .setNumber(17)
             }
         }
-        assertEquals(1, schemaInstance.getConcepts().size)
+        assertEquals(1, schemaInstance.concepts.size)
 
-        val myConcept = schemaInstance.getConcepts().first()
-        assertEquals(17, myConcept.getNumber())
-        assertEquals("myText", myConcept.getText())
+        val myConcept = schemaInstance.concepts.first()
+        assertEquals(17, myConcept.number)
+        assertEquals("myText", myConcept.text)
     }
 
     @Builder
@@ -108,9 +81,9 @@ class BuilderDataAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
-            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet", value = 42)
+            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number", value = 42)
             fun setTextAndFixedNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -122,7 +95,7 @@ class BuilderDataAliasTest {
             @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
             @SetRandomConceptIdentifierValue("myConcept")
             fun createConceptAndSetText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
             ): NestedSubSubBuilder
         }
@@ -132,7 +105,7 @@ class BuilderDataAliasTest {
         interface NestedSubSubBuilder {
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number")
                 numberValue: Int
             )
         }
@@ -147,15 +120,15 @@ class BuilderDataAliasTest {
                     .createConceptAndSetText("OtherConceptFromSubBuilder").setNumber(17)
             }
         }
-        assertEquals(2, schemaInstance.getConcepts().size)
+        assertEquals(2, schemaInstance.concepts.size)
 
-        val firstConcept = schemaInstance.getConcepts().first()
+        val firstConcept = schemaInstance.concepts.first()
 
-        assertEquals(42, firstConcept.getNumber())
-        assertEquals("ConceptFromTopLevelBuilder", firstConcept.getText())
+        assertEquals(42, firstConcept.number)
+        assertEquals("ConceptFromTopLevelBuilder", firstConcept.text)
 
-        val secondConcept = schemaInstance.getConcepts().last()
-        assertEquals(17, secondConcept.getNumber())
-        assertEquals("OtherConceptFromSubBuilder", secondConcept.getText())
+        val secondConcept = schemaInstance.concepts.last()
+        assertEquals(17, secondConcept.number)
+        assertEquals("OtherConceptFromSubBuilder", secondConcept.text)
     }
 }

@@ -1,24 +1,13 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.exceptions.DataProviderInvocationRuntimeException
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
@@ -28,13 +17,15 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderMethodApiDataProviderTest {
 
-    @Schema(concepts = [SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class])
     private interface SchemaWithConceptWithTextFacet {
-        @Concept(facets = [ConceptWithTextFacet.TextFacet::class])
         interface ConceptWithTextFacet {
-            @StringFacet
-            interface TextFacet
+            @Suppress("UNUSED")
+            @Facet
+            val text: String
         }
+        @Suppress("UNUSED")
+        @Facet
+        val concept: ConceptWithTextFacet
     }
 
     @BuilderDataProvider
@@ -269,7 +260,7 @@ class BuilderMethodApiDataProviderTest {
             }
 
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "text")
             fun getText(): String {
                 return "hallo"
             }
@@ -301,7 +292,7 @@ class BuilderMethodApiDataProviderTest {
             private val data: T,
         ) {
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "text")
             fun getGenericValue(): T {
                 return data
             }
@@ -337,7 +328,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderDataProvider
         class BuilderDataProviderThrowingException {
             @BuilderData
-            @SetProvidedFacetValue(facetToModify = "TextFacet")
+            @SetProvidedFacetValue(facetToModify = "text")
             fun getText(): String {
                 throw NoSuchElementException("This facet value is not available.")
             }

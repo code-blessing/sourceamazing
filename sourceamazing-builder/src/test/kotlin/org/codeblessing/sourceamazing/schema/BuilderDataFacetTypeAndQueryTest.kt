@@ -1,30 +1,15 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.SchemaWithConceptWithFacet.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class BuilderDataFacetTypeAndQueryTest {
 
-    @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
         enum class MyEnum {
@@ -32,77 +17,20 @@ class BuilderDataFacetTypeAndQueryTest {
             BAR,
         }
 
-        @Concept(facets = [
-            ConceptWithFacet.TextFacet::class,
-            ConceptWithFacet.BoolFacet::class,
-            ConceptWithFacet.NumberFacet::class,
-            ConceptWithFacet.EnumerationFacet::class,
-        ])
         interface ConceptWithFacet {
-            @StringFacet(minimumOccurrences = 0, maximumOccurrences = 3)
-            interface TextFacet
-
-            @BooleanFacet(minimumOccurrences = 0, maximumOccurrences = 3)
-            interface BoolFacet
-
-            @IntFacet(minimumOccurrences = 0, maximumOccurrences = 3)
-            interface NumberFacet
-
-            @EnumFacet(minimumOccurrences = 0, maximumOccurrences = 3, enumerationClass = MyEnum::class)
-            interface EnumerationFacet
-
-            @QueryFacetValue("TextFacet")
-            fun getTextFacetAsList(): List<String>
-
-            @QueryFacetValue("TextFacet")
-            fun getTextFacet(): String
-
-            @QueryFacetValue("TextFacet")
-            fun getTextFacetNullable(): String?
-
-            @QueryFacetValue("TextFacet")
-            fun getTextFacetAsNullableAny(): Any?
-
-            @QueryFacetValue("BoolFacet")
-            fun getBoolFacetAsList(): List<Boolean>
-
-            @QueryFacetValue("BoolFacet")
-            fun getBoolFacet(): Boolean
-
-            @QueryFacetValue("BoolFacet")
-            fun getBoolFacetNullable(): Boolean?
-
-            @QueryFacetValue("BoolFacet")
-            fun getBoolFacetAsNullableAny(): Any?
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumberFacetAsList(): List<Int>
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumberFacet(): Int
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumberFacetNullable(): Int?
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumberFacetAsNullableAny(): Any?
-
-            @QueryFacetValue("EnumerationFacet")
-            fun getEnumerationFacetAsList(): List<MyEnum>
-
-            @QueryFacetValue("EnumerationFacet")
-            fun getEnumerationFacet(): MyEnum
-
-            @QueryFacetValue("EnumerationFacet")
-            fun getEnumerationFacetNullable(): MyEnum?
-
-            @QueryFacetValue("EnumerationFacet")
-            fun getEnumerationFacetAsNullableAny(): Any?
+            @Facet
+            val textFacetAsList: List<String>
+            @Facet
+            val boolFacetAsList: List<Boolean>
+            @Facet
+            val numberFacetAsList: List<Int>
+            @Facet
+            val enumerationFacetAsList: List<MyEnum>
 
         }
 
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
 
@@ -156,35 +84,11 @@ class BuilderDataFacetTypeAndQueryTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(0, concept.getTextFacetAsList().size)
-        Assertions.assertNull(concept.getTextFacetNullable())
-        Assertions.assertNull(concept.getTextFacetAsNullableAny())
-        assertThrows<IllegalStateException> {
-            concept.getTextFacet()
-        }
-
-        Assertions.assertEquals(0, concept.getBoolFacetAsList().size)
-        Assertions.assertNull(concept.getBoolFacetNullable())
-        Assertions.assertNull(concept.getBoolFacetAsNullableAny())
-        assertThrows<IllegalStateException> {
-            concept.getBoolFacet()
-        }
-
-        Assertions.assertEquals(0, concept.getNumberFacetAsList().size)
-        Assertions.assertNull(concept.getNumberFacetNullable())
-        Assertions.assertNull(concept.getNumberFacetAsNullableAny())
-        assertThrows<IllegalStateException> {
-            concept.getNumberFacet()
-        }
-
-        Assertions.assertEquals(0, concept.getEnumerationFacetAsList().size)
-        Assertions.assertNull(concept.getEnumerationFacetNullable())
-        Assertions.assertNull(concept.getEnumerationFacetAsNullableAny())
-        assertThrows<IllegalStateException> {
-            concept.getEnumerationFacet()
-        }
-
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(0, concept.textFacetAsList.size)
+        Assertions.assertEquals(0, concept.boolFacetAsList.size)
+        Assertions.assertEquals(0, concept.numberFacetAsList.size)
+        Assertions.assertEquals(0, concept.enumerationFacetAsList.size)
     }
 
     @Test
@@ -196,30 +100,18 @@ class BuilderDataFacetTypeAndQueryTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(1, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo", concept.getTextFacetNullable())
-        Assertions.assertEquals("hallo", concept.getTextFacetAsNullableAny())
-        Assertions.assertEquals("hallo", concept.getTextFacet())
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(1, concept.textFacetAsList.size)
+        Assertions.assertEquals("hallo", concept.textFacetAsList[0])
 
-        Assertions.assertEquals(1, concept.getBoolFacetAsList().size)
-        Assertions.assertEquals(true, concept.getBoolFacetAsList()[0])
-        Assertions.assertEquals(true, concept.getBoolFacetNullable())
-        Assertions.assertEquals(true, concept.getBoolFacetAsNullableAny())
-        Assertions.assertEquals(true, concept.getBoolFacet())
+        Assertions.assertEquals(1, concept.boolFacetAsList.size)
+        Assertions.assertEquals(true, concept.boolFacetAsList[0])
 
-        Assertions.assertEquals(1, concept.getNumberFacetAsList().size)
-        Assertions.assertEquals(42, concept.getNumberFacetAsList()[0])
-        Assertions.assertEquals(42, concept.getNumberFacetNullable())
-        Assertions.assertEquals(42, concept.getNumberFacetAsNullableAny())
-        Assertions.assertEquals(42, concept.getNumberFacet())
+        Assertions.assertEquals(1, concept.numberFacetAsList.size)
+        Assertions.assertEquals(42, concept.numberFacetAsList[0])
 
-        Assertions.assertEquals(1, concept.getEnumerationFacetAsList().size)
-        Assertions.assertEquals(MyEnum.FOO, concept.getEnumerationFacetAsList()[0])
-        Assertions.assertEquals(MyEnum.FOO, concept.getEnumerationFacetNullable())
-        Assertions.assertEquals(MyEnum.FOO, concept.getEnumerationFacetAsNullableAny())
-        Assertions.assertEquals(MyEnum.FOO, concept.getEnumerationFacet())
+        Assertions.assertEquals(1, concept.enumerationFacetAsList.size)
+        Assertions.assertEquals(MyEnum.FOO, concept.enumerationFacetAsList[0])
 
     }
 
@@ -233,34 +125,22 @@ class BuilderDataFacetTypeAndQueryTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(2, concept.getTextFacetAsList().size)
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsList()[0])
-        Assertions.assertEquals("hallo2", concept.getTextFacetAsList()[1])
-        Assertions.assertEquals("hallo1", concept.getTextFacetNullable())
-        Assertions.assertEquals("hallo1", concept.getTextFacetAsNullableAny())
-        Assertions.assertEquals("hallo1", concept.getTextFacet())
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(2, concept.textFacetAsList.size)
+        Assertions.assertEquals("hallo1", concept.textFacetAsList[0])
+        Assertions.assertEquals("hallo2", concept.textFacetAsList[1])
 
-        Assertions.assertEquals(2, concept.getBoolFacetAsList().size)
-        Assertions.assertEquals(false, concept.getBoolFacetAsList()[0])
-        Assertions.assertEquals(true, concept.getBoolFacetAsList()[1])
-        Assertions.assertEquals(false, concept.getBoolFacetNullable())
-        Assertions.assertEquals(false, concept.getBoolFacetAsNullableAny())
-        Assertions.assertEquals(false, concept.getBoolFacet())
+        Assertions.assertEquals(2, concept.boolFacetAsList.size)
+        Assertions.assertEquals(false, concept.boolFacetAsList[0])
+        Assertions.assertEquals(true, concept.boolFacetAsList[1])
 
-        Assertions.assertEquals(2, concept.getNumberFacetAsList().size)
-        Assertions.assertEquals(43, concept.getNumberFacetAsList()[0])
-        Assertions.assertEquals(44, concept.getNumberFacetAsList()[1])
-        Assertions.assertEquals(43, concept.getNumberFacetNullable())
-        Assertions.assertEquals(43, concept.getNumberFacetAsNullableAny())
-        Assertions.assertEquals(43, concept.getNumberFacet())
+        Assertions.assertEquals(2, concept.numberFacetAsList.size)
+        Assertions.assertEquals(43, concept.numberFacetAsList[0])
+        Assertions.assertEquals(44, concept.numberFacetAsList[1])
 
-        Assertions.assertEquals(2, concept.getEnumerationFacetAsList().size)
-        Assertions.assertEquals(MyEnum.BAR, concept.getEnumerationFacetAsList()[0])
-        Assertions.assertEquals(MyEnum.FOO, concept.getEnumerationFacetAsList()[1])
-        Assertions.assertEquals(MyEnum.BAR, concept.getEnumerationFacetNullable())
-        Assertions.assertEquals(MyEnum.BAR, concept.getEnumerationFacetAsNullableAny())
-        Assertions.assertEquals(MyEnum.BAR, concept.getEnumerationFacet())
+        Assertions.assertEquals(2, concept.enumerationFacetAsList.size)
+        Assertions.assertEquals(MyEnum.BAR, concept.enumerationFacetAsList[0])
+        Assertions.assertEquals(MyEnum.FOO, concept.enumerationFacetAsList[1])
     }
 
 }

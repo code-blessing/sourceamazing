@@ -1,19 +1,9 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -21,23 +11,16 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataCardinalityTest {
 
-    @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            ConceptWithFacet.ListOfZeroToThreeTextFacet::class,
-        ])
         interface ConceptWithFacet {
-            @StringFacet(minimumOccurrences = 1, maximumOccurrences = 3)
-            interface ListOfZeroToThreeTextFacet
-
-            @QueryFacetValue("ListOfZeroToThreeTextFacet")
-            fun getTextFacetAsList(): List<String>
-
+            
+            @Facet
+            val zeroToThreeTexts: List<String>
         }
 
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
 
@@ -55,7 +38,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addText(
                 @SetFacetValue(
-                    facetToModify = "ListOfZeroToThreeTextFacet",
+                    facetToModify = "zeroToThreeTexts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -65,7 +48,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addTexts(
                 @SetFacetValue(
-                    facetToModify = "ListOfZeroToThreeTextFacet",
+                    facetToModify = "zeroToThreeTexts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -84,8 +67,8 @@ class BuilderDataCardinalityTest {
             }
         }
 
-        val concept = schemaInstance.getConcepts().first()
-        Assertions.assertEquals(1, concept.getTextFacetAsList().size)
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(1, concept.zeroToThreeTexts.size)
     }
 
     @Test

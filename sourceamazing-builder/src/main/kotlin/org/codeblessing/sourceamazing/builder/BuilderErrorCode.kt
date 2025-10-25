@@ -16,6 +16,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.ErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
@@ -23,13 +24,13 @@ import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.
 enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
 
     MISSING_BUILDER_ANNOTATION("The method is missing the annotation ${BuilderMethod::class.annotationText()}. This annotation must be on every builder method."),
-    UNKNOWN_FACET("The method uses an annotation %s with a facet '%s'. The facet is not known. You must register the facet on the concept class using the ${Concept::class.annotationText()} annotation."),
+    UNKNOWN_FACET("The method uses an annotation %s with a facet '%s'. The facet is not known. You must register the facet on the concept class by declaring a property using the annotation ${Facet::class.annotationText()}."),
     WRONG_FACET_TYPE("The method uses an annotation %s with a facet '%s'. The facet is not of type '%s' but of type '%s'."),
     WRONG_FACET_ENUM_VALUE("The method uses an annotation %s with a facet '%s', but the facet value '%s' is not a valid enumeration values. Valid enumeration values are: %s."),
     ALIAS_IS_ALREADY_USED("The alias '%s' introduced with the annotation ${NewConcept::class.annotationText()} for concept '%s' is already used. All already used alias names are %s. Choose another alias name. %s"),
     ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION("The alias '%s' was expected by the annotation ${ExpectedAliasFromSuperiorBuilder::class.annotationText()} but was not provided by the superior builder. %s"),
     DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION("The alias '%s' was listed multiple times with the ${ExpectedAliasFromSuperiorBuilder::class.annotationText()} annotation. %s"),
-    UNKNOWN_CONCEPT("The alias '%s' introduced with the annotation ${NewConcept::class.annotationText()} points to a unknown concept '%s'. You must register the concept on the schema using the ${Schema::class.annotationText()} annotation or use another concept. %s"),
+    UNKNOWN_CONCEPT("The alias '%s' introduced with the annotation ${NewConcept::class.annotationText()} points to a unknown concept '%s'. You must register the concept on the schema by declaring a property to this concept using the annotation ${Facet::class.annotationText()}. %s"),
     CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER("The concept behind alias '%s' has no corresponding concept identifier declaration. Use the annotation ${SetConceptIdentifierValue::class.annotationText()} or ${SetRandomConceptIdentifierValue::class.annotationText()} to define a concept identifier in the same method as you create the concept (with ${NewConcept::class.annotationText()}). %s"),
     DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE("The concept behind alias '%s' is initialized multiple times with the annotation ${SetRandomConceptIdentifierValue::class.annotationText()}. Remove the duplicate initializations or choose another alias name. %s"),
     DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE("The concept behind alias '%s' is initialized multiple times with the annotation ${SetConceptIdentifierValue::class.annotationText()}. Remove the duplicate initializations or choose another alias name. %s"),

@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.annotations.Concept
 import org.codeblessing.sourceamazing.schema.api.annotations.EnumFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
@@ -13,60 +14,55 @@ import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 object XmlTestSchema {
 
     val testEntityConceptName = ConceptName.of(TestEntityConcept::class)
-    val testEntityNameFacetName = FacetName.of("Name")
-    val testEntityKotlinModelClassnameFacetName = FacetName.of("KotlinModelClassname")
-    val testEntityKotlinModelPackageFacetName = FacetName.of("KotlinModelPackage")
+    val testEntityNameFacetName = FacetName.of("name")
+    val testEntityKotlinModelClassnameFacetName = FacetName.of("kotlinModelClassname")
+    val testEntityKotlinModelPackageFacetName = FacetName.of("kotlinModelPackage")
     val testEntityAttributeConceptName = ConceptName.of(TestEntityAttributeConcept::class)
-    val testEntityAttributeNameFacetName = FacetName.of("Name")
-    val testEntityAttributeTypeFacetName = FacetName.of("Type")
+    val testEntityAttributeNameFacetName = FacetName.of("name")
+    val testEntityAttributeTypeFacetName = FacetName.of("type")
 
 
     fun createSchema(): SchemaAccess {
         return SchemaCreator.createSchemaFromSchemaDefinitionClass(XmlTestSchema::class)
     }
 
-
-    @Schema(concepts = [
-        TestEntityConcept::class,
-        TestEntityAttributeConcept::class,
-    ])
-    interface XmlTestSchema
-
-    @Concept(facets = [
-        TestEntityConcept.Name::class,
-        TestEntityConcept.KotlinModelClassname::class,
-        TestEntityConcept.KotlinModelPackage::class,
-        TestEntityConcept.TestEntityAttribute::class,
-    ])
-    interface TestEntityConcept {
-        @StringFacet
-        interface Name
-
-        @StringFacet
-        interface KotlinModelClassname
-
-        @StringFacet
-        interface KotlinModelPackage
-
-        @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 10, referencedConcepts = [TestEntityAttributeConcept::class])
-        interface TestEntityAttribute
+    interface XmlTestSchema {
+        @Suppress("UNUSED")
+        @Facet
+        val testEntityConcepts: List<TestEntityConcept>
     }
 
-    @Concept(facets = [
-        TestEntityAttributeConcept.Name::class,
-        TestEntityAttributeConcept.Type::class,
-    ])
-    interface TestEntityAttributeConcept {
-        @StringFacet
-        interface Name
+    interface TestEntityConcept {
+        @Suppress("UNUSED")
+        @Facet
+        val name: String
 
-        @EnumFacet(enumerationClass = AttributeTypeEnum::class)
-        interface Type
+        @Suppress("UNUSED")
+        @Facet
+        val kotlinModelClassname: String
+
+        @Suppress("UNUSED")
+        @Facet
+        val kotlinModelPackage: String
+
+        @Suppress("UNUSED")
+        @Facet
+        val testEntityAttribute: List<TestEntityAttributeConcept>
+    }
+
+    interface TestEntityAttributeConcept {
+        @Suppress("UNUSED")
+        @Facet
+        val name: String
+
+        @Suppress("UNUSED")
+        @Facet
+        val type: AttributeTypeEnum
 
         enum class AttributeTypeEnum {
-            TEXT,
-            NUMBER,
-            BOOLEAN,
+            @Suppress("UNUSED") TEXT,
+            @Suppress("UNUSED") NUMBER,
+            @Suppress("UNUSED") BOOLEAN,
         }
     }
 }

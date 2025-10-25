@@ -7,9 +7,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -17,20 +16,15 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataConceptIdentifierTest {
 
-    @Schema(concepts = [
-        SchemaWithConcepts.ConceptOne::class,
-        SchemaWithConcepts.ConceptTwo::class,
-    ])
     private interface SchemaWithConcepts {
 
-        @Concept(facets = [])
         interface ConceptOne
 
-        @Concept(facets = [])
         interface ConceptTwo
 
-        @QueryConcepts(conceptClasses = [ConceptOne::class, ConceptTwo::class ])
-        fun getAllConcept(): List<Any>
+        @Facet
+        @References([ConceptOne::class, ConceptTwo::class ])
+        val allConcepts: List<Any>
 
     }
 
@@ -67,7 +61,7 @@ class BuilderDataConceptIdentifierTest {
             }
         }
 
-        assertEquals(3, schemaInstance.getAllConcept().size)
+        assertEquals(3, schemaInstance.allConcepts.size)
     }
 
 

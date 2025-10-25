@@ -1,22 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -24,34 +12,18 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
-    @Schema(concepts = [SchemaWithConceptWithFacet.ConceptWithFacet::class])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            ConceptWithFacet.ConceptReferenceFacet::class,
-        ])
         interface ConceptWithFacet {
-            @ReferenceFacet(minimumOccurrences = 0, maximumOccurrences = 2, referencedConcepts = [ConceptWithFacet::class])
-            interface ConceptReferenceFacet
-
-            @QueryConceptIdentifierValue
-            fun getConceptId(): ConceptIdentifier
-
-            @QueryFacetValue("ConceptReferenceFacet")
-            fun getConceptReferenceFacet(): ConceptWithFacet?
-
-            @QueryFacetValue("ConceptReferenceFacet")
-            fun getConceptReferenceFacetAsAny(): Any?
-
-            @QueryFacetValue("ConceptReferenceFacet")
-            fun getConceptReferenceFacetAsList(): List<ConceptWithFacet>
-
-            @QueryFacetValue("ConceptReferenceFacet")
-            fun getConceptReferenceFacetAsAnyList(): List<Any>
+            @Facet
+            val conceptId: String
+            
+            @Facet
+            val conceptReferenceFacetAsList: List<ConceptWithFacet>
         }
 
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
 
@@ -71,7 +43,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             @BuilderMethod
             fun addReference(
                 @SetFacetValue(
-                    facetToModify = "ConceptReferenceFacet",
+                    facetToModify = "conceptReferenceFacetAsList",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -91,14 +63,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             }
         }
 
-        assertEquals(1, schemaInstance.getConcepts().size)
-        val concept = schemaInstance.getConcepts().first()
-        assertEquals(selfReferencingConceptIdentifier, concept.getConceptId())
-        assertEquals(1, concept.getConceptReferenceFacetAsList().size)
-        assertEquals(selfReferencingConceptIdentifier, concept.getConceptReferenceFacetAsList()[0].getConceptId())
-        assertEquals(selfReferencingConceptIdentifier, (concept.getConceptReferenceFacetAsAnyList()[0] as SchemaWithConceptWithFacet.ConceptWithFacet).getConceptId())
-        assertEquals(selfReferencingConceptIdentifier, concept.getConceptReferenceFacet()?.getConceptId())
-        assertEquals(selfReferencingConceptIdentifier, (concept.getConceptReferenceFacetAsAny() as SchemaWithConceptWithFacet.ConceptWithFacet).getConceptId())
+        assertEquals(1, schemaInstance.concepts.size)
+        val concept = schemaInstance.concepts.first()
+        assertEquals(selfReferencingConceptIdentifier.name, concept.conceptId)
+        assertEquals(1, concept.conceptReferenceFacetAsList.size)
+        assertEquals(selfReferencingConceptIdentifier.name, concept.conceptReferenceFacetAsList[0].conceptId)
     }
 
     @Test
@@ -117,20 +86,19 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             }
         }
 
-        assertEquals(3, schemaInstance.getConcepts().size)
-        val mainConcept = schemaInstance.getConcepts().first { it.getConceptId() == mainConceptIdentifier }
-        assertEquals(mainConceptIdentifier, mainConcept.getConceptId())
-        assertEquals(2, mainConcept.getConceptReferenceFacetAsList().size)
+        assertEquals(3, schemaInstance.concepts.size)
+        val mainConcept = schemaInstance.concepts.first { it.conceptId == mainConceptIdentifier.name }
+        assertEquals(mainConceptIdentifier.name, mainConcept.conceptId)
+        assertEquals(2, mainConcept.conceptReferenceFacetAsList.size)
 
-        assertEquals(firstReferencedConceptIdentifier, mainConcept.getConceptReferenceFacet()?.getConceptId())
-        val firstReferencedConcept = mainConcept.getConceptReferenceFacetAsList()[0]
-        val secondReferencedConcept = mainConcept.getConceptReferenceFacetAsList()[1]
+        val firstReferencedConcept = mainConcept.conceptReferenceFacetAsList[0]
+        val secondReferencedConcept = mainConcept.conceptReferenceFacetAsList[1]
 
-        assertEquals(firstReferencedConceptIdentifier, firstReferencedConcept.getConceptId())
-        assertEquals(secondReferencedConceptIdentifier, secondReferencedConcept.getConceptId())
+        assertEquals(firstReferencedConceptIdentifier.name, firstReferencedConcept.conceptId)
+        assertEquals(secondReferencedConceptIdentifier.name, secondReferencedConcept.conceptId)
 
-        assertEquals(0, firstReferencedConcept.getConceptReferenceFacetAsList().size)
-        assertEquals(0, secondReferencedConcept.getConceptReferenceFacetAsList().size)
+        assertEquals(0, firstReferencedConcept.conceptReferenceFacetAsList.size)
+        assertEquals(0, secondReferencedConcept.conceptReferenceFacetAsList.size)
     }
 
     @Test
@@ -150,19 +118,19 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             }
         }
 
-        assertEquals(3, schemaInstance.getConcepts().size)
+        assertEquals(3, schemaInstance.concepts.size)
 
-        val firstConcept = schemaInstance.getConcepts().first { it.getConceptId() == firstConceptIdentifier }
-        val secondConcept = schemaInstance.getConcepts().first { it.getConceptId() == secondConceptIdentifier }
-        val thirdConcept = schemaInstance.getConcepts().first { it.getConceptId() == thirdConceptIdentifier }
+        val firstConcept = schemaInstance.concepts.first { it.conceptId == firstConceptIdentifier.name }
+        val secondConcept = schemaInstance.concepts.first { it.conceptId == secondConceptIdentifier.name }
+        val thirdConcept = schemaInstance.concepts.first { it.conceptId == thirdConceptIdentifier.name }
 
-        assertEquals(firstConceptIdentifier, firstConcept.getConceptId())
-        assertEquals(secondConceptIdentifier, secondConcept.getConceptId())
-        assertEquals(thirdConceptIdentifier, thirdConcept.getConceptId())
+        assertEquals(firstConceptIdentifier.name, firstConcept.conceptId)
+        assertEquals(secondConceptIdentifier.name, secondConcept.conceptId)
+        assertEquals(thirdConceptIdentifier.name, thirdConcept.conceptId)
 
-        assertEquals(secondConceptIdentifier, firstConcept.getConceptReferenceFacet()?.getConceptId())
-        assertEquals(thirdConceptIdentifier, secondConcept.getConceptReferenceFacet()?.getConceptId())
-        assertEquals(firstConceptIdentifier, thirdConcept.getConceptReferenceFacet()?.getConceptId())
+        assertEquals(secondConceptIdentifier.name, firstConcept.conceptReferenceFacetAsList.first().conceptId)
+        assertEquals(thirdConceptIdentifier.name, secondConcept.conceptReferenceFacetAsList.first().conceptId)
+        assertEquals(firstConceptIdentifier.name, thirdConcept.conceptReferenceFacetAsList.first().conceptId)
     }
 
     @Test
@@ -182,16 +150,16 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             }
         }
 
-        assertEquals(3, schemaInstance.getConcepts().size)
+        assertEquals(3, schemaInstance.concepts.size)
 
-        val firstConcept = schemaInstance.getConcepts().first { it.getConceptId() == firstConceptIdentifier }
+        val firstConcept = schemaInstance.concepts.first { it.conceptId == firstConceptIdentifier.name }
 
-        assertEquals(secondConceptIdentifier, firstConcept
-            .getConceptReferenceFacet()
-            ?.getConceptReferenceFacet()
-            ?.getConceptReferenceFacet()
-            ?.getConceptReferenceFacet()
-            ?.getConceptId())
+        assertEquals(secondConceptIdentifier.name, firstConcept
+            .conceptReferenceFacetAsList.first()
+            .conceptReferenceFacetAsList.first()
+            .conceptReferenceFacetAsList.first()
+            .conceptReferenceFacetAsList.first()
+            .conceptId)
     }
 
     @Test

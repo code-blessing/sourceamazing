@@ -1,39 +1,29 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.exceptions.CanNotBeAnnotationTypeSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.NotInterfaceSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongClassStructureSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongTypeSyntaxException
+import org.codeblessing.sourceamazing.schema.exceptions.*
 import org.junit.jupiter.api.Test
 
 class BuilderApiBuilderAndDataProviderAnnotationTest {
 
-    @Schema(concepts = [SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class])
     private interface SchemaWithConceptWithTextFacet {
-        @Concept(facets = [ConceptWithTextFacet.TextFacet::class])
+
         interface ConceptWithTextFacet {
-            @StringFacet
-            interface TextFacet
+            @Suppress("UNUSED")
+            @Facet
+            val text: String
         }
+        @Suppress("UNUSED")
+        @Facet
+        val concept: ConceptWithTextFacet
+
     }
 
     @Builder
@@ -354,123 +344,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @Schema(concepts = [])
-    private interface BuilderWithSchemaAnnotation
-
-    @Test
-    fun `test builder class with schema annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithSchemaAnnotation::class) { 
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
-    private interface BuilderWithDataProviderWithSchemaAnnotation {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
-        @BuilderDataProvider
-        @Schema(concepts = [])
-        class DataProvider
-    }
-
-    @Test
-    fun `test data provider class with schema annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithSchemaAnnotation::class) {
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
-    @Concept(facets = [])
-    private interface BuilderWithConceptAnnotation
-
-    @Test
-    fun `test builder class with concept annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithConceptAnnotation::class) { 
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
-    private interface BuilderWithDataProviderWithConceptAnnotation {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
-        @BuilderDataProvider
-        @Concept(facets = [])
-        class DataProvider
-    }
-
-    @Test
-    fun `test data provider class with concept annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithConceptAnnotation::class) {
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
-    @StringFacet
-    private interface BuilderWithFacetAnnotation
-
-    @Test
-    fun `test builder class with facet annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithFacetAnnotation::class) { 
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
-    private interface BuilderWithDataProviderWithStringFacetAnnotation {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
-        @BuilderDataProvider
-        @StringFacet
-        class DataProvider
-    }
-
-    @Test
-    fun `test data provider class with StringFacet annotation should throw an exception`() {
-        assertExceptionWithErrorCode(WrongAnnotationSyntaxException::class, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithStringFacetAnnotation::class) {
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    @Builder
     @ExpectedAliasFromSuperiorBuilder()
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
@@ -575,11 +448,11 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         }
     }
 
-    @Schema(concepts = [])
-    private interface ParentClassWithSchemaAnnotation
+    @BuilderDataProvider
+    private interface ParentClassWithDataProviderAnnotation
     @Builder
     private interface BuilderWithSchemaAnnotationsInHierarchyClasses:
-        ParentClassWithSchemaAnnotation
+        ParentClassWithDataProviderAnnotation
 
     @Test
     fun `test builder with schema annotations in hierarchy should throw an exception`() {
@@ -600,7 +473,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             @ProvideBuilderData data: SubDataProvider
         )
 
-        @Schema(concepts = [])
+        @Builder
         private open class DataProvider
 
         @BuilderDataProvider

@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.type
 
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.Schema
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -7,12 +8,12 @@ import org.junit.jupiter.api.Test
 
 class AnnotationExtensionsTest {
 
-    @Schema(concepts = [])
-    private interface ClassWithSourceamazingAnnotation
+    @Facet
+    private val text: String = "some text"
 
     @Test
     fun `test with source amazing annotation`() {
-        val annotationFromSourceamazing = ClassWithSourceamazingAnnotation::class.annotations.first()
+        val annotationFromSourceamazing = AnnotationExtensionsTest::text.annotations.first()
         assertTrue(annotationFromSourceamazing.isAnnotationFromSourceAmazing())
     }
 

@@ -1,51 +1,26 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConcepts
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class BuilderDataNestingBuildersTest {
 
-    @Schema(concepts = [
-        SchemaWithConceptWithFacet.ConceptWithFacet::class,
-    ])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            ConceptWithFacet.TextFacet::class,
-            ConceptWithFacet.NumberFacet::class,
-        ])
         interface ConceptWithFacet {
+            @Facet
+            val texts: List<String>
 
-            @StringFacet(maximumOccurrences = 10)
-            interface TextFacet
-
-            @IntFacet(maximumOccurrences = 10)
-            interface NumberFacet
-
-
-            @QueryFacetValue("TextFacet")
-            fun getTexts(): List<String>
-
-            @QueryFacetValue("NumberFacet")
-            fun getNumbers(): List<Int>
+            @Facet
+            val numbers: List<Int>
 
         }
-        @QueryConcepts(conceptClasses = [ConceptWithFacet::class])
-        fun getConcepts(): List<ConceptWithFacet>
+        @Facet
+        val concepts: List<ConceptWithFacet>
     }
 
     @Builder
@@ -61,7 +36,7 @@ class BuilderDataNestingBuildersTest {
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "TextFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "texts")
                 textValue: String
             ): NestedSubBuilder
         }
@@ -71,7 +46,7 @@ class BuilderDataNestingBuildersTest {
         interface NestedSubBuilder {
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "NumberFacet")
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "numbers")
                 numberValue: Int
             ): NestedBuilder
         }
@@ -90,11 +65,11 @@ class BuilderDataNestingBuildersTest {
                     .setText("Added3")
             }
         }
-        assertEquals(1, schemaInstance.getConcepts().size)
+        assertEquals(1, schemaInstance.concepts.size)
 
-        val myConcepts = schemaInstance.getConcepts().first()
+        val myConcepts = schemaInstance.concepts.first()
 
-        assertEquals(listOf(17, 23), myConcepts.getNumbers())
-        assertEquals(listOf("Added1", "Added2", "Added3"), myConcepts.getTexts())
+        assertEquals(listOf(17, 23), myConcepts.numbers)
+        assertEquals(listOf("Added1", "Added2", "Added3"), myConcepts.texts)
     }
 }

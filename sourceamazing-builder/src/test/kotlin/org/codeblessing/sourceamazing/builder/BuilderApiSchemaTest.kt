@@ -1,52 +1,40 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFixedStringFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.junit.jupiter.api.Test
 
 class BuilderApiSchemaTest {
-    @Schema(concepts = [
-        SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
-        SchemaWithConceptWithFacet.AlsoKnownConceptWithFacet::class,
-    ])
     private interface SchemaWithConceptWithFacet {
 
-        @Concept(facets = [
-            KnownConceptWithFacet.KnownFacet::class,
-        ])
         interface KnownConceptWithFacet {
-            @StringFacet
-            interface KnownFacet
+            @Suppress("UNUSED")
+            @Facet
+            val knownFacet: String
         }
 
-        @Concept(facets = [
-            AlsoKnownConceptWithFacet.AlsoKnownFacet::class,
-        ])
         interface AlsoKnownConceptWithFacet {
-            @StringFacet
-            interface AlsoKnownFacet
+            @Suppress("UNUSED")
+            @Facet
+            val alsoKnownFacet: String
         }
 
-        @Concept(facets = [
-            UnknownConceptWithFacet.UnknownFacet::class,
-        ])
         interface UnknownConceptWithFacet {
-            @StringFacet
-            interface UnknownFacet
+            @Suppress("UNUSED")
+            @Facet
+            val unknownFacet: String
         }
+
+        @Suppress("UNUSED")
+        @Facet
+        val knownConceptWithFacet: KnownConceptWithFacet
+        @Suppress("UNUSED")
+        @Facet
+        val alsoKnownConceptWithFacet: AlsoKnownConceptWithFacet
     }
 
     @Builder
@@ -196,7 +184,7 @@ class BuilderApiSchemaTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingNested(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet") myValue: String
             )
         }
     }
@@ -226,7 +214,7 @@ class BuilderApiSchemaTest {
 
             @Suppress("UNUSED")
             @BuilderMethod
-            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet", value = "hello")
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet", value = "hello")
             fun doSomethingNested()
         }
     }
@@ -257,13 +245,13 @@ class BuilderApiSchemaTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWrongFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "alsoKnownFacet") myValue: String
             )
 
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingCorrectFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet") myValue: String
             )
 
         }

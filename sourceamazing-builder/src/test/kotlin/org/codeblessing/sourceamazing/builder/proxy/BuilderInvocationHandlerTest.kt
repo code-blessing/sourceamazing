@@ -1,24 +1,11 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidator
 import org.codeblessing.sourceamazing.schema.FacetName
 import org.codeblessing.sourceamazing.schema.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.BooleanFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.IntFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.ReferenceFacet
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
@@ -27,39 +14,31 @@ import org.junit.jupiter.api.Test
 
 class BuilderInvocationHandlerTest {
 
-    @Schema(concepts = [
-        BuilderTestSchema.PersonConcept::class,
-        BuilderTestSchema.SkillConcept::class,
-    ])
     private interface BuilderTestSchema {
-        @Concept(facets = [
-            PersonConcept.PersonFirstnameFacet::class,
-            PersonConcept.PersonAgeFacet::class,
-            PersonConcept.PersonSkillsReference::class,
-        ])
         interface PersonConcept {
-
-            @StringFacet
-            interface PersonFirstnameFacet
-            @IntFacet
-            interface PersonAgeFacet
-            @ReferenceFacet(
-                minimumOccurrences = 0,
-                maximumOccurrences = 10,
-                referencedConcepts = [SkillConcept::class])
-            interface PersonSkillsReference
-
+            @Suppress("UNUSED")
+            @Facet
+            val firstname: String
+            @Suppress("UNUSED")
+            @Facet
+            val age: Int
+            @Suppress("UNUSED")
+            @Facet
+            val skills: List<SkillConcept>
         }
-        @Concept(facets = [
-            SkillConcept.SkillDescriptionFacet::class,
-            SkillConcept.SkillStillEnjoyingFacet::class,
-        ])
         interface SkillConcept {
-            @StringFacet
-            interface SkillDescriptionFacet
-            @BooleanFacet
-            interface SkillStillEnjoyingFacet
+            @Suppress("UNUSED")
+            @Facet
+            val description: String
+            @Suppress("UNUSED")
+            @Facet
+            val skillEnjoying: Boolean
         }
+
+        @Suppress("UNUSED")
+        @Facet
+        val person: PersonConcept
+
     }
 
     private val jamesConceptIdentifier = ConceptIdentifier.of("James")

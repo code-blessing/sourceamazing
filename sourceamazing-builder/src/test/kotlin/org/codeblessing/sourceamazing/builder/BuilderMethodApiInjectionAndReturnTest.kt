@@ -1,34 +1,27 @@
 package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Concept
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
-import org.codeblessing.sourceamazing.schema.api.annotations.StringFacet
+import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.junit.jupiter.api.Test
 
 class BuilderMethodApiInjectionAndReturnTest {
 
-    @Schema(concepts = [SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class])
     private interface SchemaWithConceptWithTextFacet {
-        @Concept(facets = [ConceptWithTextFacet.TextFacet::class])
         interface ConceptWithTextFacet {
-            @StringFacet
-            interface TextFacet
+            @Suppress("UNUSED")
+            @Facet
+            val text: String
         }
+        @Suppress("UNUSED")
+        @Facet
+        val concept: ConceptWithTextFacet
     }
 
     @Builder
@@ -314,7 +307,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         fun doSomething(
             @SetConceptIdentifierValue conceptId: ConceptIdentifier,
             @InjectBuilder builder: EmptyBuilder.() -> Unit,
-            @SetFacetValue(facetToModify = "TextFacet") myValue: String,
+            @SetFacetValue(facetToModify = "text") myValue: String,
         )
     }
 
