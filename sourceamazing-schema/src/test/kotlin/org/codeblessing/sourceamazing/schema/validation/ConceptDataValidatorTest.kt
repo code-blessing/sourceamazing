@@ -235,8 +235,8 @@ class ConceptDataValidatorTest {
 
     @Test
     fun `validate that a reference pointing to an available concept with wrong type throws an exception`() {
-        val conceptIdentifier = ConceptIdentifier.of("Bar")
         val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
+        val conceptIdentifier = ConceptIdentifier.of("Bar")
         val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptDataReferencing.addFacetValue(mandatoryRefToOneConceptFacetName, conceptIdentifier)
         val conceptDataReferenced = createEmptyConceptData(OtherThanTheOtherConcept::class, conceptIdentifier) // wrong concept type
