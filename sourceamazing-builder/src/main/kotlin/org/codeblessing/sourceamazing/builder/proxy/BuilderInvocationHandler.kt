@@ -26,7 +26,10 @@ class BuilderInvocationHandler(
     private val conceptDataCollector: ConceptDataCollector,
     superiorConcepts: Map<Alias, ConceptName>,
     private val superiorConceptIds: Map<Alias, ConceptIdentifier>
-): KotlinInvocationHandler()  {
+): KotlinInvocationHandler(
+    allowMemberProperties = false,
+    allowMemberFunctions = true,
+)  {
 
     private val builderClassInterpreter = BuilderClassInterpreter(
         builderClass = builderClass,

@@ -11,7 +11,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
-class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): KotlinInvocationHandler()  {
+class SchemaInstanceInvocationHandler(private val conceptGraph: ConceptGraph): KotlinInvocationHandler(
+    allowMemberProperties = true,
+    allowMemberFunctions = false
+)  {
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         function.findAnnotation<QueryConcepts>()?.let {

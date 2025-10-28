@@ -13,7 +13,10 @@ import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
-class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): KotlinInvocationHandler()  {
+class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): KotlinInvocationHandler(
+    allowMemberProperties = true,
+    allowMemberFunctions = false
+)  {
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         function.findAnnotation<QueryFacetValue>()?.let {

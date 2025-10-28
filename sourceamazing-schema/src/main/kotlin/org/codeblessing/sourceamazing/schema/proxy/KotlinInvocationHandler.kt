@@ -3,9 +3,15 @@ package org.codeblessing.sourceamazing.schema.proxy
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import kotlin.reflect.KFunction
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.kotlinFunction
 
-abstract class KotlinInvocationHandler: InvocationHandler {
+abstract class KotlinInvocationHandler(
+    private val allowMemberProperties: Boolean,
+    private val allowMemberFunctions: Boolean,
+): InvocationHandler {
     override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
         val proxy = requiredProxy(proxyOrNull, methodOrNull)
         val memberFunction = validatedMethod(methodOrNull)
@@ -43,8 +49,24 @@ abstract class KotlinInvocationHandler: InvocationHandler {
         requireNotNull(method) {
             "Proxy $this can only handle methods, not field invocations."
         }
-        return requireNotNull(method.kotlinFunction) {
-            "Can not adapt java method $method to a kotlin function."
+
+        val memberProperty = method.declaringClass.kotlin.memberProperties.firstOrNull { member -> member.getter.javaMethod == method }?.getter
+        val memberFunction = method.declaringClass.kotlin.memberFunctions.firstOrNull { member -> member.javaMethod == method }
+
+
+
+        if(allowMemberFunctions && allowMemberProperties && memberFunction != null && memberProperty != null) {
+            throw IllegalStateException("Ambiguous function found for $method: $memberProperty / $memberFunction")
+        } else if(allowMemberFunctions) {
+            return requireNotNull(memberFunction) {
+                "Can not adapt java method $method to a kotlin function."
+            }
+        } else if (allowMemberProperties) {
+            return requireNotNull(memberProperty) {
+                "Can not adapt java method $method to a kotlin property function."
+            }
+        } else {
+            throw IllegalStateException("Can not adapt java method $method to a kotlin function or property.")
         }
     }
 
