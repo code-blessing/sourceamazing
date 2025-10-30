@@ -1,35 +1,36 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 
-class ConceptDataCollector(private val schemaAccess: SchemaAccess) {
+class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptDataCollector {
 
     private var sequenceNumber: Int = 0
 
     private val conceptData: MutableMap<ConceptIdentifier, ConceptData> = mutableMapOf()
 
-    fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData {
+    override fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData {
         return conceptData[conceptIdentifier] ?: throw IllegalArgumentException("No concept with concept id '$conceptIdentifier' found.")
     }
 
-    fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+    override fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         return conceptData.getOrPut(conceptIdentifier) {
             createNewConceptData(conceptName, conceptIdentifier)
         }
     }
 
-    fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+    override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         val newConceptData = createNewConceptData(conceptName, conceptIdentifier)
         ConceptDataValidator.validateDuplicateConceptIdentifiers(conceptData.keys, newConceptData)
         conceptData[conceptIdentifier] = newConceptData
         return newConceptData
     }
 
-    fun validateAfterUpdate(conceptData: ConceptData) {
+    override fun validateAfterUpdate(conceptData: ConceptData) {
         ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(schemaAccess, conceptData)
     }
 

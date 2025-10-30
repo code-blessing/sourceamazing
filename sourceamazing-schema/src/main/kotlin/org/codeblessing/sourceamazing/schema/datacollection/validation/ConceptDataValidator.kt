@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
-import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.FacetSchema

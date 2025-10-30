@@ -1,13 +1,13 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.schema.api.SchemaProcessorApi
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
@@ -27,7 +27,7 @@ class SchemaProcessor(
 
     override fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> Unit): S {
         val schemaAccess: SchemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
-        val conceptDataCollector = ConceptDataCollector(schemaAccess)
+        val conceptDataCollector = ConceptDataCollectorImpl(schemaAccess)
         val revealedSchemaContext = RevealedSchemaContext(schemaAccess, conceptDataCollector, fileSystemAccess, loggerFacade)
 
         schemaUsage(revealedSchemaContext)

@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
@@ -45,7 +45,7 @@ internal class SaxParserHandlerTest {
         factory.isValidating = false // turn of validation as schema is not found
         val saxParser: SAXParser = factory.newSAXParser()
         val schemaAccess = createSchema()
-        val dataCollector = ConceptDataCollector(schemaAccess)
+        val dataCollector = ConceptDataCollectorImpl(schemaAccess)
 
         val saxParserHandler = SaxParserHandler(schemaAccess, dataCollector, emptyMap(), Paths.get("."), virtualFileSystem, logger)
 

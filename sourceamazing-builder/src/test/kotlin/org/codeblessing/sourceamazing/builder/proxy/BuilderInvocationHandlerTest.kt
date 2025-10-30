@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
@@ -133,7 +133,7 @@ class BuilderInvocationHandlerTest {
 
     }
 
-    private fun createBuilderProxy(conceptDataCollector: ConceptDataCollector): RootBuilder {
+    private fun createBuilderProxy(conceptDataCollector: ConceptDataCollectorImpl): RootBuilder {
         val schemaAccess = createSchemaAccess()
         BuilderHierarchyValidator.validateTopLevelBuilderMethods(RootBuilder::class, schemaAccess)
         return ProxyCreator.createProxy(
@@ -196,7 +196,7 @@ class BuilderInvocationHandlerTest {
         checkAssertions(conceptDataCollector)
     }
 
-    private fun checkAssertions(conceptDataCollector: ConceptDataCollector) {
+    private fun checkAssertions(conceptDataCollector: ConceptDataCollectorImpl) {
         val personFirstnameFacet = FacetName.of("PersonFirstnameFacet")
         val personAgeFacet = FacetName.of("PersonAgeFacet")
         val personSkillReferenceFacet = FacetName.of("PersonSkillsReference")
@@ -222,8 +222,8 @@ class BuilderInvocationHandlerTest {
         Assertions.assertEquals("Judo", judo.getFacet(skillDescriptionFacet).single())
     }
 
-    private fun createDataCollector(): ConceptDataCollector {
-        return ConceptDataCollector(createSchemaAccess())
+    private fun createDataCollector(): ConceptDataCollectorImpl {
+        return ConceptDataCollectorImpl(createSchemaAccess())
     }
 
     private fun createSchemaAccess(): SchemaAccess {

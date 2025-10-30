@@ -10,7 +10,7 @@ import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
@@ -23,7 +23,7 @@ import kotlin.reflect.KParameter
 class BuilderInvocationHandler(
     private val schemaAccess: SchemaAccess,
     builderClass: KClass<*>,
-    private val conceptDataCollector: ConceptDataCollector,
+    private val conceptDataCollector: ConceptDataCollectorImpl,
     superiorConcepts: Map<Alias, ConceptName>,
     private val superiorConceptIds: Map<Alias, ConceptIdentifier>
 ): KotlinInvocationHandler(
@@ -81,7 +81,7 @@ class BuilderInvocationHandler(
 
     private fun createNewBuilderProxy(
         builderClass: KClass<*>,
-        dataCollector: ConceptDataCollector,
+        dataCollector: ConceptDataCollectorImpl,
         aliasToConceptMap: Map<Alias, ConceptName>,
         aliasToConceptIdMap: Map<Alias, ConceptIdentifier>
     ): Any {

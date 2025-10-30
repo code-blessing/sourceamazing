@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
-import org.codeblessing.sourceamazing.schema.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
@@ -21,7 +21,7 @@ import java.nio.file.Path
 
 class SaxParserHandler(
     private val schema: SchemaAccess,
-    private val dataCollector: ConceptDataCollector,
+    private val dataCollector: ConceptDataCollectorImpl,
     private val placeholders: Map<String, String>,
     private val schemaFileDirectory: Path,
     private val fileSystemAccess: FileSystemAccess,
