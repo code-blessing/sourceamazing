@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.schema.conceptgraph
 
 import org.codeblessing.sourceamazing.schema.ConceptData
-import org.codeblessing.sourceamazing.schema.FacetName
-import org.codeblessing.sourceamazing.schema.FacetSchema
-import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.FacetName
+import org.codeblessing.sourceamazing.schema.api.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException

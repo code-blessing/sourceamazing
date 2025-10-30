@@ -5,8 +5,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationR
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil

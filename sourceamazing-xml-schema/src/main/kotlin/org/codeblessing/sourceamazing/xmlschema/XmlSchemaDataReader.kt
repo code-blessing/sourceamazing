@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.xmlschema
 
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.LoggerFacade

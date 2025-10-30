@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ConceptIdentifierAnnotationData
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 
 interface BuilderInterpreter {
     fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>>

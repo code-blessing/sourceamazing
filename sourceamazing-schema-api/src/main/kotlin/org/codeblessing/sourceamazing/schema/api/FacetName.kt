@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.schema
+package org.codeblessing.sourceamazing.schema.api
 
 class FacetName private constructor(val value: String) {
 

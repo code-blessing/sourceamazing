@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
-import org.codeblessing.sourceamazing.schema.FacetSchema
-import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
+import org.codeblessing.sourceamazing.schema.api.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.type.enumValues
 import kotlin.reflect.KClass
 

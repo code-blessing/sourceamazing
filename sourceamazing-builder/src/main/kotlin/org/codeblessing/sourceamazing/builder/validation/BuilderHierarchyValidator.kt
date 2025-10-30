@@ -8,9 +8,9 @@ import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterp
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateBuilderClass
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateTopLevelBuilderClass
 import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.validateBuilderMethod
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import kotlin.reflect.KClass
 
 object BuilderHierarchyValidator {

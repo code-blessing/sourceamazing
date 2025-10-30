@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.builder.interpretation.facetvalue
 
-import org.codeblessing.sourceamazing.schema.FacetType
+import org.codeblessing.sourceamazing.schema.api.FacetType
 
 class EnumFacetValueAnnotationContent(
     base: FacetValueAnnotationBaseData,

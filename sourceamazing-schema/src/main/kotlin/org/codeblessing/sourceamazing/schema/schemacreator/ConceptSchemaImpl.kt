@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.ConceptSchema
-import org.codeblessing.sourceamazing.schema.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.FacetSchema
 
 
 class ConceptSchemaImpl(

@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.builder.update
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.schema.ConceptData
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollector
 import kotlin.reflect.KParameter

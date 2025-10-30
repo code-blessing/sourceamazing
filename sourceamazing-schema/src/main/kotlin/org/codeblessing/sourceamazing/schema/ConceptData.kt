@@ -1,6 +1,8 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
 
 interface ConceptData {
     val sequenceNumber: Int

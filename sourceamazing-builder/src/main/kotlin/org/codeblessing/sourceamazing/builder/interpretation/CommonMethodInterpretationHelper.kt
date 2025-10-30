@@ -16,10 +16,10 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.FacetName
-import org.codeblessing.sourceamazing.schema.FacetType
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
+import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.toConceptName
 import org.codeblessing.sourceamazing.schema.toFacetName

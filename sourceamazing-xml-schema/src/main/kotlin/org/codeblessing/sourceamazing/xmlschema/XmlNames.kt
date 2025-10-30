@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.xmlschema
 
-import org.codeblessing.sourceamazing.schema.ConceptName
-import org.codeblessing.sourceamazing.schema.ConceptSchema
-import org.codeblessing.sourceamazing.schema.FacetName
-import org.codeblessing.sourceamazing.schema.FacetSchema
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.FacetName
+import org.codeblessing.sourceamazing.schema.api.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.xmlschema.tools.CaseUtil
 
 object XmlNames {

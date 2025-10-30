@@ -13,9 +13,9 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ConceptI
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
-import org.codeblessing.sourceamazing.schema.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.toFacetName
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import java.lang.reflect.InvocationTargetException

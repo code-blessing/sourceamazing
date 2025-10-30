@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import kotlin.reflect.KFunction
 
 class RecursionDetector {

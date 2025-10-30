@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.schema.util
 
-import org.codeblessing.sourceamazing.schema.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import java.util.*
 

@@ -1,6 +1,9 @@
 package org.codeblessing.sourceamazing.schema
 
+import org.codeblessing.sourceamazing.schema.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.schema.api.SchemaProcessorApi
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
@@ -12,7 +15,6 @@ import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.proxy.ConceptInstanceInvocationHandler
-import org.codeblessing.sourceamazing.schema.schemacreator.query.proxy.SchemaInstanceInvocationHandler
 import kotlin.reflect.KClass
 
 class SchemaProcessor(

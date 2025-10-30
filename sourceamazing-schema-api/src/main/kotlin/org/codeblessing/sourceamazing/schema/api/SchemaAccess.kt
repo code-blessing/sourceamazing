@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.schema
+package org.codeblessing.sourceamazing.schema.api
 
 interface SchemaAccess {
     fun hasConceptName(conceptName: ConceptName): Boolean
