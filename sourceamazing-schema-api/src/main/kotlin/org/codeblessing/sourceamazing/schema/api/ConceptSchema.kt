@@ -5,6 +5,7 @@ interface ConceptSchema {
     val conceptName: ConceptName
     val facets: List<FacetSchema>
 
+    // TODO move the following implementations to the implementation class (even if trivial)
     val facetNames: List<FacetName>
         get() = facets.map { it.facetName }.toList()
 
