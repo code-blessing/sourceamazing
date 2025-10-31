@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
 
 class RevealedSchemaContext(
     override val schema: SchemaAccess,
-    override val conceptDataCollector: ConceptDataCollectorImpl,
+    override val dataCollector: ConceptDataCollectorImpl,
     val fileSystemAccess: FileSystemAccess,
     val loggerFacade: LoggerFacade,
 ): SchemaContext

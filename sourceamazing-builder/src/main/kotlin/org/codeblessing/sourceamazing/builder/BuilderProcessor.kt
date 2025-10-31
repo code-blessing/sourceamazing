@@ -17,7 +17,7 @@ class BuilderProcessor(): BuilderProcessorApi {
         val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(
             schemaAccess = schemaAccess,
             builderClass = builderClass,
-            conceptDataCollector = schemaContextImplementation.conceptDataCollector,
+            conceptDataCollector = schemaContextImplementation.dataCollector,
             superiorConcepts = emptyMap(),
             superiorConceptIds = emptyMap()
         ))

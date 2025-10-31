@@ -16,7 +16,7 @@ class XmlSchemaProcessor(): XmlSchemaProcessorApi {
             placeholders = placeholders,
             fileSystemAccess = revealedSchemaContext.fileSystemAccess,
             schemaAccess = revealedSchemaContext.schema,
-            dataCollector = revealedSchemaContext.conceptDataCollector,
+            dataCollector = revealedSchemaContext.dataCollector,
         )
     }
 }
