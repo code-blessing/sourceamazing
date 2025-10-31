@@ -15,7 +15,7 @@ class SchemaApiFacetTest {
 
         @Suppress("UNUSED")
         @Facet
-        val name: String
+        val name: String?
     }
 
     @Test
@@ -32,7 +32,7 @@ class SchemaApiFacetTest {
 
         @Suppress("UNUSED")
         @Facet
-        val myEnum: MyValidEnum
+        val myEnum: MyValidEnum?
     }
 
     @Test
@@ -536,7 +536,9 @@ class SchemaApiFacetTest {
 
     private interface SchemaWithConceptWithValidFacets {
 
-        enum class MyEnumeration
+        enum class MyEnumeration {
+            @Suppress("Unused") MY_FIRST_ENUM_VALUE
+        }
 
         interface CommonConcept
 
@@ -660,8 +662,13 @@ class SchemaApiFacetTest {
     @Test
     fun `test concept with valid return types should return without exception`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithValidFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithValidFacets>(schemaContext) {
-                // do nothing
+            withRootInstance<SchemaWithConceptWithValidFacets>(schemaContext) { rootConceptId ->
+                val specificOneRef = schemaContext.dataCollector.newConceptData(SchemaWithConceptWithValidFacets.SpecificConceptOne::class.toConceptName())
+                val specificTwoRef = schemaContext.dataCollector.newConceptData(SchemaWithConceptWithValidFacets.SpecificConceptOne::class.toConceptName())
+
+                schemaContext.dataCollector.existingConceptData(rootConceptId)
+                    .addFacetValue(SchemaWithConceptWithValidFacets::mySingleConceptReferenceFacetAsCommonConceptInterface.name.toFacetName(), specificOneRef.conceptIdentifier)
+                    .addFacetValue(SchemaWithConceptWithValidFacets::myMultipleConceptReferenceFacetAsCommonConcept.name.toFacetName(), specificTwoRef.conceptIdentifier)
             }
         }
     }

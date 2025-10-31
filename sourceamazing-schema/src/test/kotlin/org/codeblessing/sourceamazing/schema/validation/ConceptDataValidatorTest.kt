@@ -5,13 +5,13 @@ import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
+import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownConceptException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownFacetNameException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
@@ -235,12 +235,12 @@ class ConceptDataValidatorTest {
 
     @Test
     fun `validate that a reference pointing to an available concept with wrong type throws an exception`() {
-        val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
         val conceptIdentifier = ConceptIdentifier.of("Bar")
+        val schemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(SchemaForReferenceFacetValidation::class)
         val conceptDataReferencing = createEmptyConceptData(SchemaForReferenceFacetValidation::class)
         conceptDataReferencing.addFacetValue(mandatoryRefToOneConceptFacetName, conceptIdentifier)
         val conceptDataReferenced = createEmptyConceptData(OtherThanTheOtherConcept::class, conceptIdentifier) // wrong concept type
-        Assertions.assertThrows(WrongReferencedConceptFacetValueException::class.java) {
+        Assertions.assertThrows(MultipleDataValidationException::class.java) {
             ConceptDataValidator.validateEntries(schemaAccess, listOf(conceptDataReferencing, conceptDataReferenced))
         }
 

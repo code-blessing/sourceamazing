@@ -1,17 +1,12 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryConceptIdentifierValue
-import org.codeblessing.sourceamazing.schema.api.annotations.QueryFacetValue
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.query.QueryMethodUtil
 import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.KProperty
 
 class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): KotlinInvocationHandler(
     allowMemberProperties = true,
@@ -19,27 +14,19 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): Ko
 )  {
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
-        function.findAnnotation<QueryFacetValue>()?.let {
-            val facetClass = it.facetName
-            val facetNameToQuery = facetClass.toFacetName()
-            val facetValues = requireNotNull(conceptNode.facetValues[facetNameToQuery]) {
-                "Facet values not found for facet ${facetClass}."
+        if(function is KProperty.Getter<*>) {
+            val property = function.property
+
+            val facetName = property.name.toFacetName()
+            val facetValues = requireNotNull(conceptNode.facetValues[facetName]) {
+                "Facet values not found for facet $facetName and concept ${conceptNode.conceptName}."
             }
 
             val facetValueList = facetValues.map(::mapFacetValue)
-
-            return@invoke QueryMethodUtil.adaptResultToFunctionReturnType(function, facetValueList)
+            return QueryMethodUtil.adaptResultToType(property.returnType, facetValueList)
         }
 
-        function.findAnnotation<QueryConceptIdentifierValue>()?.let {
-            return@invoke when(KTypeUtil.classFromType(function.returnType)) {
-                String::class -> conceptNode.conceptIdentifier.name
-                ConceptIdentifier::class -> conceptNode.conceptIdentifier
-                else -> throw IllegalStateException("Unsupported type ${function.returnType} for conceptIdentifier method.")
-            }
-        }
-
-        throw IllegalArgumentException("Method $function has not the supported annotations (${QueryFacetValue::class.shortText()} or ${QueryConceptIdentifierValue::class.shortText()}).")
+        throw IllegalArgumentException("Method $function is not a supported property.")
     }
 
     private fun mapFacetValue(facetValue: Any): Any {

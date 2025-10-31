@@ -4,11 +4,12 @@ import org.codeblessing.sourceamazing.schema.type.KTypeUtil
 import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KType
 
 object QueryMethodUtil {
 
-    fun adaptResultToFunctionReturnType(kFunction: KFunction<*>, resultList: List<Any>): Any? {
-        val returnTypeClassesInformation = KTypeUtil.classesInformationFromKType(kFunction.returnType)
+    fun adaptResultToType(type: KType, resultList: List<Any>): Any? {
+        val returnTypeClassesInformation = KTypeUtil.classesInformationFromKType(type)
         val returnTypeCollectionClassInfo = collectionClassInfo(returnTypeClassesInformation)
         val returnTypeValueClassInfo = valueClassInfo(returnTypeClassesInformation)
 
@@ -32,7 +33,6 @@ object QueryMethodUtil {
             }
         }
     }
-
 
     fun collectionClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation? {
         return if(hasCollection(classesInformation)) classesInformation.first() else null
