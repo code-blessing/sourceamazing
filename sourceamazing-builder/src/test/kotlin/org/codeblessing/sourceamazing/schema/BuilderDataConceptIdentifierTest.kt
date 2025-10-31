@@ -53,11 +53,17 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId2 = ConceptIdentifier.of("My-Id-2")
         val myConceptId3 = ConceptIdentifier.of("My-Id-3")
 
-        val schemaInstance = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConcepts::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddConcepts::class) { builder ->
-                builder.createConceptOne(myConceptId1)
-                builder.createConceptOne(myConceptId2)
-                builder.createConceptTwo(myConceptId3)
+        val schemaInstance = SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext -> 
+            withRootInstance<SchemaWithConcepts>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    rootConceptIdentifier,
+                    BuilderToAddConcepts::class
+                ) { builder ->
+                    builder.createConceptOne(myConceptId1)
+                    builder.createConceptOne(myConceptId2)
+                    builder.createConceptTwo(myConceptId3)
+                }
             }
         }
 
@@ -70,10 +76,16 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConcepts::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddConcepts::class) { builder ->
-                    builder.createConceptOne(myConceptId)
-                    builder.createConceptOne(myConceptId)
+            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext -> 
+                withRootInstance<SchemaWithConcepts>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddConcepts::class
+                    ) { builder ->
+                        builder.createConceptOne(myConceptId)
+                        builder.createConceptOne(myConceptId)
+                    }
                 }
             }
         }
@@ -84,10 +96,16 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConcepts::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddConcepts::class) { builder ->
-                    builder.createConceptOne(myConceptId)
-                    builder.createConceptTwo(myConceptId)
+            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext -> 
+                withRootInstance<SchemaWithConcepts>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddConcepts::class
+                    ) { builder ->
+                        builder.createConceptOne(myConceptId)
+                        builder.createConceptTwo(myConceptId)
+                    }
                 }
             }
         }
@@ -97,11 +115,17 @@ class BuilderDataConceptIdentifierTest {
     fun `test quick validation throws the exception immediately on the wrong builder method`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
-        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConcepts::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddConcepts::class) { builder ->
-                builder.createConceptOne(myConceptId)
-                assertThrows<DuplicateConceptIdentifierException> {
-                    builder.createConceptTwo(myConceptId)
+        SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext -> 
+            withRootInstance<SchemaWithConcepts>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    rootConceptIdentifier,
+                    BuilderToAddConcepts::class
+                ) { builder ->
+                    builder.createConceptOne(myConceptId)
+                    assertThrows<DuplicateConceptIdentifierException> {
+                        builder.createConceptTwo(myConceptId)
+                    }
                 }
             }
         }

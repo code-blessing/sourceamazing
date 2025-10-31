@@ -54,17 +54,24 @@ class BuilderDataNestingBuildersTest {
 
     @Test
     fun `test returning a higher level builder from a lower level builder`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderReturningASubBuilderInASubSubBuilder::class) { builder ->
-                builder
-                    .createConcept()
-                    .setText("Added1")
-                    .setNumber(17)
-                    .setText("Added2")
-                    .setNumber(23)
-                    .setText("Added3")
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderReturningASubBuilderInASubSubBuilder::class
+                    ) { builder ->
+                        builder
+                            .createConcept()
+                            .setText("Added1")
+                            .setNumber(17)
+                            .setText("Added2")
+                            .setNumber(23)
+                            .setText("Added3")
+                    }
+                }
             }
-        }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcepts = schemaInstance.concepts.first()

@@ -51,8 +51,11 @@ class SchemaSmokeTest {
 
     @Test
     fun `test sourceamazing schema as smoke test`() {
-        val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) {
-            // do nothing
+        val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) { schemaContext ->
+            withRootInstance<SmokeTestSchema>(schemaContext) {
+                // do nothing
+            }
+
         }
 
         Assertions.assertEquals(0, schemaInstance.personList.size)

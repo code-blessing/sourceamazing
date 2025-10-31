@@ -5,7 +5,8 @@ import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
 import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 import org.codeblessing.sourceamazing.schema.SchemaProcessor
-import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
+import org.codeblessing.sourceamazing.schema.toConceptName
+// import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
@@ -140,10 +141,14 @@ class SourceamazingProcessTest {
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
         val formSchema = schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
-            XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
-            BuilderApi.withBuilder(schemaContext, FormBuilder::class) { dataCollector ->
+            val rootConcept = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
+            val rootConceptIdentifier = rootConcept.conceptIdentifier
+            // TODO activate XML schema as soon as it supports root concepts
+            // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
+            BuilderApi.withBuilder(schemaContext, rootConceptIdentifier, FormBuilder::class) { dataCollector ->
                 FormData.collectFormData(dataCollector)
             }
+            rootConceptIdentifier
         }
 
         Assertions.assertEquals(2, formSchema.forms.size)

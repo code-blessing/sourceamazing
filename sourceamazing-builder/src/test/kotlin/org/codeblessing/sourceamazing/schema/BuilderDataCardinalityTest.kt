@@ -60,12 +60,19 @@ class BuilderDataCardinalityTest {
 
     @Test
     fun `test insert a correct amount of facet entries does not throw validation exception`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                builder.createConcept()
-                    .addText("hallo1")
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                            .addText("hallo1")
+                    }
+                }
             }
-        }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(1, concept.zeroToThreeTexts.size)
@@ -74,9 +81,15 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert nothing to a text facet with minimumOccurrences of 1 throws an exception`() {
         assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                    builder.createConcept()
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                    }
                 }
             }
         }
@@ -85,13 +98,19 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts to a text facet with maximumOccurrences of 3 throws an exception`() {
         assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                    builder.createConcept()
-                    .addText("hallo1")
-                    .addText("hallo2")
-                    .addText("hallo3")
-                    .addText("hallo4")
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                            .addText("hallo1")
+                            .addText("hallo2")
+                            .addText("hallo3")
+                            .addText("hallo4")
+                    }
                 }
             }
         }
@@ -100,10 +119,16 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts as array list to a text facet with maximumOccurrences of 3 throws an exception`() {
         assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                    builder.createConcept()
-                        .addTexts("hallo1", "hello2", "hallo3", "hallo4")
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                            .addTexts("hallo1", "hello2", "hallo3", "hallo4")
+                    }
                 }
             }
         }

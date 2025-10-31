@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
 class BuilderApiFacetMultiUseTest {
@@ -74,9 +75,15 @@ class BuilderApiFacetMultiUseTest {
 
     @Test
     fun `test using nested builder for two different concepts with overlapping facets should not fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class) { 
-                // do nothing
+        SchemaApi.withSchema(SchemaWithConceptWithMultiUsedFacet::class) { schemaContext -> 
+            withRootInstance<SchemaWithConceptWithMultiUsedFacet>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    rootConceptIdentifier,
+                    BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class
+                ) {
+                    // do nothing
+                }
             }
         }
     }
@@ -112,9 +119,15 @@ class BuilderApiFacetMultiUseTest {
     @Test
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class) { 
-                    // do nothing
+            SchemaApi.withSchema(SchemaWithConceptWithMultiUsedFacet::class) { schemaContext -> 
+                withRootInstance<SchemaWithConceptWithMultiUsedFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class
+                    ) {
+                        // do nothing
+                    }
                 }
             }
         }

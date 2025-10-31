@@ -77,12 +77,19 @@ class BuilderDataFacetTypeAndQueryTest {
 
     @Test
     fun `test insert zero values for all the different types of facets does not fail`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                builder.createConcept()
-                    // no facet values added
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                        // no facet values added
+                    }
+                }
             }
-        }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(0, concept.textFacetAsList.size)
@@ -93,12 +100,24 @@ class BuilderDataFacetTypeAndQueryTest {
 
     @Test
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                builder.createConcept()
-                    .addFacetValues(myTextValue = "hallo", myBoolValue = true, myNumberValue = 42, myEnumValue = MyEnum.FOO)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                            .addFacetValues(
+                                myTextValue = "hallo",
+                                myBoolValue = true,
+                                myNumberValue = 42,
+                                myEnumValue = MyEnum.FOO
+                            )
+                    }
+                }
             }
-        }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(1, concept.textFacetAsList.size)
@@ -117,13 +136,30 @@ class BuilderDataFacetTypeAndQueryTest {
 
     @Test
     fun `test insert two values for all the different types of facets does not fail`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddOrReplaceFacets::class) { builder ->
-                builder.createConcept()
-                    .addFacetValues(myTextValue = "hallo1", myBoolValue = false, myNumberValue = 43, myEnumValue = MyEnum.BAR)
-                    .addFacetValues(myTextValue = "hallo2", myBoolValue = true, myNumberValue = 44, myEnumValue = MyEnum.FOO)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddOrReplaceFacets::class
+                    ) { builder ->
+                        builder.createConcept()
+                            .addFacetValues(
+                                myTextValue = "hallo1",
+                                myBoolValue = false,
+                                myNumberValue = 43,
+                                myEnumValue = MyEnum.BAR
+                            )
+                            .addFacetValues(
+                                myTextValue = "hallo2",
+                                myBoolValue = true,
+                                myNumberValue = 44,
+                                myEnumValue = MyEnum.FOO
+                            )
+                    }
+                }
             }
-        }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(2, concept.textFacetAsList.size)

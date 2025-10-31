@@ -12,11 +12,13 @@ import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 @Builder
+@ExpectedAliasFromSuperiorBuilder("root")
 interface FormBuilder {
 
     @BuilderMethod
     @WithNewBuilder(FormConceptBuilder::class)
     @NewConcept(FormSchema.FormConcept::class, "form")
+    @SetAliasConceptIdentifierReferenceFacetValue("root", "forms", referencedConceptAlias = "form")
     fun createNewForm(
         @SetConceptIdentifierValue("form") conceptIdentifier: ConceptIdentifier,
         @SetFacetValue("form", "FormTitle") formTitle: String

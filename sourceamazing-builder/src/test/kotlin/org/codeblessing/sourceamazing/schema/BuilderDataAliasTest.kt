@@ -54,14 +54,21 @@ class BuilderDataAliasTest {
 
     @Test
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderUsingSameAliasForSameConceptInNestedBuilders::class) { builder ->
-                builder
-                    .createConcept()
-                    .setText("myText")
-                    .setNumber(17)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderUsingSameAliasForSameConceptInNestedBuilders::class
+                    ) { builder ->
+                        builder
+                            .createConcept()
+                            .setText("myText")
+                            .setNumber(17)
+                    }
+                }
             }
-        }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcept = schemaInstance.concepts.first()
@@ -113,13 +120,20 @@ class BuilderDataAliasTest {
 
     @Test
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class) { builder ->
-                builder
-                    .createConcept().setTextAndFixedNumber("ConceptFromTopLevelBuilder")
-                    .createConceptAndSetText("OtherConceptFromSubBuilder").setNumber(17)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class
+                    ) { builder ->
+                        builder
+                            .createConcept().setTextAndFixedNumber("ConceptFromTopLevelBuilder")
+                            .createConceptAndSetText("OtherConceptFromSubBuilder").setNumber(17)
+                    }
+                }
             }
-        }
         assertEquals(2, schemaInstance.concepts.size)
 
         val firstConcept = schemaInstance.concepts.first()

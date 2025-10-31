@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -173,31 +174,37 @@ class BuilderSmokeTest {
         val judoConceptIdentifier = SkillConceptIdentifier("Judo")
 
 
-        val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(schemaDefinitionClass = SmokeTestSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, SmokeTestRootBuilder::class) { builder ->
-                // add some data in DSL style
-                builder
-                    .newPerson(jamesConceptIdentifier) {
-                        firstnameAndAge(firstname = "James", age = 18)
-                        sex(PersonSex.MALE)
-                        skill(cookingConceptIdentifier) {
-                            description("Cooking for Dinner")
-                            stillEnjoying(true)
+        val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext -> 
+            withRootInstance<SmokeTestSchema>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    rootConceptIdentifier,
+                    SmokeTestRootBuilder::class
+                ) { builder ->
+                    // add some data in DSL style
+                    builder
+                        .newPerson(jamesConceptIdentifier) {
+                            firstnameAndAge(firstname = "James", age = 18)
+                            sex(PersonSex.MALE)
+                            skill(cookingConceptIdentifier) {
+                                description("Cooking for Dinner")
+                                stillEnjoying(true)
+                            }
+                            skill(skateboardConceptIdentifier) {
+                                description("Skateboarding")
+                                stillEnjoying(false)
+                            }
                         }
-                        skill(skateboardConceptIdentifier) {
-                            description("Skateboarding")
-                            stillEnjoying(false)
-                        }
-                    }
 
-                // add some data in builder style
-                val linda = builder
-                    .newPerson(lindaConceptIdentifier, firstname = "Linda", sex = PersonSex.FEMALE)
-                    .age(29)
-                linda.skill(judoConceptIdentifier)
-                    .description("Judo")
-                    .stillEnjoying(true)
+                    // add some data in builder style
+                    val linda = builder
+                        .newPerson(lindaConceptIdentifier, firstname = "Linda", sex = PersonSex.FEMALE)
+                        .age(29)
+                    linda.skill(judoConceptIdentifier)
+                        .description("Judo")
+                        .stillEnjoying(true)
 
+                }
             }
         }
 

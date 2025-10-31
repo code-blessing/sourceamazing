@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.api.annotations.Schema
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -170,27 +170,33 @@ class NestedConceptsBuilderTest {
     fun `test nesting of concepts`() {
         val personBo =  ConceptIdentifier.of("Person")
 
-        val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(schemaDefinitionClass = NestedConceptsSchema::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, NestedObjectsBuilder::class) { builder ->
-                builder.newBusinessObject(personBo, "the person business object") {
-                    addSingleValueField("firstname") {
-                        builtinType(BuiltinTypeEnum.STRING)
+        val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(NestedConceptsSchema::class) { schemaContext -> 
+            withRootInstance<NestedConceptsSchema>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    rootConceptIdentifier,
+                    NestedObjectsBuilder::class
+                ) { builder ->
+                    builder.newBusinessObject(personBo, "the person business object") {
+                        addSingleValueField("firstname") {
+                            builtinType(BuiltinTypeEnum.STRING)
+                        }
+
+                        addSingleValueField("age") {
+                            builtinType(BuiltinTypeEnum.INTEGER)
+                        }
+                        addSingleValueField("spouse") {
+                            reference(personBo)
+                        }
+                        addCollectionOfValuesField("nicknames", CollectionKindEnum.LIST) {
+                            builtinType(BuiltinTypeEnum.STRING)
+                        }
+                        addCollectionOfValuesField("children", CollectionKindEnum.SET) {
+                            reference(personBo)
+                        }
                     }
 
-                    addSingleValueField("age") {
-                        builtinType(BuiltinTypeEnum.INTEGER)
-                    }
-                    addSingleValueField("spouse") {
-                        reference(personBo)
-                    }
-                    addCollectionOfValuesField("nicknames", CollectionKindEnum.LIST) {
-                        builtinType(BuiltinTypeEnum.STRING)
-                    }
-                    addCollectionOfValuesField("children", CollectionKindEnum.SET) {
-                        reference(personBo)
-                    }
                 }
-
             }
         }
 

@@ -56,12 +56,19 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     @Test
     fun `test add reference to itself`() {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddReferences::class) { builder ->
-                builder.createConcept(selfReferencingConceptIdentifier)
-                    .addReference(selfReferencingConceptIdentifier)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddReferences::class
+                    ) { builder ->
+                        builder.createConcept(selfReferencingConceptIdentifier)
+                            .addReference(selfReferencingConceptIdentifier)
+                    }
+                }
             }
-        }
 
         assertEquals(1, schemaInstance.concepts.size)
         val concept = schemaInstance.concepts.first()
@@ -76,15 +83,22 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val firstReferencedConceptIdentifier = ConceptIdentifier.of("First-Referenced-Id")
         val secondReferencedConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddReferences::class) { builder ->
-                builder.createConcept(mainConceptIdentifier)
-                    .addReference(firstReferencedConceptIdentifier)
-                    .addReference(secondReferencedConceptIdentifier)
-                builder.createConcept(firstReferencedConceptIdentifier)
-                builder.createConcept(secondReferencedConceptIdentifier)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddReferences::class
+                    ) { builder ->
+                        builder.createConcept(mainConceptIdentifier)
+                            .addReference(firstReferencedConceptIdentifier)
+                            .addReference(secondReferencedConceptIdentifier)
+                        builder.createConcept(firstReferencedConceptIdentifier)
+                        builder.createConcept(secondReferencedConceptIdentifier)
+                    }
+                }
             }
-        }
 
         assertEquals(3, schemaInstance.concepts.size)
         val mainConcept = schemaInstance.concepts.first { it.conceptId == mainConceptIdentifier.name }
@@ -107,16 +121,23 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val secondConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddReferences::class) { builder ->
-                builder.createConcept(firstConceptIdentifier)
-                    .addReference(secondConceptIdentifier)
-                builder.createConcept(secondConceptIdentifier)
-                    .addReference(thirdConceptIdentifier)
-                builder.createConcept(thirdConceptIdentifier)
-                    .addReference(firstConceptIdentifier)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddReferences::class
+                    ) { builder ->
+                        builder.createConcept(firstConceptIdentifier)
+                            .addReference(secondConceptIdentifier)
+                        builder.createConcept(secondConceptIdentifier)
+                            .addReference(thirdConceptIdentifier)
+                        builder.createConcept(thirdConceptIdentifier)
+                            .addReference(firstConceptIdentifier)
+                    }
+                }
             }
-        }
 
         assertEquals(3, schemaInstance.concepts.size)
 
@@ -139,16 +160,23 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val secondConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet = SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-            BuilderApi.withBuilder(schemaContext, BuilderToAddReferences::class) { builder ->
-                builder.createConcept(firstConceptIdentifier)
-                    .addReference(secondConceptIdentifier)
-                builder.createConcept(secondConceptIdentifier)
-                    .addReference(thirdConceptIdentifier)
-                builder.createConcept(thirdConceptIdentifier)
-                    .addReference(firstConceptIdentifier)
+        val schemaInstance: SchemaWithConceptWithFacet =
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddReferences::class
+                    ) { builder ->
+                        builder.createConcept(firstConceptIdentifier)
+                            .addReference(secondConceptIdentifier)
+                        builder.createConcept(secondConceptIdentifier)
+                            .addReference(thirdConceptIdentifier)
+                        builder.createConcept(thirdConceptIdentifier)
+                            .addReference(firstConceptIdentifier)
+                    }
+                }
             }
-        }
 
         assertEquals(3, schemaInstance.concepts.size)
 
@@ -169,12 +197,18 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val uninstantiatedConceptId = ConceptIdentifier.of("Uninstantiated-Referenced-Id")
 
         assertThrows<MissingReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFacet::class) { schemaContext ->
-                BuilderApi.withBuilder(schemaContext, BuilderToAddReferences::class) { builder ->
-                    builder.createConcept(mainConceptId)
-                        .addReference(instantiatedConceptId)
-                        .addReference(uninstantiatedConceptId)
-                    builder.createConcept(instantiatedConceptId)
+            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderToAddReferences::class
+                    ) { builder ->
+                        builder.createConcept(mainConceptId)
+                            .addReference(instantiatedConceptId)
+                            .addReference(uninstantiatedConceptId)
+                        builder.createConcept(instantiatedConceptId)
+                    }
                 }
             }
         }
