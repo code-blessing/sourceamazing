@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
+import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
 
 class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptDataCollector {
 
@@ -21,6 +22,10 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptD
         return conceptData.getOrPut(conceptIdentifier) {
             createNewConceptData(conceptName, conceptIdentifier)
         }
+    }
+
+    override fun newConceptData(conceptName: ConceptName): ConceptData {
+        return newConceptData(conceptName, ConceptIdentifierUtil.random(conceptName))
     }
 
     override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {

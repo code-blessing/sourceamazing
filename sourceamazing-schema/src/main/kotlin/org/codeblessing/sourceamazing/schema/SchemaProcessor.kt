@@ -8,6 +8,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.schema.api.SchemaProcessorApi
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
+import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingRootConceptException
 import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.schema.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.schema.logger.JavaUtilLoggerFacade
@@ -25,23 +26,20 @@ class SchemaProcessor(
     @Suppress("unused")
     constructor(): this(PhysicalFilesFileSystemAccess())
 
-    override fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> Unit): S {
+    override fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> ConceptIdentifier): S {
         val schemaAccess: SchemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
         val conceptDataCollector = ConceptDataCollectorImpl(schemaAccess)
         val revealedSchemaContext = RevealedSchemaContext(schemaAccess, conceptDataCollector, fileSystemAccess, loggerFacade)
 
-        schemaUsage(revealedSchemaContext)
-
-        // TODO use workaround for root concept
-        val rootConceptName = ConceptName.of(schemaDefinitionClass)
-        val rootConceptIdentifier = ConceptIdentifier.of("UniqueRoot")
-        val rootConcept = conceptDataCollector.newConceptData(rootConceptName, rootConceptIdentifier)
+        val rootConceptIdentifier = schemaUsage(revealedSchemaContext)
 
         val conceptData: List<ConceptData> = conceptDataCollector.provideConceptData()
         val conceptGraph = ConceptResolver.validateAndResolveConcepts(schemaAccess, conceptData)
-        // TODO get root concept and pass it to the ConceptInstanceInvocationHandler(rootConceptNode)
-        val rootConceptNode = conceptGraph.conceptByConceptIdentifier(rootConceptIdentifier)
-        // TODO throw proper exception if root concept is not found
+        val rootConceptNode = try {
+            conceptGraph.conceptByConceptIdentifier(rootConceptIdentifier)
+        } catch(_: NoSuchElementException) {
+            throw MissingRootConceptException(DataCollectionErrorCode.MISSING_ROOT_CONCEPT, rootConceptIdentifier.name)
+        }
         val schemaInstance = ProxyCreator.createProxy(schemaDefinitionClass, ConceptInstanceInvocationHandler(rootConceptNode))
         return schemaInstance
 

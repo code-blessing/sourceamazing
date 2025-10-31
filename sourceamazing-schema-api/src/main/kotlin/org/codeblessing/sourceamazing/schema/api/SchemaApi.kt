@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 
 object SchemaApi {
 
-    fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> Unit): S {
+    fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> ConceptIdentifier): S {
         val schemaProcessorApis: ServiceLoader<SchemaProcessorApi> = ServiceLoader.load(SchemaProcessorApi::class.java)
 
         val schemaProcessorApi = requireNotNull(schemaProcessorApis.firstOrNull()) {

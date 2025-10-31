@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema
 
 enum class DataCollectionErrorCode(override val messageFormat: String): ErrorCode {
 
+    MISSING_ROOT_CONCEPT("The root concept with concept id '%s' could not be found."),
     MULTIPLE_DATA_VALIDATION_EXCEPTIONS("There where %s data validation exceptions."),
     MISSING_REFERENCED_CONCEPT_FACET_VALUE("Facet '%s' of concept identifier '%s' in concept '%s' points to a reference that was not found. No concept with concept id '%s'. Must be one of these concepts: %s. \n%s"),
     WRONG_REFERENCED_CONCEPT_FACET_VALUE("Facet '%s' of concept identifier '%s' in concept '%s' points to a concept that is not permitted. Referenced concept was '%s'. Must be one of these concepts: %s. \n%s"),

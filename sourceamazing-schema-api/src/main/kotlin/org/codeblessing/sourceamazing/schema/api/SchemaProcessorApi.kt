@@ -4,5 +4,5 @@ import kotlin.reflect.KClass
 
 interface SchemaProcessorApi {
 
-    fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> Unit): S
+    fun <S : Any> withSchema(schemaDefinitionClass: KClass<S>, schemaUsage: (schemaContext: SchemaContext)-> ConceptIdentifier): S
 }

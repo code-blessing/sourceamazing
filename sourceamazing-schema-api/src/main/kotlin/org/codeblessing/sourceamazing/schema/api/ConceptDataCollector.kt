@@ -8,6 +8,8 @@ interface ConceptDataCollector {
 
     fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData
 
+    fun newConceptData(conceptName: ConceptName): ConceptData
+
     fun validateAfterUpdate(conceptData: ConceptData)
 
 }
