@@ -60,14 +60,12 @@ class BuilderApiAliasTest {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                    withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                        BuilderApi.withBuilder(
-                            schemaContext,
-                            rootConceptIdentifier,
-                            BuilderMethodWithDuplicateAliasForNewConcept::class
-                        ) {
-                            // do nothing
-                        }
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        rootConceptIdentifier,
+                        BuilderMethodWithDuplicateAliasForNewConcept::class
+                    ) {
+                        // do nothing
                     }
                 }
             }
@@ -646,7 +644,7 @@ class BuilderApiAliasTest {
         @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet") value: String
+            @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text") value: String
         )
     }
 
@@ -682,7 +680,7 @@ class BuilderApiAliasTest {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetProvidedFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet")
+            @SetProvidedFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text")
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
             }
@@ -892,7 +890,7 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet", value = "some text")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text", value = "some text")
         fun doSomething()
     }
 
@@ -917,7 +915,7 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "TextFacet", value = "some text")
+        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text", value = "some text")
         fun doSomething()
     }
 
@@ -1052,7 +1050,7 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") value: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") value: String,
             )
         }
     }
@@ -1094,7 +1092,7 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") valueForKnown: String,
             )
         }
     }
@@ -1140,7 +1138,7 @@ class BuilderApiAliasTest {
             @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "TextFacet") valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") valueForKnown: String,
             )
         }
     }

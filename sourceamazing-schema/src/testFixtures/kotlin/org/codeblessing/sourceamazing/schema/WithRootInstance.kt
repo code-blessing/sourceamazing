@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
+import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
-import kotlin.collections.emptyList
 
 inline fun <reified T : Any> withRootInstance(
     schemaContext: SchemaContext,
@@ -13,6 +14,13 @@ inline fun <reified T : Any> withRootInstance(
     val rootConceptName = rootConceptClass.toConceptName()
     val rootConcept = schemaContext.schema.allConcepts().first { it.conceptName == rootConceptName }
     val rootConceptData = schemaContext.dataCollector.newConceptData(rootConceptName)
+    writeDefaultValues(rootConcept, rootConceptData)
+
+    executable(rootConceptData.conceptIdentifier)
+    return rootConceptData.conceptIdentifier
+}
+
+fun writeDefaultValues(rootConcept: ConceptSchema, rootConceptData: ConceptData) {
     rootConcept.facets.forEach { facetSchema ->
         if(facetSchema.minimumOccurrences > 0) {
             val defaultValue = when(facetSchema.facetType) {
@@ -28,6 +36,4 @@ inline fun <reified T : Any> withRootInstance(
         }
     }
 
-    executable(rootConceptData.conceptIdentifier)
-    return rootConceptData.conceptIdentifier
 }
