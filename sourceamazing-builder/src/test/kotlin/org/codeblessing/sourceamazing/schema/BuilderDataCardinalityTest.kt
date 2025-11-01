@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -14,7 +15,7 @@ class BuilderDataCardinalityTest {
     private interface SchemaWithConceptWithFacet {
 
         interface ConceptWithFacet {
-            
+
             @Facet
             val zeroToThreeTexts: List<String>
         }
@@ -25,6 +26,7 @@ class BuilderDataCardinalityTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -65,8 +67,9 @@ class BuilderDataCardinalityTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -85,8 +88,9 @@ class BuilderDataCardinalityTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                     }
@@ -102,8 +106,9 @@ class BuilderDataCardinalityTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -123,8 +128,9 @@ class BuilderDataCardinalityTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addTexts("hallo1", "hello2", "hallo3", "hallo4")

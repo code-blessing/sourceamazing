@@ -5,23 +5,30 @@ import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
+import org.codeblessing.sourceamazing.builder.interpretation.RootClassInterpreter
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateBuilderClass
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateTopLevelBuilderClass
 import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.validateBuilderMethod
-import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.RelevantMethodFetcher
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import kotlin.reflect.KClass
 
 object BuilderHierarchyValidator {
 
-    fun validateTopLevelBuilderMethods(topLevelBuilderClass: KClass<*>, schemaAccess: SchemaAccess) {
+    fun validateTopLevelBuilderMethods(
+        topLevelBuilderClass: KClass<*>,
+        schemaAccess: SchemaAccess,
+        rootConceptName: ConceptName,
+    ): Alias {
+        val rootAliases = RootClassInterpreter(topLevelBuilderClass).getRootAliases()
         val builderClassInterpreter = BuilderClassInterpreter(
             builderClass = topLevelBuilderClass,
-            newConceptNamesWithAliasFromSuperiorBuilder = emptyMap(),
+            isTopLevelBuilder = true,
+            newConceptNamesWithAliasFromSuperiorBuilder = rootAliases.associateWith { rootConceptName },
         )
-        validateTopLevelBuilderClass(builderClassInterpreter)
+        validateBuilderClass(builderClassInterpreter)
         validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
+        return rootAliases.first()
     }
 
     /**
@@ -47,6 +54,7 @@ object BuilderHierarchyValidator {
                 if(subBuilderClass != null) {
                     val subBuilderClassInterpreter = BuilderClassInterpreter(
                         builderClass = subBuilderClass,
+                        isTopLevelBuilder = false,
                         newConceptNamesWithAliasFromSuperiorBuilder = expectedConceptsFromSuperiorMethod + builderMethodInterpreter.newConcepts(),
                     )
 

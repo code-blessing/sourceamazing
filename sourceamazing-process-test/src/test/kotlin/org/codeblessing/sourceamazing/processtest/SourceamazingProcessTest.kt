@@ -133,16 +133,13 @@ class SourceamazingProcessTest {
         definitionXmlFile to testXmlDefinitionFileContent
     )
 
-    private val parameterMap: Map<String, String> = emptyMap()
-
     @Test
     fun `run test to import data from xml files and builder`() {
         val fileSystemAccess = StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
         val formSchema = schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
-            val rootConcept = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
-            val rootConceptIdentifier = rootConcept.conceptIdentifier
+            val rootConceptIdentifier = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName()).conceptIdentifier
             // TODO activate XML schema as soon as it supports root concepts
             // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
             BuilderApi.withBuilder(schemaContext, rootConceptIdentifier, FormBuilder::class) { dataCollector ->

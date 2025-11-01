@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -23,6 +24,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -127,8 +129,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -150,8 +153,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -173,8 +177,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -196,8 +201,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -217,8 +223,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .setTextNullable("hallo1")
@@ -241,8 +248,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -266,8 +274,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -290,8 +299,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -314,8 +324,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -336,8 +347,9 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addTextNullable("hallo1")

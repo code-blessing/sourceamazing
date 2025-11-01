@@ -1,10 +1,12 @@
 package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
+import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedRootAlias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
@@ -12,26 +14,26 @@ import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExact
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
+import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNotAnnotation
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
 import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
+import kotlin.reflect.KClass
 
 object BuilderClassValidator {
     private const val BUILDER_CLASS_DESCRIPTION = "Builder class"
 
-    fun validateTopLevelBuilderClass(builderClassInterpreter: BuilderClassInterpreter) {
-        validateHasOnlyBuilderAnnotation(builderClassInterpreter)  // this is only valid for top-level builder
-        validateBuilderClass(builderClassInterpreter)
-    }
-
     fun validateBuilderClass(builderClassInterpreter: BuilderClassInterpreter) {
+        val builderClass = builderClassInterpreter.builderClass
         validateBuilderClassStructure(builderClassInterpreter)
+        if(builderClassInterpreter.isTopLevelBuilder) {
+            checkHasAnnotation(ExpectedRootAlias::class, builderClass, BUILDER_CLASS_DESCRIPTION)
+            checkHasExactNumberOfAnnotations(ExpectedRootAlias::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
+            checkHasNotAnnotation(ExpectedAliasFromSuperiorBuilder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
+        } else {
+            checkHasNotAnnotation(ExpectedRootAlias::class, builderClass, BUILDER_CLASS_DESCRIPTION)
+        }
         validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter)
         validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter)
-    }
-
-    private fun validateHasOnlyBuilderAnnotation(builderClassInterpreter: BuilderClassInterpreter) {
-        val builderClass = builderClassInterpreter.builderClass
-        checkHasOnlyAnnotations(listOf(Builder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
     }
 
     private fun validateBuilderClassStructure(builderClassInterpreter: BuilderClassInterpreter) {
@@ -42,7 +44,7 @@ object BuilderClassValidator {
         checkHasNoProperties(builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasAnnotation(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasExactNumberOfAnnotations(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
-        checkHasOnlyAnnotations(listOf(Builder::class, ExpectedAliasFromSuperiorBuilder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
+        checkHasOnlyAnnotations(listOf(Builder::class, ExpectedRootAlias::class, ExpectedAliasFromSuperiorBuilder::class), builderClass, BUILDER_CLASS_DESCRIPTION)
     }
 
     private fun validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter: BuilderClassInterpreter) {

@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -17,9 +18,11 @@ class BuilderDataProviderTest {
             @Suppress("UNUSED")
             @Facet
             val id: String
+
             @Suppress("UNUSED")
             @Facet
             val text: String
+
             @Suppress("UNUSED")
             @Facet
             val number: Int
@@ -73,6 +76,7 @@ class BuilderDataProviderTest {
         @Suppress("UNUSED")
         @BuilderData
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "bar")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "bar")
         fun createConcept() {
             // do nothing as everything is already done with annotations
         }
@@ -82,6 +86,13 @@ class BuilderDataProviderTest {
         @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun getConceptIdentifier(): ConceptIdentifier {
             return conceptId
+        }
+
+        @Suppress("UNUSED")
+        @BuilderData
+        @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "id")
+        fun getId(): String {
+            return conceptId.name
         }
 
         @Suppress("UNUSED")
@@ -101,23 +112,33 @@ class BuilderDataProviderTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodForDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "number", value = 23)
         fun doSomethingWithTheProvidedTextValue(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
-            @ProvideBuilderData myDataParameter: MyFacetTextData,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptId: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "id")
+            id: String,
+            @ProvideBuilderData
+            myDataParameter: MyFacetTextData,
         )
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "number", value = 24)
         fun doSomethingWithTheProvidedTextValue(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptId: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "id")
+            id: String,
             @ProvideBuilderData myDataParameter: MyGenericFacetData<String>,
         )
 
@@ -139,34 +160,35 @@ class BuilderDataProviderTest {
         val myNewConceptData = MyConceptWithTextAndNumberData(
             conceptId = fromNewConceptDataObjectId,
             text = "hallo new concept",
-            number = 42
+            number = 42,
         )
 
         val schemaWithConcept = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
             withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
                     rootConceptIdentifier,
-                    BuilderMethodForDataProvider::class
+                    BuilderMethodForDataProvider::class,
                 ) { builder ->
-                    builder.doSomethingWithTheProvidedTextValue(fromSimpleDataObjectId, mySimpleFacetData)
-                    builder.doSomethingWithTheProvidedTextValue(fromGenericDataObjectId, myGenericFacetData)
+                    builder.doSomethingWithTheProvidedTextValue(fromSimpleDataObjectId, fromSimpleDataObjectId.name, mySimpleFacetData)
+                    builder.doSomethingWithTheProvidedTextValue(fromGenericDataObjectId, fromGenericDataObjectId.name, myGenericFacetData)
                     builder.doSomethingWithTheProvidedConcept(myNewConceptData)
                 }
             }
         }
 
-        val conceptFromSimpleObject = schemaWithConcept.concepts.first { it.id == fromSimpleDataObjectId.name  }
+        val conceptFromSimpleObject = schemaWithConcept.concepts.first { it.id == fromSimpleDataObjectId.name }
         assertEquals(fromSimpleDataObjectId.name, conceptFromSimpleObject.id)
         assertEquals("hallo from simple facet", conceptFromSimpleObject.text)
         assertEquals(23, conceptFromSimpleObject.number)
 
-        val conceptFromGenericObject = schemaWithConcept.concepts.first { it.id == fromGenericDataObjectId.name  }
+        val conceptFromGenericObject = schemaWithConcept.concepts.first { it.id == fromGenericDataObjectId.name }
         assertEquals(fromGenericDataObjectId.name, conceptFromGenericObject.id)
         assertEquals("hallo from generic facet", conceptFromGenericObject.text)
         assertEquals(24, conceptFromGenericObject.number)
 
-        val conceptFromNewObject = schemaWithConcept.concepts.first { it.id == fromNewConceptDataObjectId.name  }
+        val conceptFromNewObject = schemaWithConcept.concepts.first { it.id == fromNewConceptDataObjectId.name }
         assertEquals(fromNewConceptDataObjectId.name, conceptFromNewObject.id)
         assertEquals("hallo new concept", conceptFromNewObject.text)
         assertEquals(42, conceptFromNewObject.number)

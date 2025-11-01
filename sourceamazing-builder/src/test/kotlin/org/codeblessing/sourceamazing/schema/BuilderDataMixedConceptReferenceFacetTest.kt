@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -24,15 +25,16 @@ class BuilderDataMixedConceptReferenceFacetTest {
             val id: String
         }
 
-        interface ConceptAlpha: AlphaAndBeta
+        interface ConceptAlpha : AlphaAndBeta
 
-        interface ConceptBeta: AlphaAndBeta
+        interface ConceptBeta : AlphaAndBeta
 
         interface ConceptGamma
     }
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod
@@ -79,8 +81,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier)
                         builder.createAlphaConcept(alpha2ConceptIdentifier)
@@ -96,9 +99,14 @@ class BuilderDataMixedConceptReferenceFacetTest {
                     }
                 }
             }
-        val expectedConceptIdentifiers = listOf(alpha1ConceptIdentifier, beta1ConceptIdentifier, alpha1ConceptIdentifier, alpha2ConceptIdentifier).map { it.name }
+        val expectedConceptIdentifiers = listOf(
+            alpha1ConceptIdentifier,
+            beta1ConceptIdentifier,
+            alpha1ConceptIdentifier,
+            alpha2ConceptIdentifier,
+        ).map { it.name }
 
-        assertEquals(expectedConceptIdentifiers, schemaInstance.alphaAndBetaAsList.map { it.id})
+        assertEquals(expectedConceptIdentifiers, schemaInstance.alphaAndBetaAsList.map { it.id })
     }
 
     @Test
@@ -114,8 +122,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier)
                         builder.createAlphaConcept(alpha2ConceptIdentifier)

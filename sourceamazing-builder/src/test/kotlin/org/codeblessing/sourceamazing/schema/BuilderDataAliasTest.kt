@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -14,15 +15,18 @@ class BuilderDataAliasTest {
         interface ConceptWithFacet {
             @Facet
             val text: String
+
             @Facet
             val number: Int
 
         }
+
         @Facet
         val concepts: List<ConceptWithFacet>
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
 
         @BuilderMethod
@@ -59,8 +63,9 @@ class BuilderDataAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderUsingSameAliasForSameConceptInNestedBuilders::class
+                        BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
                     ) { builder ->
                         builder
                             .createConcept()
@@ -77,6 +82,7 @@ class BuilderDataAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
 
         @BuilderMethod
@@ -125,8 +131,9 @@ class BuilderDataAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class
+                        BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,
                     ) { builder ->
                         builder
                             .createConcept().setTextAndFixedNumber("ConceptFromTopLevelBuilder")

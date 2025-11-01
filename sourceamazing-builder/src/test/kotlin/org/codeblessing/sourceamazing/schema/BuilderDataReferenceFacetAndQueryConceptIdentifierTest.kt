@@ -6,6 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,7 +18,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         interface ConceptWithFacet {
             @Facet
             val conceptId: String
-            
+
             @Facet
             val conceptReferenceFacetAsList: List<ConceptWithFacet>
         }
@@ -28,6 +29,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod
@@ -61,8 +63,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createConcept(selfReferencingConceptIdentifier)
                             .addReference(selfReferencingConceptIdentifier)
@@ -88,8 +91,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createConcept(mainConceptIdentifier)
                             .addReference(firstReferencedConceptIdentifier)
@@ -126,8 +130,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createConcept(firstConceptIdentifier)
                             .addReference(secondConceptIdentifier)
@@ -165,8 +170,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createConcept(firstConceptIdentifier)
                             .addReference(secondConceptIdentifier)
@@ -182,12 +188,15 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val firstConcept = schemaInstance.concepts.first { it.conceptId == firstConceptIdentifier.name }
 
-        assertEquals(secondConceptIdentifier.name, firstConcept
-            .conceptReferenceFacetAsList.first()
-            .conceptReferenceFacetAsList.first()
-            .conceptReferenceFacetAsList.first()
-            .conceptReferenceFacetAsList.first()
-            .conceptId)
+        assertEquals(
+            secondConceptIdentifier.name,
+            firstConcept
+                .conceptReferenceFacetAsList.first()
+                .conceptReferenceFacetAsList.first()
+                .conceptReferenceFacetAsList.first()
+                .conceptReferenceFacetAsList.first()
+                .conceptId,
+        )
     }
 
     @Test
@@ -201,8 +210,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddReferences::class
+                        BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createConcept(mainConceptId)
                             .addReference(instantiatedConceptId)

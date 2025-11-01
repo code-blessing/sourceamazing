@@ -9,30 +9,38 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
 
 class BuilderApiAliasTest {
     private interface SchemaWithConceptWithFacet {
 
         enum class MyEnumeration {
-            @Suppress("UNUSED") A,
-            @Suppress("UNUSED") B,
-            @Suppress("UNUSED") C,
+            @Suppress("UNUSED")
+            A,
+            @Suppress("UNUSED")
+            B,
+            @Suppress("UNUSED")
+            C,
         }
 
         interface ConceptWithFacet {
             @Suppress("UNUSED")
             @Facet
             val text: String
+
             @Suppress("UNUSED")
             @Facet
             val bool: Boolean
+
             @Suppress("UNUSED")
             @Facet
             val number: Int
+
             @Suppress("UNUSED")
             @Facet
             val enumeration: MyEnumeration
+
             @Suppress("UNUSED")
             @Facet
             val reference: ConceptWithFacet
@@ -40,11 +48,12 @@ class BuilderApiAliasTest {
 
         @Suppress("UNUSED")
         @Facet
-        val concept: ConceptWithFacet
+        val concepts: List<ConceptWithFacet>
 
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForNewConcept {
 
         @Suppress("UNUSED")
@@ -52,6 +61,7 @@ class BuilderApiAliasTest {
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
@@ -62,8 +72,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithDuplicateAliasForNewConcept::class
+                        BuilderMethodWithDuplicateAliasForNewConcept::class,
                     ) {
                         // do nothing
                     }
@@ -73,18 +84,19 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(builderClass = BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept.() -> Unit,
         )
-        
-        
+
         @Builder
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept {
@@ -104,8 +116,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias::class
+                        BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias::class,
                     ) {
                         // do nothing
                     }
@@ -115,11 +128,13 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithNewConcept {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
@@ -145,8 +160,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithNewConcept::class
+                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithNewConcept::class,
                     ) {
                         // do nothing
                     }
@@ -156,6 +172,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForRandomConceptIdentifier {
 
         @Suppress("UNUSED")
@@ -163,18 +180,23 @@ class BuilderApiAliasTest {
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
     @Test
     fun `test duplicate alias for SetRandomConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithDuplicateAliasForRandomConceptIdentifier::class
+                        BuilderMethodWithDuplicateAliasForRandomConceptIdentifier::class,
                     ) {
                         // do nothing
                     }
@@ -184,12 +206,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetRandomId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
         )
@@ -209,13 +233,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias with Builder and Data Provider for SetRandomConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetRandomId::class
+                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetRandomId::class,
                     ) {
                         // do nothing
                     }
@@ -226,11 +254,13 @@ class BuilderApiAliasTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier2: ConceptIdentifier,
@@ -239,13 +269,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias for ConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier::class
+                        BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier::class,
                     ) {
                         // do nothing
                     }
@@ -255,11 +289,13 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
@@ -280,13 +316,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias with Builder and Data Provider for ConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetId::class
+                        BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetId::class,
                     ) {
                         // do nothing
                     }
@@ -296,23 +336,29 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutConceptIdentifierForAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
     @Test
     fun `test missing concept identifier declaration for alias should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithoutConceptIdentifierForAlias::class
+                        BuilderMethodWithoutConceptIdentifierForAlias::class,
                     ) {
                         // do nothing
                     }
@@ -322,11 +368,13 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutConceptIdentifierForAliasInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
@@ -347,13 +395,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test missing concept identifier declaration in data provider for alias should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithoutConceptIdentifierForAliasInDataProvider::class
+                        BuilderMethodWithoutConceptIdentifierForAliasInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -364,12 +416,14 @@ class BuilderApiAliasTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateMixedConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier
         )
@@ -377,13 +431,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias with SetRandomConceptIdentifierValue and SetConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithDuplicateMixedConceptIdentifier::class
+                        BuilderMethodWithDuplicateMixedConceptIdentifier::class,
                     ) {
                         // do nothing
                     }
@@ -393,12 +451,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithRandomIdAndConceptIdentifierForAliasInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
         )
@@ -418,13 +478,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias with SetRandomConceptIdentifierValue in builder and SetConceptIdentifierValue in data provider annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithRandomIdAndConceptIdentifierForAliasInDataProvider::class
+                        BuilderMethodWithRandomIdAndConceptIdentifierForAliasInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -435,11 +499,13 @@ class BuilderApiAliasTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -455,13 +521,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test new concept with assignment of concept identifier but in the nested builder should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithoutAssignmentOfConceptIdentifier::class
+                        BuilderMethodWithoutAssignmentOfConceptIdentifier::class,
                     ) {
                         // do nothing
                     }
@@ -471,15 +541,16 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifierInBuilderButInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithConceptId
         )
-
 
         @BuilderDataProvider
         class DataProviderWithConceptId {
@@ -499,8 +570,9 @@ class BuilderApiAliasTest {
             withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
                     rootConceptIdentifier,
-                    BuilderMethodWithoutAssignmentOfConceptIdentifierInBuilderButInDataProvider::class
+                    BuilderMethodWithoutAssignmentOfConceptIdentifierInBuilderButInDataProvider::class,
                 ) {
                     // do nothing
                 }
@@ -509,6 +581,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -523,8 +596,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier::class
+                        BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier::class,
                     ) {
                         // do nothing
                     }
@@ -534,6 +608,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider {
 
         @Suppress("UNUSED")
@@ -562,8 +637,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider::class
+                        BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -573,6 +649,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -588,8 +665,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -599,6 +677,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider {
 
         @Suppress("UNUSED")
@@ -627,8 +706,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider::class
+                        BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -639,6 +719,7 @@ class BuilderApiAliasTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation {
 
         @Suppress("UNUSED")
@@ -655,8 +736,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -666,6 +748,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider {
 
         @Suppress("UNUSED")
@@ -694,8 +777,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider::class
+                        BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -705,14 +789,15 @@ class BuilderApiAliasTest {
     }
 
 
-
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation.() -> Unit,
@@ -728,7 +813,7 @@ class BuilderApiAliasTest {
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
                 facetToModify = "RefFacet",
-                referencedConceptAlias = "known"
+                referencedConceptAlias = "known",
             )
             fun doSomething()
         }
@@ -741,8 +826,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias::class
+                        BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias::class,
                     ) {
                         // do nothing
                     }
@@ -752,12 +838,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         fun doSomething(
             @ProvideBuilderData data: DataProvider
         )
@@ -771,7 +859,7 @@ class BuilderApiAliasTest {
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
                 facetToModify = "RefFacet",
-                referencedConceptAlias = "known"
+                referencedConceptAlias = "known",
             )
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
@@ -786,8 +874,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndDataProviderHavingUnknownAlias::class
+                        BuilderMethodWithAliasAndDataProviderHavingUnknownAlias::class,
                     ) {
                         // do nothing
                     }
@@ -797,12 +886,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation.() -> Unit,
@@ -818,7 +909,7 @@ class BuilderApiAliasTest {
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
                 facetToModify = "RefFacet",
-                referencedConceptAlias = "unknown"
+                referencedConceptAlias = "unknown",
             )
             fun doSomething()
         }
@@ -831,8 +922,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias::class
+                        BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias::class,
                     ) {
                         // do nothing
                     }
@@ -842,12 +934,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownReferenceAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         fun doSomething(
             @ProvideBuilderData data: DataProvider
         )
@@ -860,7 +954,7 @@ class BuilderApiAliasTest {
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
                 facetToModify = "RefFacet",
-                referencedConceptAlias = "unknown"
+                referencedConceptAlias = "unknown",
             )
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
@@ -875,8 +969,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithAliasAndDataProviderHavingUnknownReferenceAlias::class
+                        BuilderMethodWithAliasAndDataProviderHavingUnknownReferenceAlias::class,
                     ) {
                         // do nothing
                     }
@@ -887,6 +982,7 @@ class BuilderApiAliasTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -901,8 +997,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -912,6 +1009,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -926,8 +1024,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider::class
+                        BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider::class,
                     ) {
                         // do nothing
                     }
@@ -937,6 +1036,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -963,8 +1063,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -974,6 +1075,7 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -988,8 +1090,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -999,13 +1102,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
         @SetFixedEnumFacetValue(
             conceptToModifyAlias = "unknown",
             facetToModify = "EnumerationFacet",
-            value = "A"
+            value = "A",
         )
         fun doSomething()
     }
@@ -1017,8 +1121,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation::class
+                        BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation::class,
                     ) {
                         // do nothing
                     }
@@ -1028,14 +1133,17 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilder::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilder.() -> Unit,
@@ -1061,8 +1169,9 @@ class BuilderApiAliasTest {
             withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
                     rootConceptIdentifier,
-                    BuilderMethodCallingASubBuilderProvidingAnAlias::class
+                    BuilderMethodCallingASubBuilderProvidingAnAlias::class,
                 ) {
                     // do nothing
                 }
@@ -1071,14 +1180,17 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit,
@@ -1104,8 +1216,9 @@ class BuilderApiAliasTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias::class
+                        BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias::class,
                     ) {
                         // do nothing
                     }
@@ -1115,14 +1228,17 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodReusingAnAliasNameFromSuperiorBuilder::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit,
@@ -1149,8 +1265,9 @@ class BuilderApiAliasTest {
             withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
                     rootConceptIdentifier,
-                    BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration::class
+                    BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration::class,
                 ) {
                     // do nothing
                 }
@@ -1159,12 +1276,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -1180,13 +1299,17 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias in ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION) {
+        assertExceptionWithErrorCode(
+            BuilderSyntaxException::class,
+            BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation::class
+                        BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation::class,
                     ) {
                         // do nothing
                     }

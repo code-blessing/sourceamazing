@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -19,11 +20,13 @@ class BuilderDataNestingBuildersTest {
             val numbers: List<Int>
 
         }
+
         @Facet
         val concepts: List<ConceptWithFacet>
     }
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderReturningASubBuilderInASubSubBuilder {
 
         @BuilderMethod
@@ -59,8 +62,9 @@ class BuilderDataNestingBuildersTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderReturningASubBuilderInASubSubBuilder::class
+                        BuilderReturningASubBuilderInASubSubBuilder::class,
                     ) { builder ->
                         builder
                             .createConcept()

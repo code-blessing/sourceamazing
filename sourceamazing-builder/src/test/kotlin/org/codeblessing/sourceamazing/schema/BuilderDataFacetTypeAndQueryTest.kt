@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.SchemaWithConceptWithFacet.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -20,10 +21,13 @@ class BuilderDataFacetTypeAndQueryTest {
         interface ConceptWithFacet {
             @Facet
             val textFacetAsList: List<String>
+
             @Facet
             val boolFacetAsList: List<Boolean>
+
             @Facet
             val numberFacetAsList: List<Int>
+
             @Facet
             val enumerationFacetAsList: List<MyEnum>
 
@@ -35,6 +39,7 @@ class BuilderDataFacetTypeAndQueryTest {
 
 
     @Builder
+    @ExpectedRootAlias("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -82,8 +87,9 @@ class BuilderDataFacetTypeAndQueryTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                         // no facet values added
@@ -105,15 +111,16 @@ class BuilderDataFacetTypeAndQueryTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addFacetValues(
                                 myTextValue = "hallo",
                                 myBoolValue = true,
                                 myNumberValue = 42,
-                                myEnumValue = MyEnum.FOO
+                                myEnumValue = MyEnum.FOO,
                             )
                     }
                 }
@@ -141,21 +148,22 @@ class BuilderDataFacetTypeAndQueryTest {
                 withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
+                        schemaContext.toConceptName(rootConceptIdentifier),
                         rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class
+                        BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
                             .addFacetValues(
                                 myTextValue = "hallo1",
                                 myBoolValue = false,
                                 myNumberValue = 43,
-                                myEnumValue = MyEnum.BAR
+                                myEnumValue = MyEnum.BAR,
                             )
                             .addFacetValues(
                                 myTextValue = "hallo2",
                                 myBoolValue = true,
                                 myNumberValue = 44,
-                                myEnumValue = MyEnum.FOO
+                                myEnumValue = MyEnum.FOO,
                             )
                     }
                 }

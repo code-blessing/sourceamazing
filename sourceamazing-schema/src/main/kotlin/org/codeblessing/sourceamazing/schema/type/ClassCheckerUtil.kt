@@ -57,7 +57,7 @@ object ClassCheckerUtil {
     }
 
     fun checkHasExactNumberOfAnnotations(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String, numberOf: Int) {
-        if(classToInspect.getNumberOfAnnotationIncludingSuperclasses(annotation) > numberOf) {
+        if(classToInspect.getNumberOfAnnotationIncludingSuperclasses(annotation) != numberOf) {
             throw WrongAnnotationSyntaxException(classToInspect, SchemaErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS, classDescription, numberOf, annotation.annotationText())
         }
     }
@@ -67,6 +67,16 @@ object ClassCheckerUtil {
             .filter { it.isAnnotationFromSourceAmazing() }
             .forEach { annotationOnClass ->
                 if(!permittedAnnotations.contains(annotationOnClass.annotationClass)) {
+                    throw WrongAnnotationSyntaxException(classToInspect, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION, classDescription, annotationOnClass.annotationClass.annotationText())
+                }
+            }
+    }
+
+    fun checkHasNotAnnotation(deniedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
+        classToInspect.annotationsIncludingSuperclasses
+            .filter { it.isAnnotationFromSourceAmazing() }
+            .forEach { annotationOnClass ->
+                if(deniedAnnotation == annotationOnClass.annotationClass) {
                     throw WrongAnnotationSyntaxException(classToInspect, SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION, classDescription, annotationOnClass.annotationClass.annotationText())
                 }
             }

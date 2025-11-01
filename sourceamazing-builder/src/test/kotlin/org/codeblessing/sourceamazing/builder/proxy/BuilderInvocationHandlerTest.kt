@@ -2,13 +2,14 @@ package org.codeblessing.sourceamazing.builder.proxy
 
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidator
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
+import org.codeblessing.sourceamazing.schema.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -19,17 +20,21 @@ class BuilderInvocationHandlerTest {
             @Suppress("UNUSED")
             @Facet
             val firstname: String
+
             @Suppress("UNUSED")
             @Facet
             val age: Int
+
             @Suppress("UNUSED")
             @Facet
             val skills: List<SkillConcept>
         }
+
         interface SkillConcept {
             @Suppress("UNUSED")
             @Facet
             val description: String
+
             @Suppress("UNUSED")
             @Facet
             val skillEnjoying: Boolean
@@ -48,7 +53,8 @@ class BuilderInvocationHandlerTest {
     private val judoConceptIdentifier = ConceptIdentifier.of("Judo")
 
     @Builder
-    interface RootBuilder {
+    @ExpectedRootAlias("root")
+    interface PersonBuilder {
 
         // Builder style
         @BuilderMethod
@@ -56,7 +62,7 @@ class BuilderInvocationHandlerTest {
         @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
         fun newPerson(
             @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
+            @SetFacetValue(facetToModify = "firstname") firstname: String,
         ): PersonConceptBuilder
 
         // DSL style
@@ -76,25 +82,28 @@ class BuilderInvocationHandlerTest {
         @Suppress("UNUSED")
         @BuilderMethod
         fun firstname(
-            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
+            @SetFacetValue(facetToModify = "firstname") firstname: String,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun age(
-            @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
+            @SetFacetValue(facetToModify = "age") age: Int,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun firstnameAndAge(
-            @SetFacetValue(facetToModify = "PersonFirstnameFacet") firstname: String,
-            @SetFacetValue(facetToModify = "PersonAgeFacet")  age: Int,
+            @SetFacetValue(facetToModify = "firstname") firstname: String,
+            @SetFacetValue(facetToModify = "age") age: Int,
         ): PersonConceptBuilder
 
         // Builder style
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = "PersonSkillsReference", referencedConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            facetToModify = "skills",
+            referencedConceptAlias = "skill",
+        )
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
         ): SkillConceptBuilder
@@ -103,7 +112,10 @@ class BuilderInvocationHandlerTest {
         @BuilderMethod
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-        @SetAliasConceptIdentifierReferenceFacetValue(facetToModify = "PersonSkillsReference", referencedConceptAlias = "skill")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            facetToModify = "skills",
+            referencedConceptAlias = "skill",
+        )
         fun skill(
             @SetConceptIdentifierValue(conceptToModifyAlias = "skill") skillConceptIdentifier: ConceptIdentifier,
             @InjectBuilder builder: SkillConceptBuilder.() -> Unit,
@@ -117,28 +129,38 @@ class BuilderInvocationHandlerTest {
 
         @BuilderMethod
         fun descriptionAndStillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "description") description: String,
+            @SetFacetValue(
+                conceptToModifyAlias = "skill",
+                facetToModify = "skillEnjoying",
+            ) stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun description(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillDescriptionFacet") description: String,
+            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "description") description: String,
         ): SkillConceptBuilder
 
         @BuilderMethod
         fun stillEnjoying(
-            @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "SkillStillEnjoyingFacet") stillEnjoying: Boolean,
+            @SetFacetValue(
+                conceptToModifyAlias = "skill",
+                facetToModify = "skillEnjoying",
+            ) stillEnjoying: Boolean,
         ): SkillConceptBuilder
 
     }
 
-    private fun createBuilderProxy(conceptDataCollector: ConceptDataCollectorImpl): RootBuilder {
+    private fun createBuilderProxy(conceptDataCollector: ConceptDataCollectorImpl): PersonBuilder {
         val schemaAccess = createSchemaAccess()
-        BuilderHierarchyValidator.validateTopLevelBuilderMethods(RootBuilder::class, schemaAccess)
+        BuilderHierarchyValidator.validateTopLevelBuilderMethods(
+            PersonBuilder::class,
+            schemaAccess,
+            BuilderTestSchema::class.toConceptName(),
+        )
         return ProxyCreator.createProxy(
-            RootBuilder::class,
-            BuilderInvocationHandler(schemaAccess, RootBuilder::class, conceptDataCollector, emptyMap(), emptyMap())
+            PersonBuilder::class,
+            BuilderInvocationHandler(schemaAccess, PersonBuilder::class, true, conceptDataCollector, emptyMap(), emptyMap()),
         )
     }
 
@@ -197,10 +219,10 @@ class BuilderInvocationHandlerTest {
     }
 
     private fun checkAssertions(conceptDataCollector: ConceptDataCollectorImpl) {
-        val personFirstnameFacet = FacetName.of("PersonFirstnameFacet")
-        val personAgeFacet = FacetName.of("PersonAgeFacet")
-        val personSkillReferenceFacet = FacetName.of("PersonSkillsReference")
-        val skillDescriptionFacet = FacetName.of("SkillDescriptionFacet")
+        val personFirstnameFacet = FacetName.of("firstname")
+        val personAgeFacet = FacetName.of("age")
+        val personSkillReferenceFacet = FacetName.of("skills")
+        val skillDescriptionFacet = FacetName.of("description")
 
         val conceptDataList = conceptDataCollector.provideConceptData()
         Assertions.assertEquals(5, conceptDataList.size)
