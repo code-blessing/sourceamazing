@@ -17,7 +17,7 @@ class BuilderDataCardinalityTest {
         interface ConceptWithFacet {
 
             @Facet
-            val zeroToThreeTexts: List<String>
+            val zeroToMultipleTexts: List<String>
         }
 
         @Facet
@@ -32,6 +32,7 @@ class BuilderDataCardinalityTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -40,7 +41,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addText(
                 @SetFacetValue(
-                    facetToModify = "zeroToThreeTexts",
+                    facetToModify = "zeroToMultipleTexts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -50,7 +51,7 @@ class BuilderDataCardinalityTest {
             @BuilderMethod
             fun addTexts(
                 @SetFacetValue(
-                    facetToModify = "zeroToThreeTexts",
+                    facetToModify = "zeroToMultipleTexts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -61,83 +62,66 @@ class BuilderDataCardinalityTest {
     }
 
     @Test
-    fun `test insert a correct amount of facet entries does not throw validation exception`() {
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class,
-                    ) { builder ->
-                        builder.createConcept()
-                            .addText("hallo1")
-                    }
+    fun `test insert nothing to a text facet will return an empty list`() {
+        val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
+                    rootConceptIdentifier,
+                    BuilderToAddOrReplaceFacets::class,
+                ) { builder ->
+                    builder.createConcept()
                 }
             }
+        }
 
         val concept = schemaInstance.concepts.first()
-        Assertions.assertEquals(1, concept.zeroToThreeTexts.size)
+        Assertions.assertEquals(0, concept.zeroToMultipleTexts.size)
     }
 
     @Test
-    fun `test insert nothing to a text facet with minimumOccurrences of 1 throws an exception`() {
-        assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class,
-                    ) { builder ->
-                        builder.createConcept()
-                    }
+    fun `test insert four texts individually to a text facet will return an list of four elements`() {
+        val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
+                    rootConceptIdentifier,
+                    BuilderToAddOrReplaceFacets::class,
+                ) { builder ->
+                    builder.createConcept()
+                        .addText("hallo1")
+                        .addText("hallo2")
+                        .addText("hallo3")
+                        .addText("hallo4")
                 }
             }
         }
+
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(4, concept.zeroToMultipleTexts.size)
+
     }
 
     @Test
-    fun `test insert four texts to a text facet with maximumOccurrences of 3 throws an exception`() {
-        assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class,
-                    ) { builder ->
-                        builder.createConcept()
-                            .addText("hallo1")
-                            .addText("hallo2")
-                            .addText("hallo3")
-                            .addText("hallo4")
-                    }
+    fun `test insert four texts as array list to a text facet will return an list of four elements`() {
+        val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    schemaContext.toConceptName(rootConceptIdentifier),
+                    rootConceptIdentifier,
+                    BuilderToAddOrReplaceFacets::class,
+                ) { builder ->
+                    builder.createConcept()
+                        .addTexts("hallo1", "hello2", "hallo3", "hallo4")
                 }
             }
         }
-    }
 
-    @Test
-    fun `test insert four texts as array list to a text facet with maximumOccurrences of 3 throws an exception`() {
-        assertThrows<WrongCardinalityForFacetValueException> {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
-                        BuilderToAddOrReplaceFacets::class,
-                    ) { builder ->
-                        builder.createConcept()
-                            .addTexts("hallo1", "hello2", "hallo3", "hallo4")
-                    }
-                }
-            }
-        }
+        val concept = schemaInstance.concepts.first()
+        Assertions.assertEquals(4, concept.zeroToMultipleTexts.size)
     }
 
 }

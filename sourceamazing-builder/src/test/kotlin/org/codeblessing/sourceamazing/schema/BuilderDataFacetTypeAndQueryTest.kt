@@ -20,16 +20,16 @@ class BuilderDataFacetTypeAndQueryTest {
 
         interface ConceptWithFacet {
             @Facet
-            val textFacetAsList: List<String>
+            val texts: List<String>
 
             @Facet
-            val boolFacetAsList: List<Boolean>
+            val booleans: List<Boolean>
 
             @Facet
-            val numberFacetAsList: List<Int>
+            val numbers: List<Int>
 
             @Facet
-            val enumerationFacetAsList: List<MyEnum>
+            val enumerations: List<MyEnum>
 
         }
 
@@ -45,6 +45,7 @@ class BuilderDataFacetTypeAndQueryTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -53,25 +54,25 @@ class BuilderDataFacetTypeAndQueryTest {
             @BuilderMethod
             fun addFacetValues(
                 @SetFacetValue(
-                    facetToModify = "TextFacet",
+                    facetToModify = "texts",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myTextValue: String,
                 @SetFacetValue(
-                    facetToModify = "BoolFacet",
+                    facetToModify = "booleans",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myBoolValue: Boolean,
                 @SetFacetValue(
-                    facetToModify = "NumberFacet",
+                    facetToModify = "numbers",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
                 myNumberValue: Int,
                 @SetFacetValue(
-                    facetToModify = "EnumerationFacet",
+                    facetToModify = "enumerations",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -98,10 +99,10 @@ class BuilderDataFacetTypeAndQueryTest {
             }
 
         val concept = schemaInstance.concepts.first()
-        Assertions.assertEquals(0, concept.textFacetAsList.size)
-        Assertions.assertEquals(0, concept.boolFacetAsList.size)
-        Assertions.assertEquals(0, concept.numberFacetAsList.size)
-        Assertions.assertEquals(0, concept.enumerationFacetAsList.size)
+        Assertions.assertEquals(0, concept.texts.size)
+        Assertions.assertEquals(0, concept.booleans.size)
+        Assertions.assertEquals(0, concept.numbers.size)
+        Assertions.assertEquals(0, concept.enumerations.size)
     }
 
     @Test
@@ -127,17 +128,17 @@ class BuilderDataFacetTypeAndQueryTest {
             }
 
         val concept = schemaInstance.concepts.first()
-        Assertions.assertEquals(1, concept.textFacetAsList.size)
-        Assertions.assertEquals("hallo", concept.textFacetAsList[0])
+        Assertions.assertEquals(1, concept.texts.size)
+        Assertions.assertEquals("hallo", concept.texts[0])
 
-        Assertions.assertEquals(1, concept.boolFacetAsList.size)
-        Assertions.assertEquals(true, concept.boolFacetAsList[0])
+        Assertions.assertEquals(1, concept.booleans.size)
+        Assertions.assertEquals(true, concept.booleans[0])
 
-        Assertions.assertEquals(1, concept.numberFacetAsList.size)
-        Assertions.assertEquals(42, concept.numberFacetAsList[0])
+        Assertions.assertEquals(1, concept.numbers.size)
+        Assertions.assertEquals(42, concept.numbers[0])
 
-        Assertions.assertEquals(1, concept.enumerationFacetAsList.size)
-        Assertions.assertEquals(MyEnum.FOO, concept.enumerationFacetAsList[0])
+        Assertions.assertEquals(1, concept.enumerations.size)
+        Assertions.assertEquals(MyEnum.FOO, concept.enumerations[0])
 
     }
 
@@ -170,21 +171,21 @@ class BuilderDataFacetTypeAndQueryTest {
             }
 
         val concept = schemaInstance.concepts.first()
-        Assertions.assertEquals(2, concept.textFacetAsList.size)
-        Assertions.assertEquals("hallo1", concept.textFacetAsList[0])
-        Assertions.assertEquals("hallo2", concept.textFacetAsList[1])
+        Assertions.assertEquals(2, concept.texts.size)
+        Assertions.assertEquals("hallo1", concept.texts[0])
+        Assertions.assertEquals("hallo2", concept.texts[1])
 
-        Assertions.assertEquals(2, concept.boolFacetAsList.size)
-        Assertions.assertEquals(false, concept.boolFacetAsList[0])
-        Assertions.assertEquals(true, concept.boolFacetAsList[1])
+        Assertions.assertEquals(2, concept.booleans.size)
+        Assertions.assertEquals(false, concept.booleans[0])
+        Assertions.assertEquals(true, concept.booleans[1])
 
-        Assertions.assertEquals(2, concept.numberFacetAsList.size)
-        Assertions.assertEquals(43, concept.numberFacetAsList[0])
-        Assertions.assertEquals(44, concept.numberFacetAsList[1])
+        Assertions.assertEquals(2, concept.numbers.size)
+        Assertions.assertEquals(43, concept.numbers[0])
+        Assertions.assertEquals(44, concept.numbers[1])
 
-        Assertions.assertEquals(2, concept.enumerationFacetAsList.size)
-        Assertions.assertEquals(MyEnum.BAR, concept.enumerationFacetAsList[0])
-        Assertions.assertEquals(MyEnum.FOO, concept.enumerationFacetAsList[1])
+        Assertions.assertEquals(2, concept.enumerations.size)
+        Assertions.assertEquals(MyEnum.BAR, concept.enumerations[0])
+        Assertions.assertEquals(MyEnum.FOO, concept.enumerations[1])
     }
 
 }

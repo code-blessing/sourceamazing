@@ -30,6 +30,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder

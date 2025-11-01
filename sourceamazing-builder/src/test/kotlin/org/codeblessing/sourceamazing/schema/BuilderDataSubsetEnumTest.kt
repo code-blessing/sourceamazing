@@ -30,8 +30,16 @@ class BuilderDataSubsetEnumTest {
 
     private interface SchemaWithConceptWithEnumerationFacet {
 
+        interface ConceptWithEnumerationFacet {
+
+            @Suppress("UNUSED")
+            @Facet
+            val enumFacetValue: AllDatatypesEnum
+        }
+
+        @Suppress("UNUSED")
         @Facet
-        val enumFacetValue: AllDatatypesEnum
+        val concept: ConceptWithEnumerationFacet
     }
 
     @Builder
@@ -40,10 +48,11 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
-        @SetRandomConceptIdentifierValue
+        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class, declareConceptAlias = "myConcept")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concept", referencedConceptAlias = "myConcept")
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
+            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
             enumValue: AllDatatypesEnum,
         )
     }
@@ -64,7 +73,7 @@ class BuilderDataSubsetEnumTest {
                 }
             }
 
-        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
 
     enum class CompatibleNumericDatatypesEnum {
@@ -84,10 +93,11 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
-        @SetRandomConceptIdentifierValue
+        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class, declareConceptAlias = "myConcept")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concept", referencedConceptAlias = "myConcept")
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
+            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
             enumValue: CompatibleNumericDatatypesEnum,
         )
     }
@@ -108,7 +118,7 @@ class BuilderDataSubsetEnumTest {
                 }
             }
 
-        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
 
     }
 
@@ -135,10 +145,11 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
-        @SetRandomConceptIdentifierValue
+        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class, declareConceptAlias = "myConcept")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concept", referencedConceptAlias = "myConcept")
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
+            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
             enumValue: ExactCopyOfAllDatatypesEnum,
         )
     }
@@ -159,7 +170,7 @@ class BuilderDataSubsetEnumTest {
                 }
             }
 
-        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.enumFacetValue)
+        Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
 
 
@@ -183,10 +194,11 @@ class BuilderDataSubsetEnumTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithEnumerationFacet::class)
-        @SetRandomConceptIdentifierValue
+        @NewConcept(SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class, declareConceptAlias = "myConcept")
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concept", referencedConceptAlias = "myConcept")
         fun doSetEnumValue(
-            @SetFacetValue(facetToModify = "AllDatatypesEnumerationFacet")
+            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
             enumValue: IncompatibleWithNumericDatatypesEnum,
         )
     }

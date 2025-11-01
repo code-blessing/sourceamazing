@@ -32,6 +32,7 @@ class BuilderDataNestingBuildersTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder

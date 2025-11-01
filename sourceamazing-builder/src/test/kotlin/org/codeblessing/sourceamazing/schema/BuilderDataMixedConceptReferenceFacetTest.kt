@@ -20,6 +20,10 @@ class BuilderDataMixedConceptReferenceFacetTest {
         @References([ConceptAlpha::class, ConceptBeta::class])
         val alphaAndBetaAsList: List<AlphaAndBeta>
 
+        @Suppress("UNUSED")
+        @Facet
+        val gammaAsList: List<ConceptGamma>
+
         interface AlphaAndBeta {
             @Facet
             val id: String
@@ -42,6 +46,8 @@ class BuilderDataMixedConceptReferenceFacetTest {
         fun createAlphaConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "alphaConcept")
             conceptIdentifier: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "alphaConcept", facetToModify = "id")
+            id: String,
         )
 
         @BuilderMethod
@@ -49,10 +55,13 @@ class BuilderDataMixedConceptReferenceFacetTest {
         fun createBetaConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "betaConcept")
             conceptIdentifier: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "betaConcept", facetToModify = "id")
+            id: String,
         )
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptGamma::class, declareConceptAlias = "gammaConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "gammaAsList", referencedConceptAlias = "gammaConcept")
         fun createGammaConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "gammaConcept")
             conceptIdentifier: ConceptIdentifier,
@@ -60,13 +69,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         @BuilderMethod
         fun addReference(
-            @SetFacetValue(
-                facetToModify = "AlphaAndBetaReferenceFacet",
-                conceptToModifyAlias = "mainConcept",
-                facetModificationRule = FacetModificationRule.ADD,
-            )
+            @SetFacetValue(conceptToModifyAlias = "root", facetToModify = "alphaAndBetaAsList", facetModificationRule = FacetModificationRule.ADD)
             conceptIdentifier: ConceptIdentifier,
-        ): BuilderToAddReferences
+        )
     }
 
     @Test
@@ -85,17 +90,16 @@ class BuilderDataMixedConceptReferenceFacetTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createAlphaConcept(alpha1ConceptIdentifier)
-                        builder.createAlphaConcept(alpha2ConceptIdentifier)
-                        builder.createBetaConcept(beta1ConceptIdentifier)
-                        builder.createBetaConcept(beta2ConceptIdentifier)
+                        builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
+                        builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)
+                        builder.createBetaConcept(beta1ConceptIdentifier, beta1ConceptIdentifier.name)
+                        builder.createBetaConcept(beta2ConceptIdentifier, beta2ConceptIdentifier.name)
                         builder.createGammaConcept(gamma1ConceptIdentifier)
 
-                        builder
-                            .addReference(alpha1ConceptIdentifier)
-                            .addReference(beta1ConceptIdentifier)
-                            .addReference(alpha1ConceptIdentifier)
-                            .addReference(alpha2ConceptIdentifier)
+                        builder.addReference(alpha1ConceptIdentifier)
+                        builder.addReference(beta1ConceptIdentifier)
+                        builder.addReference(alpha1ConceptIdentifier)
+                        builder.addReference(alpha2ConceptIdentifier)
                     }
                 }
             }
@@ -126,18 +130,17 @@ class BuilderDataMixedConceptReferenceFacetTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createAlphaConcept(alpha1ConceptIdentifier)
-                        builder.createAlphaConcept(alpha2ConceptIdentifier)
-                        builder.createBetaConcept(beta1ConceptIdentifier)
-                        builder.createBetaConcept(beta2ConceptIdentifier)
+                        builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
+                        builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)
+                        builder.createBetaConcept(beta1ConceptIdentifier, beta1ConceptIdentifier.name)
+                        builder.createBetaConcept(beta2ConceptIdentifier, beta2ConceptIdentifier.name)
                         builder.createGammaConcept(gamma1ConceptIdentifier)
 
-                        builder
-                            .addReference(alpha1ConceptIdentifier)
-                            .addReference(beta1ConceptIdentifier)
-                            .addReference(alpha1ConceptIdentifier)
-                            .addReference(alpha2ConceptIdentifier)
-                            .addReference(gamma1ConceptIdentifier) // this reference is invalid
+                        builder.addReference(alpha1ConceptIdentifier)
+                        builder.addReference(beta1ConceptIdentifier)
+                        builder.addReference(alpha1ConceptIdentifier)
+                        builder.addReference(alpha2ConceptIdentifier)
+                        builder.addReference(gamma1ConceptIdentifier) // this reference is invalid
                     }
                 }
             }

@@ -17,10 +17,10 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         interface ConceptWithFacet {
             @Facet
-            val conceptId: String
+            val id: String
 
             @Facet
-            val conceptReferenceFacetAsList: List<ConceptWithFacet>
+            val conceptReferences: List<ConceptWithFacet>
         }
 
         @Facet
@@ -34,9 +34,12 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
             conceptIdentifier: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "id")
+            id: String,
         ): NestedBuilder
 
         @Builder
@@ -45,7 +48,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             @BuilderMethod
             fun addReference(
                 @SetFacetValue(
-                    facetToModify = "conceptReferenceFacetAsList",
+                    facetToModify = "conceptReferences",
                     conceptToModifyAlias = "myConcept",
                     facetModificationRule = FacetModificationRule.ADD,
                 )
@@ -67,7 +70,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createConcept(selfReferencingConceptIdentifier)
+                        builder.createConcept(selfReferencingConceptIdentifier, selfReferencingConceptIdentifier.name)
                             .addReference(selfReferencingConceptIdentifier)
                     }
                 }
@@ -75,9 +78,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertEquals(1, schemaInstance.concepts.size)
         val concept = schemaInstance.concepts.first()
-        assertEquals(selfReferencingConceptIdentifier.name, concept.conceptId)
-        assertEquals(1, concept.conceptReferenceFacetAsList.size)
-        assertEquals(selfReferencingConceptIdentifier.name, concept.conceptReferenceFacetAsList[0].conceptId)
+        assertEquals(selfReferencingConceptIdentifier.name, concept.id)
+        assertEquals(1, concept.conceptReferences.size)
+        assertEquals(selfReferencingConceptIdentifier.name, concept.conceptReferences[0].id)
     }
 
     @Test
@@ -95,28 +98,28 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createConcept(mainConceptIdentifier)
+                        builder.createConcept(mainConceptIdentifier, mainConceptIdentifier.name)
                             .addReference(firstReferencedConceptIdentifier)
                             .addReference(secondReferencedConceptIdentifier)
-                        builder.createConcept(firstReferencedConceptIdentifier)
-                        builder.createConcept(secondReferencedConceptIdentifier)
+                        builder.createConcept(firstReferencedConceptIdentifier, firstReferencedConceptIdentifier.name)
+                        builder.createConcept(secondReferencedConceptIdentifier, secondReferencedConceptIdentifier.name)
                     }
                 }
             }
 
         assertEquals(3, schemaInstance.concepts.size)
-        val mainConcept = schemaInstance.concepts.first { it.conceptId == mainConceptIdentifier.name }
-        assertEquals(mainConceptIdentifier.name, mainConcept.conceptId)
-        assertEquals(2, mainConcept.conceptReferenceFacetAsList.size)
+        val mainConcept = schemaInstance.concepts.first { it.id == mainConceptIdentifier.name }
+        assertEquals(mainConceptIdentifier.name, mainConcept.id)
+        assertEquals(2, mainConcept.conceptReferences.size)
 
-        val firstReferencedConcept = mainConcept.conceptReferenceFacetAsList[0]
-        val secondReferencedConcept = mainConcept.conceptReferenceFacetAsList[1]
+        val firstReferencedConcept = mainConcept.conceptReferences[0]
+        val secondReferencedConcept = mainConcept.conceptReferences[1]
 
-        assertEquals(firstReferencedConceptIdentifier.name, firstReferencedConcept.conceptId)
-        assertEquals(secondReferencedConceptIdentifier.name, secondReferencedConcept.conceptId)
+        assertEquals(firstReferencedConceptIdentifier.name, firstReferencedConcept.id)
+        assertEquals(secondReferencedConceptIdentifier.name, secondReferencedConcept.id)
 
-        assertEquals(0, firstReferencedConcept.conceptReferenceFacetAsList.size)
-        assertEquals(0, secondReferencedConcept.conceptReferenceFacetAsList.size)
+        assertEquals(0, firstReferencedConcept.conceptReferences.size)
+        assertEquals(0, secondReferencedConcept.conceptReferences.size)
     }
 
     @Test
@@ -134,11 +137,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createConcept(firstConceptIdentifier)
+                        builder.createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
                             .addReference(secondConceptIdentifier)
-                        builder.createConcept(secondConceptIdentifier)
+                        builder.createConcept(secondConceptIdentifier, secondConceptIdentifier.name)
                             .addReference(thirdConceptIdentifier)
-                        builder.createConcept(thirdConceptIdentifier)
+                        builder.createConcept(thirdConceptIdentifier, thirdConceptIdentifier.name)
                             .addReference(firstConceptIdentifier)
                     }
                 }
@@ -146,17 +149,17 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertEquals(3, schemaInstance.concepts.size)
 
-        val firstConcept = schemaInstance.concepts.first { it.conceptId == firstConceptIdentifier.name }
-        val secondConcept = schemaInstance.concepts.first { it.conceptId == secondConceptIdentifier.name }
-        val thirdConcept = schemaInstance.concepts.first { it.conceptId == thirdConceptIdentifier.name }
+        val firstConcept = schemaInstance.concepts.first { it.id == firstConceptIdentifier.name }
+        val secondConcept = schemaInstance.concepts.first { it.id == secondConceptIdentifier.name }
+        val thirdConcept = schemaInstance.concepts.first { it.id == thirdConceptIdentifier.name }
 
-        assertEquals(firstConceptIdentifier.name, firstConcept.conceptId)
-        assertEquals(secondConceptIdentifier.name, secondConcept.conceptId)
-        assertEquals(thirdConceptIdentifier.name, thirdConcept.conceptId)
+        assertEquals(firstConceptIdentifier.name, firstConcept.id)
+        assertEquals(secondConceptIdentifier.name, secondConcept.id)
+        assertEquals(thirdConceptIdentifier.name, thirdConcept.id)
 
-        assertEquals(secondConceptIdentifier.name, firstConcept.conceptReferenceFacetAsList.first().conceptId)
-        assertEquals(thirdConceptIdentifier.name, secondConcept.conceptReferenceFacetAsList.first().conceptId)
-        assertEquals(firstConceptIdentifier.name, thirdConcept.conceptReferenceFacetAsList.first().conceptId)
+        assertEquals(secondConceptIdentifier.name, firstConcept.conceptReferences.first().id)
+        assertEquals(thirdConceptIdentifier.name, secondConcept.conceptReferences.first().id)
+        assertEquals(firstConceptIdentifier.name, thirdConcept.conceptReferences.first().id)
     }
 
     @Test
@@ -174,11 +177,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createConcept(firstConceptIdentifier)
+                        builder.createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
                             .addReference(secondConceptIdentifier)
-                        builder.createConcept(secondConceptIdentifier)
+                        builder.createConcept(secondConceptIdentifier, secondConceptIdentifier.name)
                             .addReference(thirdConceptIdentifier)
-                        builder.createConcept(thirdConceptIdentifier)
+                        builder.createConcept(thirdConceptIdentifier, thirdConceptIdentifier.name)
                             .addReference(firstConceptIdentifier)
                     }
                 }
@@ -186,16 +189,16 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertEquals(3, schemaInstance.concepts.size)
 
-        val firstConcept = schemaInstance.concepts.first { it.conceptId == firstConceptIdentifier.name }
+        val firstConcept = schemaInstance.concepts.first { it.id == firstConceptIdentifier.name }
 
         assertEquals(
             secondConceptIdentifier.name,
             firstConcept
-                .conceptReferenceFacetAsList.first()
-                .conceptReferenceFacetAsList.first()
-                .conceptReferenceFacetAsList.first()
-                .conceptReferenceFacetAsList.first()
-                .conceptId,
+                .conceptReferences.first()
+                .conceptReferences.first()
+                .conceptReferences.first()
+                .conceptReferences.first()
+                .id,
         )
     }
 
@@ -214,10 +217,10 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
-                        builder.createConcept(mainConceptId)
+                        builder.createConcept(mainConceptId, mainConceptId.name)
                             .addReference(instantiatedConceptId)
                             .addReference(uninstantiatedConceptId)
-                        builder.createConcept(instantiatedConceptId)
+                        builder.createConcept(instantiatedConceptId, instantiatedConceptId.name)
                     }
                 }
             }

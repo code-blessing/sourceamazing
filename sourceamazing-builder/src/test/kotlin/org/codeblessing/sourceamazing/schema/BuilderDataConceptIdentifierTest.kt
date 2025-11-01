@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedRootAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
+import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
@@ -20,13 +21,15 @@ class BuilderDataConceptIdentifierTest {
 
     private interface SchemaWithConcepts {
 
-        interface ConceptOne
+        interface AbstractNumericConcept
 
-        interface ConceptTwo
+        interface ConceptOne: AbstractNumericConcept
+
+        interface ConceptTwo: AbstractNumericConcept
 
         @Facet
         @References([ConceptOne::class, ConceptTwo::class])
-        val allConcepts: List<Any>
+        val concepts: List<AbstractNumericConcept>
 
     }
 
@@ -37,6 +40,7 @@ class BuilderDataConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConcepts.ConceptOne::class, declareConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConceptOne(
             @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
             conceptIdentifier: ConceptIdentifier,
@@ -44,6 +48,7 @@ class BuilderDataConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConcepts.ConceptTwo::class, declareConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConceptTwo(
             @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
             conceptIdentifier: ConceptIdentifier,
@@ -71,7 +76,7 @@ class BuilderDataConceptIdentifierTest {
             }
         }
 
-        assertEquals(3, schemaInstance.allConcepts.size)
+        assertEquals(3, schemaInstance.concepts.size)
     }
 
 

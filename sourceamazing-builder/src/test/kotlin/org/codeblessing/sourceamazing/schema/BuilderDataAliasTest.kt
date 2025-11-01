@@ -32,6 +32,7 @@ class BuilderDataAliasTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -88,9 +89,11 @@ class BuilderDataAliasTest {
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
         fun createConcept(): NestedBuilder
 
         @Builder
+        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "root")
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
@@ -102,11 +105,13 @@ class BuilderDataAliasTest {
         }
 
         @Builder
-        // no ExpectedAliasFromSuperiorBuilder here, therefore "myConcept" is a new alias
+        @ExpectedAliasFromSuperiorBuilder("root")
+        // no ExpectedAliasFromSuperiorBuilder("myConcept) here, therefore "myConcept" is a new alias
         interface NestedSubBuilder {
             @BuilderMethod
             @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
             @SetRandomConceptIdentifierValue("myConcept")
+            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
             fun createConceptAndSetText(
                 @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
