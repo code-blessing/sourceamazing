@@ -22,10 +22,6 @@ import kotlin.reflect.KClass
  * [SetFixedIntFacetValue], [SetFixedStringFacetValue],
  * [SetFixedEnumFacetValue], [SetAliasConceptIdentifierReferenceFacetValue]
  *
- * If you handle in a method only one new concept instance,
- * you can leave away the concept alias, a default concept
- * alias will then be used, see [DEFAULT_CONCEPT_ALIAS].
- *
  * @property concept
  *  The type of concept to create.
  * @property declareConceptAlias
@@ -36,5 +32,5 @@ import kotlin.reflect.KClass
 @Repeatable
 annotation class NewConcept(
     val concept: KClass<*>,
-    val declareConceptAlias: String = DEFAULT_CONCEPT_ALIAS
+    val declareConceptAlias: String
 )

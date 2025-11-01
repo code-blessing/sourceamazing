@@ -59,41 +59,41 @@ class BuilderInvocationHandlerTest {
         // Builder style
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
-        @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
+        @NewConcept(concept = BuilderTestSchema.PersonConcept::class, declareConceptAlias = "person")
         fun newPerson(
-            @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(facetToModify = "firstname") firstname: String,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "person") conceptIdentifier: ConceptIdentifier,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
         ): PersonConceptBuilder
 
         // DSL style
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
-        @NewConcept(concept = BuilderTestSchema.PersonConcept::class)
+        @NewConcept(concept = BuilderTestSchema.PersonConcept::class, declareConceptAlias = "person")
         fun newPerson(
-            @SetConceptIdentifierValue conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "person") conceptIdentifier: ConceptIdentifier,
             @InjectBuilder builder: PersonConceptBuilder.() -> Unit,
         )
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder
+    @ExpectedAliasFromSuperiorBuilder(conceptAlias = "person")
     interface PersonConceptBuilder {
 
         @Suppress("UNUSED")
         @BuilderMethod
         fun firstname(
-            @SetFacetValue(facetToModify = "firstname") firstname: String,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun age(
-            @SetFacetValue(facetToModify = "age") age: Int,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "age") age: Int,
         ): PersonConceptBuilder
 
         @BuilderMethod
         fun firstnameAndAge(
-            @SetFacetValue(facetToModify = "firstname") firstname: String,
-            @SetFacetValue(facetToModify = "age") age: Int,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "age") age: Int,
         ): PersonConceptBuilder
 
         // Builder style
@@ -101,6 +101,7 @@ class BuilderInvocationHandlerTest {
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
         @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "person",
             facetToModify = "skills",
             referencedConceptAlias = "skill",
         )
@@ -113,6 +114,7 @@ class BuilderInvocationHandlerTest {
         @WithNewBuilder(builderClass = SkillConceptBuilder::class)
         @NewConcept(BuilderTestSchema.SkillConcept::class, declareConceptAlias = "skill")
         @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "person",
             facetToModify = "skills",
             referencedConceptAlias = "skill",
         )

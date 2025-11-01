@@ -20,5 +20,5 @@ package org.codeblessing.sourceamazing.builder.api.annotations
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class SetRandomConceptIdentifierValue(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS
+    val conceptToModifyAlias: String,
 )

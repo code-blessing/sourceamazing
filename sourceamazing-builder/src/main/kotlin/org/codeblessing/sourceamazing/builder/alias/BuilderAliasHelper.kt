@@ -1,13 +1,9 @@
 package org.codeblessing.sourceamazing.builder.alias
 
-import org.codeblessing.sourceamazing.builder.api.annotations.DEFAULT_CONCEPT_ALIAS
-
 object BuilderAliasHelper {
 
     fun defaultAliasHint(conceptAlias: Alias): String {
-        val showHint = conceptAlias.name == DEFAULT_CONCEPT_ALIAS
-        val hint = "(Hint: The concept alias '${DEFAULT_CONCEPT_ALIAS}' is the default alias and therefore maybe not visible on the annotations)"
-        return if(showHint) hint else ""
+        return ""
     }
 
     fun firstDuplicateAlias(listOfAlias: List<Alias>): Alias? {

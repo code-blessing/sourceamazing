@@ -500,7 +500,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     @ExpectedRootAlias("root")
-    @ExpectedAliasFromSuperiorBuilder()
+    @ExpectedAliasFromSuperiorBuilder("anotherConcept")
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
@@ -531,7 +531,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         )
 
         @BuilderDataProvider
-        @ExpectedAliasFromSuperiorBuilder()
+        @ExpectedAliasFromSuperiorBuilder("anotherConcept")
         class DataProvider
     }
 

@@ -12,5 +12,5 @@ package org.codeblessing.sourceamazing.builder.api.annotations
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class ExpectedRootAlias(
-    val conceptAlias: String = DEFAULT_CONCEPT_ALIAS,
+    val conceptAlias: String,
 )

@@ -19,5 +19,5 @@ package org.codeblessing.sourceamazing.builder.api.annotations
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class SetProvidedConceptIdentifierValue(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS
+    val conceptToModifyAlias: String,
 )

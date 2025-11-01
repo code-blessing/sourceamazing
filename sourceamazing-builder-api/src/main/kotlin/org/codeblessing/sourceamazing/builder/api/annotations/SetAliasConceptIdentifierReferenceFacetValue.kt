@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class SetAliasConceptIdentifierReferenceFacetValue(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
+    val conceptToModifyAlias: String,
     val facetToModify: String, // always a reference facet
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
     val referencedConceptAlias: String,

@@ -33,7 +33,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class SetProvidedFacetValue(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
+    val conceptToModifyAlias: String,
     val facetToModify: String,
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
 )

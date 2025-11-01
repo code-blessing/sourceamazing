@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class SetFixedEnumFacetValue(
-    val conceptToModifyAlias: String = DEFAULT_CONCEPT_ALIAS,
+    val conceptToModifyAlias: String,
     val facetToModify: String,
     val facetModificationRule: FacetModificationRule = FacetModificationRule.ADD,
     val value: String,
