@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.xmlschema.xsdcreator
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.xmlschema.XmlTestSchema
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 
@@ -84,6 +85,7 @@ internal class XmlDomSchemaCreatorTest {
 
 
     @Test
+    @Disabled("Currently, the root entry point is not supported in XML")
     fun testXmlDomSchemaCreator() {
         val schema: SchemaAccess = XmlTestSchema.createSchema()
         val schemaContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)

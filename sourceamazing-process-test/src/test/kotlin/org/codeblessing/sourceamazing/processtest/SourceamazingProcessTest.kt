@@ -66,14 +66,6 @@ class SourceamazingProcessTest {
     """.trimIndent()
 
     private val expectedSummaryTemplateOutput = """
-
-        Form 'City Survey':
-        - Form-Control: Display Name: 'Firstname', Labels: [identity]'
-        - Form-Control: Display Name: 'Lastname', Labels: [identity]'
-        - Form-Control: Display Name: 'Gender', Labels: [identity] (Default-Value: null) Options: [male -> 'Male'], [female -> 'Female']
-        - Form-Control: Display Name: 'Preferred Place', Labels: [preferences, hobbies] (Default-Value: forrest) Options: [forrest -> 'Walk in the forrest'], [city -> 'Hang in the city']
-        - Form-Control: Display Name: 'Address', Labels: [identity]'
-        Text Input Form Control Names: [Firstname, Lastname, Address]
         
         Form 'Employee Work Preferences':
         - Form-Control: Display Name: 'Firstname', Labels: [names, person-info]'
@@ -86,26 +78,21 @@ class SourceamazingProcessTest {
 
     private val expectedHtmlTemplateOutput = """
         <html>
-          <form name="CitySurvey">
+          <form name="Employee Work Preferences">
             <label>Firstname*</label>
             <input type="text" name="Firstname" />
-            <!-- in form 'CitySurvey' (City Survey) -->
+            <!-- in form Employee Work Preferences -->
             <label>Lastname*</label>
             <input type="text" name="Lastname" />
-            <!-- in form 'CitySurvey' (City Survey) -->
-            <label>Gender</label>
-            <select name="Gender" option="">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+            <!-- in form Employee Work Preferences -->
+            <label>Birthday</label>
+            <input type="text" name="Birthday" />
+            <!-- in form Employee Work Preferences -->
+            <label>Workplace Preference</label>
+            <select name="Workplace Preference" option="company">
+              <option value="home">Home Office</option>
+              <option value="company">Company Office</option>
             </select>
-            <label>Preferred Place</label>
-            <select name="Places" option="forrest">
-              <option value="forrest">Walk in the forrest</option>
-              <option value="city">Hang in the city</option>
-            </select>
-            <label>Address*</label>
-            <input type="text" name="Address" />
-            <!-- in form 'CitySurvey' (City Survey) -->
           </form>
         </html>
     """.trimIndent()
@@ -139,20 +126,25 @@ class SourceamazingProcessTest {
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
         val formSchema = schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
-            val rootConceptIdentifier = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName()).conceptIdentifier
+            val rootConceptData = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
             // TODO activate XML schema as soon as it supports root concepts
             // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
-            BuilderApi.withBuilder(schemaContext, rootConceptIdentifier, FormBuilder::class) { dataCollector ->
+            BuilderApi.withBuilder(
+                schemaContext = schemaContext,
+                rootConceptName = rootConceptData.conceptName,
+                rootConceptIdentifier = rootConceptData.conceptIdentifier,
+                builderClass = FormBuilder::class,
+            ) { dataCollector ->
                 FormData.collectFormData(dataCollector)
             }
-            rootConceptIdentifier
+            rootConceptData.conceptIdentifier
         }
 
-        Assertions.assertEquals(2, formSchema.forms.size)
-        val formCitySurveyHtml = ProcesstestTemplate.formContent(formSchema.forms[0])
+        Assertions.assertEquals(1, formSchema.forms.size)
         val formSummaryHtml = ProcesstestTemplate.formsSummary(formSchema.forms)
 
         Assertions.assertEquals(expectedSummaryTemplateOutput, formSummaryHtml)
+        val formCitySurveyHtml = ProcesstestTemplate.formContent(formSchema.forms[0])
         Assertions.assertEquals(expectedHtmlTemplateOutput, formCitySurveyHtml)
     }
 }

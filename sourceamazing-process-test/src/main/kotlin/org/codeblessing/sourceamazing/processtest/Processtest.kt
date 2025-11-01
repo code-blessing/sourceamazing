@@ -17,7 +17,12 @@ fun main() {
 
         // TODO activate XML schema as soon as it supports root concepts
         //  XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, pathToXmlFile)
-        BuilderApi.withBuilder(schemaContext, rootConceptData.conceptIdentifier, FormBuilder::class) { dataCollector ->
+        BuilderApi.withBuilder(
+            schemaContext = schemaContext,
+            rootConceptName = rootConceptData.conceptName,
+            rootConceptIdentifier = rootConceptData.conceptIdentifier,
+            builderClass = FormBuilder::class,
+        ) { dataCollector ->
             FormData.collectFormData(dataCollector)
         }
         rootConceptData.conceptIdentifier
