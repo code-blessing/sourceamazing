@@ -18,6 +18,7 @@ dependencyResolutionManagement {
     }
 }
 
+include("sourceamazing-utils")
 include("sourceamazing-schema-api")
 include("sourceamazing-schema")
 include("sourceamazing-builder-api")

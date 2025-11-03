@@ -38,10 +38,3 @@ extensions.getByType<PublishingExtension>().publications {
         }
     }
 }
-
-plugins.withId("org.gradle.java-test-fixtures") {
-    val component = JavaPluginHelper.getJavaComponent(project) as DefaultJvmSoftwareComponent
-    val feature = component.features.getByName(TestFixturesSupport.TEST_FIXTURES_FEATURE_NAME)
-    component.withVariantsFromConfiguration(feature.apiElementsConfiguration) { skip() }
-    component.withVariantsFromConfiguration(feature.runtimeElementsConfiguration) { skip() }
-}
