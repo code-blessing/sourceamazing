@@ -19,7 +19,7 @@ dependencies {
     testImplementation(libs.kotlin.reflect)
 
     testImplementation(libs.junit.jupiter)
-    testFixturesImplementation(libs.junit.jupiter)
+    testImplementation(testFixtures(projects.sourceamazingSchemaApi))
 }
 
 tasks.named<Test>("test") {
