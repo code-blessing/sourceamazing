@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.exceptions.*
 import org.codeblessing.sourceamazing.schema.withRootInstance
@@ -18,12 +17,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
         interface ConceptWithTextFacet {
             @Suppress("UNUSED")
-            @Facet
             val text: String
         }
 
         @Suppress("UNUSED")
-        @Facet
         val concepts: List<ConceptWithTextFacet>
 
     }

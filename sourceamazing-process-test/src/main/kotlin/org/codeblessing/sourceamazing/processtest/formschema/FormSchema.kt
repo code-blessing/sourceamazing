@@ -4,35 +4,30 @@ import org.codeblessing.sourceamazing.schema.api.annotations.*
 
 interface FormSchema {
     @Suppress("UNUSED")
-    @Facet val forms: List<FormConcept>
+    val forms: List<FormConcept>
 
     interface FormConcept {
         @Suppress("UNUSED")
-        @Facet val formTitle: String
+        val formTitle: String
 
         @Suppress("UNUSED")
-        @Facet
         @References([TextInputFormControlConcept::class, SelectDropdownFormControlConcept::class])
         val formControls: List<FormSchema.FormControl>
     }
 
     interface FormControl {
         @Suppress("UNUSED")
-        @Facet
         val displayName: String
 
         @Suppress("UNUSED")
-        @Facet
         val valueRequired: Boolean
 
         @Suppress("UNUSED")
-        @Facet
         val labels: List<String>
     }
 
     interface TextInputFormControlConcept: FormControl {
         @Suppress("UNUSED")
-        @Facet
         val formatHint: TextInputFormatHint
 
         enum class TextInputFormatHint(@Suppress("UNUSED") val hint: String) {
@@ -45,21 +40,17 @@ interface FormSchema {
 
     interface SelectDropdownFormControlConcept: FormControl {
         @Suppress("UNUSED")
-        @Facet
         val defaultValue: String?
 
         @Suppress("UNUSED")
-        @Facet
         val selectDropdownEntries: List<SelectDropdownEntryConcept>
     }
 
     interface SelectDropdownEntryConcept {
         @Suppress("UNUSED")
-        @Facet
         val value: String
 
         @Suppress("UNUSED")
-        @Facet
         val displayValue: String
     }
 }

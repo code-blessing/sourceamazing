@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,20 +15,16 @@ class BuilderDataProviderTest {
 
         interface ConceptWithFacet {
             @Suppress("UNUSED")
-            @Facet
             val id: String
 
             @Suppress("UNUSED")
-            @Facet
             val text: String
 
             @Suppress("UNUSED")
-            @Facet
             val number: Int
         }
 
         @Suppress("UNUSED")
-        @Facet
         val concepts: List<ConceptWithFacet>
     }
 

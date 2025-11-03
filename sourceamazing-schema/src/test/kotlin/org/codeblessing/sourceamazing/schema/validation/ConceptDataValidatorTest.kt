@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.schema.validation
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataImpl
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
@@ -26,7 +25,6 @@ class ConceptDataValidatorTest {
 
     interface OtherConcept {
         @Suppress("UNUSED")
-        @Facet
         val otherConceptTextFacet: String?
     }
 
@@ -37,7 +35,6 @@ class ConceptDataValidatorTest {
         interface EmptyConcept
 
         @Suppress("UNUSED")
-        @Facet
         val theOnlyConcept: EmptyConcept
 
     }
@@ -69,7 +66,6 @@ class ConceptDataValidatorTest {
 
     private interface SchemaForOneMandatoryTextFacetValidation {
         @Suppress("UNUSED")
-        @Facet
         val myMandatoryText: String
     }
     private val mandatoryTextFacetName = FacetName.of(SchemaForOneMandatoryTextFacetValidation::myMandatoryText.name)
@@ -133,7 +129,6 @@ class ConceptDataValidatorTest {
 
     private interface SchemaForSomeEnumsFacetValidation {
         @Suppress("UNUSED")
-        @Facet
         val someEnumsFacetClass: Set<MyEnumeration>
     }
 
@@ -194,7 +189,6 @@ class ConceptDataValidatorTest {
     private interface SchemaForReferenceFacetValidation {
 
         @Suppress("UNUSED")
-        @Facet
         val mandatoryReferenceToOtherConcept: OtherConcept
     }
 

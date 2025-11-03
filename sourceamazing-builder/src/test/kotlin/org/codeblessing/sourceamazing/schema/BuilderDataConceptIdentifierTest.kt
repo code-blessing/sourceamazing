@@ -9,7 +9,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIde
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
 import org.codeblessing.sourceamazing.toConceptName
@@ -27,7 +26,6 @@ class BuilderDataConceptIdentifierTest {
 
         interface ConceptTwo: AbstractNumericConcept
 
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val concepts: List<AbstractNumericConcept>
 

@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
 
@@ -37,7 +36,6 @@ enum class SchemaErrorCode(override val messageFormat: String): ErrorCode {
     NO_GENERIC_TYPE_PARAMETER("%s must not have generic type parameters but has type parameters %s."),
     NO_NEGATIVE_FACET_CARDINALITIES("Facet '%s' on concept '%s' has negative cardinalities. Only number greater/equal zero are allowed, but was %s/%s."),
     WRONG_FACET_CARDINALITIES("Facet '%s' on concept '%s' has a greater minimumOccurrences (%s) than the maximumOccurrences (%s)."),
-    MISSING_FACET_ANNOTATION("The property is missing the annotation ${Facet::class.shortText()}."),
     REFERENCE_ANNOTATION_ONLY_FOR_REFERENCE_TYPES("The property is not a reference type but has the annotation ${References::class.shortText()}."),
     ;
 }

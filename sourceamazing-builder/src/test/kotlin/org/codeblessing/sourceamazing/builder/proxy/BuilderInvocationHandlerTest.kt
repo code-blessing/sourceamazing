@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidat
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
@@ -18,30 +17,24 @@ class BuilderInvocationHandlerTest {
     private interface BuilderTestSchema {
         interface PersonConcept {
             @Suppress("UNUSED")
-            @Facet
             val firstname: String
 
             @Suppress("UNUSED")
-            @Facet
             val age: Int
 
             @Suppress("UNUSED")
-            @Facet
             val skills: List<SkillConcept>
         }
 
         interface SkillConcept {
             @Suppress("UNUSED")
-            @Facet
             val description: String
 
             @Suppress("UNUSED")
-            @Facet
             val skillEnjoying: Boolean
         }
 
         @Suppress("UNUSED")
-        @Facet
         val person: PersonConcept
 
     }

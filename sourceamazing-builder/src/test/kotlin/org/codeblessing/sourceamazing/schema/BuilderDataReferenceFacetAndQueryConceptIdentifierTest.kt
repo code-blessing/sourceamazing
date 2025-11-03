@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,14 +15,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     private interface SchemaWithConceptWithFacet {
 
         interface ConceptWithFacet {
-            @Facet
             val id: String
 
-            @Facet
             val conceptReferences: List<ConceptWithFacet>
         }
 
-        @Facet
         val concepts: List<ConceptWithFacet>
     }
 

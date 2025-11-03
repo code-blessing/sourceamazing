@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.exceptions.*
@@ -50,7 +49,6 @@ object SchemaCreator {
         val conceptName = ConceptName.of(definitionClass)
 
         val facets = definitionClass.memberProperties
-            .filter { it.hasAnnotation(Facet::class) }
             .map { createFacetSchema(it, conceptName) }
             .onEach { validatedFacetSchema(it, conceptName) }
 
@@ -71,11 +69,6 @@ object SchemaCreator {
         }
         if(hasMemberFunctions(definitionClass)) {
             throw WrongClassStructureSyntaxException(definitionClass, SchemaErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS, definitionClass, definitionClass.memberFunctions)
-        }
-
-        val propertyWithoutAnnotation = definitionClass.memberProperties.filterNot { it.hasAnnotation(Facet::class) }.firstOrNull()
-        if(propertyWithoutAnnotation != null) {
-            throw WrongPropertySyntaxException(propertyWithoutAnnotation, SchemaErrorCode.MISSING_FACET_ANNOTATION)
         }
 
         val extensionProperty = definitionClass.memberExtensionProperties.firstOrNull()

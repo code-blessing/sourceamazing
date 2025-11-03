@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
@@ -15,28 +14,23 @@ class BuilderApiSchemaTest {
 
         interface KnownConceptWithFacet {
             @Suppress("UNUSED")
-            @Facet
             val knownFacet: String
         }
 
         interface AlsoKnownConceptWithFacet {
             @Suppress("UNUSED")
-            @Facet
             val alsoKnownFacet: String
         }
 
         interface UnknownConceptWithFacet {
             @Suppress("UNUSED")
-            @Facet
             val unknownFacet: String
         }
 
         @Suppress("UNUSED")
-        @Facet
         val knownConcepts: List<KnownConceptWithFacet>
 
         @Suppress("UNUSED")
-        @Facet
         val alsoKnownConcepts: List<AlsoKnownConceptWithFacet>
     }
 

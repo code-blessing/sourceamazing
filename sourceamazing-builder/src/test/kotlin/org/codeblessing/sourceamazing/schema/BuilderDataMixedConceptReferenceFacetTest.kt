@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.toConceptName
@@ -16,16 +15,13 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
     private interface SchemaWithConceptWithFacet {
 
-        @Facet
         @References([ConceptAlpha::class, ConceptBeta::class])
         val alphaAndBetaAsList: List<AlphaAndBeta>
 
         @Suppress("UNUSED")
-        @Facet
         val gammaAsList: List<ConceptGamma>
 
         interface AlphaAndBeta {
-            @Facet
             val id: String
         }
 

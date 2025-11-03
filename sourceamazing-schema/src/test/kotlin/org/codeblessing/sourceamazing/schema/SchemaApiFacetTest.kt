@@ -1,7 +1,6 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.exceptions.*
 import org.junit.jupiter.api.Disabled
@@ -14,7 +13,6 @@ class SchemaApiFacetTest {
     private interface ConceptWithTextFacet {
 
         @Suppress("UNUSED")
-        @Facet
         val name: String?
     }
 
@@ -31,7 +29,6 @@ class SchemaApiFacetTest {
         enum class MyValidEnum
 
         @Suppress("UNUSED")
-        @Facet
         val myEnum: MyValidEnum?
     }
 
@@ -53,7 +50,6 @@ class SchemaApiFacetTest {
 
     private interface SchemaWithConceptWithPrivateEnumFacet {
         @Suppress("UNUSED")
-        @Facet
         val myEnum: MyPrivateEnum
     }
 
@@ -68,22 +64,6 @@ class SchemaApiFacetTest {
         }
     }
 
-
-    private interface DefinitionClassWithUnannotatedFacet {
-        @Suppress("UNUSED")
-        val unannotatedProperty: String
-    }
-
-    @Test
-    fun `test create a concept with an unannotated facet should throw an exception`() {
-        assertExceptionWithErrorCode(WrongPropertySyntaxException::class, SchemaErrorCode.MISSING_FACET_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithUnannotatedFacet::class) { schemaContext ->
-                withRootInstance<DefinitionClassWithUnannotatedFacet>(schemaContext) {
-                    // do nothing
-                }
-            }
-        }
-    }
 
     private interface DefinitionClassWithFacetHavingMembers {
 
@@ -109,7 +89,6 @@ class SchemaApiFacetTest {
         object FacetObjectInsteadOfInterface
 
         @Suppress("UNUSED")
-        @Facet
         val myProperty: FacetObjectInsteadOfInterface
     }
 
@@ -128,7 +107,6 @@ class SchemaApiFacetTest {
         annotation class FacetAnnotationInterfaceInsteadOfInterface
 
         @Suppress("UNUSED")
-        @Facet
         val myProperty: FacetAnnotationInterfaceInsteadOfInterface
     }
 
@@ -145,7 +123,6 @@ class SchemaApiFacetTest {
 
     private interface DefinitionClassWithUnitTypeOnFacet {
         @Suppress("UNUSED")
-        @Facet
         val myProperty: Unit
     }
 
@@ -162,7 +139,6 @@ class SchemaApiFacetTest {
 
     private interface DefinitionClassWithEmptyReferenceFacet {
         @Suppress("UNUSED")
-        @Facet
         @References([])
         val myProperty: List<ReferenceConcept>
     }
@@ -181,7 +157,6 @@ class SchemaApiFacetTest {
     private interface DefinitionClassWithAbstractReferencedConceptFacet {
         abstract class AbstractReferenceConcept
         @Suppress("UNUSED")
-        @Facet
         @References([AbstractReferenceConcept::class])
         val myProperty: List<AbstractReferenceConcept>
     }
@@ -200,7 +175,6 @@ class SchemaApiFacetTest {
     private interface DefinitionClassWithSelfReference {
         abstract class AbstractReferenceConcept
         @Suppress("UNUSED")
-        @Facet
         @References([DefinitionClassWithSelfReference::class])
         val myProperty: List<DefinitionClassWithSelfReference>
     }
@@ -219,7 +193,6 @@ class SchemaApiFacetTest {
 
     private interface DefinitionClassWithFacetWithFunctionType {
         @Suppress("UNUSED")
-        @Facet
         val myProperty: () -> Unit
     }
 
@@ -267,25 +240,8 @@ class SchemaApiFacetTest {
         }
     }
 
-    private interface SchemaWithConceptWithUnannotatedFacet {
-        @Suppress("Unused")
-        val myProperty: List<Any>
-    }
-
-    @Test
-    fun `test concept with an unannotated query method should throw an exception`() {
-        assertExceptionWithErrorCode(SyntaxException::class, SchemaErrorCode.MISSING_FACET_ANNOTATION) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnannotatedFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithUnannotatedFacet>(schemaContext) {
-                    // do nothing
-                }
-            }
-        }
-    }
-
     private interface SchemaWithConceptWithGetterFacet {
         @Suppress("Unused")
-        @Facet
         val myProperty: List<Any>
             get() = emptyList()
     }
@@ -304,7 +260,6 @@ class SchemaApiFacetTest {
     private interface SchemaWithConceptWithExtensionProperty {
 
         @Suppress("Unused")
-        @Facet
         val Int.myProperty: String
     }
 
@@ -323,7 +278,6 @@ class SchemaApiFacetTest {
     private interface SchemaWithConceptWithQueryMethodReturningWrongCollectionType {
 
         @Suppress("Unused")
-        @Facet
         val myProperty: SortedSet<String>
     }
 
@@ -342,7 +296,6 @@ class SchemaApiFacetTest {
     private interface SchemaWithConceptWithQueryMethodReturningNullableListValue {
 
         @Suppress("Unused")
-        @Facet
         val myProperty: List<String?>
     }
 
@@ -361,7 +314,6 @@ class SchemaApiFacetTest {
         interface MyConcept
 
         @Suppress("Unused")
-        @Facet
         @References([MyConcept::class])
         val referencedConcepts: List<String>
     }
@@ -383,7 +335,6 @@ class SchemaApiFacetTest {
         interface ConceptTwo: CommonConcept
 
         @Suppress("Unused")
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val referencedConcepts: List<ConceptOne>
     }
@@ -411,7 +362,7 @@ class SchemaApiFacetTest {
 
     @Test
     fun `test concept with query method fetching an not referenced concept should throw an exception`() {
-        assertExceptionWithErrorCode(WrongPropertySyntaxException::class, SchemaErrorCode.MISSING_FACET_ANNOTATION) {
+        assertExceptionWithErrorCode(WrongPropertySyntaxException::class, SchemaErrorCode.RETURN_TYPE_MUST_BE_INHERITABLE) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnreferencedConceptQueryMethod::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithUnreferencedConceptQueryMethod>(schemaContext) {
                     // do nothing
@@ -426,7 +377,6 @@ class SchemaApiFacetTest {
         interface ConceptWithoutCommonConceptInterface
 
         @Suppress("UNUSED")
-        @Facet
         @References([ConceptWithCommonConceptInterface::class, ConceptWithoutCommonConceptInterface::class])
         val myReferences: List<CommonConcept>
     }
@@ -448,7 +398,6 @@ class SchemaApiFacetTest {
         interface ConceptTwo: CommonConcept
 
         @Suppress("Unused")
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val referencedConcepts: SortedSet<CommonConcept>
     }
@@ -471,7 +420,6 @@ class SchemaApiFacetTest {
         interface ConceptNotCommon
 
         @Suppress("Unused")
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val referencedConcepts: List<ConceptNotCommon>
     }
@@ -493,7 +441,6 @@ class SchemaApiFacetTest {
         interface ConceptTwo: CommonConcept
 
         @Suppress("Unused")
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val referencedConcepts: List<CommonConcept?>
     }
@@ -517,7 +464,6 @@ class SchemaApiFacetTest {
 
 
         @Suppress("UNUSED")
-        @Facet
         @References([ConceptOne::class, ConceptTwo::class])
         val myConcepts: ConceptNotCommon
     }
@@ -547,114 +493,90 @@ class SchemaApiFacetTest {
 
 
         @Suppress("Unused")
-        @Facet
         val myTextFacetAsListOfString: List<String>
 
         @Suppress("Unused")
-        @Facet
         val myTextFacetAsSetOfString: Set<String>
 
         @Suppress("Unused")
-        @Facet
         val myTextFacetAsString: String
 
         @Suppress("Unused")
-        @Facet
         val myTextFacetAsNullableString: String?
 
 
 
 
         @Suppress("Unused")
-        @Facet
         val myNumberFacetAsListOfInt: List<Int>
 
         @Suppress("Unused")
-        @Facet
         val myNumberFacetAsSetOfInt: Set<Int>
 
         @Suppress("Unused")
-        @Facet
         val myNumberFacetAsInt: Int
 
         @Suppress("Unused")
-        @Facet
         val myNumberFacetAsNullableInt: Int?
 
 
 
 
         @Suppress("Unused")
-        @Facet
         val myBoolFacetAsListOfBoolean: List<Boolean>
 
         @Suppress("Unused")
-        @Facet
         val myBoolFacetAsSetOfBoolean: Set<Boolean>
 
         @Suppress("Unused")
-        @Facet
         val myBoolFacetAsBoolean: Boolean
 
         @Suppress("Unused")
-        @Facet
         val myBoolFacetAsNullableBoolean: Boolean?
 
 
 
 
         @Suppress("Unused")
-        @Facet
         val myEnumerationFacetAsListOfEnums: List<MyEnumeration>
 
         @Suppress("Unused")
-        @Facet
         val myEnumerationFacetAsSetOfEnums: Set<MyEnumeration>
 
         @Suppress("Unused")
-        @Facet
         val myEnumerationFacetAsEnum: MyEnumeration
 
         @Suppress("Unused")
-        @Facet
         val myEnumerationFacetAsNullableEnum: MyEnumeration?
 
 
 
         @Suppress("Unused")
-        @Facet
         val mySingleConceptReferenceFacetAsListOfCommonConceptInterface: List<SpecificConceptOne>
 
         @Suppress("Unused")
-        @Facet
         val mySingleConceptReferenceFacetAsSetOfCommonConceptInterface: Set<SpecificConceptOne>
 
         @Suppress("Unused")
-        @Facet
         val mySingleConceptReferenceFacetAsCommonConceptInterface: SpecificConceptOne
 
         @Suppress("Unused")
-        @Facet
         val mySingleConceptReferenceFacetAsNullableCommonConceptInterface: SpecificConceptOne?
 
 
         @Suppress("Unused")
-        @Facet
         @References([SpecificConceptOne::class, SpecificConceptTwo::class])
         val myMultipleConceptReferenceFacetAsListOfCommonConcept: List<CommonConcept>
 
         @Suppress("Unused")
-        @Facet
         @References([SpecificConceptOne::class, SpecificConceptTwo::class])
         val myMultipleConceptReferenceFacetAsSetOfCommonConcept: Set<CommonConcept>
 
         @Suppress("Unused")
-        @Facet
         @References([SpecificConceptOne::class, SpecificConceptTwo::class])
         val myMultipleConceptReferenceFacetAsCommonConcept: CommonConcept
 
         @Suppress("Unused")
-        @Facet
         @References([SpecificConceptOne::class, SpecificConceptTwo::class])
         val myMultipleConceptReferenceFacetAsNullableCommonConcept: CommonConcept?
     }

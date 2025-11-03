@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
@@ -15,36 +14,29 @@ class BuilderApiFacetMultiUseTest {
 
         interface ConceptWithFacetAlphaAndBeta {
             @Suppress("UNUSED")
-            @Facet
             val facetAlpha: String
 
             @Suppress("UNUSED")
-            @Facet
             val facetBeta: String
         }
 
         interface ConceptWithFacetAlpha {
             @Suppress("UNUSED")
-            @Facet
             val facetAlpha: String
         }
 
         interface ConceptWithFacetBeta {
             @Suppress("UNUSED")
-            @Facet
             val facetBeta: String
         }
 
         @Suppress("UNUSED")
-        @Facet
         val conceptAlphaAndBeta: List<ConceptWithFacetAlphaAndBeta>
 
         @Suppress("UNUSED")
-        @Facet
         val conceptAlpha: List<ConceptWithFacetAlpha>
 
         @Suppress("UNUSED")
-        @Facet
         val conceptBeta: List<ConceptWithFacetBeta>
     }
 

@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.schema.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
@@ -19,12 +18,10 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface SchemaWithConceptWithTextFacet {
         interface ConceptWithTextFacet {
             @Suppress("UNUSED")
-            @Facet
             val text: String
         }
 
         @Suppress("UNUSED")
-        @Facet
         val concepts: List<ConceptWithTextFacet>
     }
 

@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -33,12 +32,10 @@ class BuilderDataSubsetEnumTest {
         interface ConceptWithEnumerationFacet {
 
             @Suppress("UNUSED")
-            @Facet
             val enumFacetValue: AllDatatypesEnum
         }
 
         @Suppress("UNUSED")
-        @Facet
         val concept: ConceptWithEnumerationFacet
     }
 

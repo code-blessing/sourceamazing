@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
@@ -25,28 +24,22 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         interface ConceptWithFacets {
             @Suppress("UNUSED")
-            @Facet
             val textFacet: String
 
             @Suppress("UNUSED")
-            @Facet
             val boolFacet: Boolean
 
             @Suppress("UNUSED")
-            @Facet
             val numberFacet: Int
 
             @Suppress("UNUSED")
-            @Facet
             val enumerationFacet: MyEnum
 
             @Suppress("UNUSED")
-            @Facet
             val selfRefFacet: ConceptWithFacets
         }
 
         @Suppress("UNUSED")
-        @Facet
         val concepts: List<ConceptWithFacets>
     }
 

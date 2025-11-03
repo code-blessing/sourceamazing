@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.SchemaWithConceptWithFacet.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -19,21 +18,16 @@ class BuilderDataFacetTypeAndQueryTest {
         }
 
         interface ConceptWithFacet {
-            @Facet
             val texts: List<String>
 
-            @Facet
             val booleans: List<Boolean>
 
-            @Facet
             val numbers: List<Int>
 
-            @Facet
             val enumerations: List<MyEnum>
 
         }
 
-        @Facet
         val concepts: List<ConceptWithFacet>
     }
 

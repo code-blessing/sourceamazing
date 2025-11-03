@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
@@ -23,35 +22,28 @@ class BuilderSmokeTest {
             }
 
             @Suppress("UNUSED")
-            @Facet
             val firstname: String
 
             @Suppress("UNUSED")
-            @Facet
             val age: Int
 
             @Suppress("UNUSED")
-            @Facet
             val sex: PersonSex
 
             @Suppress("UNUSED")
-            @Facet
             val skills: List<SkillConcept>
         }
 
         interface SkillConcept {
 
             @Suppress("UNUSED")
-            @Facet
             val skillDescription: String
 
             @Suppress("UNUSED")
-            @Facet
             val isStillFullyEnjoyingAboutThatSkill: Boolean
 
         }
 
-        @Facet
         val personList: List<PersonConcept>
     }
 

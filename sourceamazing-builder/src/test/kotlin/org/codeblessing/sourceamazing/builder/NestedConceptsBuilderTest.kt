@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
@@ -18,40 +17,33 @@ class NestedConceptsBuilderTest {
 
     private interface NestedConceptsSchema {
 
-        @Facet
         val businessObjects: List<BusinessObjectConcept>
 
         interface BusinessObjectConcept {
             @Suppress("UNUSED")
-            @Facet
             val name: String
 
             @Suppress("UNUSED")
-            @Facet
             @References([SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class])
             val fields: List<Field>
         }
 
         sealed interface Field {
             @Suppress("UNUSED")
-            @Facet
             val fieldName: String
         }
 
         interface SingleValueFieldConcept : Field {
             @Suppress("UNUSED")
-            @Facet
             val nullable: Boolean
 
             @Suppress("UNUSED")
-            @Facet
             @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
             val singleValueType: FieldType
         }
 
         interface CollectionOfValuesFieldConcept : Field {
             @Suppress("UNUSED")
-            @Facet
             val collectionKind: CollectionKindEnum
 
             enum class CollectionKindEnum {
@@ -59,7 +51,6 @@ class NestedConceptsBuilderTest {
             }
 
             @Suppress("UNUSED")
-            @Facet
             @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
             val collectionValuesType: FieldType
         }
@@ -68,7 +59,6 @@ class NestedConceptsBuilderTest {
 
         interface BuiltinFieldTypeConcept : FieldType {
             @Suppress("UNUSED")
-            @Facet
             val builtinType: BuiltinTypeEnum
 
             enum class BuiltinTypeEnum {
@@ -78,7 +68,6 @@ class NestedConceptsBuilderTest {
 
         interface ReferenceFieldTypeConcept : FieldType {
             @Suppress("UNUSED")
-            @Facet
             val referencedBusinessObject: BusinessObjectConcept
         }
     }

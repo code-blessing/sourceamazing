@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.xmlschema
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 
 object XmlTestSchema {
@@ -23,35 +22,28 @@ object XmlTestSchema {
 
     interface XmlTestSchema {
         @Suppress("UNUSED")
-        @Facet
         val testEntityConcepts: List<TestEntityConcept>
     }
 
     interface TestEntityConcept {
         @Suppress("UNUSED")
-        @Facet
         val name: String
 
         @Suppress("UNUSED")
-        @Facet
         val kotlinModelClassname: String
 
         @Suppress("UNUSED")
-        @Facet
         val kotlinModelPackage: String
 
         @Suppress("UNUSED")
-        @Facet
         val testEntityAttribute: List<TestEntityAttributeConcept>
     }
 
     interface TestEntityAttributeConcept {
         @Suppress("UNUSED")
-        @Facet
         val name: String
 
         @Suppress("UNUSED")
-        @Facet
         val type: AttributeTypeEnum
 
         enum class AttributeTypeEnum {

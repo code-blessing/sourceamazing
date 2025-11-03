@@ -1,13 +1,13 @@
 package org.codeblessing.sourceamazing.schema.type
 
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
+import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class AnnotationExtensionsTest {
 
-    @Facet
+    @References([])
     private val text: String = "some text"
 
     @Test

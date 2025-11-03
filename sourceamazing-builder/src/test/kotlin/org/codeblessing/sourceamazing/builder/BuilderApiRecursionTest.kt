@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.annotations.Facet
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
@@ -14,7 +13,6 @@ class BuilderApiRecursionTest {
         interface OneConcept
 
         @Suppress("UNUSED")
-        @Facet
         val concepts: List<OneConcept>
     }
 
