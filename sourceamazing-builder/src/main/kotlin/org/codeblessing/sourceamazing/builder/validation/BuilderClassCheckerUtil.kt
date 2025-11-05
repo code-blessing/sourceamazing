@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.utils.type.annotationsIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.getNumberOfAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.hasAnnotationIncludingSuperclasses

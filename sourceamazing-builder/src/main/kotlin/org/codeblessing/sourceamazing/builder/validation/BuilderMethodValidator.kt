@@ -26,9 +26,9 @@ import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.longText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.utils.type.KTypeKind
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation

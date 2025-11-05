@@ -16,7 +16,6 @@ import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.Unkno
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongCardinalityForFacetValueException
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongTypeForFacetValueException
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.utils.type.enumValues
 import org.codeblessing.sourceamazing.utils.util.EnumUtil
 import kotlin.reflect.KClass
@@ -331,6 +330,10 @@ object ConceptDataValidator {
                 }
             }
         }
+    }
+
+    private fun KClass<*>.longText(): String {
+        return java.name
     }
 }
 

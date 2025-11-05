@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.utils.documentation
+package org.codeblessing.sourceamazing.builder.documentation
 
 import kotlin.reflect.KClass
 
@@ -14,14 +14,6 @@ object TypesAsTextFunctions {
 
     fun KClass<*>.longText(): String {
         return fromClazzToLongText(java)
-    }
-
-    fun Class<*>.shortText(): String {
-        return fromClazzToShortText(this)
-    }
-
-    fun Class<*>.longText(): String {
-        return fromClazzToLongText(this)
     }
 
     private fun fromClazzToShortText(clazz: Class<*>): String {

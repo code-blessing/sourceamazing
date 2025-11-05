@@ -15,8 +15,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptId
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
 import org.codeblessing.sourceamazing.schema.api.exceptions.ErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.shortText
 
 enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
 

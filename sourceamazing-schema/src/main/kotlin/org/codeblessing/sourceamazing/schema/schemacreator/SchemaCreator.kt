@@ -7,7 +7,6 @@ import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongFacetSchemaException
@@ -373,5 +372,10 @@ object SchemaCreator {
             referencingConcepts = referencedConcepts,
             enumerationType = enumerationType,
         )
+    }
+
+
+    private fun KClass<*>.longText(): String {
+        return java.name
     }
 }

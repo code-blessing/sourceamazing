@@ -9,7 +9,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import kotlin.reflect.KFunction
 
 object BuilderUpdater {

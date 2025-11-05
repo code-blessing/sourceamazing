@@ -11,7 +11,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.utils.type.hasAnnotation
