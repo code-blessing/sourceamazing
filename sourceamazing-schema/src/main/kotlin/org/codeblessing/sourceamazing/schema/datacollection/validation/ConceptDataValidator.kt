@@ -17,7 +17,7 @@ import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.Wrong
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongTypeForFacetValueException
 import org.codeblessing.sourceamazing.utils.type.enumValues
-import org.codeblessing.sourceamazing.utils.util.EnumUtil
+import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import kotlin.reflect.KClass
 
 

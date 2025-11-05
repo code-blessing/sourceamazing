@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.utils.util
+package org.codeblessing.sourceamazing.utils.enumeration
 
 import org.codeblessing.sourceamazing.utils.type.enumValues
 import org.codeblessing.sourceamazing.utils.type.isEnum

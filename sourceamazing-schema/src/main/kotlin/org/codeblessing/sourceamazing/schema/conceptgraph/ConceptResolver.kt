@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
-import org.codeblessing.sourceamazing.utils.util.EnumUtil
+import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import kotlin.reflect.KClass
 
 object ConceptResolver {

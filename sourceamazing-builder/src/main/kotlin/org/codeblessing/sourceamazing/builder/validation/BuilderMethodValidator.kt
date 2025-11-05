@@ -37,7 +37,7 @@ import org.codeblessing.sourceamazing.utils.type.receiverParameter
 import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
 import org.codeblessing.sourceamazing.utils.type.typeKind
 import org.codeblessing.sourceamazing.utils.type.valueParameters
-import org.codeblessing.sourceamazing.utils.util.EnumUtil
+import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType

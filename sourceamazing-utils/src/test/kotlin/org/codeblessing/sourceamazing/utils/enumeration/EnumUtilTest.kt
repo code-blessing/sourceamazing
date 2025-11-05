@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.utils.util
+package org.codeblessing.sourceamazing.utils.enumeration
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
