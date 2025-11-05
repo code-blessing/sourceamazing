@@ -16,11 +16,11 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.update.DataContext
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.toFacetName
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil
-import org.codeblessing.sourceamazing.schema.type.receiverParameter
-import org.codeblessing.sourceamazing.schema.type.returnTypeOrNull
-import org.codeblessing.sourceamazing.schema.type.valueParameters
+import org.codeblessing.sourceamazing.schema.api.toFacetName
+import org.codeblessing.sourceamazing.utils.type.KTypeUtil
+import org.codeblessing.sourceamazing.utils.type.receiverParameter
+import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
+import org.codeblessing.sourceamazing.utils.type.valueParameters
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter

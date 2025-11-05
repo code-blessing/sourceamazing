@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.schema.DataCollectionErrorCode
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
 
 class MultipleDataValidationException(private val exceptions: Set<DataValidationException>) :
     DataValidationException(

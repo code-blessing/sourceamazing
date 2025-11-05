@@ -6,13 +6,13 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderDataProviderInterpreter
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsNotAnnotation
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsNotPrivate
-import org.codeblessing.sourceamazing.schema.type.returnTypeOrNull
-import org.codeblessing.sourceamazing.schema.type.valueParameters
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasAnnotation
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasExactNumberOfAnnotations
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasOnlyAnnotations
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsNotAnnotation
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsNotPrivate
+import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
+import org.codeblessing.sourceamazing.utils.type.valueParameters
 import kotlin.reflect.full.extensionReceiverParameter
 import kotlin.reflect.full.hasAnnotation
 

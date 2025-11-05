@@ -1,21 +1,29 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.*
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.exceptions.*
-import org.codeblessing.sourceamazing.schema.schemacreator.exceptions.WrongCardinalitySchemaSyntaxException
-import org.codeblessing.sourceamazing.schema.type.*
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.hasGenericTypeParameters
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.hasMemberExtensionFunctions
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.hasMemberFunctions
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.isOrdinaryInterface
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
+import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.longText
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongFacetSchemaException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongPropertySyntaxException
+import org.codeblessing.sourceamazing.schema.api.toConceptName
+import org.codeblessing.sourceamazing.utils.type.*
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasGenericTypeParameters
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasMemberExtensionFunctions
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasMemberFunctions
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface
+import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
+import org.codeblessing.sourceamazing.utils.type.KPropertyUtil.hasExtensionReceiverParameter
+import org.codeblessing.sourceamazing.utils.type.KPropertyUtil.hasFunctionBody
+import org.codeblessing.sourceamazing.utils.type.KPropertyUtil.hasReturnType
+import org.codeblessing.sourceamazing.utils.type.KPropertyUtil.hasTypeParameter
+import org.codeblessing.sourceamazing.utils.type.KPropertyUtil.hasValueParameters
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
@@ -58,24 +66,42 @@ object SchemaCreator {
 
     private fun validateConceptClass(definitionClass: KClass<*>) {
         if(!isOrdinaryInterface(definitionClass)) {
-            throw NotInterfaceSyntaxException(definitionClass, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE, definitionClass)
+            throw WrongClassStructureSyntaxException(
+                definitionClass,
+                SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+                definitionClass
+            )
         }
         if(hasGenericTypeParameters(definitionClass)) {
-            throw WrongTypeSyntaxException(SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER, definitionClass.longText(), definitionClass.typeParameters)
+            throw WrongClassStructureSyntaxException(
+                definitionClass,
+                SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER,
+                definitionClass.longText(),
+                definitionClass.typeParameters
+            )
         }
 
         if(hasMemberExtensionFunctions(definitionClass)) {
-            throw WrongClassStructureSyntaxException(definitionClass, SchemaErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS, definitionClass, definitionClass.memberExtensionFunctions)
+            throw WrongClassStructureSyntaxException(
+                definitionClass,
+                SchemaErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS,
+                definitionClass,
+                definitionClass.memberExtensionFunctions
+            )
         }
         if(hasMemberFunctions(definitionClass)) {
-            throw WrongClassStructureSyntaxException(definitionClass, SchemaErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS, definitionClass, definitionClass.memberFunctions)
+            throw WrongClassStructureSyntaxException(
+                definitionClass,
+                SchemaErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS,
+                definitionClass,
+                definitionClass.memberFunctions
+            )
         }
 
         val extensionProperty = definitionClass.memberExtensionProperties.firstOrNull()
         if(extensionProperty != null) {
             throw WrongPropertySyntaxException(extensionProperty, SchemaErrorCode.PROPERTY_MUST_NOT_HAVE_EXTENSION_TYPE)
         }
-
     }
 
     private fun createFacetSchema(
@@ -84,11 +110,42 @@ object SchemaCreator {
     ): FacetSchema {
         val facetName = FacetName.of(facetProperty.name)
         val facetDescription = facetProperty.toString()
-        PropertyCheckerUtil.checkHasNoValueParameters(facetProperty, facetDescription)
-        PropertyCheckerUtil.checkHasNoExtensionReceiverParameter(facetProperty, facetDescription)
-        PropertyCheckerUtil.checkHasNoTypeParameter(facetProperty, facetDescription)
-        PropertyCheckerUtil.checkHasNoFunctionBody(facetProperty, facetDescription)
-        PropertyCheckerUtil.checkHasReturnType(facetProperty, facetDescription)
+        if(hasValueParameters(facetProperty)) {
+            throw WrongPropertySyntaxException(
+                facetProperty,
+                SchemaErrorCode.FUNCTION_CAN_NOT_HAVE_VALUE_PARAMS,
+                facetDescription
+            )
+        }
+        if(hasExtensionReceiverParameter(facetProperty)) {
+            throw WrongPropertySyntaxException(
+                facetProperty,
+                SchemaErrorCode.FUNCTION_HAS_RECEIVER_PARAM,
+                facetDescription
+            )
+        }
+        if(hasTypeParameter(facetProperty)) {
+            throw WrongPropertySyntaxException(
+                facetProperty,
+                SchemaErrorCode.FUNCTION_HAVE_TYPE_PARAMS,
+                facetDescription,
+                facetProperty.typeParameters
+            )
+        }
+        if(hasFunctionBody(facetProperty)) {
+            throw WrongPropertySyntaxException(
+                facetProperty,
+                SchemaErrorCode.FUNCTION_MUST_BE_ABSTRACT,
+                facetDescription
+            )
+        }
+        if(!hasReturnType(facetProperty)) {
+            throw WrongPropertySyntaxException(
+                facetProperty,
+                SchemaErrorCode.PROPERTY_MUST_HAVE_RETURN_TYPE,
+                facetDescription
+            )
+        }
 
         val returnTypeClassesInformation = classesInformationFromReturnType(facetProperty, facetDescription)
         val returnTypeCollectionClassInfo = collectionClassInfo(returnTypeClassesInformation)
@@ -96,11 +153,19 @@ object SchemaCreator {
 
         if(returnTypeCollectionClassInfo != null) {
             if(supportedCollectionClasses.none { returnTypeCollectionClassInfo.clazz == it  }) {
-                throw WrongPropertySyntaxException(facetProperty, SchemaErrorCode.RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS, supportedCollectionClasses, returnTypeCollectionClassInfo.clazz.longText())
+                throw WrongPropertySyntaxException(
+                    facetProperty,
+                    SchemaErrorCode.RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS,
+                    supportedCollectionClasses,
+                    returnTypeCollectionClassInfo.clazz.longText()
+                )
             }
 
             if(returnTypeValueClassInfo.isValueNullable) {
-                throw WrongPropertySyntaxException(facetProperty, SchemaErrorCode.RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED)
+                throw WrongPropertySyntaxException(
+                    facetProperty,
+                    SchemaErrorCode.RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED
+                )
             }
         }
 
@@ -119,11 +184,20 @@ object SchemaCreator {
             if(facetProperty.hasAnnotation<References>()) {
                 possibleClassesToReference = facetProperty.findAnnotation<References>()?.possibleClassesToReference?.toSet() ?: emptySet()
                 if(possibleClassesToReference.isEmpty()) {
-                    throw WrongTypeSyntaxException(SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST, facetName, conceptName)
+                    throw WrongPropertySyntaxException(
+                        facetProperty,
+                        SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST,
+                        facetName,
+                        conceptName
+                    )
                 }
 
                 if(!isInheritanceCompatibleClass(returnTypeValueClassInfo.clazz, possibleClassesToReference)) {
-                    throw WrongPropertySyntaxException(facetProperty, SchemaErrorCode.RETURN_TYPE_MUST_BE_INHERITABLE, returnTypeValueClassInfo.clazz.longText(), possibleClassesToReference.toList().map { it.longText() })
+                    throw WrongPropertySyntaxException(
+                        facetProperty,
+                        SchemaErrorCode.RETURN_TYPE_MUST_BE_INHERITABLE,
+                        returnTypeValueClassInfo.clazz.longText(),
+                        possibleClassesToReference.toList().map { it.longText() })
                 }
                 referencedClasses = possibleClassesToReference
             } else {
@@ -131,7 +205,11 @@ object SchemaCreator {
             }
 
             if(!isOrdinaryInterface(returnTypeValueClassInfo.clazz)) {
-                throw WrongPropertySyntaxException(facetProperty, SchemaErrorCode.PROPERTY_RETURN_TYPE_MUST_BE_INTERFACE, returnTypeValueClassInfo.clazz.longText())
+                throw WrongPropertySyntaxException(
+                    facetProperty,
+                    SchemaErrorCode.PROPERTY_RETURN_TYPE_MUST_BE_INTERFACE,
+                    returnTypeValueClassInfo.clazz.longText()
+                )
             }
 
             validateConceptClass(returnTypeValueClassInfo.clazz)
@@ -180,11 +258,21 @@ object SchemaCreator {
         val classesInformation = try {
             KTypeUtil.classesInformationFromKType(property.returnType)
         } catch (ex: IllegalStateException) {
-            throw WrongPropertySyntaxException(property, SchemaErrorCode.RETURN_TYPE_IS_INVALID, definitionClass, ex.message ?: "")
+            throw WrongPropertySyntaxException(
+                property,
+                SchemaErrorCode.RETURN_TYPE_IS_INVALID,
+                definitionClass,
+                ex.message ?: ""
+            )
         }
 
         if (classesInformation.size > 2 || classesInformation.isEmpty()) {
-            throw WrongPropertySyntaxException(property, SchemaErrorCode.RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS, definitionClass, supportedCollectionClasses)
+            throw WrongPropertySyntaxException(
+                property,
+                SchemaErrorCode.RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS,
+                definitionClass,
+                supportedCollectionClasses
+            )
         }
         return classesInformation
     }
@@ -225,28 +313,56 @@ object SchemaCreator {
 
         if(facetType == FacetType.TEXT_ENUMERATION) {
             if(enumerationType == null || !enumerationType.isEnum) {
-                throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_INVALID, facetName, conceptName, enumerationType ?: "null")
+                throw WrongFacetSchemaException(
+                    SchemaErrorCode.FACET_ENUM_INVALID,
+                    facetName,
+                    conceptName,
+                    enumerationType ?: "null"
+                )
             }
 
             if(enumerationType.isPrivate) {
-                throw WrongTypeSyntaxException(SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER, facetName, conceptName, enumerationType)
+                throw WrongFacetSchemaException(
+                    SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER,
+                    facetName,
+                    conceptName,
+                    enumerationType
+                )
             }
         }
 
         if(facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
-            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST, facetName, conceptName)
+            throw WrongFacetSchemaException(SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST, facetName, conceptName)
         }
 
         if(facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
-            throw WrongTypeSyntaxException(SchemaErrorCode.FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST, facetName, conceptName, facetType, referencedConcepts)
+            throw WrongFacetSchemaException(
+                SchemaErrorCode.FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST,
+                facetName,
+                conceptName,
+                facetType,
+                referencedConcepts
+            )
         }
 
         if(minimumOccurrences < 0 || maximumOccurrences < 0) {
-            throw WrongCardinalitySchemaSyntaxException(SchemaErrorCode.NO_NEGATIVE_FACET_CARDINALITIES, facetName, conceptName, minimumOccurrences, maximumOccurrences)
+            throw WrongFacetSchemaException(
+                SchemaErrorCode.NO_NEGATIVE_FACET_CARDINALITIES,
+                facetName,
+                conceptName,
+                minimumOccurrences,
+                maximumOccurrences
+            )
         }
 
         if(minimumOccurrences > maximumOccurrences) {
-            throw WrongCardinalitySchemaSyntaxException(SchemaErrorCode.WRONG_FACET_CARDINALITIES, facetName, conceptName, minimumOccurrences, maximumOccurrences)
+            throw WrongFacetSchemaException(
+                SchemaErrorCode.WRONG_FACET_CARDINALITIES,
+                facetName,
+                conceptName,
+                minimumOccurrences,
+                maximumOccurrences
+            )
         }
 
         return FacetSchemaImpl(

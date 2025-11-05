@@ -13,13 +13,24 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
-import org.codeblessing.sourceamazing.schema.ErrorCode
+import org.codeblessing.sourceamazing.schema.api.exceptions.ErrorCode
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.shortText
 
 enum class BuilderErrorCode(override val messageFormat: String): ErrorCode {
 
+    CLASS_MUST_BE_AN_INTERFACE("%s must be an interface."),
+    CLASS_CANNOT_BE_PRIVATE("%s can not be private. Change to modifier of the class to public or default."),
+    CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
+    CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
+    CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
+    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS("%s must not have member functions but has %s."),
+    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),
+    MUST_HAVE_ANNOTATION("%s must have an annotation %s."),
+    NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS("%s can not have more than %s annotation %s."),
+    CAN_NOT_HAVE_ANNOTATION("%s can not have annotation of type %s."),
+    NO_GENERIC_TYPE_PARAMETER("%s must not have generic type parameters but has type parameters %s."),
     MISSING_BUILDER_ANNOTATION("The method is missing the annotation ${BuilderMethod::class.annotationText()}. This annotation must be on every builder method."),
     UNKNOWN_FACET("The method uses an annotation %s with a facet '%s'. The facet is not known. You must register the facet on the concept class by declaring a property referencing this concept."),
     WRONG_FACET_TYPE("The method uses an annotation %s with a facet '%s'. The facet is not of type '%s' but of type '%s'."),

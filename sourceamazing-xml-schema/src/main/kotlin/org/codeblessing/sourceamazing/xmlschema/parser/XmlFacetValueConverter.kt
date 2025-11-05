@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.xmlschema.parser
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.type.enumValues
+import org.codeblessing.sourceamazing.utils.type.enumValues
 
 object XmlFacetValueConverter {
     fun convertString(facetSchema: FacetSchema, attributeValue: String): Any {

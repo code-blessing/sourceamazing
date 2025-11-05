@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.builder.interpretation
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
+import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 import kotlin.reflect.full.starProjectedType
 
 object BuilderCollectionHelper {

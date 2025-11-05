@@ -1,7 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
@@ -9,15 +8,14 @@ import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromS
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedRootAlias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasAnnotation
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoExtensionFunctions
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoGenericTypeParameters
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNoProperties
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasNotAnnotation
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkHasOnlyAnnotations
-import org.codeblessing.sourceamazing.schema.type.ClassCheckerUtil.checkIsOrdinaryInterface
-import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasAnnotation
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasExactNumberOfAnnotations
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasNoExtensionFunctions
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasNoGenericTypeParameters
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasNoProperties
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasNotAnnotation
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasOnlyAnnotations
+import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsOrdinaryInterface
 
 object BuilderClassValidator {
     private const val BUILDER_CLASS_DESCRIPTION = "Builder class"

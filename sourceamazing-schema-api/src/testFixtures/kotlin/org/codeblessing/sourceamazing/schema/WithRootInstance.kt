@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
+import org.codeblessing.sourceamazing.schema.api.toConceptName
 
 inline fun <reified T : Any> withRootInstance(
     schemaContext: SchemaContext,

@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
 
 class DataValidationExceptionCollector {
     private val listOfValidationFailures: MutableSet<DataValidationException> = mutableSetOf()

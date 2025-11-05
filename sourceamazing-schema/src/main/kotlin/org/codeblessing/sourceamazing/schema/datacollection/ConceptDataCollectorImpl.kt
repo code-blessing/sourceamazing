@@ -1,12 +1,8 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.schema.api.ConceptData
-import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
-import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
-import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
+import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
 
 class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptDataCollector {
 
@@ -25,7 +21,7 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptD
     }
 
     override fun newConceptData(conceptName: ConceptName): ConceptData {
-        return newConceptData(conceptName, ConceptIdentifierUtil.random(conceptName))
+        return newConceptData(conceptName, conceptName.randomConceptIdentifier())
     }
 
     override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {

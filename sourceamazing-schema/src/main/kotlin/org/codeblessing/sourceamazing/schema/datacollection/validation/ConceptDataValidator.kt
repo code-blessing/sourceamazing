@@ -2,23 +2,23 @@ package org.codeblessing.sourceamazing.schema.datacollection.validation
 
 import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
-import org.codeblessing.sourceamazing.schema.DataCollectionErrorCode
+import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DataValidationException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.MissingReferencedConceptFacetValueException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownConceptException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.UnknownFacetNameException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongCardinalityForFacetValueException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongTypeForFacetValueException
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.longText
-import org.codeblessing.sourceamazing.schema.type.enumValues
-import org.codeblessing.sourceamazing.schema.util.EnumUtil
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DuplicateConceptIdentifierException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.UnknownConceptException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.UnknownFacetNameException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongCardinalityForFacetValueException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongTypeForFacetValueException
+import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.longText
+import org.codeblessing.sourceamazing.utils.type.enumValues
+import org.codeblessing.sourceamazing.utils.util.EnumUtil
 import kotlin.reflect.KClass
 
 

@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.xmlschema
 
+import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
-import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
-import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
+import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.parser.SaxParserHandler
 import org.codeblessing.sourceamazing.xmlschema.xsdcreator.XmlSchemaInitializer
 import java.nio.file.Path
@@ -24,7 +25,7 @@ object XmlSchemaDataReader {
         placeholders: Map<String, String>,
         fileSystemAccess: FileSystemAccess,
         schemaAccess: SchemaAccess,
-        dataCollector: ConceptDataCollectorImpl
+        dataCollector: ConceptDataCollector
     ) {
         val xmlParentDirectory = FileDirUtil.getDirectoryFromFile(xmlFile)
         val sourceAmazingSchemaXsd = XmlSchemaInitializer.initializeXmlSchemaFile(xmlFile, schemaAccess, fileSystemAccess)

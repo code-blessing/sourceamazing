@@ -2,13 +2,13 @@ package org.codeblessing.sourceamazing.builder.update
 
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.schema.api.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import kotlin.reflect.KParameter
 
 class BuilderMethodInterpreterDataCollector(
-    private val conceptDataCollector: ConceptDataCollectorImpl,
+    private val conceptDataCollector: ConceptDataCollector,
     val functionArguments: Map<KParameter, Any?>,
     val newConceptIdsFromSuperiorBuilder: Map<Alias, ConceptIdentifier>,
 ): InterpreterDataCollector {

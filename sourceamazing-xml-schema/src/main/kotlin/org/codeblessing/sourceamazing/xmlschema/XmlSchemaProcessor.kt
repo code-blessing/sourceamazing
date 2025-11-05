@@ -9,14 +9,14 @@ import java.nio.file.Path
 class XmlSchemaProcessor(): XmlSchemaProcessorApi {
 
     override fun createXsdSchemaAndReadXmlFile(schemaContext: SchemaContext, xmlFile: Path, placeholders: Map<String, String>) {
-        val revealedSchemaContext: RevealedSchemaContext = schemaContext.toRevealedSchemaContext()
+        val schemaContext: RevealedSchemaContext = schemaContext.toRevealedSchemaContext()
         XmlSchemaDataReader.createXsdSchemaAndReadXmlFile(
             xmlFile = xmlFile,
-            loggerFacade = revealedSchemaContext.loggerFacade,
+            loggerFacade = schemaContext.loggerFacade,
             placeholders = placeholders,
-            fileSystemAccess = revealedSchemaContext.fileSystemAccess,
-            schemaAccess = revealedSchemaContext.schema,
-            dataCollector = revealedSchemaContext.dataCollector,
+            fileSystemAccess = schemaContext.fileSystemAccess,
+            schemaAccess = schemaContext.schema,
+            dataCollector = schemaContext.dataCollector,
         )
     }
 }

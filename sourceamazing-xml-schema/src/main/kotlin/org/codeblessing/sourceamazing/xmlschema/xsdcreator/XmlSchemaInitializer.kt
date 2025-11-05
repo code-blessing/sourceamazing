@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.xmlschema.xsdcreator
 
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.xmlschema.FileDirUtil
 import java.nio.file.Path
 

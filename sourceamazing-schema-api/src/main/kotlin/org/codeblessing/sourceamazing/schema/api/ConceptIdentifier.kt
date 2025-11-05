@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.api
 
 import org.codeblessing.sourceamazing.schema.api.rules.NameEnforcer
+import java.util.UUID
 
 
 class ConceptIdentifier private constructor(val name: String) {
@@ -12,6 +13,11 @@ class ConceptIdentifier private constructor(val name: String) {
     companion object {
         fun of(name: String): ConceptIdentifier {
             return ConceptIdentifier(name)
+        }
+
+        fun ofRandom(conceptName: ConceptName): ConceptIdentifier {
+            val uuid = UUID.randomUUID().toString()
+            return of("${conceptName.simpleName()}-Generated-$uuid")
         }
     }
 

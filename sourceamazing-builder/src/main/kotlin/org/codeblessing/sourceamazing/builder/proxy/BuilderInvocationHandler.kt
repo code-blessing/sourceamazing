@@ -7,15 +7,15 @@ import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpr
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.builder.update.BuilderMethodInterpreterDataCollector
 import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
+import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
-import org.codeblessing.sourceamazing.schema.documentation.TypesAsTextFunctions.shortText
-import org.codeblessing.sourceamazing.schema.proxy.KotlinInvocationHandler
-import org.codeblessing.sourceamazing.schema.proxy.ProxyCreator
-import org.codeblessing.sourceamazing.schema.type.hasAnnotation
-import org.codeblessing.sourceamazing.schema.type.valueParamsWithValues
+import org.codeblessing.sourceamazing.utils.documentation.TypesAsTextFunctions.shortText
+import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
+import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.utils.type.hasAnnotation
+import org.codeblessing.sourceamazing.utils.type.valueParamsWithValues
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -24,7 +24,7 @@ class BuilderInvocationHandler(
     private val schemaAccess: SchemaAccess,
     builderClass: KClass<*>,
     isTopLevelBuilder: Boolean,
-    private val conceptDataCollector: ConceptDataCollectorImpl,
+    private val conceptDataCollector: ConceptDataCollector,
     superiorConcepts: Map<Alias, ConceptName>,
     private val superiorConceptIds: Map<Alias, ConceptIdentifier>
 ): KotlinInvocationHandler(
@@ -83,7 +83,7 @@ class BuilderInvocationHandler(
 
     private fun createNewBuilderProxy(
         builderClass: KClass<*>,
-        dataCollector: ConceptDataCollectorImpl,
+        dataCollector: ConceptDataCollector,
         aliasToConceptMap: Map<Alias, ConceptName>,
         aliasToConceptIdMap: Map<Alias, ConceptIdentifier>
     ): Any {

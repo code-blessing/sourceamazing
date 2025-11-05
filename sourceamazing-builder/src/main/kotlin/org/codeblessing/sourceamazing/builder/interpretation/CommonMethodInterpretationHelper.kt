@@ -21,8 +21,8 @@ import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.toConceptName
-import org.codeblessing.sourceamazing.schema.toFacetName
+import org.codeblessing.sourceamazing.schema.api.toConceptName
+import org.codeblessing.sourceamazing.schema.api.toFacetName
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KFunction
 

@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil
-import org.codeblessing.sourceamazing.schema.type.KTypeUtil.KTypeClassInformation
+import org.codeblessing.sourceamazing.utils.type.KTypeUtil
+import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType

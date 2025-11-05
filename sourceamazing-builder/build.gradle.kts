@@ -11,7 +11,8 @@ repositories {
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
     implementation(projects.sourceamazingBuilderApi)
-    implementation(projects.sourceamazingSchema)
+    implementation(projects.sourceamazingUtils)
+    runtimeOnly(projects.sourceamazingSchema)
 
     compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
     compileOnly(libs.kotlin.reflect) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml

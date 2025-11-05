@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.sourceamazingSchemaApi)
     implementation(projects.sourceamazingBuilderApi)
     implementation(projects.sourceamazingXmlSchemaApi)
+    runtimeOnly(projects.sourceamazingUtils)
     runtimeOnly(projects.sourceamazingSchema)
     runtimeOnly(projects.sourceamazingBuilder)
     runtimeOnly(projects.sourceamazingXmlSchema)
@@ -18,6 +19,7 @@ dependencies {
     // to run an end-to-end test in junit, we need access to the sourceamazing-schema class
     // directly to bypass calling the main function
     testImplementation(projects.sourceamazingSchema)
+    testImplementation(projects.sourceamazingUtils)
     testImplementation(libs.junit.jupiter)
 }
 

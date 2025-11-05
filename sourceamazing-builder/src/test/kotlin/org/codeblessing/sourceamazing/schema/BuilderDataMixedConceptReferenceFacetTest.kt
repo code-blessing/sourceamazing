@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.WrongReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongReferencedConceptFacetValueException
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

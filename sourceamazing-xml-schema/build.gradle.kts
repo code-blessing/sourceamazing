@@ -6,8 +6,9 @@ plugins {
 
 dependencies {
     implementation(projects.sourceamazingSchemaApi)
-    implementation(projects.sourceamazingSchema)
     implementation(projects.sourceamazingXmlSchemaApi)
+    implementation(projects.sourceamazingUtils)
+    implementation(projects.sourceamazingSchema)
 
     compileOnly(libs.kotlin.stdlib) // add explicitly as "compileOnly" to remove kotlin dependency in pom.xml
 

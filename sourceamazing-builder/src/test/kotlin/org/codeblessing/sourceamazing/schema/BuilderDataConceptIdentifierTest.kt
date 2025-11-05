@@ -10,7 +10,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifi
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.datacollection.validation.exceptions.DuplicateConceptIdentifierException
+import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DuplicateConceptIdentifierException
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -81,7 +81,6 @@ class BuilderDataConceptIdentifierTest {
     @Test
     fun `test using the same concept identifier for creating same concepts throws an exception`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
-
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
                 withRootInstance<SchemaWithConcepts>(schemaContext) { rootConceptIdentifier ->

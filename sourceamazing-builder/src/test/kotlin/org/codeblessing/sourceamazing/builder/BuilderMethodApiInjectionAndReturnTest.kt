@@ -3,12 +3,10 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.schema.SchemaErrorCode
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.exceptions.MissingClassAnnotationSyntaxException
-import org.codeblessing.sourceamazing.schema.exceptions.WrongAnnotationSyntaxException
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
@@ -42,8 +40,8 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Test
     fun `test builder with BuilderMethod annotation using the same builder should fail`() {
         assertExceptionWithErrorCode(
-            WrongAnnotationSyntaxException::class,
-            SchemaErrorCode.CAN_NOT_HAVE_ANNOTATION,
+            BuilderSyntaxException::class,
+            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
@@ -103,8 +101,8 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Test
     fun `test builder method returning another builder without Builder annotation should throw an exception`() {
         assertExceptionWithErrorCode(
-            MissingClassAnnotationSyntaxException::class,
-            SchemaErrorCode.MUST_HAVE_ANNOTATION,
+            BuilderSyntaxException::class,
+            BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->

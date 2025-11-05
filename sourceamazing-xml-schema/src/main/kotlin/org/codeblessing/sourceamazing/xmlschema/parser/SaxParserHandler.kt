@@ -1,15 +1,15 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
 import org.codeblessing.sourceamazing.schema.api.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
-import org.codeblessing.sourceamazing.schema.filesystem.FileSystemAccess
-import org.codeblessing.sourceamazing.schema.logger.LoggerFacade
-import org.codeblessing.sourceamazing.schema.util.ConceptIdentifierUtil
+import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
+import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
+import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.XmlNames
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
@@ -21,7 +21,7 @@ import java.nio.file.Path
 
 class SaxParserHandler(
     private val schema: SchemaAccess,
-    private val dataCollector: ConceptDataCollectorImpl,
+    private val dataCollector: ConceptDataCollector,
     private val placeholders: Map<String, String>,
     private val schemaFileDirectory: Path,
     private val fileSystemAccess: FileSystemAccess,
@@ -98,7 +98,7 @@ class SaxParserHandler(
     private fun declareNewConcept(newConceptSchema: ConceptSchema, xmlAttributes: List<XmlAttribute>): XmlStackElement {
         val newConceptIdentifier = extractXmlAttributeValue(XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME, xmlAttributes)
             ?.let { ConceptIdentifier.of(it) }
-            ?: ConceptIdentifierUtil.random(newConceptSchema.conceptName)
+            ?: newConceptSchema.conceptName.randomConceptIdentifier()
         if(getCurrentXmlStackElement() != null) {
             addRawValueToCurrentFacet(newConceptIdentifier.name)
         }

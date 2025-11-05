@@ -2,7 +2,13 @@ package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.exceptions.*
+import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongFacetSchemaException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongPropertySyntaxException
+import org.codeblessing.sourceamazing.schema.api.toConceptName
+import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -55,7 +61,7 @@ class SchemaApiFacetTest {
 
     @Test
     fun `test create an schema with concept class having a enum facet that has modifier private should throw an exception`() {
-        assertExceptionWithErrorCode(WrongTypeSyntaxException::class, SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER) {
+        assertExceptionWithErrorCode(WrongFacetSchemaException::class, SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithPrivateEnumFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithPrivateEnumFacet>(schemaContext) {
                     // do nothing
@@ -145,7 +151,7 @@ class SchemaApiFacetTest {
 
     @Test
     fun `test concept having an empty reference facet should throw an exception`() {
-        assertExceptionWithErrorCode(WrongTypeSyntaxException::class, SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST) {
+        assertExceptionWithErrorCode(WrongPropertySyntaxException::class, SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithEmptyReferenceFacet::class) { schemaContext ->
                 withRootInstance<DefinitionClassWithEmptyReferenceFacet>(schemaContext) {
                     // do nothing
@@ -182,7 +188,7 @@ class SchemaApiFacetTest {
     @Test
     @Disabled("Maybe this is possible. Have to investigate")
     fun `test reference facet to a the self class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongTypeSyntaxException::class, SchemaErrorCode.FACET_UNKNOWN_REFERENCED_CONCEPT) {
+        assertExceptionWithErrorCode(WrongFacetSchemaException::class, SchemaErrorCode.FACET_UNKNOWN_REFERENCED_CONCEPT) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithSelfReference::class) { schemaContext ->
                 withRootInstance<DefinitionClassWithSelfReference>(schemaContext) {
                     // do nothing
