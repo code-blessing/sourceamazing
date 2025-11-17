@@ -88,7 +88,7 @@ class BuilderInvocationHandler(
         aliasToConceptIdMap: Map<Alias, ConceptIdentifier>
     ): Any {
         return ProxyCreator.createProxy(
-            definitionClass = builderClass,
+            interfaceForProxy = builderClass,
             invocationHandler = BuilderInvocationHandler(
                 schemaAccess = schemaAccess,
                 builderClass = builderClass,

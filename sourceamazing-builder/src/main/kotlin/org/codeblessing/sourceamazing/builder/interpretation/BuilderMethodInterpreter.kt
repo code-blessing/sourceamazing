@@ -156,4 +156,11 @@ class BuilderMethodInterpreter(
         val methodReturnType = method.returnTypeOrNull() ?: return null
         return KTypeUtil.classesInformationFromKType(methodReturnType).first().clazz
     }
+
+    fun getConceptByAlias(conceptAlias: Alias): ConceptName {
+        val newConceptsByAlias: Map<Alias, ConceptName> = newConcepts()
+
+        return newConceptsByAlias[conceptAlias]
+            ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
+    }
 }

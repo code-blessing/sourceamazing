@@ -29,7 +29,7 @@ object BuilderUpdater {
 
         builderMethodInterpreter.getManualAssignedConceptIdentifierAnnotationContent(dataContext).forEach { conceptIdentifierAnnotationData ->
             val conceptAlias = conceptIdentifierAnnotationData.alias
-            val conceptName = getConceptByAlias(conceptAlias, builderMethodInterpreter)
+            val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
             val conceptIdentifier = conceptIdentifierAnnotationData.conceptIdentifier
                 ?: throw IllegalArgumentException("Can not pass null value as concept identifier argument on method $method")
             builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
@@ -42,7 +42,7 @@ object BuilderUpdater {
     ) {
         val aliasesToSetRandomConceptIdentifierValue = builderMethodInterpreter.aliasesToSetRandomConceptIdentifierValue()
         aliasesToSetRandomConceptIdentifierValue.forEach { conceptAlias ->
-            val conceptName = getConceptByAlias(conceptAlias, builderMethodInterpreter)
+            val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
             val conceptIdentifier = conceptName.randomConceptIdentifier()
             builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
         }
@@ -85,12 +85,5 @@ object BuilderUpdater {
             FacetModificationRule.REPLACE -> conceptData.replaceFacetValues(facetName, facetValues)
         }
         builderInterpreterDataCollector.validateAfterUpdate(conceptData)
-    }
-
-    private fun getConceptByAlias(conceptAlias: Alias, builderMethodInterpreter: BuilderMethodInterpreter): ConceptName {
-        val newConceptsByAlias: Map<Alias, ConceptName> = builderMethodInterpreter.newConcepts()
-
-        return newConceptsByAlias[conceptAlias]
-            ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method ${builderMethodInterpreter.method}")
     }
 }

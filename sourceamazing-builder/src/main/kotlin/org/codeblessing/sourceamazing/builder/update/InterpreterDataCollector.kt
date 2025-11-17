@@ -1,3 +1,0 @@
-package org.codeblessing.sourceamazing.builder.update
-
-interface InterpreterDataCollector

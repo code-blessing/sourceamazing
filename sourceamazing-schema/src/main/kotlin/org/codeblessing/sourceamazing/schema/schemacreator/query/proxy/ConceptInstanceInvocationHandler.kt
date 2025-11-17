@@ -32,7 +32,7 @@ class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode): Ko
     private fun mapFacetValue(facetValue: Any): Any {
         return if(facetValue is ConceptNode) {
             ProxyCreator.createProxy(
-                definitionClass = facetValue.conceptName.clazz,
+                interfaceForProxy = facetValue.conceptName.clazz,
                 invocationHandler = ConceptInstanceInvocationHandler(facetValue),
             )
         } else {

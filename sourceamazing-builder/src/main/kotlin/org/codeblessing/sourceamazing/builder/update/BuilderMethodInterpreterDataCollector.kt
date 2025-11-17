@@ -11,7 +11,7 @@ class BuilderMethodInterpreterDataCollector(
     private val conceptDataCollector: ConceptDataCollector,
     val functionArguments: Map<KParameter, Any?>,
     val newConceptIdsFromSuperiorBuilder: Map<Alias, ConceptIdentifier>,
-): InterpreterDataCollector {
+) {
 
     private val newConceptIds: MutableMap<Alias, ConceptIdentifier> = mutableMapOf()
 
