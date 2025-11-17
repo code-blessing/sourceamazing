@@ -2,10 +2,6 @@ package org.codeblessing.sourceamazing.builder.alias
 
 object BuilderAliasHelper {
 
-    fun defaultAliasHint(conceptAlias: Alias): String {
-        return ""
-    }
-
     fun firstDuplicateAlias(listOfAlias: List<Alias>): Alias? {
         val alreadyUsedAliases: MutableSet<Alias> = mutableSetOf()
         for(alias in listOfAlias) {

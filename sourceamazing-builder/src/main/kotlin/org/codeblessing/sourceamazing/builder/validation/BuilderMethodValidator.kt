@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.builder.validation
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
@@ -375,7 +374,7 @@ object BuilderMethodValidator {
 
         if(duplicateAlias != null) {
             val concept = builderMethodInterpreter.newConceptByAlias(duplicateAlias)
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.ALIAS_IS_ALREADY_USED, duplicateAlias, concept.clazz.longText(),  allUsedAliasesIncludingDuplicates.toSet(), defaultAliasHint(duplicateAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.ALIAS_IS_ALREADY_USED, duplicateAlias, concept.clazz.longText(),  allUsedAliasesIncludingDuplicates.toSet())
         }
     }
 
@@ -386,7 +385,7 @@ object BuilderMethodValidator {
         val duplicateRandomConceptIdentifierAlias = firstDuplicateAlias(setRandomConceptIdentifierAliases)
 
         if(duplicateRandomConceptIdentifierAlias != null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE, duplicateRandomConceptIdentifierAlias, defaultAliasHint(duplicateRandomConceptIdentifierAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_SET_RANDOM_CONCEPT_IDENTIFIER_VALUE_USAGE, duplicateRandomConceptIdentifierAlias)
         }
 
         // check no duplicate alias in all @SetConceptIdentifierValue
@@ -394,7 +393,7 @@ object BuilderMethodValidator {
         val duplicateSetConceptIdentifierValueAlias = firstDuplicateAlias(setConceptIdentifierValueAliases)
 
         if(duplicateSetConceptIdentifierValueAlias != null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE, duplicateSetConceptIdentifierValueAlias, defaultAliasHint(duplicateSetConceptIdentifierValueAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_SET_CONCEPT_IDENTIFIER_VALUE_USAGE, duplicateSetConceptIdentifierValueAlias)
         }
 
         // check no duplicate assignment with @SetRandomConceptIdentifierValue and @SetConceptIdentifierValue
@@ -402,23 +401,23 @@ object BuilderMethodValidator {
         val duplicateAssignmentAlias = firstDuplicateAlias(allConceptIdentifierAssignmentAliases)
 
         if(duplicateAssignmentAlias != null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION, duplicateAssignmentAlias, defaultAliasHint(duplicateAssignmentAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.DUPLICATE_CONCEPT_IDENTIFIER_INITIALIZATION, duplicateAssignmentAlias)
         }
 
         // check no missing assignment for all @NewConcept
         val missingConceptIdentifierAssignment = firstMissingAlias(aliasesFromNewConceptAssignment, allConceptIdentifierAssignmentAliases)
         if(missingConceptIdentifierAssignment != null) {
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER, missingConceptIdentifierAssignment, defaultAliasHint(missingConceptIdentifierAssignment))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.CONCEPT_HAS_NO_CORRESPONDING_CONCEPT_IDENTIFIER, missingConceptIdentifierAssignment)
         }
 
         // check no unknown aliases in @SetRandomConceptIdentifierValue assignment
         firstMissingAlias(setRandomConceptIdentifierAliases, aliasesFromNewConceptAssignment)?.let { unknownAlias ->
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_ALIAS, unknownAlias, SetRandomConceptIdentifierValue::class.annotationText(), aliasesFromNewConceptAssignment, defaultAliasHint(unknownAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_ALIAS, unknownAlias, SetRandomConceptIdentifierValue::class.annotationText(), aliasesFromNewConceptAssignment)
         }
 
         // check no unknown aliases in @SetConceptIdentifierValue assignment
         firstMissingAlias(setConceptIdentifierValueAliases, aliasesFromNewConceptAssignment)?.let { unknownAlias ->
-            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_ALIAS, unknownAlias, SetConceptIdentifierValue::class.annotationText(), aliasesFromNewConceptAssignment, defaultAliasHint(unknownAlias))
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_ALIAS, unknownAlias, SetConceptIdentifierValue::class.annotationText(), aliasesFromNewConceptAssignment)
         }
     }
 
@@ -457,7 +456,6 @@ object BuilderMethodValidator {
                 alias.name,
                 annotation.annotationClass.annotationText(),
                 knownConceptAliases.keys,
-                defaultAliasHint(alias)
             )
         }
     }
@@ -488,7 +486,7 @@ object BuilderMethodValidator {
     private fun validateKnownConceptsFromNewConceptAnnotation(builderMethodInterpreter: BuilderMethodInterpreter, schemaAccess: SchemaAccess) {
         builderMethodInterpreter.newConcepts().forEach { (conceptAlias, conceptName) ->
             if(!schemaAccess.hasConceptName(conceptName)) {
-                throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_CONCEPT, conceptAlias, conceptName.clazz.longText(), defaultAliasHint(conceptAlias))
+                throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, BuilderErrorCode.UNKNOWN_CONCEPT, conceptAlias, conceptName.clazz.longText())
             }
         }
     }

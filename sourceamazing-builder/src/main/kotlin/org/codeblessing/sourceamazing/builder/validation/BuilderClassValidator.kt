@@ -1,7 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.defaultAliasHint
 import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
@@ -51,7 +50,7 @@ object BuilderClassValidator {
         val providedAliases = builderClassInterpreter.newConceptAliasesFromSuperiorBuilder()
         expectedAliases.forEach { expectedAlias ->
             if(expectedAlias !in providedAliases) {
-                throw BuilderSyntaxException(builderClass, BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, expectedAlias, defaultAliasHint(expectedAlias))
+                throw BuilderSyntaxException(builderClass, BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, expectedAlias)
             }
         }
     }
@@ -62,7 +61,7 @@ object BuilderClassValidator {
         val duplicateAlias = firstDuplicateAlias(aliasesIncludingDuplicates)
 
         if(duplicateAlias != null) {
-            throw BuilderSyntaxException(builderClass, BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, duplicateAlias, defaultAliasHint(duplicateAlias))
+            throw BuilderSyntaxException(builderClass, BuilderErrorCode.DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION, duplicateAlias)
         }
     }
 }
