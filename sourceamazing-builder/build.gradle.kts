@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     `sourceamazing-publishing`
+    `kotlin-code-formatting`
 }
 
 repositories {

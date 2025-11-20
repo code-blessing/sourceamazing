@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     `maven-dependency-repository`
     application
+    `kotlin-code-formatting`
 }
 
 dependencies {

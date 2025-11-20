@@ -7,6 +7,7 @@ plugins {
     `sourceamazing-publishing`
     `maven-dependency-repository`
     `java-test-fixtures`
+    `kotlin-code-formatting`
 }
 
 dependencies {
