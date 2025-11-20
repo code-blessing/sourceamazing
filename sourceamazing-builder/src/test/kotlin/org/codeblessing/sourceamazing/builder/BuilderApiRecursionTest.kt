@@ -16,14 +16,12 @@ class BuilderApiRecursionTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodUsingSameBuilderIndirectly {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(OuterNestedBuilder::class)
         fun doSomething(): OuterNestedBuilder
 
@@ -67,14 +65,12 @@ class BuilderApiRecursionTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodUsingSameBuilderDirectly {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
 

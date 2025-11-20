@@ -44,14 +44,12 @@ class BuilderMethodApiMethodAnnotationsTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithFixedFacetValueAndParameterFacetValue {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: String,
@@ -73,14 +71,12 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithMultipleFixedFacetValues {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value 1")
         @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value 2")
         fun doSomething()
@@ -101,14 +97,12 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithCorrectFixedEnumFacetValues {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedEnumFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet", value = "A")
         fun doSomething()
     }
@@ -128,14 +122,12 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongFixedEnumFacetValues {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedEnumFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet", value = "NOT_A_NOR_B")
         fun doSomething()
     }
@@ -157,14 +149,12 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongFixedFacetType {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedBooleanFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet", value = true)
         fun doSomething()
     }
@@ -186,14 +176,12 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUnregisteredFixedFacetType {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "unregisteredFacet", value = 42)
         fun doSomething()
     }
@@ -215,17 +203,14 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithValidFixedReference {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "bar")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "foo",
             facetToModify = "selfRefFacet",
@@ -249,17 +234,14 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithValidParameterReference {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "bar")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myReference: ConceptIdentifier
         )
@@ -280,17 +262,14 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithFunctionInsteadOfConceptIdentifierReference {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "bar")
         fun doSomething(
             @SetFacetValue(
                 conceptToModifyAlias = "foo",
@@ -319,17 +298,14 @@ class BuilderMethodApiMethodAnnotationsTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithStringInsteadOfConceptIdentifierReference {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "bar")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myReference: String
         )

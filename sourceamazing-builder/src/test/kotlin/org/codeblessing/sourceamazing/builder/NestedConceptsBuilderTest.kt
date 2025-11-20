@@ -72,7 +72,7 @@ class NestedConceptsBuilderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface NestedObjectsBuilder {
 
         @BuilderMethod
@@ -201,10 +201,11 @@ class NestedConceptsBuilderTest {
         val personBo = ConceptIdentifier.of("Person")
 
         val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(NestedConceptsSchema::class) { schemaContext ->
-            withRootInstance<NestedConceptsSchema>(schemaContext) { 
+            withRootInstance<NestedConceptsSchema>(schemaContext) { conceptNameAndIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
                     NestedObjectsBuilder::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.newBusinessObject(personBo, "the person business object") {
                         addSingleValueField("firstname") {

@@ -82,13 +82,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithIllegalConceptIdClass {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: String,
         )
@@ -114,13 +112,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithIllegalConceptIdClass {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -157,13 +153,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNullableConceptId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier?,
         )
@@ -189,13 +183,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithNullableConceptId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -232,13 +224,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier?,
         )
@@ -264,13 +254,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -308,13 +296,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
         )
@@ -340,13 +326,11 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -384,14 +368,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: String?,
         )
@@ -417,14 +399,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -461,14 +441,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -491,14 +469,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -531,14 +507,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithCollectionTypedStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myTexts: List<String>,
         )
@@ -559,14 +533,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithCollectionTypedStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -598,14 +570,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithMultipleSetFacetValueOnSameFacetMethod {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText1: String,
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText2: String,
@@ -627,14 +597,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -674,14 +642,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -715,14 +681,12 @@ class BuilderMethodApiParameterTypesTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithSortedSetStringCollectionParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myTexts: SortedSet<String>,
         )
@@ -748,14 +712,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithSortedSetStringCollectionParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -792,14 +754,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithCollectionTypedNullableStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myTexts: List<String?>,
         )
@@ -825,14 +785,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -869,14 +827,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myTexts: List<String?>,
         )
@@ -897,14 +853,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -937,14 +891,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongTypedStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: Int,
         )
@@ -970,14 +922,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithWrongTypedStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1014,14 +964,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongFunctionReturningStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: () -> String,
         )
@@ -1047,14 +995,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithWrongFunctionReturningStringParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1091,14 +1037,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongTypedBooleanParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "boolFacet") myBoolean: Int,
         )
@@ -1124,14 +1068,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithArrayOfBooleanParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "boolFacet") myBooleans: Array<Boolean>,
         )
@@ -1152,14 +1094,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithArrayOfBooleanParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1191,14 +1131,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongTypedIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: String,
         )
@@ -1224,14 +1162,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithLongInsteadOfIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: Long,
         )
@@ -1257,14 +1193,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithLongInsteadOfIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1301,14 +1235,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNumberParameterInsteadOfIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: Number,
         )
@@ -1334,14 +1266,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1379,14 +1309,12 @@ class BuilderMethodApiParameterTypesTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAnyParameterInsteadOfIntParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: Any,
         )
@@ -1412,14 +1340,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithIntInsteadOfEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: Int,
         )
@@ -1445,14 +1371,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithOtherCompatibleEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: MySubsetEnum,
         )
@@ -1473,14 +1397,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithOtherCompatibleEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1512,14 +1434,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithExactSameEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: MyExactSameEnum,
         )
@@ -1540,14 +1460,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithOtherIncompatibleEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: MyOtherIncompatibleEnum,
         )
@@ -1573,14 +1491,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithStringInsteadOfEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: String,
         )
@@ -1606,14 +1522,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithStringInsteadOfEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1650,14 +1564,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithCorrectEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnum: MyEnum,
         )
@@ -1678,14 +1590,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithSetOfEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnums: Set<MyEnum>,
         )
@@ -1706,14 +1616,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithNullableSetOfEnumParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet") myEnums: Set<MyEnum>?,
         )
@@ -1739,14 +1647,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithWrongTypedReferenceParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myRef: String,
         )
@@ -1772,14 +1678,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithWrongTypedReferenceParameter {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )
@@ -1816,14 +1720,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithVarargArray {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") vararg myRefs: ConceptIdentifier,
         )
@@ -1844,14 +1746,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myRef: ConceptIdentifier,
         )
@@ -1872,14 +1772,12 @@ class BuilderMethodApiParameterTypesTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProvider,
         )

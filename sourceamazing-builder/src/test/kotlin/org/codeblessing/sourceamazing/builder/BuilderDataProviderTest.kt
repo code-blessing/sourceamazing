@@ -106,7 +106,7 @@ class BuilderDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodForDataProvider {
 
         @Suppress("UNUSED")
@@ -158,10 +158,11 @@ class BuilderDataProviderTest {
         )
 
         val schemaWithConcept = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodForDataProvider::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.doSomethingWithTheProvidedTextValue(
                         fromSimpleDataObjectId,

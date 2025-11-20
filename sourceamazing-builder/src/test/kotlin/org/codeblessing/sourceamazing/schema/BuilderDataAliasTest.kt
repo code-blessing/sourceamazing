@@ -21,7 +21,7 @@ class BuilderDataAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
 
         @BuilderMethod
@@ -56,10 +56,11 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder
                             .createConcept()
@@ -76,7 +77,7 @@ class BuilderDataAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
 
         @BuilderMethod
@@ -126,10 +127,11 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder
                             .createConcept().setTextAndFixedNumber("ConceptFromTopLevelBuilder")

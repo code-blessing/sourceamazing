@@ -23,12 +23,10 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface EmptyBuilder
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodReturningSameBuilder {
 
         @Suppress("UNUSED")
@@ -37,26 +35,20 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Test
-    fun `test builder with BuilderMethod annotation using the same builder should fail`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-        ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodReturningSameBuilder::class,
-                    ) {
-                        // do nothing
-                    }
+    fun `test builder with BuilderMethod annotation using the same builder should not fail`() {
+        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    BuilderMethodReturningSameBuilder::class,
+                ) {
+                    // do nothing
                 }
             }
         }
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodReturningOtherBuilder {
 
         @Builder
@@ -83,7 +75,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodReturningOtherBuildersWithoutBuilderAnnotation {
 
         private interface OtherBuilder
@@ -114,7 +105,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodNoReturnTypeButWithNewBuilderAnnotation {
 
         @Suppress("UNUSED")
@@ -143,7 +133,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation {
         private interface OtherBuilder
 
@@ -174,7 +163,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation {
 
         @Suppress("UNUSED")
@@ -202,7 +190,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation {
 
 
@@ -237,7 +224,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithoutExtensionFunction {
 
         @Suppress("UNUSED")
@@ -268,7 +254,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithObjectInsteadOfFunction {
 
         @Suppress("UNUSED")
@@ -298,7 +283,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithValueParameters {
 
         @Suppress("UNUSED")
@@ -329,7 +313,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithReturnType {
 
         @Suppress("UNUSED")
@@ -359,7 +342,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionWithNullableType {
 
         @Suppress("UNUSED")
@@ -389,7 +371,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithTwoBuilderInjectionParameter {
 
         @Suppress("UNUSED")
@@ -420,13 +401,11 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionOnNonLastParam {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
             @InjectBuilder builder: EmptyBuilder.() -> Unit,
@@ -454,12 +433,10 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @IgnoreNullFacetValue @InjectBuilder builder: EmptyBuilder.() -> Unit,
@@ -486,7 +463,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionAndReturnTypeBuilder {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -515,7 +491,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes {
         @Builder
         private interface OtherBuilder

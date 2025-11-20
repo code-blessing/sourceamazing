@@ -24,7 +24,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod
@@ -58,10 +58,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept(selfReferencingConceptIdentifier, selfReferencingConceptIdentifier.name)
                             .addReference(selfReferencingConceptIdentifier)
@@ -84,10 +85,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept(mainConceptIdentifier, mainConceptIdentifier.name)
                             .addReference(firstReferencedConceptIdentifier)
@@ -121,10 +123,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
                             .addReference(secondConceptIdentifier)
@@ -159,10 +162,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
                             .addReference(secondConceptIdentifier)
@@ -197,10 +201,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertThrows<MissingReferencedConceptFacetValueException> {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept(mainConceptId, mainConceptId.name)
                             .addReference(instantiatedConceptId)

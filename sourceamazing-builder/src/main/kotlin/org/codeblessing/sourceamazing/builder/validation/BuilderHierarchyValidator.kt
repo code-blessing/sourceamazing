@@ -21,10 +21,8 @@ object BuilderHierarchyValidator {
     ) {
         val builderClassInterpreter = BuilderClassInterpreter(
             builderClass = builderClass,
-            isTopLevelBuilder = true,
             newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
         )
-        validateBuilderClass(builderClassInterpreter)
         validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
     }
 
@@ -51,7 +49,6 @@ object BuilderHierarchyValidator {
                 if(subBuilderClass != null) {
                     val subBuilderClassInterpreter = BuilderClassInterpreter(
                         builderClass = subBuilderClass,
-                        isTopLevelBuilder = false,
                         newConceptNamesWithAliasFromSuperiorBuilder = expectedConceptsFromSuperiorMethod + builderMethodInterpreter.newConcepts(),
                     )
 

@@ -3,20 +3,16 @@ package org.codeblessing.sourceamazing.builder.interpretation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedRootAlias
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import kotlin.reflect.KClass
 
 class BuilderClassInterpreter(
     val builderClass: KClass<*>,
-    val isTopLevelBuilder: Boolean,
     private val newConceptNamesWithAliasFromSuperiorBuilder: Map<Alias, ConceptName>,
     ) {
 
     fun expectedAliasesFromSuperiorBuilderIncludingDuplicates(): List<Alias> {
-        val rootAlias = builderClass.annotations.filterIsInstance<ExpectedRootAlias>().map { it.conceptAlias.toAlias() }
-        val fromSuperiorBuilder = builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().map { it.conceptAlias.toAlias() }
-        return rootAlias + fromSuperiorBuilder
+        return builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().map { it.conceptAlias.toAlias() }
     }
 
     fun expectedAliasesFromSuperiorBuilder(): Set<Alias> {

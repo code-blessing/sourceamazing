@@ -47,7 +47,7 @@ class BuilderSmokeTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     interface SmokeTestRootBuilder {
 
         // Builder style
@@ -176,10 +176,11 @@ class BuilderSmokeTest {
 
 
         val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext ->
-            withRootInstance<SmokeTestSchema>(schemaContext) { 
+            withRootInstance<SmokeTestSchema>(schemaContext) { conceptNameAndIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
                     SmokeTestRootBuilder::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     // add some data in DSL style
                     builder

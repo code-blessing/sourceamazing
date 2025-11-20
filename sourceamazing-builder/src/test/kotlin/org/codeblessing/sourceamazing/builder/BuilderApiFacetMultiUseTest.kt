@@ -40,7 +40,6 @@ class BuilderApiFacetMultiUseTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets {
 
         @Suppress("UNUSED")
@@ -50,7 +49,6 @@ class BuilderApiFacetMultiUseTest {
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "conceptAlphaAndBeta", referencedConceptAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
@@ -58,7 +56,6 @@ class BuilderApiFacetMultiUseTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "conceptAlpha", referencedConceptAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetAlpha(): NestedBuilder
 
@@ -89,7 +86,6 @@ class BuilderApiFacetMultiUseTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets {
 
         @Suppress("UNUSED")
@@ -99,7 +95,6 @@ class BuilderApiFacetMultiUseTest {
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
@@ -107,7 +102,6 @@ class BuilderApiFacetMultiUseTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetBeta(): NestedBuilder
 

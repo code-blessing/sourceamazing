@@ -32,7 +32,7 @@ class BuilderDataFacetTypeAndQueryTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -78,10 +78,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                         // no facet values added
@@ -100,10 +101,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addFacetValues(
@@ -135,10 +137,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addFacetValues(

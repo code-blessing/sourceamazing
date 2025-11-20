@@ -30,13 +30,11 @@ class BuilderMethodApiDataProviderTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDataProviderAsLambdaFunction {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider.() -> Unit,
@@ -63,13 +61,11 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderDataProviderWithLambdaFunction {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: () -> Unit,
@@ -96,13 +92,11 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderDataProviderWithArray {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Array<EmptyBuilderDataProvider>,
@@ -129,13 +123,11 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithBuilderDataProviderWithAnyObject {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Any,
@@ -162,12 +154,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @IgnoreNullFacetValue @ProvideBuilderData data: EmptyBuilderDataProvider,
@@ -194,12 +184,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithBuilderDataAsNullableParam {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider?,
@@ -226,12 +214,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithEmptyDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider,
@@ -253,12 +239,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithBuilderDataWithOtherAnnotations {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherAnnotations,
@@ -286,12 +270,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation,
@@ -318,12 +300,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderWithGenericParameter {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
@@ -362,12 +342,10 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderUsingAndReturningGenericParameter {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
@@ -410,7 +388,6 @@ class BuilderMethodApiDataProviderTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodDataProviderThrowingException {
         @Suppress("UNUSED")
         @BuilderMethod

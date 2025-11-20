@@ -45,7 +45,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForNewConcept {
 
         @Suppress("UNUSED")
@@ -53,7 +52,6 @@ class BuilderApiAliasTest {
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
@@ -74,14 +72,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @WithNewBuilder(builderClass = BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept.() -> Unit,
@@ -116,13 +112,11 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithNewConcept {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
@@ -158,7 +152,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForRandomConceptIdentifier {
 
         @Suppress("UNUSED")
@@ -166,7 +159,6 @@ class BuilderApiAliasTest {
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
@@ -190,14 +182,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetRandomId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
         )
@@ -236,13 +226,11 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier2: ConceptIdentifier,
@@ -269,13 +257,11 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetId {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
@@ -314,13 +300,11 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutConceptIdentifierForAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething()
     }
 
@@ -344,13 +328,11 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutConceptIdentifierForAliasInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
@@ -390,14 +372,12 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithDuplicateMixedConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier
         )
@@ -423,14 +403,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithRandomIdAndConceptIdentifierForAliasInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
         )
@@ -469,13 +447,11 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifier {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -509,13 +485,11 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifierInBuilderButInDataProvider {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(
             @ProvideBuilderData data: DataProviderWithConceptId
         )
@@ -547,7 +521,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -572,7 +545,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider {
 
         @Suppress("UNUSED")
@@ -611,7 +583,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -637,7 +608,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider {
 
         @Suppress("UNUSED")
@@ -677,7 +647,6 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation {
 
         @Suppress("UNUSED")
@@ -704,7 +673,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider {
 
         @Suppress("UNUSED")
@@ -744,14 +712,12 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation.() -> Unit,
@@ -790,14 +756,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         fun doSomething(
             @ProvideBuilderData data: DataProvider
         )
@@ -836,14 +800,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation.() -> Unit,
@@ -882,14 +844,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownReferenceAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         fun doSomething(
             @ProvideBuilderData data: DataProvider
         )
@@ -928,7 +888,6 @@ class BuilderApiAliasTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -953,7 +912,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -978,7 +936,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -1015,7 +972,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -1040,7 +996,6 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -1069,17 +1024,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilder::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilder.() -> Unit,
@@ -1114,17 +1066,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit,
@@ -1160,17 +1109,14 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "known")
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodReusingAnAliasNameFromSuperiorBuilder::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit,
@@ -1206,14 +1152,12 @@ class BuilderApiAliasTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation {
 
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(): NestedBuilder
 
         @Builder

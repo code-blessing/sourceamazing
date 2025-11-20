@@ -1,8 +1,10 @@
 package org.codeblessing.sourceamazing.schema
 
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
+import org.codeblessing.sourceamazing.schema.api.toConceptName
 import org.junit.jupiter.api.Test
 
 class SchemaApiConceptInterfaceTest {
@@ -23,7 +25,7 @@ class SchemaApiConceptInterfaceTest {
     @Test
     fun `test sealed interface instead of interface schema class should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class) { schemaContext ->
-            withRootInstance<EmptySchema>(schemaContext) {
+            withRootInstance<SealedInterfaceInsteadOfInterfaceSchema>(schemaContext) {
                 // do nothing
             }
         }

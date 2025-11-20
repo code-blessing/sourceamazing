@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.Builder
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
+import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedRootAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
 import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
@@ -32,7 +33,7 @@ class BuilderDataConceptIdentifierTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddConcepts {
 
         @BuilderMethod
@@ -59,10 +60,11 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId3 = ConceptIdentifier.of("My-Id-3")
 
         val schemaInstance = SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-            withRootInstance<SchemaWithConcepts>(schemaContext) { 
+            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddConcepts::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConceptOne(myConceptId1)
                     builder.createConceptOne(myConceptId2)
@@ -80,10 +82,11 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { 
+                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConceptOne(myConceptId)
                         builder.createConceptOne(myConceptId)
@@ -99,10 +102,11 @@ class BuilderDataConceptIdentifierTest {
 
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { 
+                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConceptOne(myConceptId)
                         builder.createConceptTwo(myConceptId)
@@ -117,10 +121,11 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-            withRootInstance<SchemaWithConcepts>(schemaContext) { 
+            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddConcepts::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConceptOne(myConceptId)
                     assertThrows<DuplicateConceptIdentifierException> {

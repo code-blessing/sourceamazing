@@ -21,7 +21,7 @@ class BuilderDataNestingBuildersTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderReturningASubBuilderInASubSubBuilder {
 
         @BuilderMethod
@@ -55,10 +55,11 @@ class BuilderDataNestingBuildersTest {
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderReturningASubBuilderInASubSubBuilder::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder
                             .createConcept()

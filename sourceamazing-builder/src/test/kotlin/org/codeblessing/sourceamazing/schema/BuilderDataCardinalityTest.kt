@@ -20,7 +20,7 @@ class BuilderDataCardinalityTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -58,10 +58,11 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert nothing to a text facet will return an empty list`() {
         val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddOrReplaceFacets::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConcept()
                 }
@@ -75,10 +76,11 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts individually to a text facet will return an list of four elements`() {
         val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddOrReplaceFacets::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConcept()
                         .addText("hallo1")
@@ -97,10 +99,11 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts as array list to a text facet will return an list of four elements`() {
         val schemaInstance = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddOrReplaceFacets::class,
+                    mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConcept()
                         .addTexts("hallo1", "hello2", "hallo3", "hallo4")

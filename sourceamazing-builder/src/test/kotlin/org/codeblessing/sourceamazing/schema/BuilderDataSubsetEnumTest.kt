@@ -39,7 +39,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithAllDatatypesEnum {
 
         @Suppress("UNUSED")
@@ -57,10 +57,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: SchemaWithConceptWithEnumerationFacet =
             SchemaApi.withSchema(SchemaWithConceptWithEnumerationFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithAllDatatypesEnum::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.doSetEnumValue(AllDatatypesEnum.INT)
                     }
@@ -82,7 +83,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithCompatibleNumericDatatypesEnum {
 
         @Suppress("UNUSED")
@@ -100,10 +101,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: SchemaWithConceptWithEnumerationFacet =
             SchemaApi.withSchema(SchemaWithConceptWithEnumerationFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithCompatibleNumericDatatypesEnum::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.doSetEnumValue(CompatibleNumericDatatypesEnum.INT)
                     }
@@ -132,7 +134,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithExactCopyOfAllDatatypesEnum {
 
         @Suppress("UNUSED")
@@ -150,10 +152,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: SchemaWithConceptWithEnumerationFacet =
             SchemaApi.withSchema(SchemaWithConceptWithEnumerationFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithExactCopyOfAllDatatypesEnum::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.doSetEnumValue(ExactCopyOfAllDatatypesEnum.INT)
                     }
@@ -179,7 +182,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithIncompatibleWithAllDatatypesEnum {
 
         @Suppress("UNUSED")
@@ -197,10 +200,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
         assertThrows<BuilderMethodSyntaxException> {
             SchemaApi.withSchema(SchemaWithConceptWithEnumerationFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithEnumerationFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithIncompatibleWithAllDatatypesEnum::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.doSetEnumValue(IncompatibleWithNumericDatatypesEnum.INT)
                     }

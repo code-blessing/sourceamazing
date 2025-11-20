@@ -20,13 +20,17 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
         @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -123,10 +127,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert to the same text facet multiple times with REPLACE mode does always clear and override the result`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -145,10 +150,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert a list of strings to text facet with REPLACE mode does replace with all list entries`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -167,10 +173,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert a list of strings and null values to text facet with REPLACE mode does replace with all list entries that are not null`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -189,10 +196,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert an empty list of strings to text facet with REPLACE mode does replace with an empty list`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .setText("hallo1")
@@ -209,10 +217,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert null values to a text facet with REPLACE mode does not clear and override the result for null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .setTextNullable("hallo1")
@@ -232,10 +241,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert to the same text facet multiple times with ADD mode does append`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -256,10 +266,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert a list of strings to text facet with ADD mode does append`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -279,10 +290,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert a list of strings and null values to text facet with ADD mode does append all non-null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -302,10 +314,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert an empty list of strings to text facet with ADD mode does not change the facet values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addText("hallo1")
@@ -323,10 +336,11 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     fun `test insert null values to the same text facet multiple times with ADD mode does not append the null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createConcept()
                             .addTextNullable("hallo1")

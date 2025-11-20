@@ -5,6 +5,8 @@ import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
 import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 import org.codeblessing.sourceamazing.schema.SchemaProcessor
+import org.codeblessing.sourceamazing.schema.api.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.toConceptName
 // import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
 import org.junit.jupiter.api.Assertions
@@ -129,9 +131,13 @@ class SourceamazingProcessTest {
             val rootConceptData = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
             // TODO activate XML schema as soon as it supports root concepts
             // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
+            val builderRootAliases = mapOf(
+                "root" to rootConceptData.toConceptNameAndIdentifier(),
+            )
             BuilderApi.withBuilder(
                 schemaContext = schemaContext,
                 builderClass = FormBuilder::class,
+                builderRootAliases = builderRootAliases,
             ) { dataCollector ->
                 FormData.collectFormData(dataCollector)
             }
@@ -144,5 +150,12 @@ class SourceamazingProcessTest {
         Assertions.assertEquals(expectedSummaryTemplateOutput, formSummaryHtml)
         val formCitySurveyHtml = ProcesstestTemplate.formContent(formSchema.forms[0])
         Assertions.assertEquals(expectedHtmlTemplateOutput, formCitySurveyHtml)
+    }
+
+    private fun ConceptData.toConceptNameAndIdentifier(): ConceptNameAndIdentifier {
+        return ConceptNameAndIdentifier(
+            conceptName = conceptName,
+            conceptIdentifier = conceptIdentifier,
+        )
     }
 }

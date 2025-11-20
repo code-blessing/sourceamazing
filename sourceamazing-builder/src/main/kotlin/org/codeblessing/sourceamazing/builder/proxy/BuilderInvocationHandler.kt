@@ -23,7 +23,6 @@ import kotlin.reflect.KParameter
 class BuilderInvocationHandler(
     private val schemaAccess: SchemaAccess,
     builderClass: KClass<*>,
-    isTopLevelBuilder: Boolean,
     private val conceptDataCollector: ConceptDataCollector,
     superiorConcepts: Map<Alias, ConceptName>,
     private val superiorConceptIds: Map<Alias, ConceptIdentifier>
@@ -34,7 +33,6 @@ class BuilderInvocationHandler(
 
     private val builderClassInterpreter = BuilderClassInterpreter(
         builderClass = builderClass,
-        isTopLevelBuilder = isTopLevelBuilder,
         newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
     )
 
@@ -92,7 +90,6 @@ class BuilderInvocationHandler(
             invocationHandler = BuilderInvocationHandler(
                 schemaAccess = schemaAccess,
                 builderClass = builderClass,
-                isTopLevelBuilder = false,
                 conceptDataCollector = dataCollector,
                 superiorConcepts = aliasToConceptMap,
                 superiorConceptIds = aliasToConceptIdMap

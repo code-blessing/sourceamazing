@@ -33,7 +33,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
+    @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod
@@ -78,10 +78,11 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
                         builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)
@@ -116,10 +117,11 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         assertThrows<WrongReferencedConceptFacetValueException> {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
+                        mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
                         builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)

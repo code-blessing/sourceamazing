@@ -24,7 +24,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface EmptyBuilder
 
     @Test
@@ -42,7 +41,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithEmptyDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -69,7 +67,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private sealed interface SealedEmptyBuilder
 
     @Test
@@ -87,7 +84,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithSealedDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -116,7 +112,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     private interface ParentInterface
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithParentInterface : ParentInterface
 
     @Test
@@ -134,7 +129,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithInheritanceDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -185,7 +179,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithUnannotatedDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -216,7 +209,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private abstract class AbstractClassInsteadOfInterfaceBuilder
 
     @Test
@@ -236,7 +228,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithAbstractDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -263,7 +254,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private class ClassInsteadOfInterfaceSchema
 
     @Test
@@ -283,7 +273,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithInterfaceDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -310,7 +299,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private enum class EnumInsteadOfInterfaceBuilder
 
     @Test
@@ -330,7 +318,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithEnumDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -358,7 +345,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private object ObjectInsteadOfInterfaceBuilder
 
     @Test
@@ -378,7 +364,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithObjectDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -406,7 +391,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
 
     @Builder
-    @ExpectedRootAlias("root")
     private annotation class AnnotationInsteadOfInterfaceBuilder
 
     @Test
@@ -426,7 +410,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithAnnotationDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -458,28 +441,25 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     @ExpectedAliasFromSuperiorBuilder("anotherConcept")
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
-    fun `test top level builder with ExpectedAliasFromSuperiorBuilder should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class,
-                    ) {
-                        // do nothing
-                    }
+    fun `test top level builder with ExpectedAliasFromSuperiorBuilder should not throw an exception`() {
+        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { conceptNameAndIdentifier ->
+                BuilderApi.withBuilder(
+                    schemaContext,
+                    BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class,
+                    mapOf("anotherConcept" to conceptNameAndIdentifier)
+                ) {
+                    // do nothing
                 }
             }
         }
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithExpectedAliasFromSuperiorBuilderAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -509,7 +489,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
         @Builder
         @ExpectedAliasFromSuperiorBuilder("foo")
@@ -519,7 +498,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun doSomething(): NestedBuilder
     }
 
@@ -541,7 +519,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     private interface ParentBuilderWithTwoBuilderAnnotationsInHierarchyClasses
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithTwoBuilderAnnotationsInHierarchyClasses :
         ParentBuilderWithTwoBuilderAnnotationsInHierarchyClasses
 
@@ -565,7 +542,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithTwoAnnotationsInHierarchy {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -604,7 +580,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     private interface ParentClassWithDataProviderAnnotation
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithSchemaAnnotationsInHierarchyClasses :
         ParentClassWithDataProviderAnnotation
 
@@ -625,7 +600,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithTwoDifferentAnnotationsInHierarchy {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -660,7 +634,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Suppress("Unused")
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithGenericTypeParameter<T>
 
     @Test
@@ -680,7 +653,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithGenericTypeParameter {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -710,7 +682,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Suppress("Unused")
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithProperties {
         val builderMethodProperty: String
     }
@@ -735,7 +706,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithPropertiesAndMethods {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -755,7 +725,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
                 concept = SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
                 declareConceptAlias = "foo",
             )
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun doSomething() {
                 // nothing to do
@@ -780,7 +749,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Suppress("Unused")
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderMethodWithExtensionType {
         interface MyExtensionType
 
@@ -788,7 +756,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, "foo")
         @SetRandomConceptIdentifierValue("foo")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
         fun MyExtensionType.doSomething()
     }
 
@@ -812,7 +779,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithExtensionType {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -833,7 +799,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
                 declareConceptAlias = "foo",
             )
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
             fun MyExtensionType.doSomething() {
                 this.getText()
             }
@@ -867,7 +832,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithMethodsWithParameters {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -886,7 +850,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
                 declareConceptAlias = "foo",
             )
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
             fun doSomething(myParameter: String) {
                 // nothing to do
             }
@@ -913,7 +876,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedRootAlias("root")
     private interface BuilderWithDataProviderWithMethodReturningNothing {
         @Suppress("UNUSED")
         @BuilderMethod
@@ -931,7 +893,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
                 declareConceptAlias = "foo",
             )
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "ConceptWithTextFacet")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "foo")
             fun getText() {
                 // nothing to return
             }
