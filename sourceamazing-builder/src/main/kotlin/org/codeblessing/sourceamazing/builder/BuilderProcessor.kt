@@ -1,9 +1,10 @@
 package org.codeblessing.sourceamazing.builder
 
+import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.BuilderProcessorApi
 import org.codeblessing.sourceamazing.builder.proxy.BuilderInvocationHandler
 import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidator
-import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 import kotlin.reflect.KClass
@@ -13,18 +14,27 @@ class BuilderProcessor(): BuilderProcessorApi {
     override fun <I : Any> withBuilder(
         schemaContext: SchemaContext,
         builderClass: KClass<I>,
+        rootAliases: Map<String, ConceptNameAndIdentifier>,
         builderUsage: (builder: I) -> Unit
     ) {
         val schemaAccess = schemaContext.schema
-        val rootConceptName = ConceptName.of(builderClass) // TODO completely stupid but compiling
-        val rootAlias = BuilderHierarchyValidator.validateTopLevelBuilderMethods(builderClass, schemaAccess, rootConceptName)
+        val rootAliasesTyped = rootAliases
+            .mapKeys { (key) -> key.toAlias() }
+        val superiorConcepts = rootAliasesTyped
+            .mapValues { (_, value) -> value.conceptName }
+            .toMap()
+        val superiorConceptIds = rootAliasesTyped
+            .mapValues { (_, value) -> value.conceptIdentifier }
+            .toMap()
+
+        BuilderHierarchyValidator.validateTopLevelBuilderMethods(builderClass, schemaAccess, superiorConcepts)
         val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(
             schemaAccess = schemaAccess,
             builderClass = builderClass,
             isTopLevelBuilder = true,
             conceptDataCollector = schemaContext.dataCollector,
-            superiorConcepts = emptyMap(), // TODO mapOf(rootAlias to rootConceptName),
-            superiorConceptIds = emptyMap(), // TODO mapOf(rootAlias to rootConceptIdentifier)
+            superiorConcepts = superiorConcepts,
+            superiorConceptIds = superiorConceptIds,
         ))
         builderUsage(builderImplementation)
     }

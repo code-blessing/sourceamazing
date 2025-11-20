@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
-import org.codeblessing.sourceamazing.builder.interpretation.RootClassInterpreter
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassValidator.validateBuilderClass
 import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.validateBuilderMethod
 import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
@@ -16,19 +15,17 @@ import kotlin.reflect.KClass
 object BuilderHierarchyValidator {
 
     fun validateTopLevelBuilderMethods(
-        topLevelBuilderClass: KClass<*>,
+        builderClass: KClass<*>,
         schemaAccess: SchemaAccess,
-        rootConceptName: ConceptName,
-    ): Alias {
-        val rootAliases = RootClassInterpreter(topLevelBuilderClass).getRootAliases()
+        superiorConcepts: Map<Alias, ConceptName>,
+    ) {
         val builderClassInterpreter = BuilderClassInterpreter(
-            builderClass = topLevelBuilderClass,
+            builderClass = builderClass,
             isTopLevelBuilder = true,
-            newConceptNamesWithAliasFromSuperiorBuilder = rootAliases.associateWith { rootConceptName },
+            newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
         )
         validateBuilderClass(builderClassInterpreter)
         validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
-        return rootAliases.first()
     }
 
     /**

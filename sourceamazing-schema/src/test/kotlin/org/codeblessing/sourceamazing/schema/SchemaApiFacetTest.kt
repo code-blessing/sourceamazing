@@ -590,11 +590,11 @@ class SchemaApiFacetTest {
     @Test
     fun `test concept with valid return types should return without exception`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithValidFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithValidFacets>(schemaContext) { rootConceptId ->
+            withRootInstance<SchemaWithConceptWithValidFacets>(schemaContext) { rootConceptNameAndId ->
                 val specificOneRef = schemaContext.dataCollector.newConceptData(SchemaWithConceptWithValidFacets.SpecificConceptOne::class.toConceptName())
                 val specificTwoRef = schemaContext.dataCollector.newConceptData(SchemaWithConceptWithValidFacets.SpecificConceptOne::class.toConceptName())
 
-                schemaContext.dataCollector.existingConceptData(rootConceptId)
+                schemaContext.dataCollector.existingConceptData(rootConceptNameAndId.conceptIdentifier)
                     .addFacetValue(SchemaWithConceptWithValidFacets::mySingleConceptReferenceFacetAsCommonConceptInterface.name.toFacetName(), specificOneRef.conceptIdentifier)
                     .addFacetValue(SchemaWithConceptWithValidFacets::myMultipleConceptReferenceFacetAsCommonConcept.name.toFacetName(), specificTwoRef.conceptIdentifier)
             }
