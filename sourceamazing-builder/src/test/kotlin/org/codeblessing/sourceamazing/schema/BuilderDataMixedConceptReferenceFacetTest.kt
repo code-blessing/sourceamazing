@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongReferencedConceptFacetValueException
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -79,11 +78,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
@@ -119,11 +116,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         assertThrows<WrongReferencedConceptFacetValueException> {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderToAddReferences::class,
                     ) { builder ->
                         builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)

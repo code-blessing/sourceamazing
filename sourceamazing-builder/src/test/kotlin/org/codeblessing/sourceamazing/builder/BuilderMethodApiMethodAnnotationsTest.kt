@@ -7,7 +7,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
 
 class BuilderMethodApiMethodAnnotationsTest {
@@ -62,11 +61,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test string facet as fixed value and as parameter should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithFixedFacetValueAndParameterFacetValue::class,
                 ) {
                     // do nothing
@@ -92,11 +89,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test string facet with multiple fixed values should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithMultipleFixedFacetValues::class,
                 ) {
                     // do nothing
@@ -121,11 +116,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test enum facet with fixed values having correct enum should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithCorrectFixedEnumFacetValues::class,
                 ) {
                     // do nothing
@@ -151,11 +144,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     fun `test enum facet with fixed values having unknown enum value should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.WRONG_FACET_ENUM_VALUE) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithWrongFixedEnumFacetValues::class,
                     ) {
                         // do nothing
@@ -182,11 +173,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     fun `test int facet with fixed boolean value should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.WRONG_FACET_TYPE) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithWrongFixedFacetType::class,
                     ) {
                         // do nothing
@@ -213,11 +202,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     fun `test int facet with fixed value for unregistered facet should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithUnregisteredFixedFacetType::class,
                     ) {
                         // do nothing
@@ -250,11 +237,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test referencing a concept with fixed alias should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithValidFixedReference::class,
                 ) {
                     // do nothing
@@ -283,11 +268,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test referencing a concept with parameter value should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithValidParameterReference::class,
                 ) {
                     // do nothing
@@ -323,11 +306,9 @@ class BuilderMethodApiMethodAnnotationsTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithFunctionInsteadOfConceptIdentifierReference::class,
                     ) {
                         // do nothing
@@ -361,11 +342,9 @@ class BuilderMethodApiMethodAnnotationsTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithStringInsteadOfConceptIdentifierReference::class,
                     ) {
                         // do nothing

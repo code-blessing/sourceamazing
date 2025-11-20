@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.schema
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -56,11 +55,9 @@ class BuilderDataNestingBuildersTest {
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderReturningASubBuilderInASubSubBuilder::class,
                     ) { builder ->
                         builder

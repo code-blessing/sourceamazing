@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -177,11 +176,9 @@ class BuilderSmokeTest {
 
 
         val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext ->
-            withRootInstance<SmokeTestSchema>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SmokeTestSchema>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     SmokeTestRootBuilder::class,
                 ) { builder ->
                     // add some data in DSL style

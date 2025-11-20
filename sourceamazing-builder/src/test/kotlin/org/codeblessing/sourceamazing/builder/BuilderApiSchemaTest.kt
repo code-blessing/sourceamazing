@@ -6,7 +6,6 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
 
 class BuilderApiSchemaTest {
@@ -49,11 +48,9 @@ class BuilderApiSchemaTest {
     @Test
     fun `test using NewConcept annotation with known concept should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodCreatingKnownConcept::class,
                 ) {
                     // do nothing
@@ -78,11 +75,9 @@ class BuilderApiSchemaTest {
     fun `test using NewConcept annotation with unknown concept should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_CONCEPT) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodCreatingUnknownConcept::class,
                     ) {
                         // do nothing
@@ -110,11 +105,9 @@ class BuilderApiSchemaTest {
     fun `test using unknown facet as parameter value of known concept should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodUsingUnknownFacetAsParameterValue::class,
                     ) {
                         // do nothing
@@ -141,11 +134,9 @@ class BuilderApiSchemaTest {
     fun `test using unknown facet as fixed value of known concept should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodUsingUnknownFacetAsFixedValue::class,
                     ) {
                         // do nothing
@@ -173,11 +164,9 @@ class BuilderApiSchemaTest {
     fun `test using known facet of another concept as parameter value should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodUsingFacetOfAnotherKnownConceptAsParameterValue::class,
                     ) {
                         // do nothing
@@ -204,11 +193,9 @@ class BuilderApiSchemaTest {
     fun `test using known facet of another concept as fixed value should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodUsingFacetOfAnotherKnownConceptAsFixedValue::class,
                     ) {
                         // do nothing
@@ -245,11 +232,9 @@ class BuilderApiSchemaTest {
     @Test
     fun `test using known facet of correct concept as parameter value in nested builder should throw an exception`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodPassingCorrectConceptParentNestedBuilderAsParameterValue::class,
                 ) {
                     // do nothing
@@ -284,11 +269,9 @@ class BuilderApiSchemaTest {
     @Test
     fun `test using known facet of correct concept as fixed value in nested builder should throw an exception`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodPassingCorrectConceptParentNestedBuilderAsFixedValue::class,
                 ) {
                     // do nothing
@@ -332,11 +315,9 @@ class BuilderApiSchemaTest {
     fun `test using known facet of wrong concept as parameter value in nested builder should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodPassingWrongConceptParentNestedBuilderAsParameterValue::class,
                     ) {
                         // do nothing
@@ -379,11 +360,9 @@ class BuilderApiSchemaTest {
     fun `test using known facet of wrong concept as fixed value in nested builder should throw an exception`() {
         assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodPassingWrongConceptParentNestedBuilderAsFixedValue::class,
                     ) {
                         // do nothing

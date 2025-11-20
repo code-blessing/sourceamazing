@@ -23,7 +23,7 @@ class SchemaApiConceptInterfaceTest {
     @Test
     fun `test sealed interface instead of interface schema class should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class) { schemaContext ->
-            withRootInstance<SealedInterfaceInsteadOfInterfaceSchema>(schemaContext) {
+            withRootInstance<EmptySchema>(schemaContext) {
                 // do nothing
             }
         }

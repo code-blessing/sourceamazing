@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.api.BuilderProcessorApi
 import org.codeblessing.sourceamazing.builder.proxy.BuilderInvocationHandler
 import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidator
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
@@ -13,20 +12,19 @@ class BuilderProcessor(): BuilderProcessorApi {
 
     override fun <I : Any> withBuilder(
         schemaContext: SchemaContext,
-        rootConceptName: ConceptName,
-        rootConceptIdentifier: ConceptIdentifier,
         builderClass: KClass<I>,
         builderUsage: (builder: I) -> Unit
     ) {
         val schemaAccess = schemaContext.schema
+        val rootConceptName = ConceptName.of(builderClass) // TODO completely stupid but compiling
         val rootAlias = BuilderHierarchyValidator.validateTopLevelBuilderMethods(builderClass, schemaAccess, rootConceptName)
         val builderImplementation: I = ProxyCreator.createProxy(builderClass, BuilderInvocationHandler(
             schemaAccess = schemaAccess,
             builderClass = builderClass,
             isTopLevelBuilder = true,
             conceptDataCollector = schemaContext.dataCollector,
-            superiorConcepts = mapOf(rootAlias to rootConceptName),
-            superiorConceptIds = mapOf(rootAlias to rootConceptIdentifier)
+            superiorConcepts = emptyMap(), // TODO mapOf(rootAlias to rootConceptName),
+            superiorConceptIds = emptyMap(), // TODO mapOf(rootAlias to rootConceptIdentifier)
         ))
         builderUsage(builderImplementation)
     }

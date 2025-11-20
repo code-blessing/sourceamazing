@@ -6,9 +6,7 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.exceptions.*
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
 
 class BuilderApiBuilderAndDataProviderAnnotationTest {
@@ -32,11 +30,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test create an empty builder should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     EmptyBuilder::class,
                 ) {
                     // do nothing
@@ -61,11 +57,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test create an empty data provider should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithEmptyDataProvider::class,
                 ) {
                     // do nothing
@@ -81,11 +75,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test sealed interface instead of interface builder class should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     SealedEmptyBuilder::class,
                 ) {
                     // do nothing
@@ -110,11 +102,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test create an sealed data provider should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithSealedDataProvider::class,
                 ) {
                     // do nothing
@@ -132,11 +122,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test builder with parent interface without annotations should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithParentInterface::class,
                 ) {
                     // do nothing
@@ -164,11 +152,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test create an data provider with an inheritance should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithInheritanceDataProvider::class,
                 ) {
                     // do nothing
@@ -186,11 +172,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         UnannotatedBuilder::class,
                     ) {
                         // do nothing
@@ -219,11 +203,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithUnannotatedDataProvider::class,
                     ) {
                         // do nothing
@@ -241,11 +223,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test abstract class instead of interface builder class should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         AbstractClassInsteadOfInterfaceBuilder::class,
                     ) {
                         // do nothing
@@ -271,11 +251,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test abstract data provider class should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithAbstractDataProvider::class,
                 ) {
                     // do nothing
@@ -292,11 +270,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test class instead of interface builder class should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         ClassInsteadOfInterfaceSchema::class,
                     ) {
                         // do nothing
@@ -322,11 +298,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test interface data provider class should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithInterfaceDataProvider::class,
                 ) {
                     // do nothing
@@ -343,11 +317,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test enum class instead of interface builder class should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         EnumInsteadOfInterfaceBuilder::class,
                     ) {
                         // do nothing
@@ -373,11 +345,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test enum data provider class should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithEnumDataProvider::class,
                 ) {
                     // do nothing
@@ -395,11 +365,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test object instead of interface builder class should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         ObjectInsteadOfInterfaceBuilder::class,
                     ) {
                         // do nothing
@@ -425,11 +393,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test object data provider class should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithObjectDataProvider::class,
                 ) {
                     // do nothing
@@ -447,11 +413,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test annotation instead of interface builder class should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         AnnotationInsteadOfInterfaceBuilder::class,
                     ) {
                         // do nothing
@@ -481,11 +445,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithAnnotationDataProvider::class,
                     ) {
                         // do nothing
@@ -504,11 +466,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test top level builder with ExpectedAliasFromSuperiorBuilder should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class,
                     ) {
                         // do nothing
@@ -536,11 +496,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test data provider class with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithExpectedAliasFromSuperiorBuilderAnnotation::class,
                     ) {
                         // do nothing
@@ -568,11 +526,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test nested builder with ExpectedAliasFromSuperiorBuilder should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation::class,
                 ) {
                     // do nothing
@@ -596,11 +552,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithTwoBuilderAnnotationsInHierarchyClasses::class,
                     ) {
                         // do nothing
@@ -634,11 +588,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithTwoAnnotationsInHierarchy::class,
                     ) {
                         // do nothing
@@ -660,11 +612,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test builder with schema annotations in hierarchy should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithSchemaAnnotationsInHierarchyClasses::class,
                     ) {
                         // do nothing
@@ -695,11 +645,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test data provider with two different annotations in hierarchy should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithTwoDifferentAnnotationsInHierarchy::class,
                     ) {
                         // do nothing
@@ -719,11 +667,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test builder class with generic type parameter should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.NO_GENERIC_TYPE_PARAMETER) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithGenericTypeParameter::class,
                     ) {
                         // do nothing
@@ -750,11 +696,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test data provider with with generic type parameter should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithDataProviderWithGenericTypeParameter::class,
                 ) {
                     // do nothing
@@ -778,11 +722,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.CLASS_CANNOT_HAVE_PROPERTIES,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithProperties::class,
                     ) {
                         // do nothing
@@ -824,11 +766,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Test
     fun `test data provider with properties and methods should should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderWithDataProviderWithPropertiesAndMethods::class,
                 ) {
                     // do nothing
@@ -859,11 +799,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithExtensionType::class,
                     ) {
                         // do nothing
@@ -916,11 +854,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_CAN_NOT_BE_EXTENSION_FUNCTION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithExtensionType::class,
                     ) {
                         // do nothing
@@ -964,11 +900,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_HAS_PARAMETERS,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithMethodsWithParameters::class,
                     ) {
                         // do nothing
@@ -1011,11 +945,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_RETURNS_NOTHING,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderWithDataProviderWithMethodReturningNothing::class,
                     ) {
                         // do nothing

@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -202,11 +201,9 @@ class NestedConceptsBuilderTest {
         val personBo = ConceptIdentifier.of("Person")
 
         val schemaInstance: NestedConceptsSchema = SchemaApi.withSchema(NestedConceptsSchema::class) { schemaContext ->
-            withRootInstance<NestedConceptsSchema>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<NestedConceptsSchema>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     NestedObjectsBuilder::class,
                 ) { builder ->
                     builder.newBusinessObject(personBo, "the person business object") {

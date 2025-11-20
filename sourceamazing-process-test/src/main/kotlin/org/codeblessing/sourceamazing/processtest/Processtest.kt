@@ -19,8 +19,6 @@ fun main() {
         //  XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, pathToXmlFile)
         BuilderApi.withBuilder(
             schemaContext = schemaContext,
-            rootConceptName = rootConceptData.conceptName,
-            rootConceptIdentifier = rootConceptData.conceptIdentifier,
             builderClass = FormBuilder::class,
         ) { dataCollector ->
             FormData.collectFormData(dataCollector)

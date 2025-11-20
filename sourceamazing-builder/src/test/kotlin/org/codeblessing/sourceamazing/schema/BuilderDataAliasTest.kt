@@ -3,7 +3,6 @@ package org.codeblessing.sourceamazing.schema
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -57,11 +56,9 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
                     ) { builder ->
                         builder
@@ -129,11 +126,9 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,
                     ) { builder ->
                         builder

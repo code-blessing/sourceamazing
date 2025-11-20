@@ -4,7 +4,6 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.SchemaWithConceptWithFacet.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -79,11 +78,9 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
@@ -103,11 +100,9 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()
@@ -140,11 +135,9 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderToAddOrReplaceFacets::class,
                     ) { builder ->
                         builder.createConcept()

@@ -131,8 +131,6 @@ class SourceamazingProcessTest {
             // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
             BuilderApi.withBuilder(
                 schemaContext = schemaContext,
-                rootConceptName = rootConceptData.conceptName,
-                rootConceptIdentifier = rootConceptData.conceptIdentifier,
                 builderClass = FormBuilder::class,
             ) { dataCollector ->
                 FormData.collectFormData(dataCollector)

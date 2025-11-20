@@ -9,7 +9,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -51,11 +50,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithDataProviderAsLambdaFunction::class,
                     ) {
                         // do nothing
@@ -86,11 +83,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderDataProviderWithLambdaFunction::class,
                     ) {
                         // do nothing
@@ -121,11 +116,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderDataProviderWithArray::class,
                     ) {
                         // do nothing
@@ -156,11 +149,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderDataProviderWithAnyObject::class,
                     ) {
                         // do nothing
@@ -190,11 +181,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue::class,
                     ) {
                         // do nothing
@@ -224,11 +213,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_CANNOT_BE_NULLABLE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodParamWithBuilderDataAsNullableParam::class,
                     ) {
                         // do nothing
@@ -254,11 +241,9 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing an annotated data provider object should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodParamWithEmptyDataProvider::class,
                 ) {
                     // do nothing
@@ -288,11 +273,9 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing a data object with other annotations from source amazing should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodParamWithBuilderDataWithOtherAnnotations::class,
                     ) {
                         // do nothing
@@ -323,11 +306,9 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing a data object with other annotations not from source amazing should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation::class,
                 ) {
                     // do nothing
@@ -369,11 +350,9 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing a data object with generic parameter but not returning it should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodDataProviderWithGenericParameter::class,
                 ) {
                     // do nothing
@@ -418,11 +397,9 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodDataProviderUsingAndReturningGenericParameter::class,
                     ) {
                         // do nothing
@@ -459,11 +436,9 @@ class BuilderMethodApiDataProviderTest {
         val builderDataProvider = BuilderMethodDataProviderThrowingException.BuilderDataProviderThrowingException()
         val exception = assertThrows<DataProviderInvocationRuntimeException> {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodDataProviderThrowingException::class,
                     ) { builder ->
                         builder.doThrowAnException(builderDataProvider)

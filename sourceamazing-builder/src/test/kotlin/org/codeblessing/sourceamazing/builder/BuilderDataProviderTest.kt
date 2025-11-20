@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -159,15 +158,21 @@ class BuilderDataProviderTest {
         )
 
         val schemaWithConcept = SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodForDataProvider::class,
                 ) { builder ->
-                    builder.doSomethingWithTheProvidedTextValue(fromSimpleDataObjectId, fromSimpleDataObjectId.name, mySimpleFacetData)
-                    builder.doSomethingWithTheProvidedTextValue(fromGenericDataObjectId, fromGenericDataObjectId.name, myGenericFacetData)
+                    builder.doSomethingWithTheProvidedTextValue(
+                        fromSimpleDataObjectId,
+                        fromSimpleDataObjectId.name,
+                        mySimpleFacetData
+                    )
+                    builder.doSomethingWithTheProvidedTextValue(
+                        fromGenericDataObjectId,
+                        fromGenericDataObjectId.name,
+                        myGenericFacetData
+                    )
                     builder.doSomethingWithTheProvidedConcept(myNewConceptData)
                 }
             }

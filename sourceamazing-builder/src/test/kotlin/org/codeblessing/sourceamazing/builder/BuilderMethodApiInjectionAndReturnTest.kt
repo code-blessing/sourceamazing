@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
-import org.codeblessing.sourceamazing.toConceptName
 import org.junit.jupiter.api.Test
 
 class BuilderMethodApiInjectionAndReturnTest {
@@ -44,11 +43,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodReturningSameBuilder::class,
                     ) {
                         // do nothing
@@ -73,11 +70,9 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Test
     fun `test builder method returning another builder should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodReturningOtherBuilder::class,
                 ) {
                     // do nothing
@@ -105,11 +100,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodReturningOtherBuildersWithoutBuilderAnnotation::class,
                     ) {
                         // do nothing
@@ -137,11 +130,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class,
                     ) {
                         // do nothing
@@ -170,11 +161,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation::class,
                     ) {
                         // do nothing
@@ -201,11 +190,9 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Test
     fun `test builder method returning a another with WithNewBuilder annotation should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation::class,
                 ) {
                     // do nothing
@@ -238,11 +225,9 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Test
     fun `test builder injection without declaring the builder should use the existing builder and not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                 BuilderApi.withBuilder(
                     schemaContext,
-                    schemaContext.toConceptName(rootConceptIdentifier),
-                    rootConceptIdentifier,
                     BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation::class,
                 ) {
                     // do nothing
@@ -269,11 +254,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionWithoutExtensionFunction::class,
                     ) {
                         // do nothing
@@ -302,11 +285,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionWithObjectInsteadOfFunction::class,
                     ) {
                         // do nothing
@@ -334,11 +315,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionWithValueParameters::class,
                     ) {
                         // do nothing
@@ -367,11 +346,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionWithReturnType::class,
                     ) {
                         // do nothing
@@ -399,11 +376,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionWithNullableType::class,
                     ) {
                         // do nothing
@@ -432,11 +407,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithTwoBuilderInjectionParameter::class,
                     ) {
                         // do nothing
@@ -468,11 +441,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionOnNonLastParam::class,
                     ) {
                         // do nothing
@@ -502,11 +473,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue::class,
                     ) {
                         // do nothing
@@ -533,11 +502,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionAndReturnTypeBuilder::class,
                     ) {
                         // do nothing
@@ -568,11 +535,9 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { rootConceptIdentifier ->
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
                     BuilderApi.withBuilder(
                         schemaContext,
-                        schemaContext.toConceptName(rootConceptIdentifier),
-                        rootConceptIdentifier,
                         BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes::class,
                     ) {
                         // do nothing
