@@ -2,4 +2,8 @@ package org.codeblessing.sourceamazing.schema.api.datacollection.exceptions
 
 import org.codeblessing.sourceamazing.schema.api.exceptions.ErrorCode
 
-abstract class DataValidationException(val errorCode: ErrorCode, msg: String, cause: Exception? = null): RuntimeException(msg, cause)
+abstract class DataValidationException(
+    val errorCode: ErrorCode,
+    msg: String,
+    cause: Exception? = null,
+) : RuntimeException(msg, cause)

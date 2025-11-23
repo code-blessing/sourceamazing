@@ -6,4 +6,4 @@ class EnumFacetValueAnnotationContent(
     base: FacetValueAnnotationBaseData,
     val fixedEnumValue: String?,
     val enumValue: Enum<*>? = null,
-): FacetValueAnnotationContent(base, FacetType.TEXT_ENUMERATION)
+) : FacetValueAnnotationContent(base, FacetType.TEXT_ENUMERATION)

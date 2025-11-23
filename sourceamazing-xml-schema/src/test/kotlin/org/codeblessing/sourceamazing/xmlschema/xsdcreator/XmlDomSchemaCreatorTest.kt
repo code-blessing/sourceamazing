@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
-
 internal class XmlDomSchemaCreatorTest {
 
-    private val expectedXml = """
+    private val expectedXml =
+        """
         <?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <xsd:schema xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" elementFormDefault="qualified" targetNamespace="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
             <!-- - - - - - - - -       CONCEPT IDENTIFIER ATTRIBUTE     - - - - - - - -->
@@ -81,8 +81,8 @@ internal class XmlDomSchemaCreatorTest {
             </xsd:complexType>
         </xsd:schema>
 
-    """.trimIndent()
-
+        """
+            .trimIndent()
 
     @Test
     @Disabled("Currently, the root entry point is not supported in XML")

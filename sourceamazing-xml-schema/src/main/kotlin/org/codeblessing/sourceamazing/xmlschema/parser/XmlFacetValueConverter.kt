@@ -1,13 +1,13 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.utils.type.enumValues
 
 object XmlFacetValueConverter {
     fun convertString(facetSchema: FacetSchema, attributeValue: String): Any {
-        return when(facetSchema.facetType) {
+        return when (facetSchema.facetType) {
             FacetType.TEXT -> attributeValue
             FacetType.NUMBER -> attributeValue.toInt()
             FacetType.BOOLEAN -> attributeValue.toBoolean()
@@ -17,11 +17,16 @@ object XmlFacetValueConverter {
     }
 
     private fun enumerationValue(facetSchema: FacetSchema, attributeValue: String): Any {
-        val enumerationType = facetSchema.enumerationType
-            ?: throw IllegalStateException("No enumeration type defined for facet ${facetSchema.facetName} but value was '$attributeValue'")
-        return enumerationType.enumValues
-            .firstOrNull { enumValue -> enumValue.name == attributeValue }
-            ?: throw IllegalStateException("Value '$attributeValue' is not within the possible values ${enumerationType.enumValues.joinToString(",") { "'${it}'" }} for facet ${facetSchema.facetName}.")
+        val enumerationType =
+            facetSchema.enumerationType
+                ?: throw IllegalStateException(
+                    "No enumeration type defined for facet ${facetSchema.facetName} but value was '$attributeValue'"
+                )
+        return enumerationType.enumValues.firstOrNull { enumValue ->
+            enumValue.name == attributeValue
+        }
+            ?: throw IllegalStateException(
+                "Value '$attributeValue' is not within the possible values ${enumerationType.enumValues.joinToString(",") { "'${it}'" }} for facet ${facetSchema.facetName}."
+            )
     }
 }
-

@@ -6,9 +6,13 @@ import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaProcessorApi
 import java.nio.file.Path
 
-class XmlSchemaProcessor(): XmlSchemaProcessorApi {
+class XmlSchemaProcessor() : XmlSchemaProcessorApi {
 
-    override fun createXsdSchemaAndReadXmlFile(schemaContext: SchemaContext, xmlFile: Path, placeholders: Map<String, String>) {
+    override fun createXsdSchemaAndReadXmlFile(
+        schemaContext: SchemaContext,
+        xmlFile: Path,
+        placeholders: Map<String, String>,
+    ) {
         val schemaContext: RevealedSchemaContext = schemaContext.toRevealedSchemaContext()
         XmlSchemaDataReader.createXsdSchemaAndReadXmlFile(
             xmlFile = xmlFile,

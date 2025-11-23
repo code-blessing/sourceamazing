@@ -6,10 +6,11 @@ object FormData {
 
     fun collectFormData(dataCollector: FormBuilder) {
 
-        val employeePreferencesForm = dataCollector
-            .createNewForm(
+        val employeePreferencesForm =
+            dataCollector.createNewForm(
                 conceptIdentifier = ConceptIdentifier.of("EmployeeWorkPreferencesForm"),
-                formTitle = "Employee Work Preferences")
+                formTitle = "Employee Work Preferences",
+            )
 
         employeePreferencesForm
             .addTextInputFormControl(
@@ -45,9 +46,9 @@ object FormData {
                 conceptIdentifier = ConceptIdentifier.of("WorkplacePreference"),
                 displayName = "Workplace Preference",
                 valueRequired = false,
-                defaultValue = "company")
+                defaultValue = "company",
+            )
             .setValue("home", "Home Office")
             .setValue("company", "Company Office")
     }
-
 }

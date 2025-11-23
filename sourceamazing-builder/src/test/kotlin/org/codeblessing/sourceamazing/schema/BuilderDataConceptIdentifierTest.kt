@@ -1,12 +1,7 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.Builder
-import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
-import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.NewConcept
-import org.codeblessing.sourceamazing.builder.api.annotations.SetAliasConceptIdentifierReferenceFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
@@ -21,34 +16,46 @@ class BuilderDataConceptIdentifierTest {
 
         interface AbstractNumericConcept
 
-        interface ConceptOne: AbstractNumericConcept
+        interface ConceptOne : AbstractNumericConcept
 
-        interface ConceptTwo: AbstractNumericConcept
+        interface ConceptTwo : AbstractNumericConcept
 
         @References([ConceptOne::class, ConceptTwo::class])
         val concepts: List<AbstractNumericConcept>
-
     }
-
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddConcepts {
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConcepts.ConceptOne::class, declareConceptAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConcepts.ConceptOne::class,
+            declareConceptAlias = "myConcept",
+        )
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConceptOne(
             @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-            conceptIdentifier: ConceptIdentifier,
+            conceptIdentifier: ConceptIdentifier
         )
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConcepts.ConceptTwo::class, declareConceptAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConcepts.ConceptTwo::class,
+            declareConceptAlias = "myConcept",
+        )
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConceptTwo(
             @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-            conceptIdentifier: ConceptIdentifier,
+            conceptIdentifier: ConceptIdentifier
         )
     }
 
@@ -58,30 +65,30 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId2 = ConceptIdentifier.of("My-Id-2")
         val myConceptId3 = ConceptIdentifier.of("My-Id-3")
 
-        val schemaInstance = SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderToAddConcepts::class,
-                    mapOf("root" to conceptNameAndIdentifier),
-                ) { builder ->
-                    builder.createConceptOne(myConceptId1)
-                    builder.createConceptOne(myConceptId2)
-                    builder.createConceptTwo(myConceptId3)
+        val schemaInstance =
+            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
+                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        BuilderToAddConcepts::class,
+                        mapOf("root" to conceptNameAndIdentifier),
+                    ) { builder ->
+                        builder.createConceptOne(myConceptId1)
+                        builder.createConceptOne(myConceptId2)
+                        builder.createConceptTwo(myConceptId3)
+                    }
                 }
             }
-        }
 
         assertEquals(3, schemaInstance.concepts.size)
     }
-
 
     @Test
     fun `test using the same concept identifier for creating same concepts throws an exception`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
@@ -101,7 +108,7 @@ class BuilderDataConceptIdentifierTest {
 
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
@@ -120,7 +127,7 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->  
+            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddConcepts::class,
@@ -134,5 +141,4 @@ class BuilderDataConceptIdentifierTest {
             }
         }
     }
-
 }

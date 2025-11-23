@@ -6,19 +6,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class PlaceholderUtilTest {
-    private val placeholders = mapOf(
-        "dataDir" to "/foo/data",
-        "imageDir" to "/foo/image",
-        "emptyPlaceholder" to "",
-    )
+    private val placeholders =
+        mapOf("dataDir" to "/foo/data", "imageDir" to "/foo/image", "emptyPlaceholder" to "")
 
     @Test
     fun `should do nothing if no placeholder is in passed value`() {
-        assertReplacement(
-            expectedResult = "",
-            template = "",
-            placeholders = placeholders
-        )
+        assertReplacement(expectedResult = "", template = "", placeholders = placeholders)
     }
 
     @Test
@@ -26,16 +19,18 @@ internal class PlaceholderUtilTest {
         assertReplacement(
             expectedResult = "Put your data in /foo/data directory.",
             template = "Put your data in @{dataDir} directory.",
-            placeholders = placeholders
+            placeholders = placeholders,
         )
     }
 
     @Test
     fun `should replace multiple placeholders in passed value`() {
         assertReplacement(
-            expectedResult = "Put your data in /foo/data directory and your images not in /foo/data but in /foo/image.",
-            template = "Put your data in @{dataDir} directory and your images not in @{dataDir} but in @{imageDir}.",
-            placeholders = placeholders
+            expectedResult =
+                "Put your data in /foo/data directory and your images not in /foo/data but in /foo/image.",
+            template =
+                "Put your data in @{dataDir} directory and your images not in @{dataDir} but in @{imageDir}.",
+            placeholders = placeholders,
         )
     }
 
@@ -44,7 +39,7 @@ internal class PlaceholderUtilTest {
         assertReplacement(
             expectedResult = "/foo/data is not /foo/image and /foo/image is not /foo/data",
             template = "@{dataDir} is not @{imageDir} and @{imageDir} is not @{dataDir}",
-            placeholders = placeholders
+            placeholders = placeholders,
         )
     }
 
@@ -53,7 +48,7 @@ internal class PlaceholderUtilTest {
         assertReplacement(
             expectedResult = "Concatenate /foo/image/foo/data/foo/image together",
             template = "Concatenate @{imageDir}@{dataDir}@{imageDir} together",
-            placeholders = placeholders
+            placeholders = placeholders,
         )
     }
 
@@ -61,42 +56,45 @@ internal class PlaceholderUtilTest {
     fun `should work properly with empty placeholders`() {
         assertReplacement(
             expectedResult = "not /foo/image and /foo/image is existing",
-            template = "@{emptyPlaceholder}not @{imageDir} and @{imageDir} is existing@{emptyPlaceholder}",
-            placeholders = placeholders
+            template =
+                "@{emptyPlaceholder}not @{imageDir} and @{imageDir} is existing@{emptyPlaceholder}",
+            placeholders = placeholders,
         )
     }
 
     @Test
     fun `should throw exception if placeholders could not be replaced`() {
-        assertThrows<IllegalArgumentException> { -> PlaceholderUtil.replacePlaceholders("A @{inexistentPlaceholder}.", placeholders) }
+        assertThrows<IllegalArgumentException> { ->
+            PlaceholderUtil.replacePlaceholders("A @{inexistentPlaceholder}.", placeholders)
+        }
     }
 
     @Test
     fun `should replace placeholders that itself have placeholders in it (without resolving them recursively)`() {
-        val placeholdersWithPlaceholders = mapOf(
-            "dataDir" to "/foo/data",
-            "imageDir" to "/@{dataDir}/image",
-        )
-
+        val placeholdersWithPlaceholders =
+            mapOf("dataDir" to "/foo/data", "imageDir" to "/@{dataDir}/image")
 
         assertReplacement(
             expectedResult = "Put your data in /@{dataDir}/image directory.",
             template = "Put your data in @{imageDir} directory.",
-            placeholders = placeholdersWithPlaceholders
+            placeholders = placeholdersWithPlaceholders,
         )
     }
 
-    private fun assertReplacement(expectedResult: String, template: String, placeholders: Map<String, String>) {
+    private fun assertReplacement(
+        expectedResult: String,
+        template: String,
+        placeholders: Map<String, String>,
+    ) {
         try {
-            assertEquals(expectedResult,
-                PlaceholderUtil.replacePlaceholders(template, placeholders)
+            assertEquals(
+                expectedResult,
+                PlaceholderUtil.replacePlaceholders(template, placeholders),
             )
-
         } catch (assertionException: AssertionError) {
             throw assertionException
         } catch (e: Exception) {
             fail("Template: $template, Expected: $expectedResult, placeholders: $placeholders", e)
         }
     }
-
 }

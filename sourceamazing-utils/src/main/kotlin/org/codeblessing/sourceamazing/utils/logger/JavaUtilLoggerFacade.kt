@@ -11,29 +11,25 @@ class JavaUtilLoggerFacade(fileSystemAccess: FileSystemAccess) : LoggerFacade {
     init {
         // must set before the Logger
         // loads logging.properties from the classpath
-        fileSystemAccess.classpathResourceAsInputStream("/sourceamazing-default-logging.properties").use {
-            LogManager.getLogManager().readConfiguration(it)
-        }
+        fileSystemAccess
+            .classpathResourceAsInputStream("/sourceamazing-default-logging.properties")
+            .use { LogManager.getLogManager().readConfiguration(it) }
 
         try {
-            fileSystemAccess.classpathResourceAsInputStream("/sourceamazing-logging.properties").use {
-                LogManager.getLogManager().readConfiguration(it)
-            }
+            fileSystemAccess
+                .classpathResourceAsInputStream("/sourceamazing-logging.properties")
+                .use { LogManager.getLogManager().readConfiguration(it) }
         } catch (ex: Exception) {
             // ignore, the resource was not found
         }
-
     }
 
     override fun closeLoggerFacade() {
-        setOf(
-            *logger.handlers,
-            *Logger.getGlobal().handlers,
-            *Logger.getLogger("").handlers,
-        ).forEach { loggerHandler ->
-            loggerHandler.flush()
-            loggerHandler.close()
-        }
+        setOf(*logger.handlers, *Logger.getGlobal().handlers, *Logger.getLogger("").handlers)
+            .forEach { loggerHandler ->
+                loggerHandler.flush()
+                loggerHandler.close()
+            }
     }
 
     override fun logDebug(msg: String) {
@@ -59,5 +55,4 @@ class JavaUtilLoggerFacade(fileSystemAccess: FileSystemAccess) : LoggerFacade {
     override fun logWarnings(msgProvider: () -> String) {
         logger.log(Level.WARNING, msgProvider)
     }
-
 }

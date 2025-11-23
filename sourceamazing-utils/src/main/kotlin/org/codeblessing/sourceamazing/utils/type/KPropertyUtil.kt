@@ -15,7 +15,7 @@ object KPropertyUtil {
     }
 
     fun hasTypeParameter(propertyToInspect: KProperty<*>): Boolean {
-        return  propertyToInspect.typeParameters.isNotEmpty()
+        return propertyToInspect.typeParameters.isNotEmpty()
     }
 
     fun hasFunctionBody(propertyToInspect: KProperty<*>): Boolean {

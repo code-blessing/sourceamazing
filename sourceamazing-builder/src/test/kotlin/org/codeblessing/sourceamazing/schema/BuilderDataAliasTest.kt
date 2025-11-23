@@ -14,7 +14,6 @@ class BuilderDataAliasTest {
             val text: String
 
             val number: Int
-
         }
 
         val concepts: List<ConceptWithFacet>
@@ -25,9 +24,16 @@ class BuilderDataAliasTest {
     private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            declareConceptAlias = "myConcept",
+        )
         @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -56,16 +62,14 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .setText("myText")
-                            .setNumber(17)
+                        builder.createConcept().setText("myText").setNumber(17)
                     }
                 }
             }
@@ -81,9 +85,16 @@ class BuilderDataAliasTest {
     private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            declareConceptAlias = "myConcept",
+        )
         @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -91,7 +102,11 @@ class BuilderDataAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
-            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number", value = 42)
+            @SetFixedIntFacetValue(
+                conceptToModifyAlias = "myConcept",
+                facetToModify = "number",
+                value = 42,
+            )
             fun setTextAndFixedNumber(
                 @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
@@ -100,12 +115,20 @@ class BuilderDataAliasTest {
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder("root")
-        // no ExpectedAliasFromSuperiorBuilder("myConcept) here, therefore "myConcept" is a new alias
+        // no ExpectedAliasFromSuperiorBuilder("myConcept) here, therefore "myConcept" is a new
+        // alias
         interface NestedSubBuilder {
             @BuilderMethod
-            @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+            @NewConcept(
+                concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+                declareConceptAlias = "myConcept",
+            )
             @SetRandomConceptIdentifierValue("myConcept")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+            @SetAliasConceptIdentifierReferenceFacetValue(
+                conceptToModifyAlias = "root",
+                facetToModify = "concepts",
+                referencedConceptAlias = "myConcept",
+            )
             fun createConceptAndSetText(
                 @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text")
                 textValue: String
@@ -127,15 +150,18 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder
-                            .createConcept().setTextAndFixedNumber("ConceptFromTopLevelBuilder")
-                            .createConceptAndSetText("OtherConceptFromSubBuilder").setNumber(17)
+                            .createConcept()
+                            .setTextAndFixedNumber("ConceptFromTopLevelBuilder")
+                            .createConceptAndSetText("OtherConceptFromSubBuilder")
+                            .setNumber(17)
                     }
                 }
             }

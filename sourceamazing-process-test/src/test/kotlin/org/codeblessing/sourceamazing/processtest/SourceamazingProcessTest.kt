@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.processtest
 
+// import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
@@ -8,7 +9,6 @@ import org.codeblessing.sourceamazing.schema.SchemaProcessor
 import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.toConceptName
-// import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
@@ -16,7 +16,8 @@ import java.nio.file.Paths
 
 class SourceamazingProcessTest {
 
-    private val testXmlDefinitionFileContent = """
+    private val testXmlDefinitionFileContent =
+        """
         <?xml version="1.0" encoding="utf-8" ?>
         <sourceamazing xmlns="https://codeblessing.org/sourceamazing/sourceamazing-xml-schema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -65,20 +66,24 @@ class SourceamazingProcessTest {
                 </textInputFormControlConcept>
             </definitions>
         </sourceamazing>
-    """.trimIndent()
+        """
+            .trimIndent()
 
-    private val expectedSummaryTemplateOutput = """
-        
+    private val expectedSummaryTemplateOutput =
+        """
+
         Form 'Employee Work Preferences':
         - Form-Control: Display Name: 'Firstname', Labels: [names, person-info]'
         - Form-Control: Display Name: 'Lastname', Labels: [names, person-info]'
         - Form-Control: Display Name: 'Birthday', Labels: [person-info, birthday, Birthday, BIRTHDAY, b-day]'
         - Form-Control: Display Name: 'Workplace Preference', Labels: [] (Default-Value: company) Options: [home -> 'Home Office'], [company -> 'Company Office']
         Text Input Form Control Names: [Firstname, Lastname, Birthday]
-        
-    """.trimIndent()
 
-    private val expectedHtmlTemplateOutput = """
+        """
+            .trimIndent()
+
+    private val expectedHtmlTemplateOutput =
+        """
         <html>
           <form name="Employee Work Preferences">
             <label>Firstname*</label>
@@ -97,52 +102,54 @@ class SourceamazingProcessTest {
             </select>
           </form>
         </html>
-    """.trimIndent()
-
+        """
+            .trimIndent()
 
     private val loggingConfigurationClasspath = "/sourceamazing-default-logging.properties"
-    private val loggingConfiguration = """
-            handlers= java.util.logging.ConsoleHandler
-            .level= INFO
-            java.util.logging.ConsoleHandler.level = FINE
-            java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
-            java.util.logging.SimpleFormatter.format=%5${'$'}s%n
-    """.trimIndent()
-
+    private val loggingConfiguration =
+        """
+        handlers= java.util.logging.ConsoleHandler
+        .level= INFO
+        java.util.logging.ConsoleHandler.level = FINE
+        java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
+        java.util.logging.SimpleFormatter.format=%5${'$'}s%n
+        """
+            .trimIndent()
 
     private val definitionDirectory: Path = Paths.get("definition/directory")
     private val xmlFilename = "definition-file.xml"
 
     private val definitionXmlFile = definitionDirectory.resolve(xmlFilename)
 
-    private val classpathResourcesWithContent: Map<String, String> = mapOf(
-        loggingConfigurationClasspath to loggingConfiguration
-    )
-    private val filePathsWithContent: Map<Path, String> = mapOf(
-        definitionXmlFile to testXmlDefinitionFileContent
-    )
+    private val classpathResourcesWithContent: Map<String, String> =
+        mapOf(loggingConfigurationClasspath to loggingConfiguration)
+    private val filePathsWithContent: Map<Path, String> =
+        mapOf(definitionXmlFile to testXmlDefinitionFileContent)
 
     @Test
     fun `run test to import data from xml files and builder`() {
-        val fileSystemAccess = StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
+        val fileSystemAccess =
+            StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
-        val formSchema = schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
-            val rootConceptData = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
-            // TODO activate XML schema as soon as it supports root concepts
-            // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile, parameterMap)
-            val builderRootAliases = mapOf(
-                "root" to rootConceptData.toConceptNameAndIdentifier(),
-            )
-            BuilderApi.withBuilder(
-                schemaContext = schemaContext,
-                builderClass = FormBuilder::class,
-                builderRootAliases = builderRootAliases,
-            ) { dataCollector ->
-                FormData.collectFormData(dataCollector)
+        val formSchema =
+            schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
+                val rootConceptData =
+                    schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
+                // TODO activate XML schema as soon as it supports root concepts
+                // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile,
+                // parameterMap)
+                val builderRootAliases =
+                    mapOf("root" to rootConceptData.toConceptNameAndIdentifier())
+                BuilderApi.withBuilder(
+                    schemaContext = schemaContext,
+                    builderClass = FormBuilder::class,
+                    builderRootAliases = builderRootAliases,
+                ) { dataCollector ->
+                    FormData.collectFormData(dataCollector)
+                }
+                rootConceptData.conceptIdentifier
             }
-            rootConceptData.conceptIdentifier
-        }
 
         Assertions.assertEquals(1, formSchema.forms.size)
         val formSummaryHtml = ProcesstestTemplate.formsSummary(formSchema.forms)

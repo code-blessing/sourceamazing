@@ -3,20 +3,28 @@ package org.codeblessing.sourceamazing.builder.update
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
-import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import kotlin.reflect.KFunction
 
 object BuilderUpdater {
 
-    fun updateConceptDataCollector(builderMethodInterpreter: BuilderMethodInterpreter, builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector) {
-        addNewConceptDataWithDedicatedConceptIdentifier(builderMethodInterpreter, builderInterpreterDataCollector)
-        addNewConceptDataWithRandomConceptIdentifier(builderMethodInterpreter, builderInterpreterDataCollector)
+    fun updateConceptDataCollector(
+        builderMethodInterpreter: BuilderMethodInterpreter,
+        builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
+    ) {
+        addNewConceptDataWithDedicatedConceptIdentifier(
+            builderMethodInterpreter,
+            builderInterpreterDataCollector,
+        )
+        addNewConceptDataWithRandomConceptIdentifier(
+            builderMethodInterpreter,
+            builderInterpreterDataCollector,
+        )
         updateFacetValues(builderMethodInterpreter, builderInterpreterDataCollector)
     }
 
@@ -27,38 +35,58 @@ object BuilderUpdater {
         val method: KFunction<*> = builderMethodInterpreter.method
         val dataContext = builderInterpreterDataCollector.getDataContext()
 
-        builderMethodInterpreter.getManualAssignedConceptIdentifierAnnotationContent(dataContext).forEach { conceptIdentifierAnnotationData ->
-            val conceptAlias = conceptIdentifierAnnotationData.alias
-            val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
-            val conceptIdentifier = conceptIdentifierAnnotationData.conceptIdentifier
-                ?: throw IllegalArgumentException("Can not pass null value as concept identifier argument on method $method")
-            builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
-        }
+        builderMethodInterpreter
+            .getManualAssignedConceptIdentifierAnnotationContent(dataContext)
+            .forEach { conceptIdentifierAnnotationData ->
+                val conceptAlias = conceptIdentifierAnnotationData.alias
+                val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
+                val conceptIdentifier =
+                    conceptIdentifierAnnotationData.conceptIdentifier
+                        ?: throw IllegalArgumentException(
+                            "Can not pass null value as concept identifier argument on method $method"
+                        )
+                builderInterpreterDataCollector.newConceptData(
+                    conceptAlias,
+                    conceptName,
+                    conceptIdentifier,
+                )
+            }
     }
 
     private fun addNewConceptDataWithRandomConceptIdentifier(
         builderMethodInterpreter: BuilderMethodInterpreter,
         builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
     ) {
-        val aliasesToSetRandomConceptIdentifierValue = builderMethodInterpreter.aliasesToSetRandomConceptIdentifierValue()
+        val aliasesToSetRandomConceptIdentifierValue =
+            builderMethodInterpreter.aliasesToSetRandomConceptIdentifierValue()
         aliasesToSetRandomConceptIdentifierValue.forEach { conceptAlias ->
             val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
             val conceptIdentifier = conceptName.randomConceptIdentifier()
-            builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
+            builderInterpreterDataCollector.newConceptData(
+                conceptAlias,
+                conceptName,
+                conceptIdentifier,
+            )
         }
     }
 
-    private fun updateFacetValues(builderMethodInterpreter: BuilderMethodInterpreter, builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector) {
+    private fun updateFacetValues(
+        builderMethodInterpreter: BuilderMethodInterpreter,
+        builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
+    ) {
         val dataContext = builderInterpreterDataCollector.getDataContext()
-        builderMethodInterpreter.getFacetValueAnnotationContent(dataContext).forEach { facetValueAnnotationContent ->
-            val value: Any = facetValueAnnotationContent.value
-                ?: if(!facetValueAnnotationContent.base.ignoreNullValue) {
-                    throw IllegalArgumentException("Can not pass null values at '${facetValueAnnotationContent.base.methodLocation}' " +
-                            "on method ${builderMethodInterpreter.method}. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'.")
-
-                } else {
-                    return@forEach // skip null values silently
-                }
+        builderMethodInterpreter.getFacetValueAnnotationContent(dataContext).forEach {
+            facetValueAnnotationContent ->
+            val value: Any =
+                facetValueAnnotationContent.value
+                    ?: if (!facetValueAnnotationContent.base.ignoreNullValue) {
+                        throw IllegalArgumentException(
+                            "Can not pass null values at '${facetValueAnnotationContent.base.methodLocation}' " +
+                                "on method ${builderMethodInterpreter.method}. If this is wanted, use the annotation '${IgnoreNullFacetValue::class.annotationText()}'."
+                        )
+                    } else {
+                        return@forEach // skip null values silently
+                    }
 
             updateConceptData(
                 conceptAlias = facetValueAnnotationContent.base.alias,
@@ -77,10 +105,11 @@ object BuilderUpdater {
         facetModificationRule: FacetModificationRule,
         builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
     ) {
-        val conceptId: ConceptIdentifier = builderInterpreterDataCollector.conceptIdByAlias(conceptAlias)
+        val conceptId: ConceptIdentifier =
+            builderInterpreterDataCollector.conceptIdByAlias(conceptAlias)
         val conceptData = builderInterpreterDataCollector.existingConceptData(conceptId)
         val facetValues = BuilderCollectionHelper.facetValueListFromFacetValue(value)
-        when(facetModificationRule) {
+        when (facetModificationRule) {
             FacetModificationRule.ADD -> conceptData.addFacetValues(facetName, facetValues)
             FacetModificationRule.REPLACE -> conceptData.replaceFacetValues(facetName, facetValues)
         }

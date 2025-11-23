@@ -5,6 +5,5 @@ enum class FacetType {
     NUMBER,
     BOOLEAN,
     REFERENCE,
-    TEXT_ENUMERATION
-    ;
+    TEXT_ENUMERATION,
 }

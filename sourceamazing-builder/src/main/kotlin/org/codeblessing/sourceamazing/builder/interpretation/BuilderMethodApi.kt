@@ -11,7 +11,9 @@ abstract class BuilderMethodApi {
     protected abstract fun allBuilderInterpreters(): List<BuilderInterpreter>
 
     private fun newConceptsAsPair(): List<Pair<Alias, ConceptName>> {
-        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterNewConceptsIncludingDuplicates() }
+        return allBuilderInterpreters().flatMap {
+            it.getBuilderInterpreterNewConceptsIncludingDuplicates()
+        }
     }
 
     fun newConcepts(): Map<Alias, ConceptName> {
@@ -19,8 +21,7 @@ abstract class BuilderMethodApi {
     }
 
     fun newConceptAliasesIncludingDuplicates(): List<Alias> {
-        return newConceptsAsPair()
-            .map { it.first }
+        return newConceptsAsPair().map { it.first }
     }
 
     fun newConceptAliases(): Set<Alias> {
@@ -34,7 +35,9 @@ abstract class BuilderMethodApi {
     }
 
     fun aliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
-        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates() }
+        return allBuilderInterpreters().flatMap {
+            it.getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates()
+        }
     }
 
     fun aliasesToSetRandomConceptIdentifierValue(): Set<Alias> {
@@ -42,14 +45,24 @@ abstract class BuilderMethodApi {
     }
 
     fun aliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias> {
-        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates() }
+        return allBuilderInterpreters().flatMap {
+            it.getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates()
+        }
     }
 
-    fun getFacetValueAnnotationContent(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
-        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterFacetValueAnnotationContent(dataContext) }
+    fun getFacetValueAnnotationContent(
+        dataContext: DataContext? = null
+    ): List<FacetValueAnnotationContent> {
+        return allBuilderInterpreters().flatMap {
+            it.getBuilderInterpreterFacetValueAnnotationContent(dataContext)
+        }
     }
 
-    fun getManualAssignedConceptIdentifierAnnotationContent(dataContext: DataContext? = null): List<ConceptIdentifierAnnotationData> {
-        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(dataContext) }
+    fun getManualAssignedConceptIdentifierAnnotationContent(
+        dataContext: DataContext? = null
+    ): List<ConceptIdentifierAnnotationData> {
+        return allBuilderInterpreters().flatMap {
+            it.getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(dataContext)
+        }
     }
 }

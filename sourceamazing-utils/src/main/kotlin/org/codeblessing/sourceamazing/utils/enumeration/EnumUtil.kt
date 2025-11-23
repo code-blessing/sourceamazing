@@ -7,16 +7,18 @@ import kotlin.reflect.KClass
 object EnumUtil {
 
     fun fromStringToEnum(enumStringValue: String, enumerationType: KClass<*>): Enum<*>? {
-        return enumConstantList(enumerationType)
-            .firstOrNull { enumConstant -> enumConstant.toString() == enumStringValue }
+        return enumConstantList(enumerationType).firstOrNull { enumConstant ->
+            enumConstant.toString() == enumStringValue
+        }
     }
 
     fun fromAnyToEnum(value: Any, enumerationType: KClass<*>): Enum<*>? {
-        val enumValueAsString = when (value) {
-            is String -> value
-            is Enum<*> -> value.name
-            else -> null
-        } ?: return null
+        val enumValueAsString =
+            when (value) {
+                is String -> value
+                is Enum<*> -> value.name
+                else -> null
+            } ?: return null
 
         return fromStringToEnum(enumValueAsString, enumerationType)
     }
@@ -29,15 +31,18 @@ object EnumUtil {
         return enumClass.enumValues
     }
 
-    fun isSameOrSubsetEnumerationClass(fullEnumClass: KClass<*>, fullOrSubsetEnumClass: KClass<*>): Boolean {
-        if(fullEnumClass == fullOrSubsetEnumClass) {
+    fun isSameOrSubsetEnumerationClass(
+        fullEnumClass: KClass<*>,
+        fullOrSubsetEnumClass: KClass<*>,
+    ): Boolean {
+        if (fullEnumClass == fullOrSubsetEnumClass) {
             return true
         }
-        if(!fullEnumClass.isEnum || !fullOrSubsetEnumClass.isEnum) {
+        if (!fullEnumClass.isEnum || !fullOrSubsetEnumClass.isEnum) {
             return false
         }
-        return enumConstantList(fullOrSubsetEnumClass)
-            .all { subsetEnumValue: Enum<*> -> fromStringToEnum(subsetEnumValue.name, fullEnumClass) != null }
+        return enumConstantList(fullOrSubsetEnumClass).all { subsetEnumValue: Enum<*> ->
+            fromStringToEnum(subsetEnumValue.name, fullEnumClass) != null
+        }
     }
-
 }

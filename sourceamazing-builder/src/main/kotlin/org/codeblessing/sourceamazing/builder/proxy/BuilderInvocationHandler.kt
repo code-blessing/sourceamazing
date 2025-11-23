@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.builder.proxy
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.builder.update.BuilderMethodInterpreterDataCollector
@@ -11,7 +12,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.shortText
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.utils.type.hasAnnotation
@@ -25,50 +25,69 @@ class BuilderInvocationHandler(
     builderClass: KClass<*>,
     private val conceptDataCollector: ConceptDataCollector,
     superiorConcepts: Map<Alias, ConceptName>,
-    private val superiorConceptIds: Map<Alias, ConceptIdentifier>
-): KotlinInvocationHandler(
-    allowMemberProperties = false,
-    allowMemberFunctions = true,
-)  {
+    private val superiorConceptIds: Map<Alias, ConceptIdentifier>,
+) : KotlinInvocationHandler(allowMemberProperties = false, allowMemberFunctions = true) {
 
-    private val builderClassInterpreter = BuilderClassInterpreter(
-        builderClass = builderClass,
-        newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
-    )
+    private val builderClassInterpreter =
+        BuilderClassInterpreter(
+            builderClass = builderClass,
+            newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
+        )
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
         val args = function.valueParamsWithValues(arguments)
-        if(function.hasAnnotation(BuilderMethod::class)){
+        if (function.hasAnnotation(BuilderMethod::class)) {
 
-            val builderMethodInterpreter = BuilderMethodInterpreter(
-                schemaAccess = schemaAccess,
-                builderClassInterpreter = builderClassInterpreter,
-                method = function,
+            val builderMethodInterpreter =
+                BuilderMethodInterpreter(
+                    schemaAccess = schemaAccess,
+                    builderClassInterpreter = builderClassInterpreter,
+                    method = function,
+                )
+
+            val builderMethodInterpreterDataCollector =
+                BuilderMethodInterpreterDataCollector(
+                    conceptDataCollector = conceptDataCollector,
+                    functionArguments = args,
+                    newConceptIdsFromSuperiorBuilder = superiorConceptIds,
+                )
+
+            BuilderUpdater.updateConceptDataCollector(
+                builderMethodInterpreter,
+                builderMethodInterpreterDataCollector,
             )
 
-            val builderMethodInterpreterDataCollector = BuilderMethodInterpreterDataCollector(
-                conceptDataCollector = conceptDataCollector,
-                functionArguments =  args,
-                newConceptIdsFromSuperiorBuilder = superiorConceptIds,
-            )
+            val expectedSuperiorAndMyConcepts =
+                builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
+            val expectedSuperiorAndMyConceptIds =
+                builderMethodInterpreterDataCollector.newConceptIdsAndSuperiorConceptIds()
 
-            BuilderUpdater.updateConceptDataCollector(builderMethodInterpreter, builderMethodInterpreterDataCollector)
-
-            val expectedSuperiorAndMyConcepts = builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
-            val expectedSuperiorAndMyConceptIds = builderMethodInterpreterDataCollector.newConceptIdsAndSuperiorConceptIds()
-
-
-            val subBuilderClassFromInjectBuilderAnnotation = builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
-            if(subBuilderClassFromInjectBuilderAnnotation != null) {
-                val builderForInjection: Any = createNewBuilderProxy(subBuilderClassFromInjectBuilderAnnotation, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)
+            val subBuilderClassFromInjectBuilderAnnotation =
+                builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
+            if (subBuilderClassFromInjectBuilderAnnotation != null) {
+                val builderForInjection: Any =
+                    createNewBuilderProxy(
+                        subBuilderClassFromInjectBuilderAnnotation,
+                        conceptDataCollector,
+                        expectedSuperiorAndMyConcepts,
+                        expectedSuperiorAndMyConceptIds,
+                    )
                 injectBuilderToParamMethod(function, args, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
             }
 
-            val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
+            val subBuilderClassFromReturnType =
+                builderMethodInterpreter.getBuilderClassFromReturnType()
             if (subBuilderClassFromReturnType != null) {
-                // if the return type is the same class as the proxy , we could also return the proxy itself
-                val builderForReturnValue: Any = createNewBuilderProxy(subBuilderClassFromReturnType, conceptDataCollector, expectedSuperiorAndMyConcepts, expectedSuperiorAndMyConceptIds)
+                // if the return type is the same class as the proxy , we could also return the
+                // proxy itself
+                val builderForReturnValue: Any =
+                    createNewBuilderProxy(
+                        subBuilderClassFromReturnType,
+                        conceptDataCollector,
+                        expectedSuperiorAndMyConcepts,
+                        expectedSuperiorAndMyConceptIds,
+                    )
                 return builderForReturnValue
             }
 
@@ -76,49 +95,62 @@ class BuilderInvocationHandler(
             return null
         }
 
-        throw IllegalArgumentException("Method $function has not the supported annotations (${BuilderMethod::class.shortText()}.")
+        throw IllegalArgumentException(
+            "Method $function has not the supported annotations (${BuilderMethod::class.shortText()}."
+        )
     }
 
     private fun createNewBuilderProxy(
         builderClass: KClass<*>,
         dataCollector: ConceptDataCollector,
         aliasToConceptMap: Map<Alias, ConceptName>,
-        aliasToConceptIdMap: Map<Alias, ConceptIdentifier>
+        aliasToConceptIdMap: Map<Alias, ConceptIdentifier>,
     ): Any {
         return ProxyCreator.createProxy(
             interfaceForProxy = builderClass,
-            invocationHandler = BuilderInvocationHandler(
-                schemaAccess = schemaAccess,
-                builderClass = builderClass,
-                conceptDataCollector = dataCollector,
-                superiorConcepts = aliasToConceptMap,
-                superiorConceptIds = aliasToConceptIdMap
-            ),
+            invocationHandler =
+                BuilderInvocationHandler(
+                    schemaAccess = schemaAccess,
+                    builderClass = builderClass,
+                    conceptDataCollector = dataCollector,
+                    superiorConcepts = aliasToConceptMap,
+                    superiorConceptIds = aliasToConceptIdMap,
+                ),
         )
     }
 
     private fun injectBuilderToParamMethod(
         method: KFunction<*>,
         args: Map<KParameter, Any?>,
-        builder: Any
+        builder: Any,
     ) {
-        getBuilderInjectionParameterFunctionOrNull(method, args)?.let { conceptBuilderFunctionParameter ->
+        getBuilderInjectionParameterFunctionOrNull(method, args)?.let {
+            conceptBuilderFunctionParameter ->
             conceptBuilderFunctionParameter(builder)
         }
     }
 
-    private fun getBuilderInjectionParameterFunctionOrNull(method: KFunction<*>, args: Map<KParameter, Any?>): ((Any) -> Unit)? {
+    private fun getBuilderInjectionParameterFunctionOrNull(
+        method: KFunction<*>,
+        args: Map<KParameter, Any?>,
+    ): ((Any) -> Unit)? {
         args.forEach { (parameter, argument) ->
-            if(parameter.hasAnnotation(InjectBuilder::class)) {
-                val builderToInjectFunction = argument ?: throw IllegalStateException(
-                    "Parameter with Annotation ${InjectBuilder::class} found but was null on method: $method",
-                )
+            if (parameter.hasAnnotation(InjectBuilder::class)) {
+                val builderToInjectFunction =
+                    argument
+                        ?: throw IllegalStateException(
+                            "Parameter with Annotation ${InjectBuilder::class} found but was null on method: $method"
+                        )
                 try {
                     @Suppress("UNCHECKED_CAST")
-                    return@getBuilderInjectionParameterFunctionOrNull builderToInjectFunction as (Any) -> Unit
+                    return@getBuilderInjectionParameterFunctionOrNull builderToInjectFunction
+                        as (Any) -> Unit
                 } catch (ex: Exception) {
-                    throw IllegalStateException("Could not cast builder parameter marked with '${InjectBuilder::class.java}' in method '$method'. " +
-                            "This must be a function receiving exactly one argument (the builder) and returning nothing. But was ${builderToInjectFunction}.", ex)
+                    throw IllegalStateException(
+                        "Could not cast builder parameter marked with '${InjectBuilder::class.java}' in method '$method'. " +
+                            "This must be a function receiving exactly one argument (the builder) and returning nothing. But was ${builderToInjectFunction}.",
+                        ex,
+                    )
                 }
             }
         }

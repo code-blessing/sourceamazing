@@ -3,8 +3,8 @@ package org.codeblessing.sourceamazing.builder.update
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
-import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import kotlin.reflect.KParameter
 
 class BuilderMethodInterpreterDataCollector(
@@ -24,11 +24,16 @@ class BuilderMethodInterpreterDataCollector(
     }
 
     fun conceptIdByAlias(conceptAlias: Alias): ConceptIdentifier {
-        return newConceptIds[conceptAlias] ?: newConceptIdsFromSuperiorBuilder[conceptAlias]
-        ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
+        return newConceptIds[conceptAlias]
+            ?: newConceptIdsFromSuperiorBuilder[conceptAlias]
+            ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    fun newConceptData(alias: Alias, conceptName: ConceptName, conceptIdentifier: ConceptIdentifier) {
+    fun newConceptData(
+        alias: Alias,
+        conceptName: ConceptName,
+        conceptIdentifier: ConceptIdentifier,
+    ) {
         newConceptIds[alias] = conceptIdentifier
         conceptDataCollector.newConceptData(conceptName, conceptIdentifier)
     }
@@ -41,11 +46,7 @@ class BuilderMethodInterpreterDataCollector(
         conceptDataCollector.validateAfterUpdate(conceptData)
     }
 
-
     fun getDataContext(): DataContext {
-        return DataContext(
-            functionArguments = functionArguments,
-            newConceptIds = newConceptIds,
-        )
+        return DataContext(functionArguments = functionArguments, newConceptIds = newConceptIds)
     }
 }

@@ -12,31 +12,24 @@ class BuilderApiFacetMultiUseTest {
     private interface SchemaWithConceptWithMultiUsedFacet {
 
         interface ConceptWithFacetAlphaAndBeta {
-            @Suppress("UNUSED")
-            val facetAlpha: String
+            @Suppress("UNUSED") val facetAlpha: String
 
-            @Suppress("UNUSED")
-            val facetBeta: String
+            @Suppress("UNUSED") val facetBeta: String
         }
 
         interface ConceptWithFacetAlpha {
-            @Suppress("UNUSED")
-            val facetAlpha: String
+            @Suppress("UNUSED") val facetAlpha: String
         }
 
         interface ConceptWithFacetBeta {
-            @Suppress("UNUSED")
-            val facetBeta: String
+            @Suppress("UNUSED") val facetBeta: String
         }
 
-        @Suppress("UNUSED")
-        val conceptAlphaAndBeta: List<ConceptWithFacetAlphaAndBeta>
+        @Suppress("UNUSED") val conceptAlphaAndBeta: List<ConceptWithFacetAlphaAndBeta>
 
-        @Suppress("UNUSED")
-        val conceptAlpha: List<ConceptWithFacetAlpha>
+        @Suppress("UNUSED") val conceptAlpha: List<ConceptWithFacetAlpha>
 
-        @Suppress("UNUSED")
-        val conceptBeta: List<ConceptWithFacetBeta>
+        @Suppress("UNUSED") val conceptBeta: List<ConceptWithFacetBeta>
     }
 
     @Builder
@@ -54,7 +47,10 @@ class BuilderApiFacetMultiUseTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetAlpha(): NestedBuilder
@@ -66,7 +62,8 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")
+                myValue: String
             )
         }
     }
@@ -100,7 +97,10 @@ class BuilderApiFacetMultiUseTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetBeta(): NestedBuilder
@@ -112,14 +112,18 @@ class BuilderApiFacetMultiUseTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")
+                myValue: String
             )
         }
     }
 
     @Test
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_FACET,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
                 withRootInstance<SchemaWithConceptWithMultiUsedFacet>(schemaContext) {
                     BuilderApi.withBuilder(

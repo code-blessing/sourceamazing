@@ -1,10 +1,6 @@
 package org.codeblessing.sourceamazing.xmlschema
 
-import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.ConceptSchema
-import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.xmlschema.tools.CaseUtil
 
 object XmlNames {
@@ -24,8 +20,13 @@ object XmlNames {
         return CaseUtil.decapitalize(facetName.simpleName())
     }
 
-    fun conceptFromXmlConceptName(xmlConceptName: String, schemaAccess: SchemaAccess): ConceptSchema? {
-        return schemaAccess.allConcepts().firstOrNull { xmlConceptName(it.conceptName) == xmlConceptName }
+    fun conceptFromXmlConceptName(
+        xmlConceptName: String,
+        schemaAccess: SchemaAccess,
+    ): ConceptSchema? {
+        return schemaAccess.allConcepts().firstOrNull {
+            xmlConceptName(it.conceptName) == xmlConceptName
+        }
     }
 
     fun facetFromXmlFacetName(xmlFacetName: String, conceptSchema: ConceptSchema): FacetSchema? {

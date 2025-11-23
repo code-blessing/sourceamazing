@@ -14,9 +14,9 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.toFacetName
+import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
@@ -30,84 +30,104 @@ class BuilderDataProviderInterpreter(
     private val schemaAccess: SchemaAccess,
     private val dataProviderLocation: MethodLocation,
     private val dataProviderInstanceSupplier: BuilderDataProviderInstanceSupplier,
-    val dataProviderClass: KClass<*>
-): BuilderInterpreter {
+    val dataProviderClass: KClass<*>,
+) : BuilderInterpreter {
 
     companion object {
         fun createFromMethodParam(
             methodParameter: KParameter,
             builderMethodInterpreter: BuilderMethodInterpreter,
-            schemaAccess: SchemaAccess
+            schemaAccess: SchemaAccess,
         ): BuilderDataProviderInterpreter {
-            val builderMethodLocation = builderMethodInterpreter.methodLocation.extendWithMethodParam(methodParameter)
+            val builderMethodLocation =
+                builderMethodInterpreter.methodLocation.extendWithMethodParam(methodParameter)
             val dataProviderClass = KTypeUtil.classFromType(methodParameter.type)
 
             val dataProviderInstanceSupplier = BuilderDataProviderInstanceSupplier { dataContext ->
-                    requireNotNull(dataContext.valueForMethodParameter(methodParameter)) {
-                        "The instance for the data provider class $dataProviderClass could not be found."
-                    }
+                requireNotNull(dataContext.valueForMethodParameter(methodParameter)) {
+                    "The instance for the data provider class $dataProviderClass could not be found."
                 }
+            }
 
             return BuilderDataProviderInterpreter(
                 schemaAccess = schemaAccess,
                 dataProviderLocation = builderMethodLocation.extendWithClass(dataProviderClass),
                 dataProviderClass = dataProviderClass,
-                dataProviderInstanceSupplier = dataProviderInstanceSupplier
+                dataProviderInstanceSupplier = dataProviderInstanceSupplier,
             )
         }
     }
 
-    override fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>> {
+    override fun getBuilderInterpreterNewConceptsIncludingDuplicates():
+        List<Pair<Alias, ConceptName>> {
         return CommonMethodInterpretationHelper.extractNewConceptsAsPair(getBuilderDataMethods())
     }
 
-    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
-        return CommonMethodInterpretationHelper.extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
-            getBuilderDataMethods()
-        )
+    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates():
+        List<Alias> {
+        return CommonMethodInterpretationHelper
+            .extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
+                getBuilderDataMethods()
+            )
     }
 
-    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias> {
+    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates():
+        List<Alias> {
         return getBuilderDataMethods()
-            .flatMap { parameter -> parameter.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>() }
-            .map { it.conceptToModifyAlias.toAlias()}
-    }
-
-    override fun getBuilderInterpreterFacetValueAnnotationContent(dataContext: DataContext?): List<FacetValueAnnotationContent> {
-        return getFixedFacetValuesOfBuilderDataMethods(dataContext) + getFacetValuesOfBuilderDataMethods(dataContext)
-    }
-
-    override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(dataContext: DataContext?): List<ConceptIdentifierAnnotationData> {
-        return getBuilderDataMethods().flatMap { builderDataMethod ->
-            builderDataMethod.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>().map { annotation ->
-                val conceptIdentifier = getBuilderDataValue(builderDataMethod, dataContext)?.let { castConceptIdentifier(it) }
-                ConceptIdentifierAnnotationData(
-                    methodLocation = builderMethodLocation(builderDataMethod),
-                    alias = annotation.conceptToModifyAlias.toAlias(),
-                    annotation = annotation,
-                    ignoreNullValue = isIgnoreNullValue(builderDataMethod),
-                    type = builderDataMethodDataType(builderDataMethod),
-                    conceptIdentifier = conceptIdentifier
-                )
+            .flatMap { parameter ->
+                parameter.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>()
             }
+            .map { it.conceptToModifyAlias.toAlias() }
+    }
+
+    override fun getBuilderInterpreterFacetValueAnnotationContent(
+        dataContext: DataContext?
+    ): List<FacetValueAnnotationContent> {
+        return getFixedFacetValuesOfBuilderDataMethods(dataContext) +
+            getFacetValuesOfBuilderDataMethods(dataContext)
+    }
+
+    override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(
+        dataContext: DataContext?
+    ): List<ConceptIdentifierAnnotationData> {
+        return getBuilderDataMethods().flatMap { builderDataMethod ->
+            builderDataMethod.annotations
+                .filterIsInstance<SetProvidedConceptIdentifierValue>()
+                .map { annotation ->
+                    val conceptIdentifier =
+                        getBuilderDataValue(builderDataMethod, dataContext)?.let {
+                            castConceptIdentifier(it)
+                        }
+                    ConceptIdentifierAnnotationData(
+                        methodLocation = builderMethodLocation(builderDataMethod),
+                        alias = annotation.conceptToModifyAlias.toAlias(),
+                        annotation = annotation,
+                        ignoreNullValue = isIgnoreNullValue(builderDataMethod),
+                        type = builderDataMethodDataType(builderDataMethod),
+                        conceptIdentifier = conceptIdentifier,
+                    )
+                }
         }
     }
 
-    private fun getFixedFacetValuesOfBuilderDataMethods(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
+    private fun getFixedFacetValuesOfBuilderDataMethods(
+        dataContext: DataContext? = null
+    ): List<FacetValueAnnotationContent> {
         return getBuilderDataMethods().flatMap { builderDataMethod ->
             CommonMethodInterpretationHelper.extractFixedFacetValues(
                 builderDataMethod,
                 builderMethodLocation(builderDataMethod),
                 schemaAccess,
-                dataContext
+                dataContext,
             )
         }
     }
 
     private fun getBuilderDataValue(method: KFunction<*>, dataContext: DataContext? = null): Any? {
-        if(dataContext == null) return null
+        if (dataContext == null) return null
 
-        val dataProviderInstance = dataProviderInstanceSupplier.getBuilderDataProviderInstance(dataContext)
+        val dataProviderInstance =
+            dataProviderInstanceSupplier.getBuilderDataProviderInstance(dataContext)
         val exceptionMessage = "Exception during call of $method"
         try {
             return method.call(dataProviderInstance)
@@ -118,23 +138,26 @@ class BuilderDataProviderInterpreter(
         }
     }
 
-    private fun getFacetValuesOfBuilderDataMethods(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
+    private fun getFacetValuesOfBuilderDataMethods(
+        dataContext: DataContext? = null
+    ): List<FacetValueAnnotationContent> {
         return getBuilderDataMethods().flatMap { builderDataMethod ->
-
-            builderDataMethod.annotations.filterIsInstance<SetProvidedFacetValue>().map { annotation ->
+            builderDataMethod.annotations.filterIsInstance<SetProvidedFacetValue>().map { annotation
+                ->
                 val value = getBuilderDataValue(builderDataMethod, dataContext)
                 FacetValueAnnotationContent(
-                    base = FacetValueAnnotationBaseData(
-                        methodLocation = builderMethodLocation(builderDataMethod),
-                        alias = annotation.conceptToModifyAlias.toAlias(),
-                        facetName = annotation.facetToModify.toFacetName(),
-                        facetModificationRule = annotation.facetModificationRule,
-                        annotation = annotation,
-                        ignoreNullValue = isIgnoreNullValue(builderDataMethod),
-                        type = builderDataMethodDataType(builderDataMethod),
-                        typeClass = null
-                    ),
-                    value = value
+                    base =
+                        FacetValueAnnotationBaseData(
+                            methodLocation = builderMethodLocation(builderDataMethod),
+                            alias = annotation.conceptToModifyAlias.toAlias(),
+                            facetName = annotation.facetToModify.toFacetName(),
+                            facetModificationRule = annotation.facetModificationRule,
+                            annotation = annotation,
+                            ignoreNullValue = isIgnoreNullValue(builderDataMethod),
+                            type = builderDataMethodDataType(builderDataMethod),
+                            typeClass = null,
+                        ),
+                    value = value,
                 )
             }
         }

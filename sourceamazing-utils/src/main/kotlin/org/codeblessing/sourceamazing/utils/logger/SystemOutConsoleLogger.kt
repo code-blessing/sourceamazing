@@ -3,11 +3,12 @@ package org.codeblessing.sourceamazing.utils.logger
 import java.util.logging.LogRecord
 import java.util.logging.StreamHandler
 
-class SystemOutConsoleLogger: StreamHandler() {
+class SystemOutConsoleLogger : StreamHandler() {
 
     init {
         setOutputStream(System.out)
     }
+
     override fun publish(record: LogRecord) {
         super.publish(record)
         flush()

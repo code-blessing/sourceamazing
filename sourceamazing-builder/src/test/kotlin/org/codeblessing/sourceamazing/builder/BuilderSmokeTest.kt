@@ -15,32 +15,24 @@ class BuilderSmokeTest {
         interface PersonConcept {
 
             enum class PersonSex {
-                @Suppress("UNUSED")
-                MALE, @Suppress("UNUSED")
-                FEMALE
+                @Suppress("UNUSED") MALE,
+                @Suppress("UNUSED") FEMALE,
             }
 
-            @Suppress("UNUSED")
-            val firstname: String
+            @Suppress("UNUSED") val firstname: String
 
-            @Suppress("UNUSED")
-            val age: Int
+            @Suppress("UNUSED") val age: Int
 
-            @Suppress("UNUSED")
-            val sex: PersonSex
+            @Suppress("UNUSED") val sex: PersonSex
 
-            @Suppress("UNUSED")
-            val skills: List<SkillConcept>
+            @Suppress("UNUSED") val skills: List<SkillConcept>
         }
 
         interface SkillConcept {
 
-            @Suppress("UNUSED")
-            val skillDescription: String
+            @Suppress("UNUSED") val skillDescription: String
 
-            @Suppress("UNUSED")
-            val isStillFullyEnjoyingAboutThatSkill: Boolean
-
+            @Suppress("UNUSED") val isStillFullyEnjoyingAboutThatSkill: Boolean
         }
 
         val personList: List<PersonConcept>
@@ -54,10 +46,15 @@ class BuilderSmokeTest {
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class, declareConceptAlias = "person")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "personList", referencedConceptAlias = "person")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "personList",
+            referencedConceptAlias = "person",
+        )
         fun newPerson(
             @ProvideBuilderData conceptIdentifier: PersonConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
+            @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname")
+            firstname: String,
             @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "sex") sex: PersonSex,
         ): PersonConceptBuilder
 
@@ -65,7 +62,11 @@ class BuilderSmokeTest {
         @BuilderMethod
         @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class, declareConceptAlias = "person")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "personList", referencedConceptAlias = "person")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "personList",
+            referencedConceptAlias = "person",
+        )
         fun newPerson(
             @ProvideBuilderData conceptIdentifier: PersonConceptIdentifier,
             @InjectBuilder builder: PersonConceptBuilder.() -> Unit,
@@ -78,22 +79,25 @@ class BuilderSmokeTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun firstname(
-                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
+                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname")
+                firstname: String
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun age(
-                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "age") age: Int,
+                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "age") age: Int
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun sex(
-                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "sex") sex: PersonSex,
+                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "sex")
+                sex: PersonSex
             ): PersonConceptBuilder
 
             @BuilderMethod
             fun firstnameAndAge(
-                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname") firstname: String,
+                @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname")
+                firstname: String,
                 @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "age") age: Int,
             ): PersonConceptBuilder
 
@@ -101,21 +105,28 @@ class BuilderSmokeTest {
             @BuilderMethod
             @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "person", facetToModify = "skills", referencedConceptAlias = "skill")
+            @SetAliasConceptIdentifierReferenceFacetValue(
+                conceptToModifyAlias = "person",
+                facetToModify = "skills",
+                referencedConceptAlias = "skill",
+            )
             fun skill(
-                @ProvideBuilderData skillConceptIdentifier: SkillConceptIdentifier,
+                @ProvideBuilderData skillConceptIdentifier: SkillConceptIdentifier
             ): SkillConceptBuilder
 
             // DSL style
             @BuilderMethod
             @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
-            @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "person", facetToModify = "skills", referencedConceptAlias = "skill")
+            @SetAliasConceptIdentifierReferenceFacetValue(
+                conceptToModifyAlias = "person",
+                facetToModify = "skills",
+                referencedConceptAlias = "skill",
+            )
             fun skill(
                 @ProvideBuilderData skillConceptIdentifier: SkillConceptIdentifier,
                 @InjectBuilder builder: SkillConceptBuilder.() -> Unit,
             )
-
         }
 
         @Builder
@@ -125,16 +136,19 @@ class BuilderSmokeTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun descriptionAndStillEnjoying(
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "skillDescription") description: String,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "skillDescription")
+                description: String,
                 @SetFacetValue(
                     conceptToModifyAlias = "skill",
                     facetToModify = "isStillFullyEnjoyingAboutThatSkill",
-                ) stillEnjoying: Boolean,
+                )
+                stillEnjoying: Boolean,
             ): SkillConceptBuilder
 
             @BuilderMethod
             fun description(
-                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "skillDescription") description: String,
+                @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "skillDescription")
+                description: String
             ): SkillConceptBuilder
 
             @BuilderMethod
@@ -142,9 +156,9 @@ class BuilderSmokeTest {
                 @SetFacetValue(
                     conceptToModifyAlias = "skill",
                     facetToModify = "isStillFullyEnjoyingAboutThatSkill",
-                ) stillEnjoying: Boolean,
+                )
+                stillEnjoying: Boolean
             ): SkillConceptBuilder
-
         }
     }
 
@@ -174,17 +188,16 @@ class BuilderSmokeTest {
         val lindaConceptIdentifier = PersonConceptIdentifier("Linda")
         val judoConceptIdentifier = SkillConceptIdentifier("Judo")
 
-
-        val schemaInstance: SmokeTestSchema = SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext ->
-            withRootInstance<SmokeTestSchema>(schemaContext) { conceptNameAndIdentifier ->
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    SmokeTestRootBuilder::class,
-                    mapOf("root" to conceptNameAndIdentifier),
-                ) { builder ->
-                    // add some data in DSL style
-                    builder
-                        .newPerson(jamesConceptIdentifier) {
+        val schemaInstance: SmokeTestSchema =
+            SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext ->
+                withRootInstance<SmokeTestSchema>(schemaContext) { conceptNameAndIdentifier ->
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        SmokeTestRootBuilder::class,
+                        mapOf("root" to conceptNameAndIdentifier),
+                    ) { builder ->
+                        // add some data in DSL style
+                        builder.newPerson(jamesConceptIdentifier) {
                             firstnameAndAge(firstname = "James", age = 18)
                             sex(PersonSex.MALE)
                             skill(cookingConceptIdentifier) {
@@ -197,17 +210,19 @@ class BuilderSmokeTest {
                             }
                         }
 
-                    // add some data in builder style
-                    val linda = builder
-                        .newPerson(lindaConceptIdentifier, firstname = "Linda", sex = PersonSex.FEMALE)
-                        .age(29)
-                    linda.skill(judoConceptIdentifier)
-                        .description("Judo")
-                        .stillEnjoying(true)
-
+                        // add some data in builder style
+                        val linda =
+                            builder
+                                .newPerson(
+                                    lindaConceptIdentifier,
+                                    firstname = "Linda",
+                                    sex = PersonSex.FEMALE,
+                                )
+                                .age(29)
+                        linda.skill(judoConceptIdentifier).description("Judo").stillEnjoying(true)
+                    }
                 }
             }
-        }
 
         val personList = schemaInstance.personList
         Assertions.assertEquals(2, personList.size)
@@ -217,7 +232,6 @@ class BuilderSmokeTest {
         Assertions.assertEquals(18, james.age)
         Assertions.assertEquals(PersonSex.MALE, james.sex)
         Assertions.assertEquals(2, james.skills.size)
-
 
         val linda = personList.first { it.firstname == "Linda" }
         Assertions.assertEquals("Linda", linda.firstname)

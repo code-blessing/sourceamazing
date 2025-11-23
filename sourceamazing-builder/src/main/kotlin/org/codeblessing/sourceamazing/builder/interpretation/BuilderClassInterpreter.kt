@@ -9,10 +9,12 @@ import kotlin.reflect.KClass
 class BuilderClassInterpreter(
     val builderClass: KClass<*>,
     private val newConceptNamesWithAliasFromSuperiorBuilder: Map<Alias, ConceptName>,
-    ) {
+) {
 
     fun expectedAliasesFromSuperiorBuilderIncludingDuplicates(): List<Alias> {
-        return builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().map { it.conceptAlias.toAlias() }
+        return builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().map {
+            it.conceptAlias.toAlias()
+        }
     }
 
     fun expectedAliasesFromSuperiorBuilder(): Set<Alias> {

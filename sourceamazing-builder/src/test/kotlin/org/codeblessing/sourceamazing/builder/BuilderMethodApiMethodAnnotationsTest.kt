@@ -13,53 +13,49 @@ class BuilderMethodApiMethodAnnotationsTest {
 
     private interface SchemaWithConceptWithFacets {
         enum class MyEnum {
-            @Suppress("UNUSED")
-            A,
-
-            @Suppress("UNUSED")
-            B,
-
+            @Suppress("UNUSED") A,
+            @Suppress("UNUSED") B,
         }
 
         interface ConceptWithFacets {
-            @Suppress("UNUSED")
-            val textFacet: String
+            @Suppress("UNUSED") val textFacet: String
 
-            @Suppress("UNUSED")
-            val boolFacet: Boolean
+            @Suppress("UNUSED") val boolFacet: Boolean
 
-            @Suppress("UNUSED")
-            val numberFacet: Int
+            @Suppress("UNUSED") val numberFacet: Int
 
-            @Suppress("UNUSED")
-            val enumerationFacet: MyEnum
+            @Suppress("UNUSED") val enumerationFacet: MyEnum
 
-            @Suppress("UNUSED")
-            val selfRefFacet: ConceptWithFacets
+            @Suppress("UNUSED") val selfRefFacet: ConceptWithFacets
         }
 
-        @Suppress("UNUSED")
-        val concepts: List<ConceptWithFacets>
+        @Suppress("UNUSED") val concepts: List<ConceptWithFacets>
     }
-
 
     @Builder
     private interface BuilderMethodWithFixedFacetValueAndParameterFacetValue {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value")
+        @SetFixedStringFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "textFacet",
+            value = "fixed value",
+        )
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: String,
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: String
         )
     }
 
     @Test
     fun `test string facet as fixed value and as parameter should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithFixedFacetValueAndParameterFacetValue::class,
@@ -75,17 +71,28 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value 1")
-        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet", value = "fixed value 2")
+        @SetFixedStringFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "textFacet",
+            value = "fixed value 1",
+        )
+        @SetFixedStringFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "textFacet",
+            value = "fixed value 2",
+        )
         fun doSomething()
     }
 
     @Test
     fun `test string facet with multiple fixed values should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithMultipleFixedFacetValues::class,
@@ -101,16 +108,23 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedEnumFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet", value = "A")
+        @SetFixedEnumFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "enumerationFacet",
+            value = "A",
+        )
         fun doSomething()
     }
 
     @Test
     fun `test enum facet with fixed values having correct enum should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithCorrectFixedEnumFacetValues::class,
@@ -126,17 +140,27 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedEnumFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet", value = "NOT_A_NOR_B")
+        @SetFixedEnumFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "enumerationFacet",
+            value = "NOT_A_NOR_B",
+        )
         fun doSomething()
     }
 
     @Test
     fun `test enum facet with fixed values having unknown enum value should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.WRONG_FACET_ENUM_VALUE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.WRONG_FACET_ENUM_VALUE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithWrongFixedEnumFacetValues::class,
@@ -153,17 +177,27 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedBooleanFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet", value = true)
+        @SetFixedBooleanFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "numberFacet",
+            value = true,
+        )
         fun doSomething()
     }
 
     @Test
     fun `test int facet with fixed boolean value should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.WRONG_FACET_TYPE) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.WRONG_FACET_TYPE,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithWrongFixedFacetType::class,
@@ -180,17 +214,27 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedIntFacetValue(conceptToModifyAlias = "foo", facetToModify = "unregisteredFacet", value = 42)
+        @SetFixedIntFacetValue(
+            conceptToModifyAlias = "foo",
+            facetToModify = "unregisteredFacet",
+            value = 42,
+        )
         fun doSomething()
     }
 
     @Test
     fun `test int facet with fixed value for unregistered facet should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_FACET,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithUnregisteredFixedFacetType::class,
@@ -207,9 +251,15 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "bar",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "foo",
@@ -222,11 +272,8 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Test
     fun `test referencing a concept with fixed alias should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodWithValidFixedReference::class,
-                ) {
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodWithValidFixedReference::class) {
                     // do nothing
                 }
             }
@@ -238,19 +285,26 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "bar",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myReference: ConceptIdentifier
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
+            myReference: ConceptIdentifier
         )
     }
 
     @Test
     fun `test referencing a concept with parameter value should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithValidParameterReference::class,
@@ -266,15 +320,19 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "bar",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(
-                conceptToModifyAlias = "foo",
-                facetToModify = "selfRefFacet",
-            ) myReference: () -> ConceptIdentifier
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
+            myReference: () -> ConceptIdentifier
         )
     }
 
@@ -285,7 +343,7 @@ class BuilderMethodApiMethodAnnotationsTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithFunctionInsteadOfConceptIdentifierReference::class,
@@ -302,12 +360,19 @@ class BuilderMethodApiMethodAnnotationsTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "foo")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "foo",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(concept = SchemaWithConceptWithFacets.ConceptWithFacets::class, declareConceptAlias = "bar")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
+            declareConceptAlias = "bar",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet") myReference: String
+            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
+            myReference: String
         )
     }
 
@@ -318,7 +383,7 @@ class BuilderMethodApiMethodAnnotationsTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithFacets::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithFacets>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithStringInsteadOfConceptIdentifierReference::class,
@@ -329,5 +394,4 @@ class BuilderMethodApiMethodAnnotationsTest {
             }
         }
     }
-
 }

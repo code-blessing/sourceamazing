@@ -12,28 +12,30 @@ class RecursionDetector {
 
     data class InspectedMethod(
         val method: KFunction<*>,
-        val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>
+        val expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>,
     )
 
-    /**
-     * @return is item to process
-     */
-    fun pushMethodOntoStack(method: KFunction<*>, expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>) : Boolean {
+    /** @return is item to process */
+    fun pushMethodOntoStack(
+        method: KFunction<*>,
+        expectedConceptsFromSuperiorMethod: Map<Alias, ConceptName>,
+    ): Boolean {
         val inspectedMethod = InspectedMethod(method, expectedConceptsFromSuperiorMethod)
         val isProcessItem = inspectedMethod !in validatedBuilderClasses
         validatedBuilderClasses.add(inspectedMethod)
-        if(printTrace) {
+        if (printTrace) {
             println("${if(isProcessItem) "Process" else "Skip"} item: $inspectedMethod")
         }
         return isProcessItem
     }
 
     fun removeLastMethodFromStack() {
-        require(validatedBuilderClasses.isNotEmpty()) { "At least one method must be removed from the stack" }
+        require(validatedBuilderClasses.isNotEmpty()) {
+            "At least one method must be removed from the stack"
+        }
         val inspectedMethod = validatedBuilderClasses.removeLast()
-        if(printTrace) {
+        if (printTrace) {
             println("Remove item: $inspectedMethod")
         }
     }
-
 }

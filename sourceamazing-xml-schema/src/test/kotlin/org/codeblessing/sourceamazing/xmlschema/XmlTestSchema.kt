@@ -15,36 +15,28 @@ object XmlTestSchema {
     val testEntityAttributeNameFacetName = FacetName.of("name")
     val testEntityAttributeTypeFacetName = FacetName.of("type")
 
-
     fun createSchema(): SchemaAccess {
         return SchemaCreator.createSchemaFromSchemaDefinitionClass(XmlTestSchema::class)
     }
 
     interface XmlTestSchema {
-        @Suppress("UNUSED")
-        val testEntityConcepts: List<TestEntityConcept>
+        @Suppress("UNUSED") val testEntityConcepts: List<TestEntityConcept>
     }
 
     interface TestEntityConcept {
-        @Suppress("UNUSED")
-        val name: String
+        @Suppress("UNUSED") val name: String
 
-        @Suppress("UNUSED")
-        val kotlinModelClassname: String
+        @Suppress("UNUSED") val kotlinModelClassname: String
 
-        @Suppress("UNUSED")
-        val kotlinModelPackage: String
+        @Suppress("UNUSED") val kotlinModelPackage: String
 
-        @Suppress("UNUSED")
-        val testEntityAttribute: List<TestEntityAttributeConcept>
+        @Suppress("UNUSED") val testEntityAttribute: List<TestEntityAttributeConcept>
     }
 
     interface TestEntityAttributeConcept {
-        @Suppress("UNUSED")
-        val name: String
+        @Suppress("UNUSED") val name: String
 
-        @Suppress("UNUSED")
-        val type: AttributeTypeEnum
+        @Suppress("UNUSED") val type: AttributeTypeEnum
 
         enum class AttributeTypeEnum {
             @Suppress("UNUSED") TEXT,

@@ -2,11 +2,7 @@ package org.codeblessing.sourceamazing.utils.type
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.memberExtensionFunctions
-import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.superclasses
+import kotlin.reflect.full.*
 
 object KClassUtil {
 
@@ -30,22 +26,32 @@ object KClassUtil {
         return classToInspect.hasAnnotationIncludingSuperclasses(annotation)
     }
 
-    fun hasExactNumberOfAnnotations(annotation: KClass<out Annotation>, classToInspect: KClass<*>, numberOf: Int): Boolean {
+    fun hasExactNumberOfAnnotations(
+        annotation: KClass<out Annotation>,
+        classToInspect: KClass<*>,
+        numberOf: Int,
+    ): Boolean {
         return classToInspect.getNumberOfAnnotationIncludingSuperclasses(annotation) == numberOf
     }
 
-    fun hasOnlyAnnotations(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>): Boolean {
+    fun hasOnlyAnnotations(
+        permittedAnnotations: List<KClass<out Annotation>>,
+        classToInspect: KClass<*>,
+    ): Boolean {
         return classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
-            .all { annotationOnClass -> permittedAnnotations.contains(annotationOnClass.annotationClass) }
+            .all { annotationOnClass ->
+                permittedAnnotations.contains(annotationOnClass.annotationClass)
+            }
     }
 
-    fun hasNotAnnotation(deniedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {
+    fun hasNotAnnotation(
+        deniedAnnotation: KClass<out Annotation>,
+        classToInspect: KClass<*>,
+    ): Boolean {
         return classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
-            .none { annotationOnClass ->
-                deniedAnnotation == annotationOnClass.annotationClass
-            }
+            .none { annotationOnClass -> deniedAnnotation == annotationOnClass.annotationClass }
     }
 
     fun hasMemberExtensionFunctions(classToInspect: KClass<*>): Boolean {
@@ -56,7 +62,7 @@ object KClassUtil {
         return classToInspect.memberExtensionFunctions.isNotEmpty()
     }
 
-    fun hasExtensionFunctions(classToInspect: KClass<*>):Boolean {
+    fun hasExtensionFunctions(classToInspect: KClass<*>): Boolean {
         return classToInspect.memberExtensionFunctions.isNotEmpty()
     }
 
@@ -68,9 +74,10 @@ object KClassUtil {
         return classToInspect.memberFunctions.filterNot { it.isFromKotlinAnyClass() }.isNotEmpty()
     }
 
-
     fun hasMembers(classToInspect: KClass<*>): Boolean {
-        return classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()
+        return classToInspect.members
+            .filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }
+            .isNotEmpty()
     }
 
     fun findAllCommonBaseClasses(classes: List<KClass<*>>): Set<KClass<*>> {
@@ -80,8 +87,9 @@ object KClassUtil {
             val otherClasses = classesSet - clazz
             val thisClassAndItsSuperclasses = (clazz.superclasses + clazz).toSet()
             thisClassAndItsSuperclasses.forEach { classInHierarchy ->
-                val isCommonBaseClass = otherClasses.all { otherConcept ->  otherConcept.isSubclassOf(classInHierarchy) }
-                if(isCommonBaseClass) {
+                val isCommonBaseClass =
+                    otherClasses.all { otherConcept -> otherConcept.isSubclassOf(classInHierarchy) }
+                if (isCommonBaseClass) {
                     compatibleBaseClasses.add(classInHierarchy)
                 }
             }

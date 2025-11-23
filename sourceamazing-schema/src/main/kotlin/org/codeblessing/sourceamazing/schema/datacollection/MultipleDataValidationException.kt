@@ -7,7 +7,7 @@ class MultipleDataValidationException(private val exceptions: Set<DataValidation
     DataValidationException(
         DataCollectionErrorCode.MULTIPLE_DATA_VALIDATION_EXCEPTIONS,
         DataCollectionErrorCode.MULTIPLE_DATA_VALIDATION_EXCEPTIONS.format(exceptions.size),
-        exceptions.firstOrNull()
+        exceptions.firstOrNull(),
     ) {
 
     override val message: String
@@ -16,5 +16,4 @@ class MultipleDataValidationException(private val exceptions: Set<DataValidation
     private fun concatMessages(): String {
         return "${super.message}: ${this.exceptions}"
     }
-
 }

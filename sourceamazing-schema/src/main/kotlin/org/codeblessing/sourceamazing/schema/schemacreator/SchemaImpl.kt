@@ -1,17 +1,13 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.ConceptSchema
-import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.*
 
-data class SchemaImpl(
-    private val concepts: Map<ConceptName, ConceptSchema>
-): SchemaAccess {
+data class SchemaImpl(private val concepts: Map<ConceptName, ConceptSchema>) : SchemaAccess {
     override fun conceptByConceptName(conceptName: ConceptName): ConceptSchema {
         return concepts[conceptName]
-            ?: throw IllegalStateException("Concept with name '$conceptName' not found in schema: $concepts")
+            ?: throw IllegalStateException(
+                "Concept with name '$conceptName' not found in schema: $concepts"
+            )
     }
 
     override fun hasConceptName(conceptName: ConceptName): Boolean {
@@ -29,7 +25,7 @@ data class SchemaImpl(
     override fun facetByFacetName(facetName: FacetName): FacetSchema? {
         for (concept in concepts.values) {
             for (facet in concept.facets) {
-                if(facet.facetName == facetName) {
+                if (facet.facetName == facetName) {
                     return facet
                 }
             }

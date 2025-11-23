@@ -8,8 +8,18 @@ import org.codeblessing.sourceamazing.schema.api.ConceptName
 
 interface BuilderInterpreter {
     fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>>
-    fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias>
-    fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias>
-    fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(dataContext: DataContext?): List<ConceptIdentifierAnnotationData>
-    fun getBuilderInterpreterFacetValueAnnotationContent(dataContext: DataContext?): List<FacetValueAnnotationContent>
+
+    fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates():
+        List<Alias>
+
+    fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates():
+        List<Alias>
+
+    fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(
+        dataContext: DataContext?
+    ): List<ConceptIdentifierAnnotationData>
+
+    fun getBuilderInterpreterFacetValueAnnotationContent(
+        dataContext: DataContext?
+    ): List<FacetValueAnnotationContent>
 }

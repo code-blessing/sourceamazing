@@ -6,14 +6,18 @@ interface ConceptData {
     val conceptIdentifier: ConceptIdentifier
 
     fun allFacets(): Map<FacetName, List<Any>>
-    fun hasFacet(facetName: FacetName):Boolean
-    fun getFacet(facetName: FacetName):List<Any>
+
+    fun hasFacet(facetName: FacetName): Boolean
+
+    fun getFacet(facetName: FacetName): List<Any>
+
     fun getFacetNames(): Set<FacetName>
 
     fun replaceFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptData
+
     fun addFacetValue(facetName: FacetName, facetValue: Any): ConceptData
+
     fun addFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptData
 
     fun describe(): String
-
 }

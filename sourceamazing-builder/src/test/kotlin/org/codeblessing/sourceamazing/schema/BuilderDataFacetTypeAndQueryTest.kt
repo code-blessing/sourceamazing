@@ -24,21 +24,26 @@ class BuilderDataFacetTypeAndQueryTest {
             val numbers: List<Int>
 
             val enumerations: List<MyEnum>
-
         }
 
         val concepts: List<ConceptWithFacet>
     }
-
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            declareConceptAlias = "myConcept",
+        )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -78,7 +83,8 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
@@ -101,13 +107,15 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder.createConcept()
+                        builder
+                            .createConcept()
                             .addFacetValues(
                                 myTextValue = "hallo",
                                 myBoolValue = true,
@@ -130,20 +138,21 @@ class BuilderDataFacetTypeAndQueryTest {
 
         Assertions.assertEquals(1, concept.enumerations.size)
         Assertions.assertEquals(MyEnum.FOO, concept.enumerations[0])
-
     }
 
     @Test
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder.createConcept()
+                        builder
+                            .createConcept()
                             .addFacetValues(
                                 myTextValue = "hallo1",
                                 myBoolValue = false,
@@ -177,5 +186,4 @@ class BuilderDataFacetTypeAndQueryTest {
         Assertions.assertEquals(MyEnum.BAR, concept.enumerations[0])
         Assertions.assertEquals(MyEnum.FOO, concept.enumerations[1])
     }
-
 }

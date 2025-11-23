@@ -1,45 +1,47 @@
 package org.codeblessing.sourceamazing.schema.conceptgraph
 
-import org.codeblessing.sourceamazing.schema.api.ConceptData
-import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
+import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import kotlin.reflect.KClass
 
 object ConceptResolver {
 
     @Throws(DataValidationException::class)
-    fun validateAndResolveConcepts(schema: SchemaAccess, conceptDataEntries: List<ConceptData>): ConceptGraph {
+    fun validateAndResolveConcepts(
+        schema: SchemaAccess,
+        conceptDataEntries: List<ConceptData>,
+    ): ConceptGraph {
         val validatedDataEntries = ConceptDataValidator.validateEntries(schema, conceptDataEntries)
-        val conceptNodeMap: Map<ConceptIdentifier, MutableConceptNode> = createConceptNodeMap(schema, validatedDataEntries)
+        val conceptNodeMap: Map<ConceptIdentifier, MutableConceptNode> =
+            createConceptNodeMap(schema, validatedDataEntries)
         return ConceptGraph(conceptNodeMap)
     }
 
     private fun createConceptNodeMap(
         schema: SchemaAccess,
-        conceptDataEntries: Map<ConceptIdentifier, ConceptData>
+        conceptDataEntries: Map<ConceptIdentifier, ConceptData>,
     ): Map<ConceptIdentifier, MutableConceptNode> {
         val conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode> = mutableMapOf()
 
         // 1. Phase: Create entry without facet values
         conceptDataEntries.forEach { (conceptIdentifier, conceptData) ->
-            conceptNodeMap[conceptIdentifier] = MutableConceptNode(
-                sequenceNumber = conceptData.sequenceNumber,
-                conceptName = conceptData.conceptName,
-                conceptIdentifier = conceptData.conceptIdentifier,
-            )
+            conceptNodeMap[conceptIdentifier] =
+                MutableConceptNode(
+                    sequenceNumber = conceptData.sequenceNumber,
+                    conceptName = conceptData.conceptName,
+                    conceptIdentifier = conceptData.conceptIdentifier,
+                )
         }
 
-        // 2. Phase: Fill in facet values and connect with/resolve other referenced concept instances
+        // 2. Phase: Fill in facet values and connect with/resolve other referenced concept
+        // instances
         //          (resolve the concept identifier to the real concept node)
-        conceptNodeMap.forEach {(conceptIdentifier, conceptNode) ->
-            val conceptData = conceptDataEntries[conceptIdentifier]
-                ?: throw IllegalStateException("Could not resolve $conceptIdentifier. ")
+        conceptNodeMap.forEach { (conceptIdentifier, conceptNode) ->
+            val conceptData =
+                conceptDataEntries[conceptIdentifier]
+                    ?: throw IllegalStateException("Could not resolve $conceptIdentifier. ")
             val conceptSchema = schema.conceptByConceptName(conceptNode.conceptName)
             conceptSchema.facets.forEach { facetSchema ->
                 conceptNode.facetValues[facetSchema.facetName] =
@@ -53,23 +55,31 @@ object ConceptResolver {
     private fun transformFacetValues(
         facetSchema: FacetSchema,
         conceptData: ConceptData,
-        conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>
+        conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>,
     ): List<Any> {
         val facetName = facetSchema.facetName
-        return when(facetSchema.facetType) {
+        return when (facetSchema.facetType) {
             FacetType.TEXT,
             FacetType.NUMBER,
-            FacetType.BOOLEAN, -> conceptData.getFacet(facetName)
+            FacetType.BOOLEAN -> conceptData.getFacet(facetName)
             FacetType.TEXT_ENUMERATION -> transformEnumFacetValues(facetSchema, conceptData)
-            FacetType.REFERENCE -> transformReferenceFacetValues(facetName, conceptData, conceptNodeMap)
-
+            FacetType.REFERENCE ->
+                transformReferenceFacetValues(facetName, conceptData, conceptNodeMap)
         }
     }
-    private fun transformEnumFacetValues(facetSchema: FacetSchema, conceptData: ConceptData): List<Any> {
-        val enumerationType = facetSchema.enumerationType
-            ?: throw IllegalStateException("Facet ${facetSchema.facetName} has no enumerationType.")
-        return conceptData.getFacet(facetSchema.facetName)
-            .map { value -> transformEnumFacetValue(enumerationType, value) }
+
+    private fun transformEnumFacetValues(
+        facetSchema: FacetSchema,
+        conceptData: ConceptData,
+    ): List<Any> {
+        val enumerationType =
+            facetSchema.enumerationType
+                ?: throw IllegalStateException(
+                    "Facet ${facetSchema.facetName} has no enumerationType."
+                )
+        return conceptData.getFacet(facetSchema.facetName).map { value ->
+            transformEnumFacetValue(enumerationType, value)
+        }
     }
 
     private fun transformEnumFacetValue(enumerationType: KClass<*>, value: Any): Enum<*> {
@@ -81,13 +91,17 @@ object ConceptResolver {
     private fun transformReferenceFacetValues(
         facetName: FacetName,
         conceptData: ConceptData,
-        conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>
+        conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>,
     ): List<Any> {
-        return conceptData.getFacet(facetName)
+        return conceptData
+            .getFacet(facetName)
             .filterIsInstance<ConceptIdentifier>()
             .map { referencingConceptIdentifier ->
                 conceptNodeMap[referencingConceptIdentifier]
-                    ?: throw IllegalStateException("Could not resolve reference to $referencingConceptIdentifier from $${conceptData.conceptIdentifier}. ")
-            }.toList()
+                    ?: throw IllegalStateException(
+                        "Could not resolve reference to $referencingConceptIdentifier from $${conceptData.conceptIdentifier}. "
+                    )
+            }
+            .toList()
     }
 }

@@ -12,9 +12,7 @@ data class XmlAttribute(
     companion object {
         fun attributeList(attr: Attributes?): List<XmlAttribute> {
             if (attr == null || attr.length <= 0) return emptyList()
-            return (0..(attr.length - 1)
-                .coerceAtLeast(0))
-                .map { index -> toAttribute(attr, index) }
+            return (0..(attr.length - 1).coerceAtLeast(0)).map { index -> toAttribute(attr, index) }
         }
 
         private fun toAttribute(attr: Attributes, index: Int): XmlAttribute {
@@ -28,10 +26,7 @@ data class XmlAttribute(
         }
 
         fun attributesSummary(attr: Attributes?): String {
-            return attributeList(attr)
-                .joinToString("\n") { it.toString() }
+            return attributeList(attr).joinToString("\n") { it.toString() }
         }
-
     }
 }
-

@@ -14,7 +14,6 @@ class BuilderDataNestingBuildersTest {
             val texts: List<String>
 
             val numbers: List<Int>
-
         }
 
         val concepts: List<ConceptWithFacet>
@@ -25,9 +24,16 @@ class BuilderDataNestingBuildersTest {
     private interface BuilderReturningASubBuilderInASubSubBuilder {
 
         @BuilderMethod
-        @NewConcept(concept = SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "myConcept")
+        @NewConcept(
+            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            declareConceptAlias = "myConcept",
+        )
         @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(conceptToModifyAlias = "root", facetToModify = "concepts", referencedConceptAlias = "myConcept")
+        @SetAliasConceptIdentifierReferenceFacetValue(
+            conceptToModifyAlias = "root",
+            facetToModify = "concepts",
+            referencedConceptAlias = "myConcept",
+        )
         fun createConcept(): NestedBuilder
 
         @Builder
@@ -55,7 +61,8 @@ class BuilderDataNestingBuildersTest {
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: SchemaWithConceptWithFacet =
             SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) { conceptNameAndIdentifier ->  
+                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+                    conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderReturningASubBuilderInASubSubBuilder::class,

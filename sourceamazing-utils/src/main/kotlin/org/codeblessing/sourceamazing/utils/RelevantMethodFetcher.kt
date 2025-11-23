@@ -13,5 +13,4 @@ object RelevantMethodFetcher {
     fun filterOwnFunctions(functions: Collection<KFunction<*>>): List<KFunction<*>> {
         return functions.filterNot { it.isFromKotlinAnyClass() }
     }
-
 }

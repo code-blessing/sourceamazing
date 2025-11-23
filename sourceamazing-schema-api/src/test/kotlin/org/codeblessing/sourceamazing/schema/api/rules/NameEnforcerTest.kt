@@ -28,21 +28,22 @@ internal class NameEnforcerTest {
     }
 
     private fun assertThat(validity: Validity, identifier: String) {
-        when(validity) {
-            Validity.IDENTIFIER_IS_VALID -> Assertions.assertTrue(
-                NameEnforcer.isValidIdentifier(
-                    identifier
-                ), "Concept identifier '$identifier' was assert to be valid, but was not."
-            )
-            Validity.IDENTIFIER_IS_NOT_VALID -> Assertions.assertFalse(
-                NameEnforcer.isValidIdentifier(
-                    identifier
-                ), "Concept identifier '$identifier' was assert to be invalid, but was valid."
-            )
+        when (validity) {
+            Validity.IDENTIFIER_IS_VALID ->
+                Assertions.assertTrue(
+                    NameEnforcer.isValidIdentifier(identifier),
+                    "Concept identifier '$identifier' was assert to be valid, but was not.",
+                )
+            Validity.IDENTIFIER_IS_NOT_VALID ->
+                Assertions.assertFalse(
+                    NameEnforcer.isValidIdentifier(identifier),
+                    "Concept identifier '$identifier' was assert to be invalid, but was valid.",
+                )
         }
     }
 
     private enum class Validity {
-        IDENTIFIER_IS_VALID, IDENTIFIER_IS_NOT_VALID
+        IDENTIFIER_IS_VALID,
+        IDENTIFIER_IS_NOT_VALID,
     }
 }

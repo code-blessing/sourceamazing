@@ -2,19 +2,24 @@ package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
-import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
 
-class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptDataCollector {
+class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess) : ConceptDataCollector {
 
     private var sequenceNumber: Int = 0
 
     private val conceptData: MutableMap<ConceptIdentifier, ConceptData> = mutableMapOf()
 
     override fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData {
-        return conceptData[conceptIdentifier] ?: throw IllegalArgumentException("No concept with concept id '$conceptIdentifier' found.")
+        return conceptData[conceptIdentifier]
+            ?: throw IllegalArgumentException(
+                "No concept with concept id '$conceptIdentifier' found."
+            )
     }
 
-    override fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+    override fun existingOrNewConceptData(
+        conceptName: ConceptName,
+        conceptIdentifier: ConceptIdentifier,
+    ): ConceptData {
         return conceptData.getOrPut(conceptIdentifier) {
             createNewConceptData(conceptName, conceptIdentifier)
         }
@@ -24,7 +29,10 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptD
         return newConceptData(conceptName, conceptName.randomConceptIdentifier())
     }
 
-    override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+    override fun newConceptData(
+        conceptName: ConceptName,
+        conceptIdentifier: ConceptIdentifier,
+    ): ConceptData {
         val newConceptData = createNewConceptData(conceptName, conceptIdentifier)
         ConceptDataValidator.validateDuplicateConceptIdentifiers(conceptData.keys, newConceptData)
         conceptData[conceptIdentifier] = newConceptData
@@ -32,10 +40,16 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess): ConceptD
     }
 
     override fun validateAfterUpdate(conceptData: ConceptData) {
-        ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(schemaAccess, conceptData)
+        ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(
+            schemaAccess,
+            conceptData,
+        )
     }
 
-    private fun createNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+    private fun createNewConceptData(
+        conceptName: ConceptName,
+        conceptIdentifier: ConceptIdentifier,
+    ): ConceptData {
         return ConceptDataImpl(sequenceNumber++, conceptName, conceptIdentifier)
     }
 

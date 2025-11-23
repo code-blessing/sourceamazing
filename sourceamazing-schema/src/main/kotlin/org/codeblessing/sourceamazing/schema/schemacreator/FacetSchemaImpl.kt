@@ -13,7 +13,7 @@ data class FacetSchemaImpl(
     override val minimumOccurrences: Int,
     override val maximumOccurrences: Int,
     override val referencingConcepts: Set<ConceptName>,
-    override val enumerationType: KClass<*>?
+    override val enumerationType: KClass<*>?,
 ) : FacetSchema {
     override val enumerationValues: List<Enum<*>> = enumerationType?.enumValues ?: emptyList()
 }

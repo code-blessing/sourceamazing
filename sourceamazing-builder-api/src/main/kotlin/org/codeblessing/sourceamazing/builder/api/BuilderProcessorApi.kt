@@ -10,6 +10,6 @@ interface BuilderProcessorApi {
         schemaContext: SchemaContext,
         builderClass: KClass<B>,
         rootAliases: Map<String, ConceptNameAndIdentifier>,
-        builderUsage: (builder: B) -> Unit
+        builderUsage: (builder: B) -> Unit,
     )
 }

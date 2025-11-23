@@ -9,9 +9,7 @@ class DataContext(
     private val newConceptIds: MutableMap<Alias, ConceptIdentifier>,
 ) {
     fun conceptIdByAlias(alias: Alias): ConceptIdentifier {
-        return requireNotNull(newConceptIds[alias]) {
-            "No concept found for alias: $alias"
-        }
+        return requireNotNull(newConceptIds[alias]) { "No concept found for alias: $alias" }
     }
 
     fun valueForMethodParameter(methodParameter: KParameter): Any? {

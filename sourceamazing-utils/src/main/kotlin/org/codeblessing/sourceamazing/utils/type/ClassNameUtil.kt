@@ -8,14 +8,13 @@ object ClassNameUtil {
     }
 
     fun packageFromQualifiedName(qualifiedName: String?): String {
-        if(qualifiedName == null) return ""
+        if (qualifiedName == null) return ""
         return qualifiedName.split(".").dropLast(1).joinToString(".")
     }
 
     fun fullQualifiedName(packageName: String?, className: String?): String? {
-        if(className == null) return null
-        if(packageName.isNullOrEmpty()) return className
+        if (className == null) return null
+        if (packageName.isNullOrEmpty()) return className
         return "${packageName}.${className}"
     }
-
 }

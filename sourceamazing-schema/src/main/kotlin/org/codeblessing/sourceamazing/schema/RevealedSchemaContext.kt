@@ -11,4 +11,4 @@ class RevealedSchemaContext(
     override val dataCollector: ConceptDataCollectorImpl,
     val fileSystemAccess: FileSystemAccess,
     val loggerFacade: LoggerFacade,
-): SchemaContext
+) : SchemaContext

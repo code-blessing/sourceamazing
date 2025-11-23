@@ -23,5 +23,4 @@ object TypesAsTextFunctions {
     private fun fromClazzToLongText(clazz: Class<*>): String {
         return clazz.name
     }
-
 }

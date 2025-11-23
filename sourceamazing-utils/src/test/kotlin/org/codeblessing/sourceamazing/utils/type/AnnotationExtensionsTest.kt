@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test
 
 class AnnotationExtensionsTest {
 
-    @References([])
-    private val text: String = "some text"
+    @References([]) private val text: String = "some text"
 
     @Test
     fun `test with source amazing annotation`() {
@@ -16,17 +15,15 @@ class AnnotationExtensionsTest {
         assertTrue(annotationFromSourceamazing.isAnnotationFromSourceAmazing())
     }
 
-
-
     @Deprecated("Only an annotation not from source amazing")
     private interface ClassWithoutSourceamazingAnnotation
 
     @Test
     fun `test with another annotation than source amazing annotation`() {
         @Suppress("DEPRECATION")
-        val annotationNotFromSourceamazing = ClassWithoutSourceamazingAnnotation::class.annotations.first()
+        val annotationNotFromSourceamazing =
+            ClassWithoutSourceamazingAnnotation::class.annotations.first()
 
         assertFalse(annotationNotFromSourceamazing.isAnnotationFromSourceAmazing())
     }
-
 }

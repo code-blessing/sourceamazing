@@ -17,24 +17,23 @@ class BuilderMethodApiDataProviderTest {
 
     private interface SchemaWithConceptWithTextFacet {
         interface ConceptWithTextFacet {
-            @Suppress("UNUSED")
-            val text: String
+            @Suppress("UNUSED") val text: String
         }
 
-        @Suppress("UNUSED")
-        val concepts: List<ConceptWithTextFacet>
+        @Suppress("UNUSED") val concepts: List<ConceptWithTextFacet>
     }
 
-    @BuilderDataProvider
-    class EmptyBuilderDataProvider
-
+    @BuilderDataProvider class EmptyBuilderDataProvider
 
     @Builder
     private interface BuilderMethodWithDataProviderAsLambdaFunction {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider.() -> Unit,
@@ -48,7 +47,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithDataProviderAsLambdaFunction::class,
@@ -65,7 +64,10 @@ class BuilderMethodApiDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: () -> Unit,
@@ -79,7 +81,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderDataProviderWithLambdaFunction::class,
@@ -96,7 +98,10 @@ class BuilderMethodApiDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Array<EmptyBuilderDataProvider>,
@@ -110,7 +115,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderDataProviderWithArray::class,
@@ -127,9 +132,13 @@ class BuilderMethodApiDataProviderTest {
 
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Any,
         )
     }
@@ -141,7 +150,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderDataProviderWithAnyObject::class,
@@ -157,9 +166,13 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @IgnoreNullFacetValue @ProvideBuilderData data: EmptyBuilderDataProvider,
         )
     }
@@ -171,7 +184,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue::class,
@@ -187,9 +200,13 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodParamWithBuilderDataAsNullableParam {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider?,
         )
     }
@@ -201,7 +218,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_CANNOT_BE_NULLABLE,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithBuilderDataAsNullableParam::class,
@@ -217,9 +234,13 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodParamWithEmptyDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider,
         )
     }
@@ -227,7 +248,7 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing an annotated data provider object should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodParamWithEmptyDataProvider::class,
@@ -242,22 +263,27 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodParamWithBuilderDataWithOtherAnnotations {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherAnnotations,
         )
 
-        @BuilderDataProvider
-        @Builder
-        class EmptyBuilderDataProviderWithOtherAnnotations
+        @BuilderDataProvider @Builder class EmptyBuilderDataProviderWithOtherAnnotations
     }
 
     @Test
     fun `test builder data provider passing a data object with other annotations from source amazing should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
+        assertExceptionWithErrorCode(
+            BuilderSyntaxException::class,
+            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
+        ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithBuilderDataWithOtherAnnotations::class,
@@ -273,22 +299,25 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation,
         )
 
         @BuilderDataProvider
         @FunctionalInterface
         class EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation
-
     }
 
     @Test
     fun `test builder data provider passing a data object with other annotations not from source amazing should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation::class,
@@ -303,17 +332,19 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodDataProviderWithGenericParameter {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
         @Suppress("UNUSED")
         @BuilderDataProvider
-        class BuilderDataProviderWithGenericParameter<T>(
-            private val data: T,
-        ) {
+        class BuilderDataProviderWithGenericParameter<T>(private val data: T) {
 
             fun getGenericValue(): T {
                 return data
@@ -330,7 +361,7 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing a data object with generic parameter but not returning it should not fail`() {
         SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithGenericParameter::class,
@@ -345,17 +376,19 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodDataProviderUsingAndReturningGenericParameter {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
+        )
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
         @Suppress("UNUSED")
         @BuilderDataProvider
-        class BuilderDataProviderWithGenericParameter<T>(
-            private val data: T,
-        ) {
+        class BuilderDataProviderWithGenericParameter<T>(private val data: T) {
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "text")
             fun getGenericValue(): T {
@@ -375,7 +408,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
+                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderUsingAndReturningGenericParameter::class,
@@ -391,11 +424,12 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodDataProviderThrowingException {
         @Suppress("UNUSED")
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class, declareConceptAlias = "foo")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doThrowAnException(
-            @ProvideBuilderData data: BuilderDataProviderThrowingException,
+        @NewConcept(
+            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            declareConceptAlias = "foo",
         )
+        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+        fun doThrowAnException(@ProvideBuilderData data: BuilderDataProviderThrowingException)
 
         @Suppress("UNUSED")
         @BuilderDataProvider
@@ -410,19 +444,21 @@ class BuilderMethodApiDataProviderTest {
 
     @Test
     fun `test builder data provider method throwing an exception should fail with this exception`() {
-        val builderDataProvider = BuilderMethodDataProviderThrowingException.BuilderDataProviderThrowingException()
-        val exception = assertThrows<DataProviderInvocationRuntimeException> {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) { 
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodDataProviderThrowingException::class,
-                    ) { builder ->
-                        builder.doThrowAnException(builderDataProvider)
+        val builderDataProvider =
+            BuilderMethodDataProviderThrowingException.BuilderDataProviderThrowingException()
+        val exception =
+            assertThrows<DataProviderInvocationRuntimeException> {
+                SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
+                    withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+                        BuilderApi.withBuilder(
+                            schemaContext,
+                            BuilderMethodDataProviderThrowingException::class,
+                        ) { builder ->
+                            builder.doThrowAnException(builderDataProvider)
+                        }
                     }
                 }
             }
-        }
 
         assertEquals("This facet value is not available.", exception.cause?.message)
     }

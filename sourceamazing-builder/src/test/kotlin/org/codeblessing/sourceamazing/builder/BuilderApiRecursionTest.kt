@@ -11,8 +11,7 @@ class BuilderApiRecursionTest {
 
         interface OneConcept
 
-        @Suppress("UNUSED")
-        val concepts: List<OneConcept>
+        @Suppress("UNUSED") val concepts: List<OneConcept>
     }
 
     @Builder
@@ -33,7 +32,6 @@ class BuilderApiRecursionTest {
             @BuilderMethod
             @WithNewBuilder(InnerNestedBuilder::class)
             fun doSomething(): InnerNestedBuilder
-
         }
 
         @Builder
@@ -44,9 +42,7 @@ class BuilderApiRecursionTest {
             @BuilderMethod
             @WithNewBuilder(OuterNestedBuilder::class)
             fun doSomething(): OuterNestedBuilder
-
         }
-
     }
 
     @Test
@@ -62,7 +58,6 @@ class BuilderApiRecursionTest {
             }
         }
     }
-
 
     @Builder
     private interface BuilderMethodUsingSameBuilderDirectly {
@@ -82,7 +77,6 @@ class BuilderApiRecursionTest {
             @BuilderMethod
             @WithNewBuilder(NestedBuilder::class)
             fun doSomething(): NestedBuilder
-
         }
     }
 

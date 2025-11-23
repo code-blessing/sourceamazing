@@ -1,10 +1,8 @@
 package org.codeblessing.sourceamazing.schema
 
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
-import org.codeblessing.sourceamazing.schema.api.toConceptName
 import org.junit.jupiter.api.Test
 
 class SchemaApiConceptInterfaceTest {
@@ -24,7 +22,9 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test sealed interface instead of interface schema class should not fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class) { schemaContext ->
+        SchemaApi.withSchema(
+            schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class
+        ) { schemaContext ->
             withRootInstance<SealedInterfaceInsteadOfInterfaceSchema>(schemaContext) {
                 // do nothing
             }
@@ -32,11 +32,13 @@ class SchemaApiConceptInterfaceTest {
     }
 
     private interface ParentInterface
-    private interface SchemaWithParentInterface: ParentInterface
+
+    private interface SchemaWithParentInterface : ParentInterface
 
     @Test
     fun `test schema with parent interface without annotations should not fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithParentInterface::class) { schemaContext ->
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithParentInterface::class) {
+            schemaContext ->
             withRootInstance<SchemaWithParentInterface>(schemaContext) {
                 // do nothing
             }
@@ -47,8 +49,13 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test abstract class instead of interface schema class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
-            SchemaApi.withSchema(schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+        ) {
+            SchemaApi.withSchema(
+                schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class
+            ) { schemaContext ->
                 withRootInstance<AbstractClassInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -60,8 +67,12 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test class instead of interface schema class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
-            SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+        ) {
+            SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) {
+                schemaContext ->
                 withRootInstance<ClassInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -73,8 +84,12 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test enum class instead of interface schema class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
-            SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+        ) {
+            SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) {
+                schemaContext ->
                 withRootInstance<EnumInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -86,8 +101,12 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test object instead of interface schema class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
-            SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+        ) {
+            SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) {
+                schemaContext ->
                 withRootInstance<ObjectInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -99,8 +118,13 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test annotation instead of interface schema class should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE) {
-            SchemaApi.withSchema(schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
+        ) {
+            SchemaApi.withSchema(
+                schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class
+            ) { schemaContext ->
                 withRootInstance<AnnotationInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -108,13 +132,16 @@ class SchemaApiConceptInterfaceTest {
         }
     }
 
-    @Suppress("Unused")
-    private interface SchemaWithGenericTypeParameter<T>
+    @Suppress("Unused") private interface SchemaWithGenericTypeParameter<T>
 
     @Test
     fun `test schema class with generic type parameter should throw an exception`() {
-        assertExceptionWithErrorCode(WrongClassStructureSyntaxException::class, SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) { schemaContext ->
+        assertExceptionWithErrorCode(
+            WrongClassStructureSyntaxException::class,
+            SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER,
+        ) {
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) {
+                schemaContext ->
                 withRootInstance<Any>(schemaContext) {
                     // do nothing
                 }

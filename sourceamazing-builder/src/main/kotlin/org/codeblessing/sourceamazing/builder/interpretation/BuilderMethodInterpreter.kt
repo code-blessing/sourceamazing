@@ -3,12 +3,7 @@ package org.codeblessing.sourceamazing.builder.interpretation
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.WithNewBuilder
+import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.interpretation.CommonMethodInterpretationHelper.castConceptIdentifier
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ConceptIdentifierAnnotationData
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
@@ -33,31 +28,43 @@ class BuilderMethodInterpreter(
     val schemaAccess: SchemaAccess,
     val builderClassInterpreter: BuilderClassInterpreter,
     val method: KFunction<*>,
-): BuilderMethodApi(), BuilderInterpreter {
+) : BuilderMethodApi(), BuilderInterpreter {
     val methodLocation = MethodLocation.create(method)
+
     override fun allBuilderInterpreters(): List<BuilderInterpreter> {
         return listOf(this) + collectAllBuilderDataProviderInterpreter()
     }
 
-    override fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>> {
+    override fun getBuilderInterpreterNewConceptsIncludingDuplicates():
+        List<Pair<Alias, ConceptName>> {
         return CommonMethodInterpretationHelper.extractNewConceptsAsPair(listOf(method))
     }
 
-    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
-        return CommonMethodInterpretationHelper.extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(listOf(method))
+    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates():
+        List<Alias> {
+        return CommonMethodInterpretationHelper
+            .extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(listOf(method))
     }
 
-    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias> {
-        return method.valueParameters()
-            .flatMap { parameter -> parameter.annotations.filterIsInstance<SetConceptIdentifierValue>() }
-            .map { it.conceptToModifyAlias.toAlias()}
+    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates():
+        List<Alias> {
+        return method
+            .valueParameters()
+            .flatMap { parameter ->
+                parameter.annotations.filterIsInstance<SetConceptIdentifierValue>()
+            }
+            .map { it.conceptToModifyAlias.toAlias() }
     }
 
-    override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(dataContext: DataContext?): List<ConceptIdentifierAnnotationData> {
+    override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(
+        dataContext: DataContext?
+    ): List<ConceptIdentifierAnnotationData> {
         return getBuilderMethodManualAssignedConceptIdentifierAnnotationContent(dataContext)
     }
 
-    override fun getBuilderInterpreterFacetValueAnnotationContent(dataContext: DataContext?): List<FacetValueAnnotationContent> {
+    override fun getBuilderInterpreterFacetValueAnnotationContent(
+        dataContext: DataContext?
+    ): List<FacetValueAnnotationContent> {
         return getFixedFacetValues(dataContext) + getMethodParamAssignedFacetValues(dataContext)
     }
 
@@ -68,26 +75,36 @@ class BuilderMethodInterpreter(
         return newConceptsFromMethod + expectedConceptsFromSuperiorMethod
     }
 
-    private fun getFixedFacetValues(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
-        return CommonMethodInterpretationHelper.extractFixedFacetValues(method, methodLocation, schemaAccess, dataContext)
+    private fun getFixedFacetValues(
+        dataContext: DataContext? = null
+    ): List<FacetValueAnnotationContent> {
+        return CommonMethodInterpretationHelper.extractFixedFacetValues(
+            method,
+            methodLocation,
+            schemaAccess,
+            dataContext,
+        )
     }
 
-    private fun getMethodParamAssignedFacetValues(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
+    private fun getMethodParamAssignedFacetValues(
+        dataContext: DataContext? = null
+    ): List<FacetValueAnnotationContent> {
         return method.valueParameters.flatMap { methodParameter ->
             methodParameter.annotations.filterIsInstance<SetFacetValue>().map { annotation ->
                 val value = dataContext?.valueForMethodParameter(methodParameter)
                 FacetValueAnnotationContent(
-                    base = FacetValueAnnotationBaseData(
-                        methodLocation = builderMethodParameterLocation(methodParameter),
-                        alias = annotation.conceptToModifyAlias.toAlias(),
-                        facetName = annotation.facetToModify.toFacetName(),
-                        facetModificationRule = annotation.facetModificationRule,
-                        annotation = annotation,
-                        ignoreNullValue = isIgnoreNullValue(methodParameter),
-                        type = builderMethodParameterType(methodParameter),
-                        typeClass = null
-                    ),
-                    value = value
+                    base =
+                        FacetValueAnnotationBaseData(
+                            methodLocation = builderMethodParameterLocation(methodParameter),
+                            alias = annotation.conceptToModifyAlias.toAlias(),
+                            facetName = annotation.facetToModify.toFacetName(),
+                            facetModificationRule = annotation.facetModificationRule,
+                            annotation = annotation,
+                            ignoreNullValue = isIgnoreNullValue(methodParameter),
+                            type = builderMethodParameterType(methodParameter),
+                            typeClass = null,
+                        ),
+                    value = value,
                 )
             }
         }
@@ -100,22 +117,28 @@ class BuilderMethodInterpreter(
                 BuilderDataProviderInterpreter.createFromMethodParam(
                     methodParameter = methodParameter,
                     builderMethodInterpreter = this,
-                    schemaAccess = schemaAccess
+                    schemaAccess = schemaAccess,
                 )
             }
     }
 
-    private fun getBuilderMethodManualAssignedConceptIdentifierAnnotationContent(dataContext: DataContext?): List<ConceptIdentifierAnnotationData> {
+    private fun getBuilderMethodManualAssignedConceptIdentifierAnnotationContent(
+        dataContext: DataContext?
+    ): List<ConceptIdentifierAnnotationData> {
         return method.valueParameters.flatMap { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().map { annotation ->
-                val conceptIdentifier = dataContext?.valueForMethodParameter(methodParameter)?.let { castConceptIdentifier(it) }
+            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().map {
+                annotation ->
+                val conceptIdentifier =
+                    dataContext?.valueForMethodParameter(methodParameter)?.let {
+                        castConceptIdentifier(it)
+                    }
                 ConceptIdentifierAnnotationData(
                     methodLocation = builderMethodParameterLocation(methodParameter),
                     alias = annotation.conceptToModifyAlias.toAlias(),
                     annotation = annotation,
                     ignoreNullValue = isIgnoreNullValue(methodParameter),
                     type = builderMethodParameterType(methodParameter),
-                    conceptIdentifier = conceptIdentifier
+                    conceptIdentifier = conceptIdentifier,
                 )
             }
         }
@@ -133,21 +156,21 @@ class BuilderMethodInterpreter(
         return methodParameter.hasAnnotation<IgnoreNullFacetValue>()
     }
 
-
     fun getBuilderClassFromWithNewBuilderAnnotation(): KClass<*>? {
         return method.findAnnotation<WithNewBuilder>()?.builderClass
     }
 
     fun getBuilderClassFromInjectBuilderParameter(): KClass<*>? {
         val methodParameter = method.valueParameters.lastOrNull() ?: return null
-        if(!methodParameter.hasAnnotation<InjectBuilder>()) {
+        if (!methodParameter.hasAnnotation<InjectBuilder>()) {
             return null
         }
 
         val injectionBuilderKType = methodParameter.type
-        val receiverParameterType = requireNotNull(injectionBuilderKType.receiverParameter()) {
-            "receiverParameterType must not be null"
-        }
+        val receiverParameterType =
+            requireNotNull(injectionBuilderKType.receiverParameter()) {
+                "receiverParameterType must not be null"
+            }
 
         return KTypeUtil.classFromType(KTypeUtil.kTypeFromProjection(receiverParameterType))
     }
@@ -161,6 +184,8 @@ class BuilderMethodInterpreter(
         val newConceptsByAlias: Map<Alias, ConceptName> = newConcepts()
 
         return newConceptsByAlias[conceptAlias]
-            ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
+            ?: throw IllegalStateException(
+                "Can not find concept name for alias '$conceptAlias' on method $method"
+            )
     }
 }

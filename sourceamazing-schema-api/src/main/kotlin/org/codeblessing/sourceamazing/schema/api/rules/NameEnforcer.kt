@@ -8,13 +8,12 @@ object NameEnforcer {
     }
 
     fun isValidIdentifierOrThrow(identifier: String) {
-        if(!isValidIdentifier(identifier)) {
+        if (!isValidIdentifier(identifier)) {
             throw IllegalNameException(
                 "The identifier '$identifier' is not a valid identifier. Must start with an uppercase letter, " +
-                        "followed by uppercase and lowercase letter and digits. " +
-                        "No other characters are allowed. Must be at least two characters long"
+                    "followed by uppercase and lowercase letter and digits. " +
+                    "No other characters are allowed. Must be at least two characters long"
             )
         }
     }
-
 }

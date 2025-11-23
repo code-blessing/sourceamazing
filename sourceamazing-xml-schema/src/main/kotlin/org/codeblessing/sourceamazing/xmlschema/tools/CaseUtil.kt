@@ -5,23 +5,15 @@ object CaseUtil {
     private val snakeRegex = "_[a-zA-Z]".toRegex()
 
     fun camelToDashCase(stringValue: String): String {
-        return camelRegex.replace(stringValue) {
-            "-${it.value}"
-        }.lowercase()
+        return camelRegex.replace(stringValue) { "-${it.value}" }.lowercase()
     }
 
-
     fun camelToSnakeCase(stringValue: String): String {
-        return camelRegex.replace(stringValue) {
-            "_${it.value}"
-        }.lowercase()
+        return camelRegex.replace(stringValue) { "_${it.value}" }.lowercase()
     }
 
     fun snakeToLowerCamelCase(stringValue: String): String {
-        return snakeRegex.replace(stringValue) {
-            it.value.replace("_","")
-                .uppercase()
-        }
+        return snakeRegex.replace(stringValue) { it.value.replace("_", "").uppercase() }
     }
 
     fun snakeToUpperCamelCase(stringValue: String): String {
@@ -37,11 +29,12 @@ object CaseUtil {
     }
 
     fun capitalize(stringValue: String): String {
-        return stringValue.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        return stringValue.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase() else it.toString()
+        }
     }
 
     fun decapitalize(stringValue: String): String {
         return stringValue.replaceFirstChar { it.lowercase() }
-
     }
 }

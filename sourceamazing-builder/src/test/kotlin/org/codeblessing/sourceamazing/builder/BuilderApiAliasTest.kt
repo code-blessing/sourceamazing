@@ -16,7 +16,9 @@ class BuilderApiAliasTest {
     private interface MyConcepts {
 
         enum class MyEnumeration {
-            A,B,C,
+            A,
+            B,
+            C,
         }
 
         interface MyConcept {
@@ -43,7 +45,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias for NewConcept annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.ALIAS_IS_ALREADY_USED,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -64,9 +69,12 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(builderClass = BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept::class)
+        @WithNewBuilder(
+            builderClass = BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept::class
+        )
         fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept.() -> Unit,
+            @InjectBuilder
+            builder: BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept.() -> Unit
         )
 
         @Builder
@@ -83,7 +91,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias from superior concept for NewConcept annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.ALIAS_IS_ALREADY_USED,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -104,10 +115,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doSomething(
-            @ProvideBuilderData data: DataProviderWithDuplicateAlias,
-        )
-
+        fun doSomething(@ProvideBuilderData data: DataProviderWithDuplicateAlias)
 
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
@@ -123,7 +131,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test duplicate alias concept from builder method and data provider for NewConcept annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.ALIAS_IS_ALREADY_USED) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.ALIAS_IS_ALREADY_USED,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -174,10 +185,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doSomething(
-            @ProvideBuilderData data: DataProviderWithDuplicateAlias,
-        )
-
+        fun doSomething(@ProvideBuilderData data: DataProviderWithDuplicateAlias)
 
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
@@ -210,7 +218,6 @@ class BuilderApiAliasTest {
         }
     }
 
-
     @Builder
     private interface BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier {
 
@@ -218,8 +225,10 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier2: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier1: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier2: ConceptIdentifier,
         )
     }
 
@@ -249,10 +258,10 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithDuplicateAlias,
         )
-
 
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
@@ -320,10 +329,10 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier1: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier1: ConceptIdentifier,
             @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
         )
-
 
         @BuilderDataProvider
         class DataProviderWithConceptWithoutConceptId {
@@ -356,7 +365,6 @@ class BuilderApiAliasTest {
         }
     }
 
-
     @Builder
     private interface BuilderMethodWithDuplicateMixedConceptIdentifier {
 
@@ -365,7 +373,8 @@ class BuilderApiAliasTest {
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
+            conceptIdentifier: ConceptIdentifier
         )
     }
 
@@ -395,10 +404,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doSomething(
-            @ProvideBuilderData data: DataProviderWithConceptWithoutConceptId,
-        )
-
+        fun doSomething(@ProvideBuilderData data: DataProviderWithConceptWithoutConceptId)
 
         @BuilderDataProvider
         class DataProviderWithConceptWithoutConceptId {
@@ -430,7 +436,6 @@ class BuilderApiAliasTest {
             }
         }
     }
-
 
     @Builder
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifier {
@@ -476,9 +481,7 @@ class BuilderApiAliasTest {
         @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
-        fun doSomething(
-            @ProvideBuilderData data: DataProviderWithConceptId
-        )
+        fun doSomething(@ProvideBuilderData data: DataProviderWithConceptId)
 
         @BuilderDataProvider
         class DataProviderWithConceptId {
@@ -516,7 +519,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetRandomConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -533,12 +539,7 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
+        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
@@ -554,7 +555,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetRandomConceptIdentifierValue annotation in data provider should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -579,7 +583,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -596,12 +603,7 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
+        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
@@ -617,7 +619,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetProvidedConceptIdentifierValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -631,7 +636,6 @@ class BuilderApiAliasTest {
         }
     }
 
-
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation {
 
@@ -644,7 +648,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -661,12 +668,7 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
+        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
@@ -682,7 +684,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetProvidedFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -696,7 +701,6 @@ class BuilderApiAliasTest {
         }
     }
 
-
     @Builder
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias {
 
@@ -704,11 +708,13 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation::class)
-        fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation.() -> Unit,
+        @WithNewBuilder(
+            builderClass = BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation::class
         )
-
+        fun doInjectASubBuilder(
+            @InjectBuilder
+            builder: BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation.() -> Unit
+        )
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder("known")
@@ -727,7 +733,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property conceptToModifyAlias on the SetAliasConceptIdentifierReferenceFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -748,10 +757,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
-
+        fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
@@ -771,7 +777,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property conceptToModifyAlias on the SetAliasConceptIdentifierReferenceFacetValue annotation in data provider should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -792,11 +801,13 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation::class)
-        fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation.() -> Unit,
+        @WithNewBuilder(
+            builderClass = BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation::class
         )
-
+        fun doInjectASubBuilder(
+            @InjectBuilder
+            builder: BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation.() -> Unit
+        )
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder("known")
@@ -815,7 +826,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property referencedConceptAlias on SetAliasConceptIdentifierReferenceFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -836,9 +850,7 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
+        fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
@@ -858,7 +870,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias in property referencedConceptAlias on SetAliasConceptIdentifierReferenceFacetValue annotation in data provider should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -872,18 +887,24 @@ class BuilderApiAliasTest {
         }
     }
 
-
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text", value = "some text")
+        @SetFixedStringFacetValue(
+            conceptToModifyAlias = "unknown",
+            facetToModify = "text",
+            value = "some text",
+        )
         fun doSomething()
     }
 
     @Test
     fun `test use of unknown alias on SetFixedStringFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -901,13 +922,20 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedStringFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text", value = "some text")
+        @SetFixedStringFacetValue(
+            conceptToModifyAlias = "unknown",
+            facetToModify = "text",
+            value = "some text",
+        )
         fun doSomething()
     }
 
     @Test
     fun `test use of unknown alias on SetFixedStringFacetValue annotation in data provider should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -923,18 +951,18 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(
-            @ProvideBuilderData data: DataProvider
-        )
+        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
 
             @Suppress("UNUSED")
             @BuilderData
-            @SetFixedBooleanFacetValue(conceptToModifyAlias = "unknown", facetToModify = "BoolFacet", value = false)
+            @SetFixedBooleanFacetValue(
+                conceptToModifyAlias = "unknown",
+                facetToModify = "BoolFacet",
+                value = false,
+            )
             fun getFacetValue(): String {
                 throw NotImplementedError("Method is not called in validation phase")
             }
@@ -943,7 +971,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedBooleanFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -961,13 +992,20 @@ class BuilderApiAliasTest {
     private interface BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation {
         @Suppress("UNUSED")
         @BuilderMethod
-        @SetFixedIntFacetValue(conceptToModifyAlias = "unknown", facetToModify = "NumberFacet", value = 42)
+        @SetFixedIntFacetValue(
+            conceptToModifyAlias = "unknown",
+            facetToModify = "NumberFacet",
+            value = 42,
+        )
         fun doSomething()
     }
 
     @Test
     fun `test use of unknown alias on SetFixedIntFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -995,7 +1033,10 @@ class BuilderApiAliasTest {
 
     @Test
     fun `test use of unknown alias on SetFixedEnumFacetValue annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -1020,9 +1061,8 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilder::class)
         fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilder.() -> Unit,
+            @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilder.() -> Unit
         )
-
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "known")
@@ -1032,7 +1072,7 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") value: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") value: String
             )
         }
     }
@@ -1060,11 +1100,13 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
         @NewConcept(MyConcept::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class)
-        fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit,
+        @WithNewBuilder(
+            builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class
         )
-
+        fun doInjectASubBuilder(
+            @InjectBuilder
+            builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit
+        )
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
@@ -1073,14 +1115,18 @@ class BuilderApiAliasTest {
             @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text")
+                valueForKnown: String
             )
         }
     }
 
     @Test
     fun `test omit alias expectation from calling builder with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_ALIAS) {
+        assertExceptionWithErrorCode(
+            BuilderMethodSyntaxException::class,
+            BuilderErrorCode.UNKNOWN_ALIAS,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -1105,9 +1151,8 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
         @WithNewBuilder(builderClass = BuilderMethodReusingAnAliasNameFromSuperiorBuilder::class)
         fun doInjectASubBuilder(
-            @InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit,
+            @InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit
         )
-
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
@@ -1118,7 +1163,8 @@ class BuilderApiAliasTest {
             @NewConcept(MyConcept::class, declareConceptAlias = "known")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
             fun doSomething(
-                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") valueForKnown: String,
+                @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text")
+                valueForKnown: String
             )
         }
     }
@@ -1151,9 +1197,7 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
-            @BuilderMethod
-            fun doSomethingNested()
+            @Suppress("UNUSED") @BuilderMethod fun doSomethingNested()
         }
     }
 

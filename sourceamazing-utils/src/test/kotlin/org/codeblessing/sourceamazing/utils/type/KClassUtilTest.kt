@@ -1,8 +1,6 @@
 package org.codeblessing.sourceamazing.utils.type
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class KClassUtilTest {
@@ -21,7 +19,8 @@ class KClassUtilTest {
 
     @Test
     fun `base class of multiple same classes contains the class itself`() {
-        val baseClasses = KClassUtil.findAllCommonBaseClasses(listOf(String::class, String::class, String::class))
+        val baseClasses =
+            KClassUtil.findAllCommonBaseClasses(listOf(String::class, String::class, String::class))
         assertEquals(5, baseClasses.size)
         assertTrue(baseClasses.contains(String::class))
     }

@@ -1,15 +1,15 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.api.ConceptData
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 class ConceptDataImpl(
     override val sequenceNumber: Int,
     override val conceptName: ConceptName,
     override val conceptIdentifier: ConceptIdentifier,
-): ConceptData {
+) : ConceptData {
     private val mutableFacets: MutableMap<FacetName, MutableList<Any>> = mutableMapOf()
 
     override fun hasFacet(facetName: FacetName): Boolean {
@@ -28,12 +28,10 @@ class ConceptDataImpl(
         return mutableFacets.toMap()
     }
 
-
     override fun replaceFacetValues(facetName: FacetName, facetValues: List<Any>): ConceptDataImpl {
         mutableFacets[facetName] = facetValues.toMutableList()
         return this
     }
-
 
     override fun addFacetValue(facetName: FacetName, facetValue: Any): ConceptDataImpl {
         assureFacetList(facetName).add(facetValue)
@@ -46,9 +44,8 @@ class ConceptDataImpl(
     }
 
     override fun describe(): String {
-        val facetDescription = mutableFacets
-            .map { (key, value) -> describeFacet(key, value) }
-            .joinToString("\n")
+        val facetDescription =
+            mutableFacets.map { (key, value) -> describeFacet(key, value) }.joinToString("\n")
 
         return "${conceptName.simpleName()}:${conceptIdentifier.name} {\n$facetDescription\n}"
     }

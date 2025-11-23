@@ -2,7 +2,6 @@ package org.codeblessing.sourceamazing.xmlschema
 
 import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.parser.SaxParserHandler
@@ -25,10 +24,11 @@ object XmlSchemaDataReader {
         placeholders: Map<String, String>,
         fileSystemAccess: FileSystemAccess,
         schemaAccess: SchemaAccess,
-        dataCollector: ConceptDataCollector
+        dataCollector: ConceptDataCollector,
     ) {
         val xmlParentDirectory = FileDirUtil.getDirectoryFromFile(xmlFile)
-        val sourceAmazingSchemaXsd = XmlSchemaInitializer.initializeXmlSchemaFile(xmlFile, schemaAccess, fileSystemAccess)
+        val sourceAmazingSchemaXsd =
+            XmlSchemaInitializer.initializeXmlSchemaFile(xmlFile, schemaAccess, fileSystemAccess)
 
         val factory: SAXParserFactory = SAXParserFactory.newInstance()
         factory.isNamespaceAware = true
@@ -37,19 +37,24 @@ object XmlSchemaDataReader {
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false)
 
-        val sources = listOf(
-            StreamSource(fileSystemAccess.fileAsInputStream(sourceAmazingSchemaXsd))
-        )
+        val sources =
+            listOf(StreamSource(fileSystemAccess.fileAsInputStream(sourceAmazingSchemaXsd)))
 
         val schemaFactory: SchemaFactory = SchemaFactory.newInstance(SCHEMA_LANGUAGE)
         factory.schema = schemaFactory.newSchema(sources.toTypedArray())
 
         val saxParser: SAXParser = factory.newSAXParser()
 
-        val saxParserHandler = SaxParserHandler(schemaAccess, dataCollector, placeholders, xmlParentDirectory, fileSystemAccess, loggerFacade)
+        val saxParserHandler =
+            SaxParserHandler(
+                schemaAccess,
+                dataCollector,
+                placeholders,
+                xmlParentDirectory,
+                fileSystemAccess,
+                loggerFacade,
+            )
 
-        fileSystemAccess.fileAsInputStream(xmlFile).use {
-            saxParser.parse(it, saxParserHandler)
-        }
+        fileSystemAccess.fileAsInputStream(xmlFile).use { saxParser.parse(it, saxParserHandler) }
     }
 }

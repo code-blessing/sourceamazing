@@ -9,30 +9,32 @@ import java.nio.charset.Charset
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
-class StringBasedFileSystemAccess(private val classpathResources: Map<String, String>,
-                                  private val files: Map<Path, String>): FileSystemAccess {
+class StringBasedFileSystemAccess(
+    private val classpathResources: Map<String, String>,
+    private val files: Map<Path, String>,
+) : FileSystemAccess {
     private val charset = Charsets.UTF_8
 
     private val closeables = mutableListOf<Pair<String, Closeable>>()
     private val writtenFiles = mutableMapOf<Path, String>()
     private val writtenFileWriter = mutableMapOf<Path, Writer>()
 
-    private fun <T: Closeable> registerClosable(name: String, closable: T): T {
+    private fun <T : Closeable> registerClosable(name: String, closable: T): T {
         closeables.add(Pair(name, closable))
         return closable
     }
 
     override fun classpathResourceAsInputStream(classpathResource: String): InputStream {
-        return classpathResources[classpathResource]
-            ?.let { registerClosable(classpathResource, it.byteInputStream(charset)) }
-            ?: throw IllegalArgumentException("Resource with name '${classpathResource}' not found.")
-
+        return classpathResources[classpathResource]?.let {
+            registerClosable(classpathResource, it.byteInputStream(charset))
+        } ?: throw IllegalArgumentException("Resource with name '${classpathResource}' not found.")
     }
+
     override fun fileAsInputStream(filePath: Path): InputStream {
         val normalizedPath = filePath.normalize()
-        return (files[normalizedPath] ?: writtenFiles[normalizedPath])
-            ?.let { registerClosable(filePath.pathString, stringAsInputStream(it)) }
-            ?: throw IllegalArgumentException("File with name '${normalizedPath}' not found.")
+        return (files[normalizedPath] ?: writtenFiles[normalizedPath])?.let {
+            registerClosable(filePath.pathString, stringAsInputStream(it))
+        } ?: throw IllegalArgumentException("File with name '${normalizedPath}' not found.")
     }
 
     private fun stringAsInputStream(stringValue: String): InputStream {
@@ -45,8 +47,10 @@ class StringBasedFileSystemAccess(private val classpathResources: Map<String, St
 
     override fun writeFile(filePath: Path, fileContent: String) {
         val normalizedFilePath = filePath.normalize()
-        if(writtenFiles.containsKey(normalizedFilePath)) {
-            throw IllegalStateException("File with filepath $normalizedFilePath has already been written.")
+        if (writtenFiles.containsKey(normalizedFilePath)) {
+            throw IllegalStateException(
+                "File with filepath $normalizedFilePath has already been written."
+            )
         }
         writtenFiles[normalizedFilePath] = fileContent
     }
@@ -57,8 +61,10 @@ class StringBasedFileSystemAccess(private val classpathResources: Map<String, St
 
     override fun getFileWriter(filePath: Path): Writer {
         val normalizedFilePath = filePath.normalize()
-        if(writtenFileWriter.containsKey(normalizedFilePath)) {
-            throw IllegalStateException("File writer with filepath $normalizedFilePath has already been requested.")
+        if (writtenFileWriter.containsKey(normalizedFilePath)) {
+            throw IllegalStateException(
+                "File writer with filepath $normalizedFilePath has already been requested."
+            )
         }
         val stringWriter = registerClosable(filePath.pathString, StringWriter())
         writtenFileWriter[normalizedFilePath] = stringWriter
@@ -86,9 +92,8 @@ class StringBasedFileSystemAccess(private val classpathResources: Map<String, St
     }
 
     private fun byteIteratorAsString(byteIterator: ByteIterator): String {
-        val byteList : MutableList<Byte> = mutableListOf()
+        val byteList: MutableList<Byte> = mutableListOf()
         byteIterator.forEach { byte: Byte -> byteList.add(byte) }
         return byteList.toByteArray().toString(Charset.defaultCharset())
     }
-
 }

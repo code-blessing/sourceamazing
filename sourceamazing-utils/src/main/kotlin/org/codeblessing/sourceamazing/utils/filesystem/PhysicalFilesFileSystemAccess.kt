@@ -5,13 +5,15 @@ import java.io.Writer
 import java.nio.charset.Charset
 import java.nio.file.Path
 
-class PhysicalFilesFileSystemAccess: FileSystemAccess {
+class PhysicalFilesFileSystemAccess : FileSystemAccess {
 
     override fun classpathResourceAsInputStream(classpathResource: String): InputStream {
         return this.javaClass.getResourceAsStream(classpathResource)
-            ?: throw IllegalArgumentException("Resource with name '${classpathResource}' not found.")
-
+            ?: throw IllegalArgumentException(
+                "Resource with name '${classpathResource}' not found."
+            )
     }
+
     override fun fileAsInputStream(filePath: Path): InputStream {
         FileUtil.checkFileReadable(filePath)
         return filePath.toFile().inputStream()
@@ -39,9 +41,8 @@ class PhysicalFilesFileSystemAccess: FileSystemAccess {
     }
 
     private fun byteIteratorAsString(byteIterator: ByteIterator): String {
-        val byteList : MutableList<Byte> = mutableListOf()
+        val byteList: MutableList<Byte> = mutableListOf()
         byteIterator.forEach { byte: Byte -> byteList.add(byte) }
         return byteList.toByteArray().toString(Charset.defaultCharset())
     }
-
 }

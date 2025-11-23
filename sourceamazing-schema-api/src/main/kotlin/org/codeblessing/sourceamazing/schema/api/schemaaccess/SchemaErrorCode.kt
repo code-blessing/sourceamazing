@@ -1,40 +1,69 @@
 package org.codeblessing.sourceamazing.schema.api.schemaaccess
 
-import org.codeblessing.sourceamazing.schema.api.exceptions.ErrorCode
 import org.codeblessing.sourceamazing.schema.api.annotations.References
+import org.codeblessing.sourceamazing.schema.api.exceptions.ErrorCode
 
-enum class SchemaErrorCode(override val messageFormat: String): ErrorCode {
+enum class SchemaErrorCode(override val messageFormat: String) : ErrorCode {
 
     MUST_HAVE_ANNOTATION("%s must have an annotation %s."),
     NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS("%s can not have more than %s annotation %s."),
     CAN_NOT_HAVE_ANNOTATION("%s can not have annotation of type %s."),
     CLASS_MUST_BE_AN_INTERFACE("%s must be an interface."),
-    CLASS_CANNOT_BE_PRIVATE("%s can not be private. Change to modifier of the class to public or default."),
+    CLASS_CANNOT_BE_PRIVATE(
+        "%s can not be private. Change to modifier of the class to public or default."
+    ),
     CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
     CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
     CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
     CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS("%s must not have member functions but has %s."),
-    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),
-    RETURN_TYPE_MUST_BE_INHERITABLE("The return type class %s must be inheritable for all concepts %s."),
+    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES(
+        "%s must not have any member functions or properties but has %s."
+    ),
+    RETURN_TYPE_MUST_BE_INHERITABLE(
+        "The return type class %s must be inheritable for all concepts %s."
+    ),
     PROPERTY_RETURN_TYPE_MUST_BE_INTERFACE("return type is invalid. %s"),
     RETURN_TYPE_IS_INVALID("%s return type is invalid. %s"),
-    RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS("%s return type is invalid. The return type can only be a class type or a collection (%s) containing a class type."),
-    RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS("The collection type of the function must be one of %s but was %s."),
-    RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED("Returning a collection with values marked as nullable (inner generic type) is not allowed."),
+    RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS(
+        "%s return type is invalid. The return type can only be a class type or a collection (%s) containing a class type."
+    ),
+    RETURN_TYPE_IS_WRONG_CLASS_ONLY_COLLECTION_OR_CLASS(
+        "The collection type of the function must be one of %s but was %s."
+    ),
+    RETURN_TYPE_NULLABLE_COLLECTION_NOT_ALLOWED(
+        "Returning a collection with values marked as nullable (inner generic type) is not allowed."
+    ),
     FUNCTION_HAS_RECEIVER_PARAM("%s has extension receiver parameter. This is not allowed."),
     FUNCTION_HAVE_TYPE_PARAMS("%s has type parameters %s. This is not allowed."),
     FUNCTION_MUST_BE_ABSTRACT("%s must be abstract."),
     PROPERTY_MUST_HAVE_RETURN_TYPE("%s must have a return type."),
     PROPERTY_MUST_NOT_HAVE_EXTENSION_TYPE("The property must not have an extension type."),
     FUNCTION_CAN_NOT_HAVE_VALUE_PARAMS("%s has parameters. This is not allowed."),
-    FACET_ENUM_INVALID("Facet '%s' on concept '%s' is declared as a enumeration facet but the enumeration is not defined or not a real enumeration class (was '%s')."),
-    FACET_ENUM_HAS_PRIVATE_MODIFIER("Facet '%s' on concept '%s' is declared as a enumeration facet ('%s') with a private modifier. Change to public modifier."),
-    FACET_REFERENCE_EMPTY_CONCEPT_LIST("Facet '%s' on concept '%s' is declared as a reference facet but the list of concept types is empty."),
-    FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST("Facet '%s' on concept '%s' is declared is not a reference facet (is '%s') but the list of concept type is not empty (is %s)"),
-    FACET_UNKNOWN_REFERENCED_CONCEPT("Facet '%s' on concept '%s' has an reference concept '%s' which is not a known concept (known concepts are '%s')"),
-    NO_GENERIC_TYPE_PARAMETER("%s must not have generic type parameters but has type parameters %s."),
-    NO_NEGATIVE_FACET_CARDINALITIES("Facet '%s' on concept '%s' has negative cardinalities. Only number greater/equal zero are allowed, but was %s/%s."),
-    WRONG_FACET_CARDINALITIES("Facet '%s' on concept '%s' has a greater minimumOccurrences (%s) than the maximumOccurrences (%s)."),
-    REFERENCE_ANNOTATION_ONLY_FOR_REFERENCE_TYPES("The property is not a reference type but has the annotation @${References::class.simpleName}."),
-    ;
+    FACET_ENUM_INVALID(
+        "Facet '%s' on concept '%s' is declared as a enumeration facet but the enumeration is not defined or not a real enumeration class (was '%s')."
+    ),
+    FACET_ENUM_HAS_PRIVATE_MODIFIER(
+        "Facet '%s' on concept '%s' is declared as a enumeration facet ('%s') with a private modifier. Change to public modifier."
+    ),
+    FACET_REFERENCE_EMPTY_CONCEPT_LIST(
+        "Facet '%s' on concept '%s' is declared as a reference facet but the list of concept types is empty."
+    ),
+    FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST(
+        "Facet '%s' on concept '%s' is declared is not a reference facet (is '%s') but the list of concept type is not empty (is %s)"
+    ),
+    FACET_UNKNOWN_REFERENCED_CONCEPT(
+        "Facet '%s' on concept '%s' has an reference concept '%s' which is not a known concept (known concepts are '%s')"
+    ),
+    NO_GENERIC_TYPE_PARAMETER(
+        "%s must not have generic type parameters but has type parameters %s."
+    ),
+    NO_NEGATIVE_FACET_CARDINALITIES(
+        "Facet '%s' on concept '%s' has negative cardinalities. Only number greater/equal zero are allowed, but was %s/%s."
+    ),
+    WRONG_FACET_CARDINALITIES(
+        "Facet '%s' on concept '%s' has a greater minimumOccurrences (%s) than the maximumOccurrences (%s)."
+    ),
+    REFERENCE_ANNOTATION_ONLY_FOR_REFERENCE_TYPES(
+        "The property is not a reference type but has the annotation @${References::class.simpleName}."
+    ),
 }

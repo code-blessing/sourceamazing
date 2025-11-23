@@ -1,14 +1,12 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
-import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 
 class DataValidationExceptionCollector {
     private val listOfValidationFailures: MutableSet<DataValidationException> = mutableSetOf()
 
-    /**
-     * @return true, if there were no caught exceptions. false otherwise
-     */
+    /** @return true, if there were no caught exceptions. false otherwise */
     fun catchAndCollectDataValidationExceptions(validationExecution: () -> Unit): Boolean {
         try {
             validationExecution()
@@ -20,7 +18,7 @@ class DataValidationExceptionCollector {
     }
 
     fun throwDataValidationException() {
-        if(listOfValidationFailures.isEmpty()) {
+        if (listOfValidationFailures.isEmpty()) {
             return
         } else if (listOfValidationFailures.size == 1) {
             throw listOfValidationFailures.single() // especially for tests
