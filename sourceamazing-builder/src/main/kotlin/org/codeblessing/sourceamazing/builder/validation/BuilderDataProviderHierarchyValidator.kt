@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.full.extensionReceiverParameter
+import kotlin.reflect.full.hasAnnotation
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
@@ -13,8 +15,6 @@ import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil
 import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsNotPrivate
 import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
 import org.codeblessing.sourceamazing.utils.type.valueParameters
-import kotlin.reflect.full.extensionReceiverParameter
-import kotlin.reflect.full.hasAnnotation
 
 object BuilderDataProviderHierarchyValidator {
     private const val BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION = "Builder data provider class"

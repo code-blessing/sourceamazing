@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder
 
+import java.util.*
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
@@ -8,7 +9,6 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class BuilderMethodApiParameterTypesTest {
     enum class MyEnum {

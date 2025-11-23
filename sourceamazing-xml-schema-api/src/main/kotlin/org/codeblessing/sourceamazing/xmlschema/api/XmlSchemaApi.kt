@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.xmlschema.api
 
-import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import java.nio.file.Path
 import java.util.*
+import org.codeblessing.sourceamazing.schema.api.SchemaContext
 
 object XmlSchemaApi {
 

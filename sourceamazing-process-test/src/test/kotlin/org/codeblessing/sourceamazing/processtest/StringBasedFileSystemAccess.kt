@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.processtest
 
-import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import java.io.Closeable
 import java.io.InputStream
 import java.io.StringWriter
@@ -8,6 +7,7 @@ import java.io.Writer
 import java.nio.charset.Charset
 import java.nio.file.Path
 import kotlin.io.path.pathString
+import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 
 class StringBasedFileSystemAccess(
     private val classpathResources: Map<String, String>,

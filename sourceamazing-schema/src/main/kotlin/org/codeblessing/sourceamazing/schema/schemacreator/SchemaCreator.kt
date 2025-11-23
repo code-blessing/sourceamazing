@@ -1,5 +1,9 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.*
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
@@ -20,10 +24,6 @@ import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 import org.codeblessing.sourceamazing.utils.type.isEnum
 import org.codeblessing.sourceamazing.utils.type.isPrivate
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.*
 
 object SchemaCreator {
     val supportedCollectionClasses: List<KClass<*>> =

@@ -1,11 +1,11 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
+import kotlin.reflect.full.starProjectedType
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper.SUPPORTED_COLLECTION_TYPES
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
-import kotlin.reflect.full.starProjectedType
 
 object BuilderCollectionHelper {
     val SUPPORTED_COLLECTION_TYPES =

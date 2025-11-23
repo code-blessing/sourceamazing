@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query
 
+import kotlin.reflect.KType
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
-import kotlin.reflect.KType
 
 object QueryMethodUtil {
 

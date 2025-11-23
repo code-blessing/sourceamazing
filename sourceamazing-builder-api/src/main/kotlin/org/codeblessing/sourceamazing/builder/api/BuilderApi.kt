@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.builder.api
 
-import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
-import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import java.util.*
 import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.api.SchemaContext
 
 object BuilderApi {
 

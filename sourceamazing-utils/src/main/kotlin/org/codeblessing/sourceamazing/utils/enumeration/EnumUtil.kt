@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.utils.enumeration
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.utils.type.enumValues
 import org.codeblessing.sourceamazing.utils.type.isEnum
-import kotlin.reflect.KClass
 
 object EnumUtil {
 

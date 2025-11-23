@@ -1,7 +1,7 @@
 package org.codeblessing.sourceamazing.schema.api
 
-import org.codeblessing.sourceamazing.schema.api.rules.NameEnforcer
 import java.util.*
+import org.codeblessing.sourceamazing.schema.api.rules.NameEnforcer
 
 class ConceptIdentifier private constructor(val name: String) {
 

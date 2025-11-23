@@ -1,5 +1,12 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
+import java.lang.reflect.InvocationTargetException
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
+import kotlin.reflect.KType
+import kotlin.reflect.full.declaredFunctions
+import kotlin.reflect.full.hasAnnotation
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
@@ -18,13 +25,6 @@ import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
-import java.lang.reflect.InvocationTargetException
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.KType
-import kotlin.reflect.full.declaredFunctions
-import kotlin.reflect.full.hasAnnotation
 
 class BuilderDataProviderInterpreter(
     private val schemaAccess: SchemaAccess,

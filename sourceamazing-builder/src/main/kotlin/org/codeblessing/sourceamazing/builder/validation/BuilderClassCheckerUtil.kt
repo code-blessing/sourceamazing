@@ -1,14 +1,14 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
-import org.codeblessing.sourceamazing.utils.type.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.memberProperties
+import org.codeblessing.sourceamazing.builder.BuilderErrorCode
+import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
+import org.codeblessing.sourceamazing.utils.type.*
 
 object BuilderClassCheckerUtil {
 

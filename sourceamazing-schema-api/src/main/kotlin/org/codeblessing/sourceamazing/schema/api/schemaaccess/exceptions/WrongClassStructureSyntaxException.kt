@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
-import kotlin.reflect.KClass
 
 class WrongClassStructureSyntaxException(
     clazz: KClass<*>,

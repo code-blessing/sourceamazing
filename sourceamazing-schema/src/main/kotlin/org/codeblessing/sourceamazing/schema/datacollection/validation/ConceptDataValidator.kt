@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.schema.datacollection.validation
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.*
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.enumValues
-import kotlin.reflect.KClass
 
 object ConceptDataValidator {
 

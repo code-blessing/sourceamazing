@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema
 
+import java.util.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
@@ -11,7 +12,6 @@ import org.codeblessing.sourceamazing.schema.api.toConceptName
 import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class SchemaApiFacetTest {
     private interface ReferenceConcept

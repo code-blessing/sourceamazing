@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
+import kotlin.reflect.KAnnotatedElement
+import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
@@ -10,8 +12,6 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
 import org.codeblessing.sourceamazing.schema.api.*
-import kotlin.reflect.KAnnotatedElement
-import kotlin.reflect.KFunction
 
 object CommonMethodInterpretationHelper {
 

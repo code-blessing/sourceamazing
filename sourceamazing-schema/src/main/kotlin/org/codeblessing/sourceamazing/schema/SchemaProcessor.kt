@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingRootConceptException
@@ -12,7 +13,6 @@ import org.codeblessing.sourceamazing.utils.filesystem.PhysicalFilesFileSystemAc
 import org.codeblessing.sourceamazing.utils.logger.JavaUtilLoggerFacade
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
-import kotlin.reflect.KClass
 
 class SchemaProcessor(
     private val fileSystemAccess: FileSystemAccess,

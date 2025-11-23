@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.schema.conceptgraph
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
-import kotlin.reflect.KClass
 
 object ConceptResolver {
 

@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
+import java.nio.file.Path
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
@@ -9,7 +10,6 @@ import org.xml.sax.InputSource
 import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
 import org.xml.sax.ext.DefaultHandler2
-import java.nio.file.Path
 
 class SaxParserHandler(
     private val schema: SchemaAccess,

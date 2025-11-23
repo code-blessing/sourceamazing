@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
 
+import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty
 import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
 import org.codeblessing.sourceamazing.schema.schemacreator.query.QueryMethodUtil
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
-import kotlin.reflect.KFunction
-import kotlin.reflect.KProperty
 
 class ConceptInstanceInvocationHandler(private val conceptNode: ConceptNode) :
     KotlinInvocationHandler(allowMemberProperties = true, allowMemberFunctions = false) {

@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.schema.validation
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
@@ -10,7 +11,6 @@ import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDa
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KClass
 
 class ConceptDataValidatorTest {
 

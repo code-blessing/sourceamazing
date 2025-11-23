@@ -1,5 +1,8 @@
 package org.codeblessing.sourceamazing.builder.proxy
 
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
@@ -16,9 +19,6 @@ import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.utils.type.hasAnnotation
 import org.codeblessing.sourceamazing.utils.type.valueParamsWithValues
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
 
 class BuilderInvocationHandler(
     private val schemaAccess: SchemaAccess,

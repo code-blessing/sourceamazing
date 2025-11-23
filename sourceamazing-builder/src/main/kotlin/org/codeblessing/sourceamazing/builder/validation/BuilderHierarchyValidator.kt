@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
@@ -10,7 +11,6 @@ import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
-import kotlin.reflect.KClass
 
 object BuilderHierarchyValidator {
 

@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.utils.logger
 
-import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import java.util.logging.Level
 import java.util.logging.LogManager
 import java.util.logging.Logger
+import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 
 class JavaUtilLoggerFacade(fileSystemAccess: FileSystemAccess) : LoggerFacade {
     private val logger: Logger = Logger.getLogger("sourceamazing")

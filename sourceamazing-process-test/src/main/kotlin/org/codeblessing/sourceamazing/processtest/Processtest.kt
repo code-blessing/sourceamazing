@@ -1,13 +1,13 @@
 package org.codeblessing.sourceamazing.processtest
 
 // import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
+import java.nio.file.Paths
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
 import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import java.nio.file.Paths
 
 private val pathToXmlFile = Paths.get("input-data").resolve("input-data.xml")
 

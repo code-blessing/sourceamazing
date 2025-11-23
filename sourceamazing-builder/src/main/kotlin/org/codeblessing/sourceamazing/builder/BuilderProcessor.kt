@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.BuilderProcessorApi
 import org.codeblessing.sourceamazing.builder.proxy.BuilderInvocationHandler
@@ -7,7 +8,6 @@ import org.codeblessing.sourceamazing.builder.validation.BuilderHierarchyValidat
 import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaContext
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
-import kotlin.reflect.KClass
 
 class BuilderProcessor() : BuilderProcessorApi {
 

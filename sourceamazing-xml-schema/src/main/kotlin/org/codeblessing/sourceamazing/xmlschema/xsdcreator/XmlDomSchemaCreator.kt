@@ -1,12 +1,5 @@
 package org.codeblessing.sourceamazing.xmlschema.xsdcreator
 
-import org.codeblessing.sourceamazing.schema.api.ConceptSchema
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import org.codeblessing.sourceamazing.xmlschema.XmlNames
-import org.w3c.dom.Document
-import org.w3c.dom.Element
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
@@ -15,6 +8,13 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
+import org.codeblessing.sourceamazing.schema.api.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.xmlschema.XmlNames
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 
 object XmlDomSchemaCreator {
     private const val xsdNamespace = "http://www.w3.org/2001/XMLSchema"

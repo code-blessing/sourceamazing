@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.builder.exceptions
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
-import kotlin.reflect.KClass
 
 class BuilderSyntaxException(
     clazz: KClass<*>,

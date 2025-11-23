@@ -1,6 +1,8 @@
 package org.codeblessing.sourceamazing.processtest
 
 // import org.codeblessing.sourceamazing.xmlschema.api.XmlSchemaApi
+import java.nio.file.Path
+import java.nio.file.Paths
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
@@ -11,8 +13,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class SourceamazingProcessTest {
 

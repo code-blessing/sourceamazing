@@ -1,8 +1,8 @@
 package org.codeblessing.sourceamazing.builder.update
 
+import kotlin.reflect.KParameter
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import kotlin.reflect.KParameter
 
 class DataContext(
     private val functionArguments: Map<KParameter, Any?>,

@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
+import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import kotlin.reflect.KClass
 
 class BuilderClassInterpreter(
     val builderClass: KClass<*>,

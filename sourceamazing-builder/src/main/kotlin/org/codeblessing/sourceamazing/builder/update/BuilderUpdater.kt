@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder.update
 
+import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.api.annotations.FacetModificationRule
 import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
@@ -9,7 +10,6 @@ import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterp
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.randomConceptIdentifier
-import kotlin.reflect.KFunction
 
 object BuilderUpdater {
 
