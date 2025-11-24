@@ -13,14 +13,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+@Suppress("UNUSED")
 class BuilderMethodApiDataProviderTest {
 
     private interface SchemaWithConceptWithTextFacet {
         interface ConceptWithTextFacet {
-            @Suppress("UNUSED") val text: String
+            val text: String
         }
 
-        @Suppress("UNUSED") val concepts: List<ConceptWithTextFacet>
+        val concepts: List<ConceptWithTextFacet>
     }
 
     @BuilderDataProvider class EmptyBuilderDataProvider
@@ -28,7 +29,6 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodWithDataProviderAsLambdaFunction {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -62,7 +62,6 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodWithBuilderDataProviderWithLambdaFunction {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -96,7 +95,6 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodWithBuilderDataProviderWithArray {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -130,7 +128,6 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodWithBuilderDataProviderWithAnyObject {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -164,7 +161,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -198,7 +194,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodParamWithBuilderDataAsNullableParam {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -232,7 +227,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodParamWithEmptyDataProvider {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -261,7 +255,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodParamWithBuilderDataWithOtherAnnotations {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -297,7 +290,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -330,7 +322,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodDataProviderWithGenericParameter {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -342,7 +333,6 @@ class BuilderMethodApiDataProviderTest {
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class BuilderDataProviderWithGenericParameter<T>(private val data: T) {
 
@@ -374,7 +364,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodDataProviderUsingAndReturningGenericParameter {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -386,7 +375,6 @@ class BuilderMethodApiDataProviderTest {
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class BuilderDataProviderWithGenericParameter<T>(private val data: T) {
             @BuilderData
@@ -422,7 +410,6 @@ class BuilderMethodApiDataProviderTest {
 
     @Builder
     private interface BuilderMethodDataProviderThrowingException {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -431,7 +418,6 @@ class BuilderMethodApiDataProviderTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doThrowAnException(@ProvideBuilderData data: BuilderDataProviderThrowingException)
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class BuilderDataProviderThrowingException {
             @BuilderData

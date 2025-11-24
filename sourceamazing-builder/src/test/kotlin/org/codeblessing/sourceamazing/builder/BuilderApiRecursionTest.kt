@@ -6,18 +6,18 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderApiRecursionTest {
     private interface SchemaWithConcept {
 
         interface OneConcept
 
-        @Suppress("UNUSED") val concepts: List<OneConcept>
+        val concepts: List<OneConcept>
     }
 
     @Builder
     private interface BuilderMethodUsingSameBuilderIndirectly {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -28,7 +28,6 @@ class BuilderApiRecursionTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface OuterNestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @WithNewBuilder(InnerNestedBuilder::class)
             fun doSomething(): InnerNestedBuilder
@@ -38,7 +37,6 @@ class BuilderApiRecursionTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface InnerNestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @WithNewBuilder(OuterNestedBuilder::class)
             fun doSomething(): OuterNestedBuilder
@@ -62,7 +60,6 @@ class BuilderApiRecursionTest {
     @Builder
     private interface BuilderMethodUsingSameBuilderDirectly {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -73,10 +70,7 @@ class BuilderApiRecursionTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
-            @BuilderMethod
-            @WithNewBuilder(NestedBuilder::class)
-            fun doSomething(): NestedBuilder
+            @BuilderMethod @WithNewBuilder(NestedBuilder::class) fun doSomething(): NestedBuilder
         }
     }
 

@@ -10,14 +10,15 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderMethodApiInjectionAndReturnTest {
 
     private interface SchemaWithConceptWithTextFacet {
         interface ConceptWithTextFacet {
-            @Suppress("UNUSED") val text: String
+            val text: String
         }
 
-        @Suppress("UNUSED") val concepts: List<ConceptWithTextFacet>
+        val concepts: List<ConceptWithTextFacet>
     }
 
     @Builder private interface EmptyBuilder
@@ -25,7 +26,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodReturningSameBuilder {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(): BuilderMethodReturningSameBuilder
+        @BuilderMethod fun doSomething(): BuilderMethodReturningSameBuilder
     }
 
     @Test
@@ -44,7 +45,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
         @Builder private interface OtherBuilder
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(): OtherBuilder
+        @BuilderMethod fun doSomething(): OtherBuilder
     }
 
     @Test
@@ -63,7 +64,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
         private interface OtherBuilder
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(): OtherBuilder
+        @BuilderMethod fun doSomething(): OtherBuilder
     }
 
     @Test
@@ -88,10 +89,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodNoReturnTypeButWithNewBuilderAnnotation {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        @WithNewBuilder(builderClass = EmptyBuilder::class)
-        fun doSomething()
+        @BuilderMethod @WithNewBuilder(builderClass = EmptyBuilder::class) fun doSomething()
     }
 
     @Test
@@ -117,7 +115,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation {
         private interface OtherBuilder
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @WithNewBuilder(builderClass = OtherBuilder::class)
         fun doSomething(): EmptyBuilder
@@ -145,7 +142,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @WithNewBuilder(builderClass = AnotherSubBuilder::class)
         fun doSomething(): AnotherSubBuilder
@@ -170,16 +166,13 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @WithNewBuilder(builderClass = AnotherSubBuilder::class)
         fun doSomething(): AnotherSubBuilder
 
         @Builder
         private interface AnotherSubBuilder {
-            @Suppress("UNUSED")
-            @BuilderMethod
-            fun doSomething(@InjectBuilder builder: AnotherSubBuilder.() -> Unit)
+            @BuilderMethod fun doSomething(@InjectBuilder builder: AnotherSubBuilder.() -> Unit)
         }
     }
 
@@ -200,7 +193,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithoutExtensionFunction {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@InjectBuilder builder: () -> Unit)
+        @BuilderMethod fun doSomething(@InjectBuilder builder: () -> Unit)
     }
 
     @Test
@@ -225,7 +218,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithObjectInsteadOfFunction {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@InjectBuilder builder: Any)
+        @BuilderMethod fun doSomething(@InjectBuilder builder: Any)
     }
 
     @Test
@@ -250,9 +243,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithValueParameters {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@InjectBuilder builder: EmptyBuilder.(EmptyBuilder) -> Unit)
+        @BuilderMethod fun doSomething(@InjectBuilder builder: EmptyBuilder.(EmptyBuilder) -> Unit)
     }
 
     @Test
@@ -277,9 +268,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithReturnType {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> EmptyBuilder)
+        @BuilderMethod fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> EmptyBuilder)
     }
 
     @Test
@@ -304,9 +293,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithNullableType {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@InjectBuilder builder: (EmptyBuilder.() -> Unit)?)
+        @BuilderMethod fun doSomething(@InjectBuilder builder: (EmptyBuilder.() -> Unit)?)
     }
 
     @Test
@@ -331,7 +318,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithTwoBuilderInjectionParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
             @InjectBuilder builder: EmptyBuilder.() -> Unit,
@@ -361,7 +347,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionOnNonLastParam {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -395,7 +380,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Builder
     private interface BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue {
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
@@ -429,7 +413,6 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Builder
     private interface BuilderMethodWithBuilderInjectionAndReturnTypeBuilder {
-        @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> Unit): EmptyBuilder
     }
@@ -457,7 +440,6 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes {
         @Builder private interface OtherBuilder
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @WithNewBuilder(OtherBuilder::class)
         fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> Unit)

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+@Suppress("UNUSED")
 class BuilderDataMixedConceptReferenceFacetTest {
 
     private interface SchemaWithConceptWithFacet {
@@ -17,7 +18,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         @References([ConceptAlpha::class, ConceptBeta::class])
         val alphaAndBetaAsList: List<AlphaAndBeta>
 
-        @Suppress("UNUSED") val gammaAsList: List<ConceptGamma>
+        val gammaAsList: List<ConceptGamma>
 
         interface AlphaAndBeta {
             val id: String

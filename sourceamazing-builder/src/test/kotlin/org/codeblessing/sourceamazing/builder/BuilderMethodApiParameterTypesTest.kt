@@ -10,53 +10,53 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderMethodApiParameterTypesTest {
     enum class MyEnum {
-        @Suppress("UNUSED") A,
-        @Suppress("UNUSED") B,
-        @Suppress("UNUSED") C,
+        A,
+        B,
+        C,
     }
 
     enum class MyExactSameEnum {
-        @Suppress("UNUSED") A,
-        @Suppress("UNUSED") B,
-        @Suppress("UNUSED") C,
+        A,
+        B,
+        C,
     }
 
     enum class MySubsetEnum {
-        @Suppress("UNUSED") A,
-        @Suppress("UNUSED") C,
+        A,
+        C,
     }
 
     enum class MyOtherIncompatibleEnum {
-        @Suppress("UNUSED") A,
-        @Suppress("UNUSED") B,
-        @Suppress("UNUSED") C,
-        @Suppress("UNUSED") D,
+        A,
+        B,
+        C,
+        D,
     }
 
     private interface SchemaWithConceptWithFacets {
         interface ConceptWithFacets {
-            @Suppress("UNUSED") val textFacet: String
+            val textFacet: String
 
-            @Suppress("UNUSED") val otherTextFacet: String
+            val otherTextFacet: String
 
-            @Suppress("UNUSED") val boolFacet: Boolean
+            val boolFacet: Boolean
 
-            @Suppress("UNUSED") val numberFacet: Int
+            val numberFacet: Int
 
-            @Suppress("UNUSED") val enumerationFacet: MyEnum
+            val enumerationFacet: MyEnum
 
-            @Suppress("UNUSED") val selfRefFacet: ConceptWithFacets
+            val selfRefFacet: ConceptWithFacets
         }
 
-        @Suppress("UNUSED") val concepts: List<ConceptWithFacets>
+        val concepts: List<ConceptWithFacets>
     }
 
     @Builder
     private interface BuilderMethodWithIllegalConceptIdClass {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -87,7 +87,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithIllegalConceptIdClass {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -98,7 +97,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun getConceptIdentifier(): String {
@@ -129,7 +127,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNullableConceptId {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -162,7 +159,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithNullableConceptId {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -173,7 +169,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun getConceptIdentifier(): ConceptIdentifier? {
@@ -204,7 +199,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -239,7 +233,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -250,7 +243,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             @IgnoreProvidedNullFacetValue
@@ -282,7 +274,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -317,7 +308,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -328,7 +318,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             @IgnoreProvidedNullFacetValue
@@ -360,7 +349,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -395,7 +383,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -407,7 +394,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyText(): String? {
@@ -438,7 +424,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -469,7 +454,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -481,7 +465,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             @IgnoreProvidedNullFacetValue
@@ -508,7 +491,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithCollectionTypedStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -538,7 +520,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithCollectionTypedStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -550,7 +531,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyTexts(): List<String> {
@@ -576,7 +556,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithMultipleSetFacetValueOnSameFacetMethod {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -608,7 +587,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -620,14 +598,12 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyText1(): String {
                 throw UnsupportedOperationException("Never called in validation phase")
             }
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyText2(): String {
@@ -653,7 +629,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -665,7 +640,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "otherTextFacet")
@@ -692,7 +666,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithSortedSetStringCollectionParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -727,7 +700,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithSortedSetStringCollectionParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -739,7 +711,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getSortedTexts(): SortedSet<String> {
@@ -770,7 +741,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithCollectionTypedNullableStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -805,7 +775,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -817,7 +786,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyTexts(): List<String?> {
@@ -848,7 +816,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -879,7 +846,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -891,7 +857,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             @IgnoreProvidedNullFacetValue
@@ -918,7 +883,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithWrongTypedStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -952,7 +916,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithWrongTypedStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -964,7 +927,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyText(): Int {
@@ -995,7 +957,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithWrongFunctionReturningStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1030,7 +991,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithWrongFunctionReturningStringParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1042,7 +1002,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
             fun getMyText(): () -> String {
@@ -1073,7 +1032,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithWrongTypedBooleanParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1107,7 +1065,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithArrayOfBooleanParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1137,7 +1094,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithArrayOfBooleanParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1149,7 +1105,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "boolFacet")
             fun getMyBooleans(): Array<Boolean> {
@@ -1175,7 +1130,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithWrongTypedIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1210,7 +1164,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithLongInsteadOfIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1244,7 +1197,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithLongInsteadOfIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1256,7 +1208,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet")
             fun getMyInt(): Long {
@@ -1287,7 +1238,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNumberParameterInsteadOfIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1322,7 +1272,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1334,7 +1283,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet")
             fun getMyInt(): Number {
@@ -1365,7 +1313,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithAnyParameterInsteadOfIntParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1399,7 +1346,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithIntInsteadOfEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1434,7 +1380,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithOtherCompatibleEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1464,7 +1409,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithOtherCompatibleEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1476,7 +1420,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
             fun getMyEnum(): MySubsetEnum {
@@ -1502,7 +1445,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithExactSameEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1532,7 +1474,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithOtherIncompatibleEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1567,7 +1508,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithStringInsteadOfEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1602,7 +1542,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithStringInsteadOfEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1614,7 +1553,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
             fun getMyEnum(): String {
@@ -1645,7 +1583,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithCorrectEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1675,7 +1612,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithSetOfEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1702,7 +1638,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithNullableSetOfEnumParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1737,7 +1672,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithWrongTypedReferenceParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1772,7 +1706,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithWrongTypedReferenceParameter {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1784,7 +1717,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
             fun getMyRef(): String {
@@ -1815,7 +1747,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithVarargArray {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1842,7 +1773,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodWithConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1869,7 +1799,6 @@ class BuilderMethodApiParameterTypesTest {
     @Builder
     private interface BuilderMethodDataProviderWithConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -1881,7 +1810,6 @@ class BuilderMethodApiParameterTypesTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
             fun getMyRef(): ConceptIdentifier {

@@ -8,30 +8,30 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderApiSchemaTest {
     private interface SchemaWithConceptWithFacet {
 
         interface KnownConceptWithFacet {
-            @Suppress("UNUSED") val knownFacet: String
+            val knownFacet: String
         }
 
         interface AlsoKnownConceptWithFacet {
-            @Suppress("UNUSED") val alsoKnownFacet: String
+            val alsoKnownFacet: String
         }
 
         interface UnknownConceptWithFacet {
-            @Suppress("UNUSED") val unknownFacet: String
+            val unknownFacet: String
         }
 
-        @Suppress("UNUSED") val knownConcepts: List<KnownConceptWithFacet>
+        val knownConcepts: List<KnownConceptWithFacet>
 
-        @Suppress("UNUSED") val alsoKnownConcepts: List<AlsoKnownConceptWithFacet>
+        val alsoKnownConcepts: List<AlsoKnownConceptWithFacet>
     }
 
     @Builder
     private interface BuilderMethodCreatingKnownConcept {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -55,7 +55,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodCreatingUnknownConcept {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.UnknownConceptWithFacet::class,
@@ -87,7 +86,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodUsingUnknownFacetAsParameterValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -122,7 +120,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodUsingUnknownFacetAsFixedValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -159,7 +156,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodUsingFacetOfAnotherKnownConceptAsParameterValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -194,7 +190,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodUsingFacetOfAnotherKnownConceptAsFixedValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -231,7 +226,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodPassingCorrectConceptParentNestedBuilderAsParameterValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -245,7 +239,6 @@ class BuilderApiSchemaTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingNested(
                 @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet")
@@ -271,7 +264,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodPassingCorrectConceptParentNestedBuilderAsFixedValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -285,7 +277,6 @@ class BuilderApiSchemaTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetFixedStringFacetValue(
                 conceptToModifyAlias = "foo",
@@ -313,7 +304,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodPassingWrongConceptParentNestedBuilderAsParameterValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -327,14 +317,12 @@ class BuilderApiSchemaTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWrongFacet(
                 @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "alsoKnownFacet")
                 myValue: String
             )
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingCorrectFacet(
                 @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet")
@@ -365,7 +353,6 @@ class BuilderApiSchemaTest {
     @Builder
     private interface BuilderMethodPassingWrongConceptParentNestedBuilderAsFixedValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
@@ -379,7 +366,6 @@ class BuilderApiSchemaTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetFixedStringFacetValue(
                 conceptToModifyAlias = "foo",
@@ -388,7 +374,6 @@ class BuilderApiSchemaTest {
             )
             fun doSomethingWrongFacet()
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetFixedStringFacetValue(
                 conceptToModifyAlias = "foo",

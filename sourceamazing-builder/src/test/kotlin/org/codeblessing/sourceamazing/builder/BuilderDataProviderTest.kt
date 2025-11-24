@@ -8,25 +8,25 @@ import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderDataProviderTest {
 
     private interface SchemaWithConceptWithFacet {
 
         interface ConceptWithFacet {
-            @Suppress("UNUSED") val id: String
+            val id: String
 
-            @Suppress("UNUSED") val text: String
+            val text: String
 
-            @Suppress("UNUSED") val number: Int
+            val number: Int
         }
 
-        @Suppress("UNUSED") val concepts: List<ConceptWithFacet>
+        val concepts: List<ConceptWithFacet>
     }
 
     @BuilderDataProvider
     data class MyFacetTextData(private val text: String) {
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "text")
         fun getFacetText(): String {
@@ -38,12 +38,10 @@ class BuilderDataProviderTest {
     data class MyGenericFacetData<T>(private val facetData: T) {
 
         /** Returning a generic type is not supported. */
-        @Suppress("UNUSED")
         fun getMyFacetValueAsGenericType(): T {
             return facetData
         }
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "text")
         fun getMyFacetValue(): String {
@@ -58,7 +56,6 @@ class BuilderDataProviderTest {
         private val number: Int,
     ) {
 
-        @Suppress("UNUSED")
         @BuilderData
         @NewConcept(
             concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
@@ -73,28 +70,24 @@ class BuilderDataProviderTest {
             // do nothing as everything is already done with annotations
         }
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun getConceptIdentifier(): ConceptIdentifier {
             return conceptId
         }
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "id")
         fun getId(): String {
             return conceptId.name
         }
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "text")
         fun getTextFacetValue(): String {
             return text
         }
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedFacetValue(conceptToModifyAlias = "bar", facetToModify = "number")
         fun getNumberFacetValue(): Int {
@@ -106,7 +99,6 @@ class BuilderDataProviderTest {
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodForDataProvider {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -121,7 +113,6 @@ class BuilderDataProviderTest {
             @ProvideBuilderData myDataParameter: MyFacetTextData,
         )
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -136,7 +127,6 @@ class BuilderDataProviderTest {
             @ProvideBuilderData myDataParameter: MyGenericFacetData<String>,
         )
 
-        @Suppress("UNUSED")
         @BuilderMethod
         fun doSomethingWithTheProvidedConcept(
             @ProvideBuilderData myDataParameter: MyConceptWithTextAndNumberData

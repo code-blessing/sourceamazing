@@ -9,33 +9,33 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderMethodApiMethodAnnotationsTest {
 
     private interface SchemaWithConceptWithFacets {
         enum class MyEnum {
-            @Suppress("UNUSED") A,
-            @Suppress("UNUSED") B,
+            A,
+            B,
         }
 
         interface ConceptWithFacets {
-            @Suppress("UNUSED") val textFacet: String
+            val textFacet: String
 
-            @Suppress("UNUSED") val boolFacet: Boolean
+            val boolFacet: Boolean
 
-            @Suppress("UNUSED") val numberFacet: Int
+            val numberFacet: Int
 
-            @Suppress("UNUSED") val enumerationFacet: MyEnum
+            val enumerationFacet: MyEnum
 
-            @Suppress("UNUSED") val selfRefFacet: ConceptWithFacets
+            val selfRefFacet: ConceptWithFacets
         }
 
-        @Suppress("UNUSED") val concepts: List<ConceptWithFacets>
+        val concepts: List<ConceptWithFacets>
     }
 
     @Builder
     private interface BuilderMethodWithFixedFacetValueAndParameterFacetValue {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -69,7 +69,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithMultipleFixedFacetValues {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -106,7 +105,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithCorrectFixedEnumFacetValues {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -138,7 +136,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithWrongFixedEnumFacetValues {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -175,7 +172,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithWrongFixedFacetType {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -212,7 +208,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithUnregisteredFixedFacetType {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -249,7 +244,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithValidFixedReference {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -283,7 +277,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithValidParameterReference {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -318,7 +311,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithFunctionInsteadOfConceptIdentifierReference {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,
@@ -358,7 +350,6 @@ class BuilderMethodApiMethodAnnotationsTest {
     @Builder
     private interface BuilderMethodWithStringInsteadOfConceptIdentifierReference {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             concept = SchemaWithConceptWithFacets.ConceptWithFacets::class,

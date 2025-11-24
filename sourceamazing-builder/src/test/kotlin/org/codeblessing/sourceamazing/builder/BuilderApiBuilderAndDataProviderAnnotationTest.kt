@@ -10,9 +10,9 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderApiBuilderAndDataProviderAnnotationTest {
 
-    @Suppress("UNUSED")
     private interface MyConcepts {
 
         interface MyConcept {
@@ -37,7 +37,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithEmptyDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider class DataProvider
     }
@@ -68,7 +68,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithSealedDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider sealed class DataProvider
     }
@@ -101,7 +101,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithInheritanceDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         open class ParentDataProvider
 
@@ -139,7 +139,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithUnannotatedDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         class DataProvider
     }
@@ -183,7 +183,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithAbstractDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider abstract class DataProvider
     }
@@ -216,7 +216,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithInterfaceDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider interface DataProvider
     }
@@ -249,7 +249,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithEnumDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider enum class DataProvider
     }
@@ -282,7 +282,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithObjectDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider object DataProvider
     }
@@ -318,7 +318,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithAnnotationDataProvider {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider private annotation class DataProvider
     }
@@ -363,7 +363,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithExpectedAliasFromSuperiorBuilderAnnotation {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider @ExpectedAliasFromSuperiorBuilder("anotherConcept") class DataProvider
     }
@@ -391,7 +391,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
         @Builder @ExpectedAliasFromSuperiorBuilder("foo") private interface NestedBuilder
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -439,9 +438,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithTwoAnnotationsInHierarchy {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@ProvideBuilderData data: SubDataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: SubDataProvider)
 
         @BuilderDataProvider open class DataProvider
 
@@ -494,9 +491,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithTwoDifferentAnnotationsInHierarchy {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@ProvideBuilderData data: SubDataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: SubDataProvider)
 
         @Builder private open class DataProvider
 
@@ -522,7 +517,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         }
     }
 
-    @Suppress("Unused") @Builder private interface BuilderWithGenericTypeParameter<T>
+    @Builder private interface BuilderWithGenericTypeParameter<T>
 
     @Test
     fun `test builder class with generic type parameter should throw an exception`() {
@@ -542,11 +537,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithGenericTypeParameter {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@ProvideBuilderData data: DataProvider<String>)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider<String>)
 
-        @Suppress("UNUSED") @BuilderDataProvider class DataProvider<T>
+        @BuilderDataProvider class DataProvider<T>
     }
 
     @Test
@@ -563,7 +556,6 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         }
     }
 
-    @Suppress("Unused")
     @Builder
     private interface BuilderWithProperties {
         val builderMethodProperty: String
@@ -587,11 +579,8 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithPropertiesAndMethods {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@ProvideBuilderData data: DataProvider<String>)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider<String>)
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class DataProvider<T> {
             val dataProviderProperty: String = "hallo"
@@ -621,12 +610,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         }
     }
 
-    @Suppress("Unused")
     @Builder
     private interface BuilderMethodWithExtensionType {
         interface MyExtensionType
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, "foo")
         @SetRandomConceptIdentifierValue("foo")
@@ -651,11 +638,8 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithExtensionType {
-        @Suppress("UNUSED")
-        @BuilderMethod
-        fun doSomething(@ProvideBuilderData data: DataProvider<String>)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider<String>)
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class DataProvider<T> {
             interface MyExtensionType {
@@ -697,13 +681,11 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithMethodsWithParameters {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED_PARAMETER")
             @BuilderData
             @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -734,9 +716,8 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithDataProviderWithMethodReturningNothing {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
-        @Suppress("UNUSED")
         @BuilderDataProvider
         class DataProvider {
 

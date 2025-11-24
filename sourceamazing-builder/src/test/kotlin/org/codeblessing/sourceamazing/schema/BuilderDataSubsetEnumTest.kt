@@ -8,30 +8,30 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+@Suppress("UNUSED")
 class BuilderDataSubsetEnumTest {
     enum class AllDatatypesEnum {
-        @Suppress("UNUSED") STRING,
-        @Suppress("UNUSED") INT,
-        @Suppress("UNUSED") FLOAT,
-        @Suppress("UNUSED") DOUBLE,
-        @Suppress("UNUSED") UUID,
+        STRING,
+        INT,
+        FLOAT,
+        DOUBLE,
+        UUID,
     }
 
     private interface SchemaWithConceptWithEnumerationFacet {
 
         interface ConceptWithEnumerationFacet {
 
-            @Suppress("UNUSED") val enumFacetValue: AllDatatypesEnum
+            val enumFacetValue: AllDatatypesEnum
         }
 
-        @Suppress("UNUSED") val concept: ConceptWithEnumerationFacet
+        val concept: ConceptWithEnumerationFacet
     }
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithAllDatatypesEnum {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class,
@@ -69,16 +69,15 @@ class BuilderDataSubsetEnumTest {
     }
 
     enum class CompatibleNumericDatatypesEnum {
-        @Suppress("UNUSED") INT,
-        @Suppress("UNUSED") FLOAT,
-        @Suppress("UNUSED") DOUBLE,
+        INT,
+        FLOAT,
+        DOUBLE,
     }
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithCompatibleNumericDatatypesEnum {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class,
@@ -116,18 +115,17 @@ class BuilderDataSubsetEnumTest {
     }
 
     enum class ExactCopyOfAllDatatypesEnum {
-        @Suppress("UNUSED") STRING,
-        @Suppress("UNUSED") INT,
-        @Suppress("UNUSED") FLOAT,
-        @Suppress("UNUSED") DOUBLE,
-        @Suppress("UNUSED") UUID,
+        STRING,
+        INT,
+        FLOAT,
+        DOUBLE,
+        UUID,
     }
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithExactCopyOfAllDatatypesEnum {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class,
@@ -165,17 +163,16 @@ class BuilderDataSubsetEnumTest {
     }
 
     enum class IncompatibleWithNumericDatatypesEnum {
-        @Suppress("UNUSED") INT,
-        @Suppress("UNUSED") FLOAT,
-        @Suppress("UNUSED") DOUBLE,
-        @Suppress("UNUSED") BYTE, // this is an incompatible facet value
+        INT,
+        FLOAT,
+        DOUBLE,
+        BYTE, // this is an incompatible facet value
     }
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder("root")
     private interface BuilderMethodWithIncompatibleWithAllDatatypesEnum {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithEnumerationFacet.ConceptWithEnumerationFacet::class,

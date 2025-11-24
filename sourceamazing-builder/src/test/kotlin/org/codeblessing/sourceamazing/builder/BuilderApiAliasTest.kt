@@ -11,8 +11,8 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderApiAliasTest {
-    @Suppress("UNUSED")
     private interface MyConcepts {
 
         enum class MyEnumeration {
@@ -35,7 +35,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithDuplicateAliasForNewConcept {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
@@ -65,7 +64,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndSubBuilderHavingDuplicatedAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -81,7 +79,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @NewConcept(MyConcept::class, declareConceptAlias = "foo")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -111,7 +108,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithNewConcept {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -120,7 +116,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
 
-            @Suppress("UNUSED")
             @BuilderData
             @NewConcept(MyConcept::class, declareConceptAlias = "foo")
             fun doSomething() {
@@ -151,7 +146,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithDuplicateAliasForRandomConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -181,7 +175,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetRandomId {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -190,7 +183,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun doSomething() {
@@ -221,7 +213,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithDuplicateAliasForManuallySetConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
@@ -254,7 +245,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndDataProviderHavingDuplicatedAliasWithSetId {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
@@ -266,7 +256,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithDuplicateAlias {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun getConceptId(): ConceptIdentifier {
@@ -297,10 +286,7 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithoutConceptIdentifierForAlias {
 
-        @Suppress("UNUSED")
-        @BuilderMethod
-        @NewConcept(MyConcept::class, declareConceptAlias = "foo")
-        fun doSomething()
+        @BuilderMethod @NewConcept(MyConcept::class, declareConceptAlias = "foo") fun doSomething()
     }
 
     @Test
@@ -325,7 +311,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithoutConceptIdentifierForAliasInDataProvider {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
@@ -337,7 +322,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithConceptWithoutConceptId {
 
-            @Suppress("UNUSED")
             @BuilderData
             @NewConcept(MyConcept::class, declareConceptAlias = "BAR")
             fun doSomething() {
@@ -368,7 +352,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithDuplicateMixedConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -400,7 +383,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithRandomIdAndConceptIdentifierForAliasInDataProvider {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -409,7 +391,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithConceptWithoutConceptId {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun getConceptId(): ConceptIdentifier {
@@ -440,7 +421,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifier {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(): NestedBuilder
@@ -449,7 +429,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun doSomethingNested()
@@ -478,7 +457,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithoutAssignmentOfConceptIdentifierInBuilderButInDataProvider {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProviderWithConceptId)
@@ -486,7 +464,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProviderWithConceptId {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun doSomething() {
@@ -511,7 +488,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifier {
-        @Suppress("UNUSED")
         @BuilderMethod
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "unknown")
         fun doSomething()
@@ -539,12 +515,11 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInAutoRandomConceptIdentifierInDataProvider {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun doSomething() {
@@ -574,7 +549,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotation {
-        @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "unknown") id: ConceptIdentifier
@@ -603,12 +577,11 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInConceptIdentifierValueAnnotationInDataProvider {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "foo")
             fun getConceptId(): ConceptIdentifier {
@@ -639,7 +612,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text") value: String
@@ -668,12 +640,11 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFacetValueAnnotationInDataProvider {
 
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetProvidedFacetValue(conceptToModifyAlias = "unknown", facetToModify = "text")
             fun getFacetValue(): String {
@@ -704,7 +675,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -720,7 +690,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("known")
         private interface BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
@@ -753,7 +722,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -762,7 +730,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "unknown",
@@ -797,7 +764,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndSubBuilderHavingUnknownReferenceAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -813,7 +779,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("known")
         private interface BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
@@ -846,7 +811,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodWithAliasAndDataProviderHavingUnknownReferenceAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -855,7 +819,6 @@ class BuilderApiAliasTest {
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "known",
@@ -889,7 +852,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotation {
-        @Suppress("UNUSED")
         @BuilderMethod
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "unknown",
@@ -920,7 +882,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedStringFacetValueAnnotationInDataProvider {
-        @Suppress("UNUSED")
         @BuilderMethod
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "unknown",
@@ -951,12 +912,11 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedBooleanFacetValueAnnotation {
-        @Suppress("UNUSED") @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
+        @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
         class DataProvider {
 
-            @Suppress("UNUSED")
             @BuilderData
             @SetFixedBooleanFacetValue(
                 conceptToModifyAlias = "unknown",
@@ -990,7 +950,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedIntegerFacetValueAnnotation {
-        @Suppress("UNUSED")
         @BuilderMethod
         @SetFixedIntFacetValue(
             conceptToModifyAlias = "unknown",
@@ -1021,7 +980,6 @@ class BuilderApiAliasTest {
 
     @Builder
     private interface BuilderMethodWithUseOfUnknownAliasInFixedEnumFacetValueAnnotation {
-        @Suppress("UNUSED")
         @BuilderMethod
         @SetFixedEnumFacetValue(
             conceptToModifyAlias = "unknown",
@@ -1053,7 +1011,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodCallingASubBuilderProvidingAnAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -1069,7 +1026,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
         private interface BuilderMethodUsingAnAliasFromParentBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
                 @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text") value: String
@@ -1094,7 +1050,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithoutExpectAlias {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -1112,7 +1067,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
         private interface BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomething(
                 @SetFacetValue(conceptToModifyAlias = "known", facetToModify = "text")
@@ -1143,7 +1097,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderMethodCallingASubBuilderProvidingAnAliasWithRedeclaration {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -1158,7 +1111,6 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "alsoKnown")
         private interface BuilderMethodReusingAnAliasNameFromSuperiorBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             @NewConcept(MyConcept::class, declareConceptAlias = "known")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
@@ -1186,7 +1138,6 @@ class BuilderApiAliasTest {
     @Builder
     private interface BuilderWithDuplicateAliasesInExpectedAliasFromSuperiorBuilderAnnotation {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -1197,7 +1148,7 @@ class BuilderApiAliasTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED") @BuilderMethod fun doSomethingNested()
+            @BuilderMethod fun doSomethingNested()
         }
     }
 

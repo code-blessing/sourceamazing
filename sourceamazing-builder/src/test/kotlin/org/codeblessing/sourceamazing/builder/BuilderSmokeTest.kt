@@ -9,30 +9,31 @@ import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderSmokeTest {
 
     interface SmokeTestSchema {
         interface PersonConcept {
 
             enum class PersonSex {
-                @Suppress("UNUSED") MALE,
-                @Suppress("UNUSED") FEMALE,
+                MALE,
+                FEMALE,
             }
 
-            @Suppress("UNUSED") val firstname: String
+            val firstname: String
 
-            @Suppress("UNUSED") val age: Int
+            val age: Int
 
-            @Suppress("UNUSED") val sex: PersonSex
+            val sex: PersonSex
 
-            @Suppress("UNUSED") val skills: List<SkillConcept>
+            val skills: List<SkillConcept>
         }
 
         interface SkillConcept {
 
-            @Suppress("UNUSED") val skillDescription: String
+            val skillDescription: String
 
-            @Suppress("UNUSED") val isStillFullyEnjoyingAboutThatSkill: Boolean
+            val isStillFullyEnjoyingAboutThatSkill: Boolean
         }
 
         val personList: List<PersonConcept>
@@ -76,7 +77,6 @@ class BuilderSmokeTest {
         @ExpectedAliasFromSuperiorBuilder("person")
         interface PersonConceptBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun firstname(
                 @SetFacetValue(conceptToModifyAlias = "person", facetToModify = "firstname")
@@ -133,7 +133,6 @@ class BuilderSmokeTest {
         @ExpectedAliasFromSuperiorBuilder(conceptAlias = "skill")
         interface SkillConceptBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun descriptionAndStillEnjoying(
                 @SetFacetValue(conceptToModifyAlias = "skill", facetToModify = "skillDescription")
@@ -165,7 +164,6 @@ class BuilderSmokeTest {
     @BuilderDataProvider
     class PersonConceptIdentifier(private val conceptIdentifier: String) {
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "person")
         fun getConceptId() = ConceptIdentifier.of(conceptIdentifier)
@@ -174,7 +172,6 @@ class BuilderSmokeTest {
     @BuilderDataProvider
     class SkillConceptIdentifier(private val conceptIdentifier: String) {
 
-        @Suppress("UNUSED")
         @BuilderData
         @SetProvidedConceptIdentifierValue(conceptToModifyAlias = "skill")
         fun getConceptId() = ConceptIdentifier.of(conceptIdentifier)

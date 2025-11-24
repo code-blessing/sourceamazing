@@ -8,34 +8,34 @@ import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class BuilderApiFacetMultiUseTest {
     private interface SchemaWithConceptWithMultiUsedFacet {
 
         interface ConceptWithFacetAlphaAndBeta {
-            @Suppress("UNUSED") val facetAlpha: String
+            val facetAlpha: String
 
-            @Suppress("UNUSED") val facetBeta: String
+            val facetBeta: String
         }
 
         interface ConceptWithFacetAlpha {
-            @Suppress("UNUSED") val facetAlpha: String
+            val facetAlpha: String
         }
 
         interface ConceptWithFacetBeta {
-            @Suppress("UNUSED") val facetBeta: String
+            val facetBeta: String
         }
 
-        @Suppress("UNUSED") val conceptAlphaAndBeta: List<ConceptWithFacetAlphaAndBeta>
+        val conceptAlphaAndBeta: List<ConceptWithFacetAlphaAndBeta>
 
-        @Suppress("UNUSED") val conceptAlpha: List<ConceptWithFacetAlpha>
+        val conceptAlpha: List<ConceptWithFacetAlpha>
 
-        @Suppress("UNUSED") val conceptBeta: List<ConceptWithFacetBeta>
+        val conceptBeta: List<ConceptWithFacetBeta>
     }
 
     @Builder
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlphaAndBeta::class,
@@ -45,7 +45,6 @@ class BuilderApiFacetMultiUseTest {
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class,
@@ -59,7 +58,6 @@ class BuilderApiFacetMultiUseTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
                 @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")
@@ -85,7 +83,6 @@ class BuilderApiFacetMultiUseTest {
     @Builder
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets {
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlphaAndBeta::class,
@@ -95,7 +92,6 @@ class BuilderApiFacetMultiUseTest {
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
-        @Suppress("UNUSED")
         @BuilderMethod
         @NewConcept(
             SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class,
@@ -109,7 +105,6 @@ class BuilderApiFacetMultiUseTest {
         @ExpectedAliasFromSuperiorBuilder("foo")
         private interface NestedBuilder {
 
-            @Suppress("UNUSED")
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
                 @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")

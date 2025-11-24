@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED")
 class NestedConceptsBuilderTest {
 
     private interface NestedConceptsSchema {
@@ -19,34 +20,31 @@ class NestedConceptsBuilderTest {
         val businessObjects: List<BusinessObjectConcept>
 
         interface BusinessObjectConcept {
-            @Suppress("UNUSED") val name: String
+            val name: String
 
-            @Suppress("UNUSED")
             @References([SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class])
             val fields: List<Field>
         }
 
         sealed interface Field {
-            @Suppress("UNUSED") val fieldName: String
+            val fieldName: String
         }
 
         interface SingleValueFieldConcept : Field {
-            @Suppress("UNUSED") val nullable: Boolean
+            val nullable: Boolean
 
-            @Suppress("UNUSED")
             @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
             val singleValueType: FieldType
         }
 
         interface CollectionOfValuesFieldConcept : Field {
-            @Suppress("UNUSED") val collectionKind: CollectionKindEnum
+            val collectionKind: CollectionKindEnum
 
             enum class CollectionKindEnum {
                 LIST,
                 SET,
             }
 
-            @Suppress("UNUSED")
             @References([BuiltinFieldTypeConcept::class, ReferenceFieldTypeConcept::class])
             val collectionValuesType: FieldType
         }
@@ -54,7 +52,7 @@ class NestedConceptsBuilderTest {
         sealed interface FieldType
 
         interface BuiltinFieldTypeConcept : FieldType {
-            @Suppress("UNUSED") val builtinType: BuiltinTypeEnum
+            val builtinType: BuiltinTypeEnum
 
             enum class BuiltinTypeEnum {
                 STRING,
@@ -63,7 +61,7 @@ class NestedConceptsBuilderTest {
         }
 
         interface ReferenceFieldTypeConcept : FieldType {
-            @Suppress("UNUSED") val referencedBusinessObject: BusinessObjectConcept
+            val referencedBusinessObject: BusinessObjectConcept
         }
     }
 
