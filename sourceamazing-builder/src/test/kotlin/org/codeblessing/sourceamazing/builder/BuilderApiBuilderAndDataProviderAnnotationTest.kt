@@ -725,7 +725,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
             @SetProvidedFacetValue(
                 conceptToModifyAlias = "foo",
-                facetToModify = "ConceptWithTextFacet",
+                facetToModify = "MyConcept",
             )
             fun getText() {
                 // nothing to return

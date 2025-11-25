@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test
 @Suppress("UNUSED")
 class BuilderDataProviderTest {
 
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
-        interface ConceptWithFacet {
+        interface MyConcept {
             val id: String
 
             val text: String
@@ -21,7 +21,7 @@ class BuilderDataProviderTest {
             val number: Int
         }
 
-        val concepts: List<ConceptWithFacet>
+        val concepts: List<MyConcept>
     }
 
     @BuilderDataProvider
@@ -58,7 +58,7 @@ class BuilderDataProviderTest {
 
         @BuilderData
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            concept = MyConcepts.MyConcept::class,
             declareConceptAlias = "bar",
         )
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -100,7 +100,7 @@ class BuilderDataProviderTest {
     private interface BuilderMethodForDataProvider {
 
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",
@@ -114,7 +114,7 @@ class BuilderDataProviderTest {
         )
 
         @BuilderMethod
-        @NewConcept(SchemaWithConceptWithFacet.ConceptWithFacet::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",
@@ -149,8 +149,8 @@ class BuilderDataProviderTest {
             )
 
         val schemaWithConcept =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
 class BuilderApiFacetMultiUseTest {
-    private interface SchemaWithConceptWithMultiUsedFacet {
+    private interface MyConcepts {
 
         interface ConceptWithFacetAlphaAndBeta {
             val facetAlpha: String
@@ -38,7 +38,7 @@ class BuilderApiFacetMultiUseTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlphaAndBeta::class,
+            MyConcepts.ConceptWithFacetAlphaAndBeta::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -47,7 +47,7 @@ class BuilderApiFacetMultiUseTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlpha::class,
+            MyConcepts.ConceptWithFacetAlpha::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -68,8 +68,8 @@ class BuilderApiFacetMultiUseTest {
 
     @Test
     fun `test using nested builder for two different concepts with overlapping facets should not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithMultiUsedFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class,
@@ -85,7 +85,7 @@ class BuilderApiFacetMultiUseTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetAlphaAndBeta::class,
+            MyConcepts.ConceptWithFacetAlphaAndBeta::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -94,7 +94,7 @@ class BuilderApiFacetMultiUseTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithMultiUsedFacet.ConceptWithFacetBeta::class,
+            MyConcepts.ConceptWithFacetBeta::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -119,8 +119,8 @@ class BuilderApiFacetMultiUseTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithMultiUsedFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithMultiUsedFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class,

@@ -11,15 +11,15 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
-        interface ConceptWithFacet {
+        interface MyConcept {
             val id: String
 
-            val conceptReferences: List<ConceptWithFacet>
+            val conceptReferences: List<MyConcept>
         }
 
-        val concepts: List<ConceptWithFacet>
+        val concepts: List<MyConcept>
     }
 
     @Builder
@@ -28,7 +28,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            concept = MyConcepts.MyConcept::class,
             declareConceptAlias = "myConcept",
         )
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -61,9 +61,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     @Test
     fun `test add reference to itself`() {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -93,9 +93,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val firstReferencedConceptIdentifier = ConceptIdentifier.of("First-Referenced-Id")
         val secondReferencedConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -139,9 +139,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val secondConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -182,9 +182,9 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val secondConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -229,8 +229,8 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val uninstantiatedConceptId = ConceptIdentifier.of("Uninstantiated-Referenced-Id")
 
         assertThrows<MissingReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,

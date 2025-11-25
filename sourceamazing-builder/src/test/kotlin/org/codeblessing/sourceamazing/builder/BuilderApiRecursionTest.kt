@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
 class BuilderApiRecursionTest {
-    private interface SchemaWithConcept {
+    private interface MyConcepts {
 
         interface OneConcept
 
@@ -19,7 +19,7 @@ class BuilderApiRecursionTest {
     private interface BuilderMethodUsingSameBuilderIndirectly {
 
         @BuilderMethod
-        @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcepts.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(OuterNestedBuilder::class)
         fun doSomething(): OuterNestedBuilder
@@ -45,8 +45,8 @@ class BuilderApiRecursionTest {
 
     @Test
     fun `test using nested builder returning another inner nested builder that returns the first nested builder should not fail with a stack overflow`() {
-        SchemaApi.withSchema(SchemaWithConcept::class) { schemaContext ->
-            withRootInstance<SchemaWithConcept>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodUsingSameBuilderIndirectly::class,
@@ -61,7 +61,7 @@ class BuilderApiRecursionTest {
     private interface BuilderMethodUsingSameBuilderDirectly {
 
         @BuilderMethod
-        @NewConcept(SchemaWithConcept.OneConcept::class, declareConceptAlias = "foo")
+        @NewConcept(MyConcepts.OneConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
@@ -76,8 +76,8 @@ class BuilderApiRecursionTest {
 
     @Test
     fun `test using nested builder returning itself should not fail with a stack overflow`() {
-        SchemaApi.withSchema(SchemaWithConcept::class) { schemaContext ->
-            withRootInstance<SchemaWithConcept>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodUsingSameBuilderDirectly::class,

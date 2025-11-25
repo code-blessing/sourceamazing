@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test
 
 class BuilderDataCardinalityTest {
 
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
-        interface ConceptWithFacet {
+        interface MyConcept {
 
             val zeroToMultipleTexts: List<String>
         }
 
-        val concepts: List<ConceptWithFacet>
+        val concepts: List<MyConcept>
     }
 
     @Builder
@@ -24,7 +24,7 @@ class BuilderDataCardinalityTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            concept = MyConcepts.MyConcept::class,
             declareConceptAlias = "myConcept",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
@@ -63,8 +63,8 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert nothing to a text facet will return an empty list`() {
         val schemaInstance =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -83,8 +83,8 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts individually to a text facet will return an list of four elements`() {
         val schemaInstance =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -108,8 +108,8 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts as array list to a text facet will return an list of four elements`() {
         val schemaInstance =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,

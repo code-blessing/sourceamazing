@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test
 @Suppress("UNUSED")
 class BuilderMethodApiInjectionAndReturnTest {
 
-    private interface SchemaWithConceptWithTextFacet {
-        interface ConceptWithTextFacet {
+    private interface MyConcepts {
+        interface MyConcept {
             val text: String
         }
 
-        val concepts: List<ConceptWithTextFacet>
+        val concepts: List<MyConcept>
     }
 
     @Builder private interface EmptyBuilder
@@ -31,8 +31,8 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder with BuilderMethod annotation using the same builder should not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodReturningSameBuilder::class) {
                     // do nothing
                 }
@@ -50,8 +50,8 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning another builder should not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodReturningOtherBuilder::class) {
                     // do nothing
                 }
@@ -73,8 +73,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderSyntaxException::class,
             BuilderErrorCode.MUST_HAVE_ANNOTATION,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodReturningOtherBuildersWithoutBuilderAnnotation::class,
@@ -98,8 +98,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class,
@@ -126,8 +126,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation::class,
@@ -151,8 +151,8 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning a another with WithNewBuilder annotation should not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation::class,
@@ -178,8 +178,8 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder injection without declaring the builder should use the existing builder and not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation::class,
@@ -202,8 +202,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionWithoutExtensionFunction::class,
@@ -227,8 +227,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionWithObjectInsteadOfFunction::class,
@@ -252,8 +252,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_PARAMS_INVALID,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionWithValueParameters::class,
@@ -277,8 +277,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_HAVE_RETURN_TYPE,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionWithReturnType::class,
@@ -302,8 +302,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_CANNOT_BE_NULLABLE,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionWithNullableType::class,
@@ -331,8 +331,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithTwoBuilderInjectionParameter::class,
@@ -349,7 +349,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            MyConcepts.MyConcept::class,
             declareConceptAlias = "foo",
         )
         fun doSomething(
@@ -365,8 +365,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionOnNonLastParam::class,
@@ -382,7 +382,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue {
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithTextFacet.ConceptWithTextFacet::class,
+            MyConcepts.MyConcept::class,
             declareConceptAlias = "foo",
         )
         fun doSomething(
@@ -398,8 +398,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_PARAM_INJECTION_AND_IGNORE_NULL_ANNOTATION,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue::class,
@@ -423,8 +423,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionAndReturnTypeBuilder::class,
@@ -451,8 +451,8 @@ class BuilderMethodApiInjectionAndReturnTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithTextFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithTextFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes::class,

@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test
 
 class BuilderDataNestingBuildersTest {
 
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
-        interface ConceptWithFacet {
+        interface MyConcept {
             val texts: List<String>
 
             val numbers: List<Int>
         }
 
-        val concepts: List<ConceptWithFacet>
+        val concepts: List<MyConcept>
     }
 
     @Builder
@@ -25,7 +25,7 @@ class BuilderDataNestingBuildersTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptWithFacet::class,
+            concept = MyConcepts.MyConcept::class,
             declareConceptAlias = "myConcept",
         )
         @SetRandomConceptIdentifierValue("myConcept")
@@ -59,9 +59,9 @@ class BuilderDataNestingBuildersTest {
 
     @Test
     fun `test returning a higher level builder from a lower level builder`() {
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,

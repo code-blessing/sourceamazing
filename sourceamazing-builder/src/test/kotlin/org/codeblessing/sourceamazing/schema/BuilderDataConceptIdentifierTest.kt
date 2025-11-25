@@ -12,7 +12,7 @@ import org.junit.jupiter.api.assertThrows
 
 class BuilderDataConceptIdentifierTest {
 
-    private interface SchemaWithConcepts {
+    private interface MyConcepts {
 
         interface AbstractNumericConcept
 
@@ -30,7 +30,7 @@ class BuilderDataConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConcepts.ConceptOne::class,
+            concept = MyConcepts.ConceptOne::class,
             declareConceptAlias = "myConcept",
         )
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -45,7 +45,7 @@ class BuilderDataConceptIdentifierTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConcepts.ConceptTwo::class,
+            concept = MyConcepts.ConceptTwo::class,
             declareConceptAlias = "myConcept",
         )
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -66,8 +66,8 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId3 = ConceptIdentifier.of("My-Id-3")
 
         val schemaInstance =
-            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
@@ -87,8 +87,8 @@ class BuilderDataConceptIdentifierTest {
     fun `test using the same concept identifier for creating same concepts throws an exception`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
@@ -107,8 +107,8 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-                withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddConcepts::class,
@@ -126,8 +126,8 @@ class BuilderDataConceptIdentifierTest {
     fun `test quick validation throws the exception immediately on the wrong builder method`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
-        SchemaApi.withSchema(SchemaWithConcepts::class) { schemaContext ->
-            withRootInstance<SchemaWithConcepts>(schemaContext) { conceptNameAndIdentifier ->
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderToAddConcepts::class,

@@ -10,23 +10,23 @@ import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
 class BuilderApiSchemaTest {
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
-        interface KnownConceptWithFacet {
+        interface MyKnownConcept {
             val knownFacet: String
         }
 
-        interface AlsoKnownConceptWithFacet {
+        interface AlsoKnownConcept {
             val alsoKnownFacet: String
         }
 
-        interface UnknownConceptWithFacet {
+        interface UnknownConcept {
             val unknownFacet: String
         }
 
-        val knownConcepts: List<KnownConceptWithFacet>
+        val knownConcepts: List<MyKnownConcept>
 
-        val alsoKnownConcepts: List<AlsoKnownConceptWithFacet>
+        val alsoKnownConcepts: List<AlsoKnownConcept>
     }
 
     @Builder
@@ -34,7 +34,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -43,8 +43,8 @@ class BuilderApiSchemaTest {
 
     @Test
     fun `test using NewConcept annotation with known concept should not fail`() {
-        SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodCreatingKnownConcept::class) {
                     // do nothing
                 }
@@ -57,7 +57,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.UnknownConceptWithFacet::class,
+            MyConcepts.UnknownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -70,8 +70,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_CONCEPT,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodCreatingUnknownConcept::class,
@@ -88,7 +88,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -104,8 +104,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingUnknownFacetAsParameterValue::class,
@@ -122,7 +122,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -140,8 +140,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingUnknownFacetAsFixedValue::class,
@@ -158,7 +158,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -174,8 +174,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingFacetOfAnotherKnownConceptAsParameterValue::class,
@@ -192,7 +192,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -210,8 +210,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingFacetOfAnotherKnownConceptAsFixedValue::class,
@@ -228,7 +228,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -249,8 +249,8 @@ class BuilderApiSchemaTest {
 
     @Test
     fun `test using known facet of correct concept as parameter value in nested builder should throw an exception`() {
-        SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodPassingCorrectConceptParentNestedBuilderAsParameterValue::class,
@@ -266,7 +266,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -289,8 +289,8 @@ class BuilderApiSchemaTest {
 
     @Test
     fun `test using known facet of correct concept as fixed value in nested builder should throw an exception`() {
-        SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+            withRootInstance<MyConcepts>(schemaContext) {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodPassingCorrectConceptParentNestedBuilderAsFixedValue::class,
@@ -306,7 +306,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -337,8 +337,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodPassingWrongConceptParentNestedBuilderAsParameterValue::class,
@@ -355,7 +355,7 @@ class BuilderApiSchemaTest {
 
         @BuilderMethod
         @NewConcept(
-            SchemaWithConceptWithFacet.KnownConceptWithFacet::class,
+            MyConcepts.MyKnownConcept::class,
             declareConceptAlias = "foo",
         )
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -390,8 +390,8 @@ class BuilderApiSchemaTest {
             BuilderMethodSyntaxException::class,
             BuilderErrorCode.UNKNOWN_FACET,
         ) {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodPassingWrongConceptParentNestedBuilderAsFixedValue::class,

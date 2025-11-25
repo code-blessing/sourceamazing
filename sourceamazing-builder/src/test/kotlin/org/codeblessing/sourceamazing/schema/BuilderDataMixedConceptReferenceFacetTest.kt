@@ -13,7 +13,7 @@ import org.junit.jupiter.api.assertThrows
 @Suppress("UNUSED")
 class BuilderDataMixedConceptReferenceFacetTest {
 
-    private interface SchemaWithConceptWithFacet {
+    private interface MyConcepts {
 
         @References([ConceptAlpha::class, ConceptBeta::class])
         val alphaAndBetaAsList: List<AlphaAndBeta>
@@ -37,7 +37,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptAlpha::class,
+            concept = MyConcepts.ConceptAlpha::class,
             declareConceptAlias = "alphaConcept",
         )
         fun createAlphaConcept(
@@ -48,7 +48,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptBeta::class,
+            concept = MyConcepts.ConceptBeta::class,
             declareConceptAlias = "betaConcept",
         )
         fun createBetaConcept(
@@ -59,7 +59,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         @BuilderMethod
         @NewConcept(
-            concept = SchemaWithConceptWithFacet.ConceptGamma::class,
+            concept = MyConcepts.ConceptGamma::class,
             declareConceptAlias = "gammaConcept",
         )
         @SetAliasConceptIdentifierReferenceFacetValue(
@@ -90,9 +90,9 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val beta1ConceptIdentifier = ConceptIdentifier.of("Beta1-Id")
         val beta2ConceptIdentifier = ConceptIdentifier.of("Beta2-Id")
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
-        val schemaInstance: SchemaWithConceptWithFacet =
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+        val schemaInstance: MyConcepts =
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
@@ -145,8 +145,8 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
 
         assertThrows<WrongReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(SchemaWithConceptWithFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithFacet>(schemaContext) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
                     conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
