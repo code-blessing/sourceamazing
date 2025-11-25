@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED", "Unused")
 class SchemaCreatorTest {
 
     private interface EmptySchemaDefinitionClass
@@ -22,7 +23,7 @@ class SchemaCreatorTest {
 
         interface EmptyConceptClass
 
-        @Suppress("UNUSED") val oneConcept: EmptyConceptClass
+        val oneConcept: EmptyConceptClass
     }
 
     @Test
@@ -33,7 +34,7 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithTextFacetClass {
-        @Suppress("UNUSED") val myText: String
+        val myText: String
     }
 
     @Test
@@ -49,11 +50,11 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithCorrectCardinalityFacets {
-        @Suppress("UNUSED") val myText: String?
+        val myText: String?
 
-        @Suppress("UNUSED") val myBoolean: Boolean
+        val myBoolean: Boolean
 
-        @Suppress("UNUSED") val myNumbers: Set<Int>
+        val myNumbers: Set<Int>
     }
 
     @Test
@@ -89,7 +90,7 @@ class SchemaCreatorTest {
     private interface SchemaWithConceptWithEmptyEnumFacet {
         enum class EmptyEnumeration
 
-        @Suppress("UNUSED") val myEnum: EmptyEnumeration
+        val myEnum: EmptyEnumeration
     }
 
     @Test
@@ -113,11 +114,11 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithPrimitiveFacetClasses {
-        @Suppress("UNUSED") val myText: String
+        val myText: String
 
-        @Suppress("UNUSED") val myBoolean: Boolean
+        val myBoolean: Boolean
 
-        @Suppress("UNUSED") val myNumber: Int
+        val myNumber: Int
     }
 
     @Test
@@ -157,7 +158,7 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithEnumFacet {
-        @Suppress("UNUSED") val mySeasonEnum: SeasonEnumeration
+        val mySeasonEnum: SeasonEnumeration
 
         enum class SeasonEnumeration {
             WINTER,
@@ -204,7 +205,7 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithReferenceFacet {
-        @Suppress("UNUSED") val myReference: OtherConcept
+        val myReference: OtherConcept
 
         interface OtherConcept
     }
@@ -229,7 +230,6 @@ class SchemaCreatorTest {
     }
 
     private interface SchemaWithConceptWithReferenceFacetToMultipleConcepts {
-        @Suppress("UNUSED")
         @References(
             [OtherConcept::class, AndAnotherConcept::class, AndJustOneAnotherConcept::class]
         )

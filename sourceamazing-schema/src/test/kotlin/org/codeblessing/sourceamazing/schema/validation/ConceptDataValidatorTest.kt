@@ -12,28 +12,29 @@ import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED", "Unused")
 class ConceptDataValidatorTest {
 
     enum class MyEnumeration {
-        @Suppress("UNUSED") X,
-        @Suppress("UNUSED") Y,
-        @Suppress("UNUSED") Z,
+        X,
+        Y,
+        Z,
     }
 
     enum class OtherEnumeration {
-        @Suppress("UNUSED") X,
-        @Suppress("UNUSED") Y,
-        @Suppress("UNUSED") Z,
+        X,
+        Y,
+        Z,
     }
 
     enum class IncompatibleEnumeration {
-        @Suppress("UNUSED") A,
-        @Suppress("UNUSED") B,
-        @Suppress("UNUSED") C,
+        A,
+        B,
+        C,
     }
 
     interface OtherConcept {
-        @Suppress("UNUSED") val otherConceptTextFacet: String?
+        val otherConceptTextFacet: String?
     }
 
     interface OtherThanTheOtherConcept
@@ -41,7 +42,7 @@ class ConceptDataValidatorTest {
     private interface SchemaForEmptyConceptValidation {
         interface EmptyConcept
 
-        @Suppress("UNUSED") val theOnlyConcept: EmptyConcept
+        val theOnlyConcept: EmptyConcept
     }
 
     @Test
@@ -87,7 +88,7 @@ class ConceptDataValidatorTest {
     }
 
     private interface SchemaForOneMandatoryTextFacetValidation {
-        @Suppress("UNUSED") val myMandatoryText: String
+        val myMandatoryText: String
     }
 
     private val mandatoryTextFacetName =
@@ -166,7 +167,7 @@ class ConceptDataValidatorTest {
     }
 
     private interface SchemaForSomeEnumsFacetValidation {
-        @Suppress("UNUSED") val someEnumsFacetClass: Set<MyEnumeration>
+        val someEnumsFacetClass: Set<MyEnumeration>
     }
 
     private val someEnumsFacetName =
@@ -240,7 +241,7 @@ class ConceptDataValidatorTest {
 
     private interface SchemaForReferenceFacetValidation {
 
-        @Suppress("UNUSED") val mandatoryReferenceToOtherConcept: OtherConcept
+        val mandatoryReferenceToOtherConcept: OtherConcept
     }
 
     private val mandatoryRefToOneConceptFacetName =

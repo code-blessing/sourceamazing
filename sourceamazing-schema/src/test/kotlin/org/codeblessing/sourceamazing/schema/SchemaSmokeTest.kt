@@ -4,30 +4,31 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED", "Unused")
 class SchemaSmokeTest {
 
     interface SmokeTestSchema {
         interface PersonConcept {
 
             enum class PersonSex {
-                @Suppress("UNUSED") MALE,
-                @Suppress("UNUSED") FEMALE,
+                MALE,
+                FEMALE,
             }
 
-            @Suppress("UNUSED") val firstname: String
+            val firstname: String
 
-            @Suppress("UNUSED") val age: Int
+            val age: Int
 
-            @Suppress("UNUSED") val sex: PersonSex
+            val sex: PersonSex
         }
 
         interface SkillConcept {
 
-            @Suppress("UNUSED") val skillConceptIdentifier: String
+            val skillConceptIdentifier: String
 
-            @Suppress("UNUSED") val skillDescription: String
+            val skillDescription: String
 
-            @Suppress("UNUSED") val isStillFullyEnjoyingAboutThatSkill: Boolean
+            val isStillFullyEnjoyingAboutThatSkill: Boolean
         }
 
         val personList: List<PersonConcept>

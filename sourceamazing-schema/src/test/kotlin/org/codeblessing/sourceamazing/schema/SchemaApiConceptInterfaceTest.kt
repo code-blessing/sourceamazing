@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongClassStructureSyntaxException
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED", "Unused")
 class SchemaApiConceptInterfaceTest {
 
     private interface EmptySchema
@@ -132,7 +133,7 @@ class SchemaApiConceptInterfaceTest {
         }
     }
 
-    @Suppress("Unused") private interface SchemaWithGenericTypeParameter<T>
+    private interface SchemaWithGenericTypeParameter<T>
 
     @Test
     fun `test schema class with generic type parameter should throw an exception`() {
