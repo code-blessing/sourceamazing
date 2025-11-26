@@ -238,6 +238,7 @@ object SchemaCreator {
         val maximumOccurrences: Int = if (isCollection) Int.MAX_VALUE else 1
 
         return FacetSchemaImpl(
+            conceptName = conceptName,
             facetName = facetName,
             facetType = facetType,
             minimumOccurrences = minimumOccurrences,
@@ -394,6 +395,7 @@ object SchemaCreator {
         }
 
         return FacetSchemaImpl(
+            conceptName = conceptName,
             facetName = facetName,
             facetType = facetType,
             minimumOccurrences = minimumOccurrences,

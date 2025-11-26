@@ -8,6 +8,7 @@ import org.codeblessing.sourceamazing.schema.api.FacetType
 import org.codeblessing.sourceamazing.utils.type.enumValues
 
 data class FacetSchemaImpl(
+    override val conceptName: ConceptName,
     override val facetName: FacetName,
     override val facetType: FacetType,
     override val minimumOccurrences: Int,
