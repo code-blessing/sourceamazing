@@ -48,9 +48,6 @@ enum class SchemaErrorCode(override val messageFormat: String) : ErrorCode {
     FACET_REFERENCE_EMPTY_CONCEPT_LIST(
         "Facet '%s' on concept '%s' is declared as a reference facet but the list of concept types is empty."
     ),
-    FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST(
-        "Facet '%s' on concept '%s' is declared is not a reference facet (is '%s') but the list of concept type is not empty (is %s)"
-    ),
     FACET_UNKNOWN_REFERENCED_CONCEPT(
         "Facet '%s' on concept '%s' has an reference concept '%s' which is not a known concept (known concepts are '%s')"
     ),

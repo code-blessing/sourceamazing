@@ -27,10 +27,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     private interface BuilderToAddReferences {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",
@@ -63,8 +60,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
@@ -95,8 +91,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
@@ -141,8 +136,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
@@ -184,8 +178,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
@@ -230,8 +223,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertThrows<MissingReferencedConceptFacetValueException> {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,

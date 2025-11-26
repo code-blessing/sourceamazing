@@ -29,10 +29,7 @@ class BuilderDataConceptIdentifierTest {
     private interface BuilderToAddConcepts {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.ConceptOne::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.ConceptOne::class, declareConceptAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",
@@ -44,10 +41,7 @@ class BuilderDataConceptIdentifierTest {
         )
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.ConceptTwo::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.ConceptTwo::class, declareConceptAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",

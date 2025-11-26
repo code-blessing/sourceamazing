@@ -36,10 +36,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
     private interface BuilderToAddReferences {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.ConceptAlpha::class,
-            declareConceptAlias = "alphaConcept",
-        )
+        @NewConcept(concept = MyConcepts.ConceptAlpha::class, declareConceptAlias = "alphaConcept")
         fun createAlphaConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "alphaConcept")
             conceptIdentifier: ConceptIdentifier,
@@ -47,10 +44,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         )
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.ConceptBeta::class,
-            declareConceptAlias = "betaConcept",
-        )
+        @NewConcept(concept = MyConcepts.ConceptBeta::class, declareConceptAlias = "betaConcept")
         fun createBetaConcept(
             @SetConceptIdentifierValue(conceptToModifyAlias = "betaConcept")
             conceptIdentifier: ConceptIdentifier,
@@ -58,10 +52,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         )
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.ConceptGamma::class,
-            declareConceptAlias = "gammaConcept",
-        )
+        @NewConcept(concept = MyConcepts.ConceptGamma::class, declareConceptAlias = "gammaConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "gammaAsList",
@@ -92,8 +83,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
@@ -146,8 +136,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
 
         assertThrows<WrongReferencedConceptFacetValueException> {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,

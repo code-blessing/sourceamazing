@@ -33,10 +33,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodCreatingKnownConcept {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
@@ -56,10 +53,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodCreatingUnknownConcept {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.UnknownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.UnknownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething()
     }
@@ -87,10 +81,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodUsingUnknownFacetAsParameterValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet")
@@ -121,10 +112,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodUsingUnknownFacetAsFixedValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "foo",
@@ -157,10 +145,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodUsingFacetOfAnotherKnownConceptAsParameterValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet")
@@ -191,10 +176,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodUsingFacetOfAnotherKnownConceptAsFixedValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "foo",
@@ -227,10 +209,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodPassingCorrectConceptParentNestedBuilderAsParameterValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
@@ -265,10 +244,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodPassingCorrectConceptParentNestedBuilderAsFixedValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
@@ -305,10 +281,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodPassingWrongConceptParentNestedBuilderAsParameterValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
@@ -354,10 +327,7 @@ class BuilderApiSchemaTest {
     private interface BuilderMethodPassingWrongConceptParentNestedBuilderAsFixedValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyKnownConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder

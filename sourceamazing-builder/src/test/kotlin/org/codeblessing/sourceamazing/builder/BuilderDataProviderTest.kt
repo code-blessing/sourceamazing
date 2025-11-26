@@ -57,10 +57,7 @@ class BuilderDataProviderTest {
     ) {
 
         @BuilderData
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "bar",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "bar")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "concepts",
@@ -150,8 +147,7 @@ class BuilderDataProviderTest {
 
         val schemaWithConcept =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodForDataProvider::class,

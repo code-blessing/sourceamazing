@@ -34,10 +34,7 @@ class BuilderDataFacetTypeAndQueryTest {
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -83,8 +80,7 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
@@ -107,8 +103,7 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
@@ -144,8 +139,7 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,

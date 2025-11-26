@@ -348,10 +348,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface BuilderMethodWithBuilderInjectionOnNonLastParam {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier,
             @InjectBuilder builder: EmptyBuilder.() -> Unit,
@@ -381,10 +378,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodParamWithInjectBuilderAndIgnoreNullFacetValue {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,

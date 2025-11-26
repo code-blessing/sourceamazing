@@ -23,10 +23,15 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.EnumFace
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
+import org.codeblessing.sourceamazing.schema.api.BooleanFacetSchema
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.EnumFacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.*
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
@@ -458,8 +463,8 @@ object BuilderMethodValidator {
             val classInformation = getTypeClass(facetValueAnnotationContent)
             val typeClass: KClass<*> = classInformation.clazz
 
-            when (facetFromSchema.facetType) {
-                FacetType.TEXT ->
+            when (facetFromSchema) {
+                is TextFacetSchema ->
                     if (typeClass != String::class) {
                         throw BuilderMethodSyntaxException(
                             methodLocation,
@@ -468,7 +473,7 @@ object BuilderMethodValidator {
                             SUPPORTED_COLLECTION_TYPES,
                         )
                     }
-                FacetType.NUMBER ->
+                is NumberFacetSchema ->
                     if (typeClass != Int::class) {
                         throw BuilderMethodSyntaxException(
                             methodLocation,
@@ -477,7 +482,7 @@ object BuilderMethodValidator {
                             SUPPORTED_COLLECTION_TYPES,
                         )
                     }
-                FacetType.BOOLEAN ->
+                is BooleanFacetSchema ->
                     if (typeClass != Boolean::class) {
                         throw BuilderMethodSyntaxException(
                             methodLocation,
@@ -486,7 +491,7 @@ object BuilderMethodValidator {
                             SUPPORTED_COLLECTION_TYPES,
                         )
                     }
-                FacetType.TEXT_ENUMERATION ->
+                is EnumFacetSchema ->
                     if (
                         !isEnumType(facetFromSchema.enumerationType, typeClass) ||
                             !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)
@@ -500,7 +505,7 @@ object BuilderMethodValidator {
                             facetFromSchema.enumerationValues,
                         )
                     }
-                FacetType.REFERENCE ->
+                is ReferenceFacetSchema ->
                     if (typeClass != ConceptIdentifier::class) {
                         throw BuilderMethodSyntaxException(
                             methodLocation,
@@ -818,7 +823,12 @@ object BuilderMethodValidator {
         val facetName = annotationBaseData.facetName
 
         val facet = requireNotNull(schemaAccess.facetByFacetName(facetName))
-        val validEnumerationValues = facet.enumerationValues.map { it.name }
+        val validEnumerationValues =
+            if (facet is EnumFacetSchema) {
+                facet.enumerationValues.map { it.name }
+            } else {
+                emptyList()
+            }
 
         if (!validEnumerationValues.contains(enumValue)) {
             throw BuilderMethodSyntaxException(

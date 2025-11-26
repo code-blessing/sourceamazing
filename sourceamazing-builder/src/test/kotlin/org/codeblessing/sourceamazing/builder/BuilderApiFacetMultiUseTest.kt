@@ -37,19 +37,13 @@ class BuilderApiFacetMultiUseTest {
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.ConceptWithFacetAlphaAndBeta::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.ConceptWithFacetAlphaAndBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.ConceptWithFacetAlpha::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.ConceptWithFacetAlpha::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetAlpha(): NestedBuilder
@@ -84,19 +78,13 @@ class BuilderApiFacetMultiUseTest {
     private interface BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.ConceptWithFacetAlphaAndBeta::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.ConceptWithFacetAlphaAndBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.ConceptWithFacetBeta::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.ConceptWithFacetBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetBeta(): NestedBuilder

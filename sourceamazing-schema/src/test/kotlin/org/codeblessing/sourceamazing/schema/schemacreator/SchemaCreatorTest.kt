@@ -1,8 +1,10 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.EnumFacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
 import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -103,7 +105,7 @@ class SchemaCreatorTest {
         val conceptSchema =
             schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEmptyEnumFacet::class))
         val enumFacetName = FacetName.of(SchemaWithConceptWithEmptyEnumFacet::myEnum.name)
-        val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
+        val enumFacetSchema = conceptSchema.facetByName(enumFacetName) as EnumFacetSchema
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         assertEquals(
@@ -147,14 +149,6 @@ class SchemaCreatorTest {
         assertEquals(FacetType.TEXT, conceptSchema.facetByName(textFacetName).facetType)
         assertEquals(FacetType.BOOLEAN, conceptSchema.facetByName(booleanFacetName).facetType)
         assertEquals(FacetType.NUMBER, conceptSchema.facetByName(numberFacetName).facetType)
-
-        assertNull(conceptSchema.facetByName(textFacetName).enumerationType)
-        assertNull(conceptSchema.facetByName(booleanFacetName).enumerationType)
-        assertNull(conceptSchema.facetByName(numberFacetName).enumerationType)
-
-        assertEquals(0, conceptSchema.facetByName(textFacetName).enumerationValues.size)
-        assertEquals(0, conceptSchema.facetByName(booleanFacetName).enumerationValues.size)
-        assertEquals(0, conceptSchema.facetByName(numberFacetName).enumerationValues.size)
     }
 
     private interface SchemaWithConceptWithEnumFacet {
@@ -178,7 +172,7 @@ class SchemaCreatorTest {
         val conceptSchema =
             schema.conceptByConceptName(ConceptName.of(SchemaWithConceptWithEnumFacet::class))
         val enumFacetName = FacetName.of(SchemaWithConceptWithEnumFacet::mySeasonEnum.name)
-        val enumFacetSchema = conceptSchema.facetByName(enumFacetName)
+        val enumFacetSchema = conceptSchema.facetByName(enumFacetName) as EnumFacetSchema
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
         assertEquals(
@@ -222,7 +216,8 @@ class SchemaCreatorTest {
         val referenceFacetName = FacetName.of(SchemaWithConceptWithReferenceFacet::myReference.name)
         val otherReferencedConceptName =
             ConceptName.of(SchemaWithConceptWithReferenceFacet.OtherConcept::class)
-        val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
+        val referenceFacetSchema =
+            conceptSchema.facetByName(referenceFacetName) as ReferenceFacetSchema
         assertEquals(referenceFacetName, referenceFacetSchema.facetName)
         assertEquals(FacetType.REFERENCE, referenceFacetSchema.facetType)
         assertEquals(1, referenceFacetSchema.referencingConcepts.size)
@@ -257,7 +252,8 @@ class SchemaCreatorTest {
             )
         val referenceFacetName =
             FacetName.of(SchemaWithConceptWithReferenceFacetToMultipleConcepts::myReference.name)
-        val referenceFacetSchema = conceptSchema.facetByName(referenceFacetName)
+        val referenceFacetSchema =
+            conceptSchema.facetByName(referenceFacetName) as ReferenceFacetSchema
 
         val referencedConceptName1 =
             ConceptName.of(

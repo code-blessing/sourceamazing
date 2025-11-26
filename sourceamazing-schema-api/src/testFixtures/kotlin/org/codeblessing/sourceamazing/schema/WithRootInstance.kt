@@ -25,12 +25,12 @@ fun writeDefaultValues(rootConcept: ConceptSchema, rootConceptData: ConceptData)
     rootConcept.facets.forEach { facetSchema ->
         if (facetSchema.minimumOccurrences > 0) {
             val defaultValue =
-                when (facetSchema.facetType) {
-                    FacetType.TEXT -> ""
-                    FacetType.NUMBER -> 0
-                    FacetType.BOOLEAN -> false
-                    FacetType.TEXT_ENUMERATION -> facetSchema.enumerationValues.firstOrNull()
-                    FacetType.REFERENCE -> null
+                when (facetSchema) {
+                    is TextFacetSchema -> ""
+                    is NumberFacetSchema -> 0
+                    is BooleanFacetSchema -> false
+                    is EnumFacetSchema -> facetSchema.enumerationValues.firstOrNull()
+                    is ReferenceFacetSchema -> null
                 }
             if (defaultValue != null) {
                 rootConceptData.addFacetValue(facetSchema.facetName, defaultValue)

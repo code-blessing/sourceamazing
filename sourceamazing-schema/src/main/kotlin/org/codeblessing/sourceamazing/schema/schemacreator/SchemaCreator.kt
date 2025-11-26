@@ -40,6 +40,7 @@ object SchemaCreator {
             concepts.put(conceptSchema.conceptName, conceptSchema)
 
             conceptSchema.facets
+                .filterIsInstance<ReferenceFacetSchema>()
                 .flatMap { it.referencingConcepts }
                 .filterNot { it in concepts }
                 .map { it.clazz }
@@ -237,18 +238,50 @@ object SchemaCreator {
         val minimumOccurrences: Int = if (isNullable || isCollection) 0 else 1
         val maximumOccurrences: Int = if (isCollection) Int.MAX_VALUE else 1
 
-        return FacetSchemaImpl(
-            conceptName = conceptName,
-            facetName = facetName,
-            facetType = facetType,
-            minimumOccurrences = minimumOccurrences,
-            maximumOccurrences = maximumOccurrences,
-            referencingConcepts =
-                if (facetType == FacetType.REFERENCE)
-                    referencedClasses.map { it.toConceptName() }.toSet()
-                else emptySet(),
-            enumerationType = if (facetType == FacetType.TEXT_ENUMERATION) facetClass else null,
-        )
+        return when (facetType) {
+            FacetType.TEXT ->
+                TextFacetSchemaImpl(
+                    conceptName = conceptName,
+                    facetName = facetName,
+                    facetType = facetType,
+                    minimumOccurrences = minimumOccurrences,
+                    maximumOccurrences = maximumOccurrences,
+                )
+            FacetType.NUMBER ->
+                NumberFacetSchemaImpl(
+                    conceptName = conceptName,
+                    facetName = facetName,
+                    facetType = facetType,
+                    minimumOccurrences = minimumOccurrences,
+                    maximumOccurrences = maximumOccurrences,
+                )
+            FacetType.BOOLEAN ->
+                BooleanFacetSchemaImpl(
+                    conceptName = conceptName,
+                    facetName = facetName,
+                    facetType = facetType,
+                    minimumOccurrences = minimumOccurrences,
+                    maximumOccurrences = maximumOccurrences,
+                )
+            FacetType.REFERENCE ->
+                ReferenceFacetSchemaImpl(
+                    conceptName = conceptName,
+                    facetName = facetName,
+                    facetType = facetType,
+                    minimumOccurrences = minimumOccurrences,
+                    maximumOccurrences = maximumOccurrences,
+                    referencingConcepts = referencedClasses.map { it.toConceptName() }.toSet(),
+                )
+            FacetType.TEXT_ENUMERATION ->
+                EnumFacetSchemaImpl(
+                    conceptName = conceptName,
+                    facetName = facetName,
+                    facetType = facetType,
+                    minimumOccurrences = minimumOccurrences,
+                    maximumOccurrences = maximumOccurrences,
+                    enumerationType = facetClass,
+                )
+        }
     }
 
     private fun isInheritanceCompatibleClass(
@@ -324,54 +357,45 @@ object SchemaCreator {
         return first
     }
 
-    private fun validatedFacetSchema(
-        facetSchema: FacetSchema,
-        conceptName: ConceptName,
-    ): FacetSchema {
+    private fun validatedFacetSchema(facetSchema: FacetSchema, conceptName: ConceptName) {
         val facetName: FacetName = facetSchema.facetName
 
-        val facetType = facetSchema.facetType
         val minimumOccurrences = facetSchema.minimumOccurrences
         val maximumOccurrences = facetSchema.maximumOccurrences
-        val enumerationType = facetSchema.enumerationType
-        val referencedConcepts = facetSchema.referencingConcepts
 
-        if (facetType == FacetType.TEXT_ENUMERATION) {
-            if (enumerationType == null || !enumerationType.isEnum) {
-                throw WrongFacetSchemaException(
-                    SchemaErrorCode.FACET_ENUM_INVALID,
-                    facetName,
-                    conceptName,
-                    enumerationType ?: "null",
-                )
+        when (facetSchema) {
+            is EnumFacetSchema -> {
+                val enumerationType = facetSchema.enumerationType
+                if (enumerationType == null || !enumerationType.isEnum) {
+                    throw WrongFacetSchemaException(
+                        SchemaErrorCode.FACET_ENUM_INVALID,
+                        facetName,
+                        conceptName,
+                        enumerationType ?: "null",
+                    )
+                }
+
+                if (enumerationType.isPrivate) {
+                    throw WrongFacetSchemaException(
+                        SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER,
+                        facetName,
+                        conceptName,
+                        enumerationType,
+                    )
+                }
             }
-
-            if (enumerationType.isPrivate) {
-                throw WrongFacetSchemaException(
-                    SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER,
-                    facetName,
-                    conceptName,
-                    enumerationType,
-                )
+            is ReferenceFacetSchema -> {
+                if (facetSchema.referencingConcepts.isEmpty()) {
+                    throw WrongFacetSchemaException(
+                        SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST,
+                        facetName,
+                        conceptName,
+                    )
+                }
             }
-        }
-
-        if (facetType == FacetType.REFERENCE && referencedConcepts.isEmpty()) {
-            throw WrongFacetSchemaException(
-                SchemaErrorCode.FACET_REFERENCE_EMPTY_CONCEPT_LIST,
-                facetName,
-                conceptName,
-            )
-        }
-
-        if (facetType != FacetType.REFERENCE && referencedConcepts.isNotEmpty()) {
-            throw WrongFacetSchemaException(
-                SchemaErrorCode.FACET_NOT_REFERENCE_NOT_EMPTY_CONCEPT_LIST,
-                facetName,
-                conceptName,
-                facetType,
-                referencedConcepts,
-            )
+            else -> {
+                // no type specific validation
+            }
         }
 
         if (minimumOccurrences < 0 || maximumOccurrences < 0) {
@@ -393,16 +417,6 @@ object SchemaCreator {
                 maximumOccurrences,
             )
         }
-
-        return FacetSchemaImpl(
-            conceptName = conceptName,
-            facetName = facetName,
-            facetType = facetType,
-            minimumOccurrences = minimumOccurrences,
-            maximumOccurrences = maximumOccurrences,
-            referencingConcepts = referencedConcepts,
-            enumerationType = enumerationType,
-        )
     }
 
     private fun KClass<*>.longText(): String {

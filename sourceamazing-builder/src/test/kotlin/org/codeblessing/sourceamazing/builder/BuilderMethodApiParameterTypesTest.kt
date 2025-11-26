@@ -58,10 +58,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithIllegalConceptIdClass {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: String)
     }
 
@@ -88,10 +85,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithIllegalConceptIdClass {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
@@ -128,10 +122,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNullableConceptId {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptId: ConceptIdentifier?
         )
@@ -160,10 +151,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithNullableConceptId {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
@@ -200,10 +188,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -234,10 +219,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
@@ -275,10 +257,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
@@ -309,10 +288,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
@@ -350,10 +326,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -384,10 +357,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -425,10 +395,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue
@@ -455,10 +422,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -492,10 +456,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithCollectionTypedStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -521,10 +482,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithCollectionTypedStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -557,10 +515,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithMultipleSetFacetValueOnSameFacetMethod {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -588,10 +543,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -630,10 +582,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -667,10 +616,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithSortedSetStringCollectionParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -701,10 +647,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithSortedSetStringCollectionParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -742,10 +685,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithCollectionTypedNullableStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -776,10 +716,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -817,10 +754,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @IgnoreNullFacetValue
@@ -847,10 +781,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -884,10 +815,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithWrongTypedStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet") myText: Int
@@ -917,10 +845,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithWrongTypedStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -958,10 +883,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithWrongFunctionReturningStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "textFacet")
@@ -992,10 +914,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithWrongFunctionReturningStringParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1033,10 +952,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithWrongTypedBooleanParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "boolFacet") myBoolean: Int
@@ -1066,10 +982,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithArrayOfBooleanParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "boolFacet")
@@ -1095,10 +1008,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithArrayOfBooleanParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1131,10 +1041,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithWrongTypedIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet")
@@ -1165,10 +1072,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithLongInsteadOfIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: Long
@@ -1198,10 +1102,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithLongInsteadOfIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1239,10 +1140,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNumberParameterInsteadOfIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet")
@@ -1273,10 +1171,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1314,10 +1209,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithAnyParameterInsteadOfIntParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "numberFacet") myInt: Any
@@ -1347,10 +1239,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithIntInsteadOfEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1381,10 +1270,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithOtherCompatibleEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1410,10 +1296,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithOtherCompatibleEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1446,10 +1329,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithExactSameEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1475,10 +1355,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithOtherIncompatibleEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1509,10 +1386,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithStringInsteadOfEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1543,10 +1417,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithStringInsteadOfEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1584,10 +1455,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithCorrectEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1613,10 +1481,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithSetOfEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1639,10 +1504,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithNullableSetOfEnumParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "enumerationFacet")
@@ -1673,10 +1535,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithWrongTypedReferenceParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
@@ -1707,10 +1566,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithWrongTypedReferenceParameter {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 
@@ -1748,10 +1604,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithVarargArray {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
@@ -1774,10 +1627,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodWithConceptIdentifier {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
@@ -1800,10 +1650,7 @@ class BuilderMethodApiParameterTypesTest {
     private interface BuilderMethodDataProviderWithConceptIdentifier {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doSomething(@ProvideBuilderData data: DataProvider)
 

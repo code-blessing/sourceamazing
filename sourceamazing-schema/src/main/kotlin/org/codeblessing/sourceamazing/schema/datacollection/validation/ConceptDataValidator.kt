@@ -124,29 +124,28 @@ object ConceptDataValidator {
         conceptDataMap: Map<ConceptIdentifier, ConceptData>,
         exceptionCollector: DataValidationExceptionCollector,
     ) {
-        conceptSchema.facets
-            .filter { it.facetType == FacetType.REFERENCE }
-            .forEach { referenceFacetSchema ->
-                val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
-                val possibleConcepts = referenceFacetSchema.referencingConcepts
-                facetValues.forEach { facetValue ->
-                    exceptionCollector.catchAndCollectDataValidationExceptions {
-                        val referenceConceptIdentifier = facetValue as ConceptIdentifier
-                        val referencedConcept = conceptDataMap[referenceConceptIdentifier]
-                        if (referencedConcept == null) {
-                            throw MissingReferencedConceptFacetValueException(
-                                DataCollectionErrorCode.MISSING_REFERENCED_CONCEPT_FACET_VALUE,
-                                referenceFacetSchema.facetName,
-                                conceptDataEntry.conceptIdentifier.name,
-                                conceptDataEntry.conceptName,
-                                referenceConceptIdentifier,
-                                possibleConcepts,
-                                conceptDataEntry.describe(),
-                            )
-                        }
+        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema
+            ->
+            val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
+            val possibleConcepts = referenceFacetSchema.referencingConcepts
+            facetValues.forEach { facetValue ->
+                exceptionCollector.catchAndCollectDataValidationExceptions {
+                    val referenceConceptIdentifier = facetValue as ConceptIdentifier
+                    val referencedConcept = conceptDataMap[referenceConceptIdentifier]
+                    if (referencedConcept == null) {
+                        throw MissingReferencedConceptFacetValueException(
+                            DataCollectionErrorCode.MISSING_REFERENCED_CONCEPT_FACET_VALUE,
+                            referenceFacetSchema.facetName,
+                            conceptDataEntry.conceptIdentifier.name,
+                            conceptDataEntry.conceptName,
+                            referenceConceptIdentifier,
+                            possibleConcepts,
+                            conceptDataEntry.describe(),
+                        )
                     }
                 }
             }
+        }
     }
 
     private fun validateForReferenceFacetWithWrongConcepts(
@@ -155,32 +154,31 @@ object ConceptDataValidator {
         conceptDataMap: Map<ConceptIdentifier, ConceptData>,
         exceptionCollector: DataValidationExceptionCollector,
     ) {
-        conceptSchema.facets
-            .filter { it.facetType == FacetType.REFERENCE }
-            .forEach { referenceFacetSchema ->
-                val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
-                val possibleConcepts = referenceFacetSchema.referencingConcepts
-                facetValues.forEach { facetValue ->
-                    exceptionCollector.catchAndCollectDataValidationExceptions {
-                        val referenceConceptIdentifier = facetValue as ConceptIdentifier
-                        val referencedConcept = conceptDataMap[referenceConceptIdentifier]
-                        if (
-                            referencedConcept != null &&
-                                referencedConcept.conceptName !in possibleConcepts
-                        ) {
-                            throw WrongReferencedConceptFacetValueException(
-                                DataCollectionErrorCode.WRONG_REFERENCED_CONCEPT_FACET_VALUE,
-                                referenceFacetSchema.facetName,
-                                conceptDataEntry.conceptIdentifier.name,
-                                conceptDataEntry.conceptName,
-                                referencedConcept.conceptName,
-                                possibleConcepts,
-                                conceptDataEntry.describe(),
-                            )
-                        }
+        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema
+            ->
+            val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
+            val possibleConcepts = referenceFacetSchema.referencingConcepts
+            facetValues.forEach { facetValue ->
+                exceptionCollector.catchAndCollectDataValidationExceptions {
+                    val referenceConceptIdentifier = facetValue as ConceptIdentifier
+                    val referencedConcept = conceptDataMap[referenceConceptIdentifier]
+                    if (
+                        referencedConcept != null &&
+                            referencedConcept.conceptName !in possibleConcepts
+                    ) {
+                        throw WrongReferencedConceptFacetValueException(
+                            DataCollectionErrorCode.WRONG_REFERENCED_CONCEPT_FACET_VALUE,
+                            referenceFacetSchema.facetName,
+                            conceptDataEntry.conceptIdentifier.name,
+                            conceptDataEntry.conceptName,
+                            referencedConcept.conceptName,
+                            possibleConcepts,
+                            conceptDataEntry.describe(),
+                        )
                     }
                 }
             }
+        }
     }
 
     private fun validateConceptName(schema: SchemaAccess, conceptDataEntry: ConceptData) {
@@ -238,15 +236,9 @@ object ConceptDataValidator {
         conceptSchema.facets.forEach { facetSchema ->
             if (conceptDataEntry.hasFacet(facetSchema.facetName)) {
                 val facetValues = conceptDataEntry.getFacet(facetSchema.facetName)
-                val expectedFacetType = facetSchema.facetType
                 facetValues.forEach { facetValue ->
                     exceptionCollector.catchAndCollectDataValidationExceptions {
-                        validateDataType(
-                            conceptDataEntry,
-                            facetSchema,
-                            expectedFacetType,
-                            facetValue,
-                        )
+                        validateDataType(conceptDataEntry, facetSchema, facetValue)
                     }
                 }
             }
@@ -256,21 +248,20 @@ object ConceptDataValidator {
     private fun validateDataType(
         conceptDataEntry: ConceptData,
         facetSchema: FacetSchema,
-        expectedFacetType: FacetType,
         facetValue: Any,
     ) {
         val actualClass = facetValue::class
         val isValidType =
-            when (expectedFacetType) {
-                FacetType.TEXT -> actualClass == String::class
-                FacetType.NUMBER -> actualClass == Int::class
-                FacetType.BOOLEAN -> actualClass == Boolean::class
-                FacetType.REFERENCE -> actualClass == ConceptIdentifier::class
-                FacetType.TEXT_ENUMERATION -> isValidEnumValue(facetValue, facetSchema)
+            when (facetSchema) {
+                is TextFacetSchema -> actualClass == String::class
+                is NumberFacetSchema -> actualClass == Int::class
+                is BooleanFacetSchema -> actualClass == Boolean::class
+                is ReferenceFacetSchema -> actualClass == ConceptIdentifier::class
+                is EnumFacetSchema -> isValidEnumValue(facetValue, facetSchema)
             }
 
         if (!isValidType) {
-            throw if (expectedFacetType == FacetType.TEXT_ENUMERATION && facetValue is String) {
+            throw if (facetSchema is EnumFacetSchema && facetValue is String) {
                 WrongTypeForFacetValueException(
                     DataCollectionErrorCode.WRONG_FACET_ENUM_TYPE,
                     facetSchema.facetName,
@@ -287,7 +278,7 @@ object ConceptDataValidator {
                     facetSchema.facetName,
                     conceptDataEntry.conceptIdentifier.name,
                     conceptDataEntry.conceptName,
-                    expectedFacetType,
+                    facetSchema.facetType,
                     actualClass.longText(),
                     facetValue,
                     conceptDataEntry.describe(),
@@ -296,13 +287,13 @@ object ConceptDataValidator {
         }
     }
 
-    private fun facetEnumType(facetSchema: FacetSchema): KClass<*> {
+    private fun facetEnumType(facetSchema: EnumFacetSchema): KClass<*> {
         return requireNotNull(facetSchema.enumerationType) {
             "EnumerationType was empty for facet schema $facetSchema"
         }
     }
 
-    private fun isValidEnumValue(enumFacetValue: Any, facetSchema: FacetSchema): Boolean {
+    private fun isValidEnumValue(enumFacetValue: Any, facetSchema: EnumFacetSchema): Boolean {
         val enumerationType = facetEnumType(facetSchema)
         return EnumUtil.fromAnyToEnum(enumFacetValue, enumerationType) != null
     }

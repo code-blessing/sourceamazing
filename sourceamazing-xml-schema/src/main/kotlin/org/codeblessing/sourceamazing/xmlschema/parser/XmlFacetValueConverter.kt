@@ -1,22 +1,26 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
+import org.codeblessing.sourceamazing.schema.api.BooleanFacetSchema
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.EnumFacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
 import org.codeblessing.sourceamazing.utils.type.enumValues
 
 object XmlFacetValueConverter {
     fun convertString(facetSchema: FacetSchema, attributeValue: String): Any {
-        return when (facetSchema.facetType) {
-            FacetType.TEXT -> attributeValue
-            FacetType.NUMBER -> attributeValue.toInt()
-            FacetType.BOOLEAN -> attributeValue.toBoolean()
-            FacetType.REFERENCE -> ConceptIdentifier.of(attributeValue)
-            FacetType.TEXT_ENUMERATION -> enumerationValue(facetSchema, attributeValue)
+        return when (facetSchema) {
+            is TextFacetSchema -> attributeValue
+            is NumberFacetSchema -> attributeValue.toInt()
+            is BooleanFacetSchema -> attributeValue.toBoolean()
+            is ReferenceFacetSchema -> ConceptIdentifier.of(attributeValue)
+            is EnumFacetSchema -> enumerationValue(facetSchema, attributeValue)
         }
     }
 
-    private fun enumerationValue(facetSchema: FacetSchema, attributeValue: String): Any {
+    private fun enumerationValue(facetSchema: EnumFacetSchema, attributeValue: String): Any {
         val enumerationType =
             facetSchema.enumerationType
                 ?: throw IllegalStateException(

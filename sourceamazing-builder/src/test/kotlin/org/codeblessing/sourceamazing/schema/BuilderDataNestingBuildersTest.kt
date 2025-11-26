@@ -24,10 +24,7 @@ class BuilderDataNestingBuildersTest {
     private interface BuilderReturningASubBuilderInASubSubBuilder {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -61,8 +58,7 @@ class BuilderDataNestingBuildersTest {
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderReturningASubBuilderInASubSubBuilder::class,

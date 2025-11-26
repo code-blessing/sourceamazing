@@ -58,18 +58,18 @@ object ConceptResolver {
         conceptNodeMap: MutableMap<ConceptIdentifier, MutableConceptNode>,
     ): List<Any> {
         val facetName = facetSchema.facetName
-        return when (facetSchema.facetType) {
-            FacetType.TEXT,
-            FacetType.NUMBER,
-            FacetType.BOOLEAN -> conceptData.getFacet(facetName)
-            FacetType.TEXT_ENUMERATION -> transformEnumFacetValues(facetSchema, conceptData)
-            FacetType.REFERENCE ->
+        return when (facetSchema) {
+            is TextFacetSchema,
+            is NumberFacetSchema,
+            is BooleanFacetSchema -> conceptData.getFacet(facetName)
+            is EnumFacetSchema -> transformEnumFacetValues(facetSchema, conceptData)
+            is ReferenceFacetSchema ->
                 transformReferenceFacetValues(facetName, conceptData, conceptNodeMap)
         }
     }
 
     private fun transformEnumFacetValues(
-        facetSchema: FacetSchema,
+        facetSchema: EnumFacetSchema,
         conceptData: ConceptData,
     ): List<Any> {
         val enumerationType =

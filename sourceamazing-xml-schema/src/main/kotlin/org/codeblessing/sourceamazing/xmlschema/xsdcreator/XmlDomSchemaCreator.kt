@@ -8,10 +8,14 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
+import org.codeblessing.sourceamazing.schema.api.BooleanFacetSchema
 import org.codeblessing.sourceamazing.schema.api.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.EnumFacetSchema
 import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
 import org.codeblessing.sourceamazing.xmlschema.XmlNames
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -182,11 +186,11 @@ object XmlDomSchemaCreator {
                         occurrenceAsString(facetSchema.maximumOccurrences),
                     )
 
-                    when (facetSchema.facetType) {
-                        FacetType.TEXT,
-                        FacetType.NUMBER,
-                        FacetType.BOOLEAN,
-                        FacetType.TEXT_ENUMERATION -> {
+                    when (facetSchema) {
+                        is TextFacetSchema,
+                        is NumberFacetSchema,
+                        is BooleanFacetSchema,
+                        is EnumFacetSchema -> {
                             val facetValueElement =
                                 createAndAttachXsdElement(document, sequence, "element")
                             setElementXsdAttribute(
@@ -210,7 +214,7 @@ object XmlDomSchemaCreator {
                             attachFacetTypeElement(facetSchema, attributeElement, document)
                         }
 
-                        FacetType.REFERENCE -> {
+                        is ReferenceFacetSchema -> {
                             val choice = createAndAttachXsdElement(document, sequence, "choice")
                             setElementXsdAttribute(choice, "minOccurs", "1")
                             setElementXsdAttribute(choice, "maxOccurs", "1")
@@ -266,8 +270,8 @@ object XmlDomSchemaCreator {
         attributeElement: Element,
         document: Document,
     ) {
-        when (facetSchema.facetType) {
-            FacetType.TEXT_ENUMERATION -> {
+        when (facetSchema) {
+            is EnumFacetSchema -> {
                 val simpleType = createAndAttachXsdElement(document, attributeElement, "simpleType")
                 val restriction = createAndAttachXsdElement(document, simpleType, "restriction")
                 setElementXsdAttribute(restriction, "base", "$xsdNamespacePrefix:string")
@@ -283,13 +287,13 @@ object XmlDomSchemaCreator {
                         )
                     }
             }
-            FacetType.TEXT ->
+            is TextFacetSchema ->
                 setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:string")
-            FacetType.NUMBER ->
+            is NumberFacetSchema ->
                 setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:integer")
-            FacetType.BOOLEAN ->
+            is BooleanFacetSchema ->
                 setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:boolean")
-            FacetType.REFERENCE ->
+            is ReferenceFacetSchema ->
                 setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:IDREF")
         }
     }

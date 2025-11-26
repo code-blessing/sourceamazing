@@ -37,10 +37,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithFixedFacetValueAndParameterFacetValue {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "foo",
@@ -70,10 +67,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithMultipleFixedFacetValues {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedStringFacetValue(
             conceptToModifyAlias = "foo",
@@ -106,10 +100,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithCorrectFixedEnumFacetValues {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedEnumFacetValue(
             conceptToModifyAlias = "foo",
@@ -137,10 +128,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithWrongFixedEnumFacetValues {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedEnumFacetValue(
             conceptToModifyAlias = "foo",
@@ -173,10 +161,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithWrongFixedFacetType {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedBooleanFacetValue(
             conceptToModifyAlias = "foo",
@@ -209,10 +194,7 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithUnregisteredFixedFacetType {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         @SetFixedIntFacetValue(
             conceptToModifyAlias = "foo",
@@ -245,15 +227,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithValidFixedReference {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "bar",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "foo",
@@ -278,15 +254,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithValidParameterReference {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "bar",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
@@ -312,15 +282,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithFunctionInsteadOfConceptIdentifierReference {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "bar",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")
@@ -351,15 +315,9 @@ class BuilderMethodApiMethodAnnotationsTest {
     private interface BuilderMethodWithStringInsteadOfConceptIdentifierReference {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "bar",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "bar")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "bar")
         fun doSomething(
             @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "selfRefFacet")

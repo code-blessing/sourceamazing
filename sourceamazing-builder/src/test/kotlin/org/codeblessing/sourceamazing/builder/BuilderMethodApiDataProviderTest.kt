@@ -30,10 +30,7 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodWithDataProviderAsLambdaFunction {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider.() -> Unit,
@@ -63,10 +60,7 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodWithBuilderDataProviderWithLambdaFunction {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: () -> Unit,
@@ -96,10 +90,7 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodWithBuilderDataProviderWithArray {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue("foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Array<EmptyBuilderDataProvider>,
@@ -129,10 +120,7 @@ class BuilderMethodApiDataProviderTest {
     private interface BuilderMethodWithBuilderDataProviderWithAnyObject {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -162,10 +150,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -195,10 +180,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodParamWithBuilderDataAsNullableParam {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -228,10 +210,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodParamWithEmptyDataProvider {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -256,10 +235,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodParamWithBuilderDataWithOtherAnnotations {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -291,10 +267,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -323,10 +296,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodDataProviderWithGenericParameter {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -365,10 +335,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodDataProviderUsingAndReturningGenericParameter {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
             @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
             conceptIdentifier: ConceptIdentifier,
@@ -411,10 +378,7 @@ class BuilderMethodApiDataProviderTest {
     @Builder
     private interface BuilderMethodDataProviderThrowingException {
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "foo",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
         fun doThrowAnException(@ProvideBuilderData data: BuilderDataProviderThrowingException)
 

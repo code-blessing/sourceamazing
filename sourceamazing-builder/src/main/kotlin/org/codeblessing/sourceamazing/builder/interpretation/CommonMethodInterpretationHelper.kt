@@ -171,7 +171,11 @@ object CommonMethodInterpretationHelper {
         schemaAccess: SchemaAccess,
     ): Enum<*>? {
         val facetSchema = schemaAccess.facetByFacetName(facetName)
-        return facetSchema?.enumerationValues?.firstOrNull { it.name == enumValueString }
+        return if (facetSchema != null && facetSchema is EnumFacetSchema) {
+            facetSchema.enumerationValues.firstOrNull { it.name == enumValueString }
+        } else {
+            null
+        }
     }
 
     fun castConceptIdentifier(value: Any): ConceptIdentifier {

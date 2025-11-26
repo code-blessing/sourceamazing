@@ -24,10 +24,7 @@ class BuilderDataAliasTest {
     private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -62,8 +59,7 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
@@ -85,10 +81,7 @@ class BuilderDataAliasTest {
     private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
 
         @BuilderMethod
-        @NewConcept(
-            concept = MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue("myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -119,10 +112,7 @@ class BuilderDataAliasTest {
         // alias
         interface NestedSubBuilder {
             @BuilderMethod
-            @NewConcept(
-                concept = MyConcepts.MyConcept::class,
-                declareConceptAlias = "myConcept",
-            )
+            @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
             @SetRandomConceptIdentifierValue("myConcept")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "root",
@@ -150,8 +140,7 @@ class BuilderDataAliasTest {
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,

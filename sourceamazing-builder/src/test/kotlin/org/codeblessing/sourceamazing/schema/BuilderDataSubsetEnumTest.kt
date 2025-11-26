@@ -33,10 +33,7 @@ class BuilderDataSubsetEnumTest {
     private interface BuilderMethodWithAllDatatypesEnum {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -53,8 +50,7 @@ class BuilderDataSubsetEnumTest {
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithAllDatatypesEnum::class,
@@ -79,10 +75,7 @@ class BuilderDataSubsetEnumTest {
     private interface BuilderMethodWithCompatibleNumericDatatypesEnum {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -99,8 +92,7 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithCompatibleNumericDatatypesEnum::class,
@@ -127,10 +119,7 @@ class BuilderDataSubsetEnumTest {
     private interface BuilderMethodWithExactCopyOfAllDatatypesEnum {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -147,8 +136,7 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithExactCopyOfAllDatatypesEnum::class,
@@ -174,10 +162,7 @@ class BuilderDataSubsetEnumTest {
     private interface BuilderMethodWithIncompatibleWithAllDatatypesEnum {
 
         @BuilderMethod
-        @NewConcept(
-            MyConcepts.MyConcept::class,
-            declareConceptAlias = "myConcept",
-        )
+        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -194,8 +179,7 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
         assertThrows<BuilderMethodSyntaxException> {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    conceptNameAndIdentifier ->
+                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithIncompatibleWithAllDatatypesEnum::class,

@@ -723,10 +723,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
             @BuilderData
             @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
-            @SetProvidedFacetValue(
-                conceptToModifyAlias = "foo",
-                facetToModify = "MyConcept",
-            )
+            @SetProvidedFacetValue(conceptToModifyAlias = "foo", facetToModify = "MyConcept")
             fun getText() {
                 // nothing to return
             }

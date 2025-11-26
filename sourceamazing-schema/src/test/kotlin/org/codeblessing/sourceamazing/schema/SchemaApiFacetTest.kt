@@ -416,8 +416,7 @@ class SchemaApiFacetTest {
 
         interface ConceptTwo : CommonConcept
 
-        @References([ConceptOne::class, ConceptTwo::class])
-        val referencedConcepts: List<ConceptOne>
+        @References([ConceptOne::class, ConceptTwo::class]) val referencedConcepts: List<ConceptOne>
     }
 
     @Test
@@ -445,8 +444,7 @@ class SchemaApiFacetTest {
 
         interface NotReferencedConcept : CommonConcept
 
-        @References([ReferencedConcept::class])
-        val referencedConcepts: List<NotReferencedConcept>
+        @References([ReferencedConcept::class]) val referencedConcepts: List<NotReferencedConcept>
     }
 
     @Test
@@ -598,8 +596,7 @@ class SchemaApiFacetTest {
 
         interface ConceptNotCommon
 
-        @References([ConceptOne::class, ConceptTwo::class])
-        val myConcepts: ConceptNotCommon
+        @References([ConceptOne::class, ConceptTwo::class]) val myConcepts: ConceptNotCommon
     }
 
     @Test
