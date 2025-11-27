@@ -501,7 +501,7 @@ object BuilderMethodValidator {
                             BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
                             facetName.longText(),
                             SUPPORTED_COLLECTION_TYPES,
-                            facetFromSchema.enumerationType?.shortText() ?: "<unknown-enum>",
+                            facetFromSchema.enumerationType.shortText(),
                             facetFromSchema.enumerationValues,
                         )
                     }
