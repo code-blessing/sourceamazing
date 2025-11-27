@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.builder.interpretation
 
-import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
@@ -31,16 +30,6 @@ object CommonMethodInterpretationHelper {
                 it.conceptToModifyAlias.toAlias()
             }
         }
-    }
-
-    fun extractAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(
-        methodOrParams: List<KAnnotatedElement>
-    ): List<Alias> {
-        return methodOrParams
-            .flatMap { parameter ->
-                parameter.annotations.filterIsInstance<SetConceptIdentifierValue>()
-            }
-            .map { it.conceptToModifyAlias.toAlias() }
     }
 
     fun extractFixedFacetValues(
@@ -91,7 +80,6 @@ object CommonMethodInterpretationHelper {
                             typeClass = enumValue?.let { it::class },
                         ),
                     fixedEnumValue = annotation.value,
-                    enumValue = enumValue,
                 )
             }
             .forEach(facetValues::add)
