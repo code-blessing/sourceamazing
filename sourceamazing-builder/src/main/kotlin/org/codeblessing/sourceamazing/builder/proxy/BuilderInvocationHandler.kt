@@ -14,6 +14,7 @@ import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
 import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
@@ -24,14 +25,14 @@ class BuilderInvocationHandler(
     private val schemaAccess: SchemaAccess,
     builderClass: KClass<*>,
     private val conceptDataCollector: ConceptDataCollector,
-    superiorConcepts: Map<Alias, ConceptName>,
-    private val superiorConceptIds: Map<Alias, ConceptIdentifier>,
+    private val superiorAliases: Map<Alias, ConceptNameAndIdentifier>,
 ) : KotlinInvocationHandler(allowMemberProperties = false, allowMemberFunctions = true) {
 
     private val builderClassInterpreter =
         BuilderClassInterpreter(
             builderClass = builderClass,
-            newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
+            newConceptNamesWithAliasFromSuperiorBuilder =
+                superiorAliases.mapValues { it.value.conceptName },
         )
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
@@ -49,7 +50,8 @@ class BuilderInvocationHandler(
                 BuilderMethodInterpreterDataCollector(
                     conceptDataCollector = conceptDataCollector,
                     functionArguments = args,
-                    newConceptIdsFromSuperiorBuilder = superiorConceptIds,
+                    newConceptIdsFromSuperiorBuilder =
+                        superiorAliases.mapValues { it.value.conceptIdentifier },
                 )
 
             BuilderUpdater.updateConceptDataCollector(
@@ -57,10 +59,16 @@ class BuilderInvocationHandler(
                 builderMethodInterpreterDataCollector,
             )
 
-            val expectedSuperiorAndMyConcepts =
+            val expectedSuperiorAndOwnConcepts =
                 builderMethodInterpreter.newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder()
-            val expectedSuperiorAndMyConceptIds =
+            val expectedSuperiorAndOwnConceptIds =
                 builderMethodInterpreterDataCollector.newConceptIdsAndSuperiorConceptIds()
+
+            val expectedSuperiorAliases: Map<Alias, ConceptNameAndIdentifier> =
+                mergeConceptNamesAndIds(
+                    expectedSuperiorAndOwnConcepts,
+                    expectedSuperiorAndOwnConceptIds,
+                )
 
             val subBuilderClassFromInjectBuilderAnnotation =
                 builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
@@ -69,8 +77,7 @@ class BuilderInvocationHandler(
                     createNewBuilderProxy(
                         subBuilderClassFromInjectBuilderAnnotation,
                         conceptDataCollector,
-                        expectedSuperiorAndMyConcepts,
-                        expectedSuperiorAndMyConceptIds,
+                        aliases = expectedSuperiorAliases,
                     )
                 injectBuilderToParamMethod(function, args, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
@@ -85,8 +92,7 @@ class BuilderInvocationHandler(
                     createNewBuilderProxy(
                         subBuilderClassFromReturnType,
                         conceptDataCollector,
-                        expectedSuperiorAndMyConcepts,
-                        expectedSuperiorAndMyConceptIds,
+                        aliases = expectedSuperiorAliases,
                     )
                 return builderForReturnValue
             }
@@ -100,11 +106,26 @@ class BuilderInvocationHandler(
         )
     }
 
+    private fun mergeConceptNamesAndIds(
+        expectedSuperiorAndOwnConcepts: Map<Alias, ConceptName>,
+        expectedSuperiorAndOwnConceptIds: Map<Alias, ConceptIdentifier>,
+    ): Map<Alias, ConceptNameAndIdentifier> {
+        return expectedSuperiorAndOwnConcepts.mapValues { (alias, conceptName) ->
+            ConceptNameAndIdentifier(
+                conceptName,
+                expectedSuperiorAndOwnConceptIds[alias]
+                    ?: throw IllegalArgumentException(
+                        "No concept id found for alias ${alias.name} " +
+                            "and concept ${conceptName.simpleName()}."
+                    ),
+            )
+        }
+    }
+
     private fun createNewBuilderProxy(
         builderClass: KClass<*>,
         dataCollector: ConceptDataCollector,
-        aliasToConceptMap: Map<Alias, ConceptName>,
-        aliasToConceptIdMap: Map<Alias, ConceptIdentifier>,
+        aliases: Map<Alias, ConceptNameAndIdentifier>,
     ): Any {
         return ProxyCreator.createProxy(
             interfaceForProxy = builderClass,
@@ -113,8 +134,7 @@ class BuilderInvocationHandler(
                     schemaAccess = schemaAccess,
                     builderClass = builderClass,
                     conceptDataCollector = dataCollector,
-                    superiorConcepts = aliasToConceptMap,
-                    superiorConceptIds = aliasToConceptIdMap,
+                    superiorAliases = aliases,
                 ),
         )
     }

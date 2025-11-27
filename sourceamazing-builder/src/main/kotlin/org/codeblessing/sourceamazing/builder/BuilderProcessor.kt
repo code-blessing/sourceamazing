@@ -19,15 +19,11 @@ class BuilderProcessor() : BuilderProcessorApi {
     ) {
         val schemaAccess = schemaContext.schema
         val rootAliasesTyped = rootAliases.mapKeys { (key) -> key.toAlias() }
-        val superiorConcepts =
-            rootAliasesTyped.mapValues { (_, value) -> value.conceptName }.toMap()
-        val superiorConceptIds =
-            rootAliasesTyped.mapValues { (_, value) -> value.conceptIdentifier }.toMap()
 
         BuilderHierarchyValidator.validateTopLevelBuilderMethods(
             builderClass,
             schemaAccess,
-            superiorConcepts,
+            rootAliasesTyped.mapValues { it.value.conceptName },
         )
         val builderImplementation: I =
             ProxyCreator.createProxy(
@@ -36,8 +32,7 @@ class BuilderProcessor() : BuilderProcessorApi {
                     schemaAccess = schemaAccess,
                     builderClass = builderClass,
                     conceptDataCollector = schemaContext.dataCollector,
-                    superiorConcepts = superiorConcepts,
-                    superiorConceptIds = superiorConceptIds,
+                    superiorAliases = rootAliasesTyped,
                 ),
             )
         builderUsage(builderImplementation)
