@@ -72,11 +72,7 @@ object ConceptResolver {
         facetSchema: EnumFacetSchema,
         conceptData: ConceptData,
     ): List<Any> {
-        val enumerationType =
-            facetSchema.enumerationType
-                ?: throw IllegalStateException(
-                    "Facet ${facetSchema.facetName} has no enumerationType."
-                )
+        val enumerationType = facetSchema.enumerationType
         return conceptData.getFacet(facetSchema.facetName).map { value ->
             transformEnumFacetValue(enumerationType, value)
         }

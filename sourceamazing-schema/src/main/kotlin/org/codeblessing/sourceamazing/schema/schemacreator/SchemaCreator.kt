@@ -366,12 +366,12 @@ object SchemaCreator {
         when (facetSchema) {
             is EnumFacetSchema -> {
                 val enumerationType = facetSchema.enumerationType
-                if (enumerationType == null || !enumerationType.isEnum) {
+                if (!enumerationType.isEnum) {
                     throw WrongFacetSchemaException(
                         SchemaErrorCode.FACET_ENUM_INVALID,
                         facetName,
                         conceptName,
-                        enumerationType ?: "null",
+                        enumerationType,
                     )
                 }
 
