@@ -20,7 +20,7 @@ class BuilderDataAliasTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
 
         @BuilderMethod
@@ -34,7 +34,7 @@ class BuilderDataAliasTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
@@ -44,7 +44,7 @@ class BuilderDataAliasTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedSubBuilder {
 
             @BuilderMethod
@@ -77,7 +77,7 @@ class BuilderDataAliasTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
 
         @BuilderMethod
@@ -91,8 +91,8 @@ class BuilderDataAliasTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "root")
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, conceptAlias = "root")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             @SetFixedIntFacetValue(
@@ -107,7 +107,7 @@ class BuilderDataAliasTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder("root")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
         // no ExpectedAliasFromSuperiorBuilder("myConcept) here, therefore "myConcept" is a new
         // alias
         interface NestedSubBuilder {
@@ -126,7 +126,7 @@ class BuilderDataAliasTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedSubSubBuilder {
             @BuilderMethod
             fun setNumber(

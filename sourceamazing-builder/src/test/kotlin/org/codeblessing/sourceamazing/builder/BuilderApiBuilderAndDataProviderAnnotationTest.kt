@@ -343,7 +343,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("anotherConcept")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "anotherConcept")
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
@@ -365,7 +365,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     private interface BuilderWithDataProviderWithExpectedAliasFromSuperiorBuilderAnnotation {
         @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
-        @BuilderDataProvider @ExpectedAliasFromSuperiorBuilder("anotherConcept") class DataProvider
+        @BuilderDataProvider
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "anotherConcept")
+        class DataProvider
     }
 
     @Test
@@ -389,7 +391,9 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Builder
     private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
-        @Builder @ExpectedAliasFromSuperiorBuilder("foo") private interface NestedBuilder
+        @Builder
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "foo")
+        private interface NestedBuilder
 
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
@@ -689,6 +693,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
             @BuilderData
             @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "foo")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
+            @Suppress("UNUSED_PARAMETER")
             fun doSomething(myParameter: String) {
                 // nothing to do
             }

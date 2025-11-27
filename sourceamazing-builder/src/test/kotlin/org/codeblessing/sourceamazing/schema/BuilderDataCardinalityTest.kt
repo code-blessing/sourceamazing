@@ -19,7 +19,7 @@ class BuilderDataCardinalityTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -33,7 +33,7 @@ class BuilderDataCardinalityTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun addText(

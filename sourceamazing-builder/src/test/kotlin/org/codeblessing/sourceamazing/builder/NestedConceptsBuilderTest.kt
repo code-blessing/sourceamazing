@@ -66,7 +66,7 @@ class NestedConceptsBuilderTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(NestedConceptsSchema::class, "root")
     private interface NestedObjectsBuilder {
 
         @BuilderMethod
@@ -88,7 +88,10 @@ class NestedConceptsBuilderTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder("bizObj")
+        @ExpectedAliasFromSuperiorBuilder(
+            NestedConceptsSchema.BusinessObjectConcept::class,
+            "bizObj",
+        )
         interface BusinessObjectConceptBuilder {
 
             @BuilderMethod
@@ -133,7 +136,10 @@ class NestedConceptsBuilderTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder("field")
+        @ExpectedAliasFromSuperiorBuilder(
+            NestedConceptsSchema.SingleValueFieldConcept::class,
+            "field",
+        )
         interface FieldTypeForSingleFieldConceptBuilder {
 
             @BuilderMethod
@@ -173,7 +179,10 @@ class NestedConceptsBuilderTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder("field")
+        @ExpectedAliasFromSuperiorBuilder(
+            NestedConceptsSchema.CollectionOfValuesFieldConcept::class,
+            "field",
+        )
         interface FieldTypeForCollectionFieldConceptBuilder {
 
             @BuilderMethod

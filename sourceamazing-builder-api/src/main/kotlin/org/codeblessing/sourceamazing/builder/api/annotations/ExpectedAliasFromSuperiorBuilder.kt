@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.builder.api.annotations
 
+import kotlin.reflect.KClass
+
 /**
  * Tells the validator that this builder imports an alias from its parent/calling builder.
  *
@@ -9,4 +11,4 @@ package org.codeblessing.sourceamazing.builder.api.annotations
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
-annotation class ExpectedAliasFromSuperiorBuilder(val conceptAlias: String)
+annotation class ExpectedAliasFromSuperiorBuilder(val concept: KClass<*>, val conceptAlias: String)

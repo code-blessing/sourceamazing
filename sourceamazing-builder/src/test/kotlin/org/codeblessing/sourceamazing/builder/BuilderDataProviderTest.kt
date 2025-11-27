@@ -93,7 +93,7 @@ class BuilderDataProviderTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderMethodForDataProvider {
 
         @BuilderMethod

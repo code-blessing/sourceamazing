@@ -25,7 +25,7 @@ class BuilderDataConceptIdentifierTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderToAddConcepts {
 
         @BuilderMethod

@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 
 @Builder
-@ExpectedAliasFromSuperiorBuilder("root")
+@ExpectedAliasFromSuperiorBuilder(FormSchema::class, "root")
 interface FormBuilder {
 
     @BuilderMethod
@@ -17,7 +17,7 @@ interface FormBuilder {
     ): FormConceptBuilder
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("form")
+    @ExpectedAliasFromSuperiorBuilder(FormSchema.FormConcept::class, "form")
     interface FormConceptBuilder {
 
         @BuilderMethod
@@ -74,11 +74,11 @@ interface FormBuilder {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
+    @ExpectedAliasFromSuperiorBuilder(FormSchema.TextInputFormControlConcept::class, "formControl")
     interface FormControlBuilder : FormControlBuilderMethods
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("formControl")
+    @ExpectedAliasFromSuperiorBuilder(FormSchema.TextInputFormControlConcept::class, "formControl")
     interface SelectDropdownEntryConceptBuilder : FormControlBuilderMethods {
 
         @BuilderMethod

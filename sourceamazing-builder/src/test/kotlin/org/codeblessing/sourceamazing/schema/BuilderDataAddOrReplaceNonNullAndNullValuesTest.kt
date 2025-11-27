@@ -18,7 +18,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder("root")
+    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -32,7 +32,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
