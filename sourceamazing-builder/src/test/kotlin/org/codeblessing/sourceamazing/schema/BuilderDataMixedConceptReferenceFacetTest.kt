@@ -32,7 +32,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod

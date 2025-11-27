@@ -198,7 +198,7 @@ interface EmployeePhonebookBuilder {
 }
 
 @Builder
-@ExpectedAliasFromSuperiorBuilder(Employee::class, "theEmployee")
+@ExpectedAliasFromSuperiorBuilder(concept = Employee::class, conceptAlias = "theEmployee")
 interface PhoneNumberBuilder {
     
     @BuilderMethod

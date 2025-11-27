@@ -343,7 +343,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "anotherConcept")
+    @ExpectedAliasFromSuperiorBuilder(
+        concept = MyConcepts.MyConcept::class,
+        conceptAlias = "anotherConcept",
+    )
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
@@ -366,7 +369,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "anotherConcept")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "anotherConcept",
+        )
         class DataProvider
     }
 
@@ -392,7 +398,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Builder
     private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder
 
         @BuilderMethod

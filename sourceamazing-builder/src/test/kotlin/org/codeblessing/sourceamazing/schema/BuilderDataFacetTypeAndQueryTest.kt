@@ -30,7 +30,7 @@ class BuilderDataFacetTypeAndQueryTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderToAddOrReplaceFacets {
 
         @BuilderMethod
@@ -44,7 +44,10 @@ class BuilderDataFacetTypeAndQueryTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "myConcept",
+        )
         interface NestedBuilder {
             @BuilderMethod
             fun addFacetValues(

@@ -23,7 +23,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderToAddReferences {
 
         @BuilderMethod
@@ -40,7 +40,10 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         ): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "myConcept",
+        )
         interface NestedBuilder {
             @BuilderMethod
             fun addReference(

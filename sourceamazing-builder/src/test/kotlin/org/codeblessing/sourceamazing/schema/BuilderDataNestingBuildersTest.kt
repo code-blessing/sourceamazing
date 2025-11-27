@@ -20,7 +20,7 @@ class BuilderDataNestingBuildersTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderReturningASubBuilderInASubSubBuilder {
 
         @BuilderMethod
@@ -34,7 +34,10 @@ class BuilderDataNestingBuildersTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "myConcept",
+        )
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
@@ -44,7 +47,10 @@ class BuilderDataNestingBuildersTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyConcept::class, conceptAlias = "myConcept")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyConcept::class,
+            conceptAlias = "myConcept",
+        )
         interface NestedSubBuilder {
             @BuilderMethod
             fun setNumber(

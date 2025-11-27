@@ -76,7 +76,7 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "foo")
         private interface BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept {
 
             @BuilderMethod
@@ -426,7 +426,7 @@ class BuilderApiAliasTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod
@@ -687,7 +687,7 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "known")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "known")
         private interface BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation {
 
             @BuilderMethod
@@ -776,7 +776,7 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "known")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "known")
         private interface BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation {
 
             @BuilderMethod
@@ -1022,8 +1022,8 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, conceptAlias = "known")
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, conceptAlias = "alsoKnown")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "known")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "alsoKnown")
         private interface BuilderMethodUsingAnAliasFromParentBuilder {
 
             @BuilderMethod
@@ -1064,7 +1064,7 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, conceptAlias = "alsoKnown")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "alsoKnown")
         private interface BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias {
 
             @BuilderMethod
@@ -1108,7 +1108,7 @@ class BuilderApiAliasTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, conceptAlias = "alsoKnown")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "alsoKnown")
         private interface BuilderMethodReusingAnAliasNameFromSuperiorBuilder {
 
             @BuilderMethod
@@ -1144,8 +1144,8 @@ class BuilderApiAliasTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "foo")
-        @ExpectedAliasFromSuperiorBuilder(MyConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "foo")
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod fun doSomethingNested()

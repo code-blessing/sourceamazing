@@ -215,7 +215,10 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyKnownConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyKnownConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod
@@ -250,7 +253,10 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyKnownConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyKnownConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod
@@ -287,7 +293,10 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyKnownConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyKnownConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod
@@ -333,7 +342,10 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.MyKnownConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.MyKnownConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod

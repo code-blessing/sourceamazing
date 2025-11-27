@@ -29,7 +29,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderMethodWithAllDatatypesEnum {
 
         @BuilderMethod
@@ -71,7 +71,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderMethodWithCompatibleNumericDatatypesEnum {
 
         @BuilderMethod
@@ -115,7 +115,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderMethodWithExactCopyOfAllDatatypesEnum {
 
         @BuilderMethod
@@ -158,7 +158,7 @@ class BuilderDataSubsetEnumTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(MyConcepts::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
     private interface BuilderMethodWithIncompatibleWithAllDatatypesEnum {
 
         @BuilderMethod

@@ -40,7 +40,7 @@ class BuilderSmokeTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(SmokeTestSchema::class, "root")
+    @ExpectedAliasFromSuperiorBuilder(concept = SmokeTestSchema::class, conceptAlias = "root")
     interface SmokeTestRootBuilder {
 
         // Builder style
@@ -74,7 +74,10 @@ class BuilderSmokeTest {
         )
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(SmokeTestSchema.PersonConcept::class, "person")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = SmokeTestSchema.PersonConcept::class,
+            conceptAlias = "person",
+        )
         interface PersonConceptBuilder {
 
             @BuilderMethod
@@ -131,7 +134,7 @@ class BuilderSmokeTest {
 
         @Builder
         @ExpectedAliasFromSuperiorBuilder(
-            SmokeTestSchema.SkillConcept::class,
+            concept = SmokeTestSchema.SkillConcept::class,
             conceptAlias = "skill",
         )
         interface SkillConceptBuilder {

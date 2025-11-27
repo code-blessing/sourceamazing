@@ -49,7 +49,10 @@ class BuilderApiFacetMultiUseTest {
         fun doSomethingWithConceptWithFacetAlpha(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.ConceptWithFacetAlphaAndBeta::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.ConceptWithFacetAlphaAndBeta::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod
@@ -90,7 +93,10 @@ class BuilderApiFacetMultiUseTest {
         fun doSomethingWithConceptWithFacetBeta(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.ConceptWithFacetAlphaAndBeta::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.ConceptWithFacetAlphaAndBeta::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod

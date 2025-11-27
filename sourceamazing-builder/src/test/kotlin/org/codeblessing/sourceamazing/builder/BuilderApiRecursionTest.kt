@@ -25,7 +25,10 @@ class BuilderApiRecursionTest {
         fun doSomething(): OuterNestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.OneConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.OneConcept::class,
+            conceptAlias = "foo",
+        )
         private interface OuterNestedBuilder {
 
             @BuilderMethod
@@ -34,7 +37,10 @@ class BuilderApiRecursionTest {
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.OneConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.OneConcept::class,
+            conceptAlias = "foo",
+        )
         private interface InnerNestedBuilder {
 
             @BuilderMethod
@@ -67,7 +73,10 @@ class BuilderApiRecursionTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(MyConcepts.OneConcept::class, "foo")
+        @ExpectedAliasFromSuperiorBuilder(
+            concept = MyConcepts.OneConcept::class,
+            conceptAlias = "foo",
+        )
         private interface NestedBuilder {
 
             @BuilderMethod @WithNewBuilder(NestedBuilder::class) fun doSomething(): NestedBuilder
