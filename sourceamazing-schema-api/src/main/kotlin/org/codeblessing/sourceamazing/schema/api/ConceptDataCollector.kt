@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.schema.api
 
-// TODO Maybe split reading and mutating parts in ConceptDataCollector and ConceptData
 interface ConceptDataCollector {
     fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData
 
