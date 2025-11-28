@@ -5,7 +5,6 @@ import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.EnumFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
@@ -33,6 +32,7 @@ object CommonMethodInterpretationHelper {
     fun extractFixedFacetValues(
         method: KFunction<*>,
         methodLocation: MethodLocation,
+        aliases: Map<Alias, ConceptName>,
         schemaAccess: SchemaAccess,
         dataContext: DataContext?,
     ): List<FacetValueAnnotationContent> {
@@ -62,14 +62,16 @@ object CommonMethodInterpretationHelper {
         method.annotations
             .filterIsInstance<SetFixedEnumFacetValue>()
             .map { annotation ->
+                val enumConceptAlias = annotation.conceptToModifyAlias.toAlias()
                 val facetName = annotation.facetToModify.toFacetName()
-                val enumValue = enumValueByString(annotation.value, facetName, schemaAccess)
+                val facetSchema = resolveFacetSchema(aliases, enumConceptAlias, facetName, schemaAccess)
+                val enumValue = facetSchema?.let { enumValueByString(it, annotation.value) }
 
-                EnumFacetValueAnnotationContent(
+                FacetValueAnnotationContent(
                     base =
                         FacetValueAnnotationBaseData(
                             methodLocation = methodLocation,
-                            alias = annotation.conceptToModifyAlias.toAlias(),
+                            alias = enumConceptAlias,
                             facetName = facetName,
                             facetModificationRule = annotation.facetModificationRule,
                             annotation = annotation,
@@ -77,7 +79,8 @@ object CommonMethodInterpretationHelper {
                             type = null,
                             typeClass = enumValue?.let { it::class },
                         ),
-                    fixedEnumValue = annotation.value,
+                    expectedFacetType = FacetType.TEXT_ENUMERATION,
+                    value = enumValue,
                 )
             }
             .forEach(facetValues::add)
@@ -150,9 +153,18 @@ object CommonMethodInterpretationHelper {
         return facetValues
     }
 
-    private fun enumValueByString(enumValueString: String, facetName: FacetName, schemaAccess: SchemaAccess): Enum<*>? {
-        val facetSchema = schemaAccess.facetByFacetName(facetName)
-        return if (facetSchema != null && facetSchema is EnumFacetSchema) {
+    private fun resolveFacetSchema(
+        aliases: Map<Alias, ConceptName>,
+        conceptAlias: Alias,
+        facetName: FacetName,
+        schemaAccess: SchemaAccess,
+    ): FacetSchema? {
+        val conceptName = aliases[conceptAlias] ?: return null
+        return schemaAccess.facetByFacetName(conceptName, facetName)
+    }
+
+    private fun enumValueByString(facetSchema: FacetSchema, enumValueString: String): Enum<*>? {
+        return if (facetSchema is EnumFacetSchema) {
             facetSchema.enumerationValues.firstOrNull { it.name == enumValueString }
         } else {
             null

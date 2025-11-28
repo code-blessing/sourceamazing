@@ -76,7 +76,9 @@ class BuilderDataProviderInterpreter(
     override fun getBuilderInterpreterFacetValueAnnotationContent(
         dataContext: DataContext?
     ): List<FacetValueAnnotationContent> {
-        return getFixedFacetValuesOfBuilderDataMethods(dataContext) + getFacetValuesOfBuilderDataMethods(dataContext)
+        val aliases: Map<Alias, ConceptName> = getBuilderInterpreterNewConceptsIncludingDuplicates().toMap()
+        return getFixedFacetValuesOfBuilderDataMethods(aliases, dataContext) +
+            getFacetValuesOfBuilderDataMethods(dataContext)
     }
 
     override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(
@@ -99,14 +101,16 @@ class BuilderDataProviderInterpreter(
     }
 
     private fun getFixedFacetValuesOfBuilderDataMethods(
-        dataContext: DataContext? = null
+        aliases: Map<Alias, ConceptName>,
+        dataContext: DataContext? = null,
     ): List<FacetValueAnnotationContent> {
         return getBuilderDataMethods().flatMap { builderDataMethod ->
             CommonMethodInterpretationHelper.extractFixedFacetValues(
-                builderDataMethod,
-                builderMethodLocation(builderDataMethod),
-                schemaAccess,
-                dataContext,
+                method = builderDataMethod,
+                methodLocation = builderMethodLocation(builderDataMethod),
+                aliases = aliases,
+                schemaAccess = schemaAccess,
+                dataContext = dataContext,
             )
         }
     }

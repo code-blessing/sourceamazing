@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper.SUPPORTED_COLLECTION_TYPES
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderCollectionHelper.extractValueClassFromCollectionIfCollection
-import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.EnumFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.validation.BuilderTypeChecker.checkIsClassParameterType
@@ -65,16 +64,16 @@ class FacetValueAnnotationDataChecker(
         }
     }
 
-    fun checkIsKnownFacet() {
-        checkKnownFacetAndReturn()
+    fun checkIsKnownFacet(aliases: Map<Alias, ConceptName>) {
+        checkKnownFacetAndReturn(aliases)
     }
 
-    private fun checkKnownFacetAndReturn(): FacetSchema {
+    private fun checkKnownFacetAndReturn(aliases: Map<Alias, ConceptName>): FacetSchema {
         val annotationBaseData = facetValueAnnotationContent.base
         val annotation: Annotation = annotationBaseData.annotation
         val facetName = annotationBaseData.facetName
 
-        return schemaAccess.facetByFacetName(facetName)
+        return facetOrNull(aliases)
             ?: throw BuilderMethodSyntaxException(
                 annotationBaseData.methodLocation,
                 BuilderErrorCode.UNKNOWN_FACET,
@@ -83,14 +82,14 @@ class FacetValueAnnotationDataChecker(
             )
     }
 
-    fun checkFacetType() {
+    fun checkFacetType(aliases: Map<Alias, ConceptName>) {
         val annotationBaseData = facetValueAnnotationContent.base
         val expectedFacetType = facetValueAnnotationContent.expectedFacetType
 
         val annotation: Annotation = annotationBaseData.annotation
         val facetName = annotationBaseData.facetName
 
-        val facet = checkKnownFacetAndReturn()
+        val facet = checkKnownFacetAndReturn(aliases)
 
         if (expectedFacetType != null && facet.facetType != expectedFacetType) {
             throw BuilderMethodSyntaxException(
@@ -104,21 +103,21 @@ class FacetValueAnnotationDataChecker(
         }
     }
 
-    fun checkFacetTypeIfEnum() {
-        if (facetValueAnnotationContent is EnumFacetValueAnnotationContent) {
-            checkFacetEnumValue(enumValue = facetValueAnnotationContent.fixedEnumValue)
+    fun checkFacetTypeIfEnum(aliases: Map<Alias, ConceptName>) {
+        if (facetValueAnnotationContent.expectedFacetType == FacetType.TEXT_ENUMERATION) {
+            checkFacetEnumValue(enumValue = facetValueAnnotationContent.value, aliases)
         }
     }
 
-    private fun checkFacetEnumValue(enumValue: String?) {
+    private fun checkFacetEnumValue(enumValue: Any?, aliases: Map<Alias, ConceptName>) {
         val annotationBaseData = facetValueAnnotationContent.base
         val annotation: Annotation = annotationBaseData.annotation
         val facetName = annotationBaseData.facetName
 
-        val facet = requireNotNull(schemaAccess.facetByFacetName(facetName))
+        val facet = facetOrNull(aliases)
         val validEnumerationValues =
             if (facet is EnumFacetSchema) {
-                facet.enumerationValues.map { it.name }
+                facet.enumerationValues
             } else {
                 emptyList()
             }
@@ -135,12 +134,12 @@ class FacetValueAnnotationDataChecker(
         }
     }
 
-    fun checkFacetValueType() {
+    fun checkFacetValueType(aliases: Map<Alias, ConceptName>) {
         val annotationBaseData = facetValueAnnotationContent.base
         val methodLocation = annotationBaseData.methodLocation
         val facetName = annotationBaseData.facetName
 
-        val facetFromSchema = checkKnownFacetAndReturn()
+        val facetFromSchema = checkKnownFacetAndReturn(aliases)
         val classInformation = getTypeClass(facetValueAnnotationContent)
         val typeClass: KClass<*> = classInformation.clazz
 
@@ -240,5 +239,13 @@ class FacetValueAnnotationDataChecker(
     private fun isCompatibleEnum(enumerationType: KClass<*>?, actualType: KClass<*>): Boolean {
         return enumerationType != null &&
             EnumUtil.isSameOrSubsetEnumerationClass(fullEnumClass = enumerationType, fullOrSubsetEnumClass = actualType)
+    }
+
+    private fun facetOrNull(aliases: Map<Alias, ConceptName>): FacetSchema? {
+        val annotationBaseData = facetValueAnnotationContent.base
+        val facetName = annotationBaseData.facetName
+        val conceptName = requireNotNull(aliases[annotationBaseData.alias])
+
+        return schemaAccess.facetByFacetName(conceptName, facetName)
     }
 }

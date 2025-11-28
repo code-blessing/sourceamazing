@@ -20,14 +20,7 @@ data class SchemaImpl(private val concepts: Map<ConceptName, ConceptSchema>) : S
         return concepts.size
     }
 
-    override fun facetByFacetName(facetName: FacetName): FacetSchema? {
-        for (concept in concepts.values) {
-            for (facet in concept.facets) {
-                if (facet.facetName == facetName) {
-                    return facet
-                }
-            }
-        }
-        return null
+    override fun facetByFacetName(conceptName: ConceptName, facetName: FacetName): FacetSchema? {
+        return conceptByConceptName(conceptName).facetByName(facetName)
     }
 }

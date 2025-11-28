@@ -74,6 +74,7 @@ class BuilderMethodInterpreter(
         return CommonMethodInterpretationHelper.extractFixedFacetValues(
             method,
             methodLocation,
+            newConceptNamesAndExpectedConceptNamesFromSuperiorBuilder(),
             schemaAccess,
             dataContext,
         )

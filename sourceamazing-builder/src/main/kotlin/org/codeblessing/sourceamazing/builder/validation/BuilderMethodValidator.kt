@@ -102,11 +102,11 @@ object BuilderMethodValidator {
                 checkIsValidFacetAlias(knownValidAliases)
                 checkIsValidFacet(knownValidAliases)
 
-                checkIsKnownFacet()
-                checkFacetType()
-                checkFacetTypeIfEnum()
+                checkIsKnownFacet(knownValidAliases)
+                checkFacetType(knownValidAliases)
+                checkFacetTypeIfEnum(knownValidAliases)
 
-                checkFacetValueType()
+                checkFacetValueType(knownValidAliases)
             }
         }
     }

@@ -7,6 +7,7 @@ interface SchemaAccess {
 
     fun allConcepts(): Set<ConceptSchema>
 
-    fun facetByFacetName(facetName: FacetName): FacetSchema? // TODO This makes no sense anymore
+    fun facetByFacetName(conceptName: ConceptName, facetName: FacetName): FacetSchema?
+
     // TODO Add rootConceptName(): ConceptSchema method
 }
