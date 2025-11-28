@@ -1,6 +1,5 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
@@ -17,6 +16,7 @@ import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 import org.codeblessing.sourceamazing.utils.type.isEnum
+import kotlin.reflect.KClass
 
 class FacetValueAnnotationDataChecker(
     private val facetValueAnnotationContent: FacetValueAnnotationContent,

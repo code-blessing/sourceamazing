@@ -1,23 +1,13 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import org.codeblessing.sourceamazing.builder.BuilderErrorCode
+import org.codeblessing.sourceamazing.builder.MethodLocation
+import org.codeblessing.sourceamazing.builder.api.annotations.*
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.utils.type.*
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 import kotlin.reflect.full.hasAnnotation
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.MethodLocation
-import org.codeblessing.sourceamazing.builder.api.annotations.IgnoreNullFacetValue
-import org.codeblessing.sourceamazing.builder.api.annotations.InjectBuilder
-import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
-import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
-import org.codeblessing.sourceamazing.builder.api.annotations.SetFacetValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.utils.type.KTypeKind
-import org.codeblessing.sourceamazing.utils.type.KTypeUtil
-import org.codeblessing.sourceamazing.utils.type.hasAnnotation
-import org.codeblessing.sourceamazing.utils.type.receiverParameter
-import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
-import org.codeblessing.sourceamazing.utils.type.typeKind
-import org.codeblessing.sourceamazing.utils.type.valueParameters
 
 class BuilderMethodParameterChecker(
     private val methodParameter: KParameter,

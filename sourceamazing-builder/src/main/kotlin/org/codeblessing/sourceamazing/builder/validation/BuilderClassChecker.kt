@@ -1,9 +1,5 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import kotlin.collections.forEach
-import kotlin.reflect.KClass
-import kotlin.reflect.full.memberExtensionFunctions
-import kotlin.reflect.full.memberProperties
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
@@ -17,6 +13,9 @@ import org.codeblessing.sourceamazing.utils.type.annotationsIncludingSuperclasse
 import org.codeblessing.sourceamazing.utils.type.getNumberOfAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.hasAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.isAnnotationFromSourceAmazing
+import kotlin.reflect.KClass
+import kotlin.reflect.full.memberExtensionFunctions
+import kotlin.reflect.full.memberProperties
 
 class BuilderClassChecker(private val builderClassToInspect: KClass<*>, private val classDescription: String) {
 

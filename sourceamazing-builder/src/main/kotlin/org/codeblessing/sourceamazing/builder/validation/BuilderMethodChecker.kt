@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.hasAnnotation
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
@@ -11,13 +9,14 @@ import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptId
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
-import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
 import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.hasAnnotation
 
 class BuilderMethodChecker(
     private val methodToInspect: KFunction<*>,
@@ -169,25 +168,6 @@ class BuilderMethodChecker(
                 BuilderErrorCode.UNKNOWN_CONCEPT,
                 alias,
                 conceptName.clazz.longText(),
-            )
-        }
-    }
-
-    private fun checkIsValidAlias(
-        annotationBaseData: FacetValueAnnotationBaseData,
-        alias: Alias,
-        knownConceptAliases: Map<Alias, ConceptName>,
-    ) {
-
-        if (alias !in knownConceptAliases) {
-            val annotation = annotationBaseData.annotation
-
-            throw BuilderMethodSyntaxException(
-                methodLocation = annotationBaseData.methodLocation,
-                errorCode = BuilderErrorCode.UNKNOWN_ALIAS,
-                alias.name,
-                annotation.annotationClass.annotationText(),
-                knownConceptAliases.keys,
             )
         }
     }
