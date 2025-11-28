@@ -84,57 +84,9 @@ class BuilderMethodApiInjectionAndReturnTest {
     }
 
     @Builder
-    private interface BuilderMethodNoReturnTypeButWithNewBuilderAnnotation {
-
-        @BuilderMethod @WithNewBuilder(builderClass = EmptyBuilder::class) fun doSomething()
-    }
-
-    @Test
-    fun `test builder method returning no builder but declaring a builder with WithNewBuilder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED,
-        ) {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(schemaContext, BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class) {
-                        // do nothing
-                    }
-                }
-            }
-        }
-    }
-
-    @Builder
-    private interface BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation {
-        private interface OtherBuilder
-
-        @BuilderMethod @WithNewBuilder(builderClass = OtherBuilder::class) fun doSomething(): EmptyBuilder
-    }
-
-    @Test
-    fun `test builder method having different return type builder and WithNewBuilder annotation declared should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
-        ) {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation::class,
-                    ) {
-                        // do nothing
-                    }
-                }
-            }
-        }
-    }
-
-    @Builder
     private interface BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation {
 
-        @BuilderMethod @WithNewBuilder(builderClass = AnotherSubBuilder::class) fun doSomething(): AnotherSubBuilder
+        @BuilderMethod fun doSomething(): AnotherSubBuilder
 
         @Builder private interface AnotherSubBuilder
     }
@@ -156,7 +108,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation {
 
-        @BuilderMethod @WithNewBuilder(builderClass = AnotherSubBuilder::class) fun doSomething(): AnotherSubBuilder
+        @BuilderMethod fun doSomething(): AnotherSubBuilder
 
         @Builder
         private interface AnotherSubBuilder {
@@ -393,34 +345,6 @@ class BuilderMethodApiInjectionAndReturnTest {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderInjectionAndReturnTypeBuilder::class,
-                    ) {
-                        // do nothing
-                    }
-                }
-            }
-        }
-    }
-
-    @Builder
-    private interface BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes {
-        @Builder private interface OtherBuilder
-
-        @BuilderMethod
-        @WithNewBuilder(OtherBuilder::class)
-        fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> Unit)
-    }
-
-    @Test
-    fun `test builder inject with another builder in WithNewBuilder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME,
-        ) {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderInjectionAndWithNewBuilderAnnotationDifferentTypes::class,
                     ) {
                         // do nothing
                     }

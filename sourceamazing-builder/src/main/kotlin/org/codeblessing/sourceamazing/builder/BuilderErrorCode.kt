@@ -61,12 +61,6 @@ enum class BuilderErrorCode(override val messageFormat: String) : ErrorCode {
     BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME(
         "A builder method can not have an injected builder (with annotation ${InjectBuilder::class.annotationText()}) and at the same time a builder as return type."
     ),
-    BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED(
-        "The builder class declared within the annotation ${WithNewBuilder::class.annotationText()} must be returned or injected (with annotation ${InjectBuilder::class.annotationText()})."
-    ),
-    BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME(
-        "The builder class declared within the annotation ${WithNewBuilder::class.annotationText()} must be the same as the return type or the injected builder type of the method."
-    ),
     BUILDER_MUST_RETURN_BUILDER_CLASS("The return type of a builder method can only return a builder interface. %s"),
     BUILDER_RETURNED_CAN_NOT_BE_NULLABLE("The return type of a builder method can not be nullable."),
     BUILDER_PARAM_ONLY_LAST_PARAM_CAN_BE_INJECTION(

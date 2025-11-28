@@ -61,7 +61,6 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(builderClass = BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithDuplicateAliasImportedFromSuperiorForNewConcept.() -> Unit
         )
@@ -619,7 +618,6 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownAliasInLinkFacetAnnotation.() -> Unit
         )
@@ -699,7 +697,6 @@ class BuilderApiAliasTest {
         @BuilderMethod
         @NewConcept(MyConcept::class, declareConceptAlias = "known")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
-        @WithNewBuilder(builderClass = BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodWithUseOfUnknownReferenceAliasInLinkFacetAnnotation.() -> Unit
         )
@@ -904,7 +901,6 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
         @NewConcept(MyConcept::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilder::class)
         fun doInjectASubBuilder(@InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilder.() -> Unit)
 
         @Builder
@@ -936,7 +932,6 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
         @NewConcept(MyConcept::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @WithNewBuilder(builderClass = BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias::class)
         fun doInjectASubBuilder(
             @InjectBuilder builder: BuilderMethodUsingAnAliasFromParentBuilderWithoutExpectAlias.() -> Unit
         )
@@ -976,7 +971,6 @@ class BuilderApiAliasTest {
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "known")
         @NewConcept(MyConcept::class, declareConceptAlias = "alsoKnown")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "alsoKnown")
-        @WithNewBuilder(builderClass = BuilderMethodReusingAnAliasNameFromSuperiorBuilder::class)
         fun doInjectASubBuilder(@InjectBuilder builder: BuilderMethodReusingAnAliasNameFromSuperiorBuilder.() -> Unit)
 
         @Builder

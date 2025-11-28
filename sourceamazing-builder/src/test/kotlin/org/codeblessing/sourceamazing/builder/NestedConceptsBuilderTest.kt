@@ -69,7 +69,6 @@ class NestedConceptsBuilderTest {
     private interface NestedObjectsBuilder {
 
         @BuilderMethod
-        @WithNewBuilder(builderClass = BusinessObjectConceptBuilder::class)
         @NewConcept(NestedConceptsSchema.BusinessObjectConcept::class, declareConceptAlias = "bizObj")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -90,7 +89,6 @@ class NestedConceptsBuilderTest {
         interface BusinessObjectConceptBuilder {
 
             @BuilderMethod
-            @WithNewBuilder(builderClass = FieldTypeForSingleFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.SingleValueFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
             @SetAliasConceptIdentifierReferenceFacetValue(
@@ -105,7 +103,6 @@ class NestedConceptsBuilderTest {
             )
 
             @BuilderMethod
-            @WithNewBuilder(builderClass = FieldTypeForCollectionFieldConceptBuilder::class)
             @NewConcept(NestedConceptsSchema.CollectionOfValuesFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
             @SetAliasConceptIdentifierReferenceFacetValue(

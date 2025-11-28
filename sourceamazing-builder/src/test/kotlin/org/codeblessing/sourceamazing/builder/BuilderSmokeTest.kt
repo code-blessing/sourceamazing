@@ -45,7 +45,6 @@ class BuilderSmokeTest {
 
         // Builder style
         @BuilderMethod
-        @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class, declareConceptAlias = "person")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -60,7 +59,6 @@ class BuilderSmokeTest {
 
         // DSL style
         @BuilderMethod
-        @WithNewBuilder(PersonConceptBuilder::class)
         @NewConcept(concept = SmokeTestSchema.PersonConcept::class, declareConceptAlias = "person")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
@@ -99,7 +97,6 @@ class BuilderSmokeTest {
 
             // Builder style
             @BuilderMethod
-            @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "person",
@@ -110,7 +107,6 @@ class BuilderSmokeTest {
 
             // DSL style
             @BuilderMethod
-            @WithNewBuilder(builderClass = SkillConceptBuilder::class)
             @NewConcept(SmokeTestSchema.SkillConcept::class, declareConceptAlias = "skill")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "person",

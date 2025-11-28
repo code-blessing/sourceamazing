@@ -173,7 +173,6 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -207,7 +206,6 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -240,7 +238,6 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
 
         @Builder
@@ -281,7 +278,6 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomething(): NestedBuilder
 
         @Builder

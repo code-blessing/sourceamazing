@@ -4,7 +4,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
-import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
 import org.codeblessing.sourceamazing.builder.MethodLocation
@@ -143,10 +142,6 @@ class BuilderMethodInterpreter(
 
     private fun isIgnoreNullValue(methodParameter: KParameter): Boolean {
         return methodParameter.hasAnnotation<IgnoreNullFacetValue>()
-    }
-
-    fun getBuilderClassFromWithNewBuilderAnnotation(): KClass<*>? {
-        return method.findAnnotation<WithNewBuilder>()?.builderClass
     }
 
     fun getBuilderClassFromInjectBuilderParameter(): KClass<*>? {

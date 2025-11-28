@@ -8,7 +8,6 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 interface FormBuilder {
 
     @BuilderMethod
-    @WithNewBuilder(FormConceptBuilder::class)
     @NewConcept(FormSchema.FormConcept::class, "form")
     @SetAliasConceptIdentifierReferenceFacetValue("root", "forms", referencedConceptAlias = "form")
     fun createNewForm(
@@ -23,7 +22,6 @@ interface FormBuilder {
         @BuilderMethod
         @NewConcept(FormSchema.TextInputFormControlConcept::class, "formControl")
         @SetAliasConceptIdentifierReferenceFacetValue("form", "formControls", referencedConceptAlias = "formControl")
-        @WithNewBuilder(FormControlBuilder::class)
         fun addTextInputFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
             @SetFacetValue("formControl", "displayName") displayName: String,
@@ -35,7 +33,6 @@ interface FormBuilder {
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownFormControlConcept::class, "formControl")
         @SetAliasConceptIdentifierReferenceFacetValue("form", "formControls", referencedConceptAlias = "formControl")
-        @WithNewBuilder(SelectDropdownEntryConceptBuilder::class)
         fun addSelectDropdownFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
             @SetFacetValue("formControl", "displayName") displayName: String,

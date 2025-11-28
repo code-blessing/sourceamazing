@@ -39,13 +39,11 @@ class BuilderApiFacetMultiUseTest {
         @BuilderMethod
         @NewConcept(MyConcepts.ConceptWithFacetAlphaAndBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
         @BuilderMethod
         @NewConcept(MyConcepts.ConceptWithFacetAlpha::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetAlpha(): NestedBuilder
 
         @Builder
@@ -82,13 +80,11 @@ class BuilderApiFacetMultiUseTest {
         @BuilderMethod
         @NewConcept(MyConcepts.ConceptWithFacetAlphaAndBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomethingConceptWithFacetAlphaAndBeta(): NestedBuilder
 
         @BuilderMethod
         @NewConcept(MyConcepts.ConceptWithFacetBeta::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @WithNewBuilder(NestedBuilder::class)
         fun doSomethingWithConceptWithFacetBeta(): NestedBuilder
 
         @Builder

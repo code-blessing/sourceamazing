@@ -191,7 +191,6 @@ interface EmployeePhonebookBuilder {
     @BuilderMethod
     @NewConcept(Employee::class, "theEmployee") // when calling this method, create a new Employee concept instance
     @SetRandomConceptIdentifierValue("theEmployee") // every concept instance needs a mandatory concept identifier, set a random one
-    @WithNewBuilder(PhoneNumberBuilder::class) // define what this method will return
     fun addEmployee(
         @SetFacetValue("theEmployee", Employee.EmployeeName::class) @IgnoreNullFacetValue employeeName: String? // the employeeName is not mandatory, so declare that null values are ok
     ): PhoneNumberBuilder
@@ -205,7 +204,6 @@ interface PhoneNumberBuilder {
     @NewConcept(PhoneNumber::class, "thePhoneNumber") // when calling this method, create a new PhoneNumber concept instance
     @SetRandomConceptIdentifierValue("thePhoneNumber") // every concept instance needs a mandatory concept identifier, set a random one
     @SetAliasConceptIdentifierReferenceFacetValue("theEmployee", Employee.PhoneNumbersOfEmployee::class, "thePhoneNumber") // attach the new created 'thePhoneNumber' concept to the concept 'theEmployee' (to facet 'PhoneNumbersOfEmployee') 
-    @WithNewBuilder(PhoneNumberBuilder::class) // define what this method will return
     fun addPhoneNumber(
         @SetFacetValue("thePhoneNumber", PhoneNumber.PhoneType::class) type: PhoneTypeEnum,
         @SetFacetValue("thePhoneNumber", PhoneNumber.PhoneNumber::class) phoneNumber: String,

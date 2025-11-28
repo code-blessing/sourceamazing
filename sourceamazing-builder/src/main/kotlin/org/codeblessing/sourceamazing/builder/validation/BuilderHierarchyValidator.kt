@@ -3,9 +3,7 @@ package org.codeblessing.sourceamazing.builder.validation
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode.BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpreter
@@ -68,23 +66,12 @@ object BuilderHierarchyValidator {
     private fun validateAndGetSubBuilderClass(builderMethodValidationData: BuilderMethodValidationData): KClass<*>? {
         val builderMethodReturnType = builderMethodValidationData.builderMethodReturnType()
 
-        if (builderMethodReturnType.hasNoReturnType()) {
+        if (builderMethodReturnType.hasNoSubBuilder()) {
             return null
         }
 
         if (builderMethodReturnType.hasReturnTypeAndBuilderClassInjectAnnotation()) {
-            builderMethodReturnType
-                .throwWithBuilderErrorCode(BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME)
-        }
-
-        if (builderMethodReturnType.hasNoReturnTypeAndNoBuilderClassInjectAnnotation()) {
-            builderMethodReturnType
-                .throwWithBuilderErrorCode(BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED)
-        }
-
-        if (builderMethodReturnType.subBuilderClassReturnTypeAndTypeInAnnotationNotSame()) {
-            builderMethodReturnType
-                .throwWithBuilderErrorCode(BUILDER_IN_WITH_NEW_BUILDER_MUST_BE_SAME)
+            builderMethodReturnType.throwWithBuilderErrorCode(BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME)
         }
 
         return builderMethodReturnType.subBuilderClass()
@@ -159,15 +146,12 @@ object BuilderHierarchyValidator {
         }
 
         fun builderMethodReturnType(): BuilderMethodReturnTypeValidationData {
-            val subBuilderClassFromNewBuilderAnnotation =
-                builderMethodInterpreter.getBuilderClassFromWithNewBuilderAnnotation()
             val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
             val subBuilderClassFromInjectBuilderAnnotation =
                 builderMethodInterpreter.getBuilderClassFromInjectBuilderParameter()
 
             return BuilderMethodReturnTypeValidationData(
                 builderMethodInterpreter = builderMethodInterpreter,
-                subBuilderClassFromNewBuilderAnnotation = subBuilderClassFromNewBuilderAnnotation,
                 subBuilderClassFromReturnType = subBuilderClassFromReturnType,
                 subBuilderClassFromInjectBuilderAnnotation = subBuilderClassFromInjectBuilderAnnotation,
             )
@@ -176,37 +160,23 @@ object BuilderHierarchyValidator {
 
     private class BuilderMethodReturnTypeValidationData(
         private val builderMethodInterpreter: BuilderMethodInterpreter,
-        private val subBuilderClassFromNewBuilderAnnotation: KClass<*>?,
         private val subBuilderClassFromReturnType: KClass<*>?,
-        private val subBuilderClassFromInjectBuilderAnnotation: KClass<*>?
+        private val subBuilderClassFromInjectBuilderAnnotation: KClass<*>?,
     ) {
-        fun hasNoReturnType(): Boolean {
-            return subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null && subBuilderClassFromNewBuilderAnnotation == null
+        fun hasNoSubBuilder(): Boolean {
+            return subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null
         }
 
         fun hasReturnTypeAndBuilderClassInjectAnnotation(): Boolean {
             return subBuilderClassFromReturnType != null && subBuilderClassFromInjectBuilderAnnotation != null
         }
 
-        fun hasNoReturnTypeAndNoBuilderClassInjectAnnotation(): Boolean {
-            return subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null
-        }
-
         fun subBuilderClass(): KClass<*> {
             return requireNotNull(subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation)
         }
 
-        fun subBuilderClassReturnTypeAndTypeInAnnotationNotSame(): Boolean {
-            return subBuilderClassFromNewBuilderAnnotation != null
-                    && subBuilderClassFromNewBuilderAnnotation != subBuilderClass()
-        }
-
         fun throwWithBuilderErrorCode(errorCode: BuilderErrorCode): Nothing {
-            throw BuilderMethodSyntaxException(
-                builderMethodInterpreter.methodLocation,
-                errorCode,
-            )
+            throw BuilderMethodSyntaxException(builderMethodInterpreter.methodLocation, errorCode)
         }
-
     }
 }
