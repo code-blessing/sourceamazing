@@ -35,6 +35,9 @@ enum class BuilderErrorCode(override val messageFormat: String) : ErrorCode {
     ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION(
         "The alias '%s' was expected by the annotation ${ExpectedAliasFromSuperiorBuilder::class.annotationText()} but was not provided by the superior builder."
     ),
+    EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT(
+        "The alias '%s' from the annotation ${ExpectedAliasFromSuperiorBuilder::class.annotationText()} expects a concept '%s' but '%s' was provided by the superior builder."
+    ),
     DUPLICATE_ALIAS_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION(
         "The alias '%s' was listed multiple times with the ${ExpectedAliasFromSuperiorBuilder::class.annotationText()} annotation."
     ),

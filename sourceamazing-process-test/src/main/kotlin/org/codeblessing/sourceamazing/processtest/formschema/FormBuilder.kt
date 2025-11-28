@@ -41,16 +41,15 @@ interface FormBuilder {
         ): SelectDropdownEntryConceptBuilder
     }
 
-    interface FormControlBuilderMethods {
+    interface FormControlBuilderMethods<T> {
 
-        @BuilderMethod fun addLabel(@SetFacetValue("formControl", "labels") label: String): FormControlBuilder
+        @BuilderMethod fun addLabel(@SetFacetValue("formControl", "labels") label: String): T
 
-        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: List<String>): FormControlBuilder
+        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: List<String>): T
 
-        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: Array<String>): FormControlBuilder
+        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: Array<String>): T
 
-        @BuilderMethod
-        fun addVariableAmountOfLabels(@SetFacetValue("formControl", "labels") vararg labels: String): FormControlBuilder
+        @BuilderMethod fun addVariableAmountOfLabels(@SetFacetValue("formControl", "labels") vararg labels: String): T
     }
 
     @Builder
@@ -58,14 +57,14 @@ interface FormBuilder {
         concept = FormSchema.TextInputFormControlConcept::class,
         conceptAlias = "formControl",
     )
-    interface FormControlBuilder : FormControlBuilderMethods
+    interface FormControlBuilder : FormControlBuilderMethods<FormControlBuilder>
 
     @Builder
     @ExpectedAliasFromSuperiorBuilder(
-        concept = FormSchema.TextInputFormControlConcept::class,
+        concept = FormSchema.SelectDropdownFormControlConcept::class,
         conceptAlias = "formControl",
     )
-    interface SelectDropdownEntryConceptBuilder : FormControlBuilderMethods {
+    interface SelectDropdownEntryConceptBuilder : FormControlBuilderMethods<SelectDropdownEntryConceptBuilder> {
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownEntryConcept::class, "dropdownEntry")

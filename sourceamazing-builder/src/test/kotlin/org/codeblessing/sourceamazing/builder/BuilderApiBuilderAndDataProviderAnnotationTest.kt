@@ -322,7 +322,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "anotherConcept")
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "allMyConcepts")
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
@@ -332,7 +332,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderWithExpectedAliasFromSuperiorBuilderAnnotation::class,
-                    mapOf("anotherConcept" to conceptNameAndIdentifier),
+                    mapOf("allMyConcepts" to conceptNameAndIdentifier),
                 ) {
                     // do nothing
                 }

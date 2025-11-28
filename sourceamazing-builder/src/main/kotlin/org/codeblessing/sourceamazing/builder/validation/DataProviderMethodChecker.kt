@@ -1,14 +1,14 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.extensionReceiverParameter
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.utils.type.hasAnnotation
 import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
 import org.codeblessing.sourceamazing.utils.type.valueParameters
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.extensionReceiverParameter
 
 class DataProviderMethodChecker(private val methodToInspect: KFunction<*>, private val methodLocation: MethodLocation) {
 

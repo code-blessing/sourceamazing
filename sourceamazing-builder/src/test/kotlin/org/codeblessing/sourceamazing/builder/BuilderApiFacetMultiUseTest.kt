@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.builder
 
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
+import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
 import org.codeblessing.sourceamazing.schema.withRootInstance
@@ -61,14 +61,19 @@ class BuilderApiFacetMultiUseTest {
     }
 
     @Test
-    fun `test using nested builder for two different concepts with overlapping facets should not fail`() {
-        SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class,
-                ) {
-                    // do nothing
+    fun `test using nested builder for two different concepts even with overlapping facets should fail`() {
+        assertExceptionWithErrorCode(
+            BuilderSyntaxException::class,
+            BuilderErrorCode.EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT,
+        ) {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
+                withRootInstance<MyConcepts>(schemaContext) {
+                    BuilderApi.withBuilder(
+                        schemaContext,
+                        BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class,
+                    ) {
+                        // do nothing
+                    }
                 }
             }
         }
@@ -103,7 +108,10 @@ class BuilderApiFacetMultiUseTest {
 
     @Test
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
-        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
+        assertExceptionWithErrorCode(
+            BuilderSyntaxException::class,
+            BuilderErrorCode.EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT,
+        ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(

@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.valueParameters
 import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderDataProviderInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.valueParameters
 
 object BuilderMethodParameterValidator {
 
@@ -26,7 +26,12 @@ object BuilderMethodParameterValidator {
 
         method.valueParameters.forEachIndexed { parameterIndex, methodParameter ->
             val parameterValidationData =
-                builderMethodParameterValidationData(builderMethodInterpreter, parameterIndex, methodParameter, schemaAccess)
+                builderMethodParameterValidationData(
+                    builderMethodInterpreter,
+                    parameterIndex,
+                    methodParameter,
+                    schemaAccess,
+                )
             block(parameterValidationData)
         }
     }

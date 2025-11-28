@@ -158,6 +158,7 @@ class BuilderMethodInterpreter(
     }
 
     fun getBuilderClassFromReturnType(): KClass<*>? {
+        method
         val methodReturnType = method.returnTypeOrNull() ?: return null
         return KTypeUtil.classesInformationFromKType(methodReturnType).first().clazz
     }

@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.alias.toAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.ExpectedAliasFromSuperiorBuilder
 import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.toConceptName
 
 class BuilderClassInterpreter(
     val builderClass: KClass<*>,
@@ -27,6 +28,12 @@ class BuilderClassInterpreter(
 
     fun newConceptAliasesFromSuperiorBuilder(): Set<Alias> {
         return newConceptNamesFromSuperiorBuilder().keys
+    }
+
+    fun expectedAliasesAndConceptNamesFromSuperiorBuilder(): Map<Alias, ConceptName> {
+        return builderClass.annotations.filterIsInstance<ExpectedAliasFromSuperiorBuilder>().associate {
+            Pair(it.conceptAlias.toAlias(), it.concept.toConceptName())
+        }
     }
 
     fun newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases(): Map<Alias, ConceptName> {

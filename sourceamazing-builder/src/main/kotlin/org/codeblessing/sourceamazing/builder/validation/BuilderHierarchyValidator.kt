@@ -1,5 +1,7 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME
 import org.codeblessing.sourceamazing.builder.alias.Alias
@@ -11,8 +13,6 @@ import org.codeblessing.sourceamazing.builder.validation.BuilderMethodValidator.
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 
 object BuilderHierarchyValidator {
 

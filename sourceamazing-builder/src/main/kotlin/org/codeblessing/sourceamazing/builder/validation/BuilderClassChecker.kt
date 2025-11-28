@@ -1,10 +1,14 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KClass
+import kotlin.reflect.full.memberExtensionFunctions
+import kotlin.reflect.full.memberProperties
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstDuplicateAlias
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasGenericTypeParameters
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.isAnnotationClass
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface
@@ -13,9 +17,6 @@ import org.codeblessing.sourceamazing.utils.type.annotationsIncludingSuperclasse
 import org.codeblessing.sourceamazing.utils.type.getNumberOfAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.hasAnnotationIncludingSuperclasses
 import org.codeblessing.sourceamazing.utils.type.isAnnotationFromSourceAmazing
-import kotlin.reflect.KClass
-import kotlin.reflect.full.memberExtensionFunctions
-import kotlin.reflect.full.memberProperties
 
 class BuilderClassChecker(private val builderClassToInspect: KClass<*>, private val classDescription: String) {
 
@@ -127,6 +128,25 @@ class BuilderClassChecker(private val builderClassToInspect: KClass<*>, private 
                     builderClassToInspect,
                     BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION,
                     expectedAlias,
+                )
+            }
+        }
+    }
+
+    fun checkAllExpectedAliasesAreMatchingProvidedAliasOnConceptNames(
+        expectedAliases: Map<Alias, ConceptName>,
+        providedAliases: Map<Alias, ConceptName>,
+    ) {
+        expectedAliases.forEach { (expectedAlias, expectedConceptName) ->
+            val providedConceptName = requireNotNull(providedAliases[expectedAlias])
+
+            if (providedConceptName != expectedConceptName) {
+                throw BuilderSyntaxException(
+                    builderClassToInspect,
+                    BuilderErrorCode.EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT,
+                    expectedAlias,
+                    expectedConceptName.simpleName(),
+                    providedConceptName.simpleName(),
                 )
             }
         }

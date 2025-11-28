@@ -18,6 +18,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
+import org.codeblessing.sourceamazing.utils.type.KFunctionUtil
 import org.codeblessing.sourceamazing.utils.type.hasAnnotation
 import org.codeblessing.sourceamazing.utils.type.valueParamsWithValues
 
@@ -35,7 +36,11 @@ class BuilderInvocationHandler(
         )
 
     override fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any? {
-        val args = function.valueParamsWithValues(arguments)
+        val tangibleFunction = KFunctionUtil.functionOrDerivedFunction(function, builderClassInterpreter.builderClass)
+        return invokeInternal(tangibleFunction, tangibleFunction.valueParamsWithValues(arguments))
+    }
+
+    private fun invokeInternal(function: KFunction<*>, arguments: Map<KParameter, Any?>): Any? {
         if (function.hasAnnotation(BuilderMethod::class)) {
 
             val builderMethodInterpreter =
@@ -48,7 +53,7 @@ class BuilderInvocationHandler(
             val builderMethodInterpreterDataCollector =
                 BuilderMethodInterpreterDataCollector(
                     conceptDataCollector = conceptDataCollector,
-                    functionArguments = args,
+                    functionArguments = arguments,
                     newConceptIdsFromSuperiorBuilder = superiorAliases.mapValues { it.value.conceptIdentifier },
                 )
 
@@ -71,7 +76,7 @@ class BuilderInvocationHandler(
                         conceptDataCollector,
                         aliases = expectedSuperiorAliases,
                     )
-                injectBuilderToParamMethod(function, args, builderForInjection)
+                injectBuilderToParamMethod(function, arguments, builderForInjection)
                 return null // if a builder is injected, the method can not return a builder
             }
 

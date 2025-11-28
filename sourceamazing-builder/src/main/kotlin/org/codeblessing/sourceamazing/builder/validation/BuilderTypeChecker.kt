@@ -1,5 +1,6 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KType
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
@@ -7,7 +8,6 @@ import org.codeblessing.sourceamazing.utils.type.KTypeKind
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 import org.codeblessing.sourceamazing.utils.type.typeKind
-import kotlin.reflect.KType
 
 object BuilderTypeChecker {
 

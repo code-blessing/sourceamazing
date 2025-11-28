@@ -11,6 +11,7 @@ object BuilderClassValidator {
             validateBuilderClassStructure()
             validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(builderClassInterpreter)
             validateAllExpectedAliasesFromSuperiorBuilderAreProvided(builderClassInterpreter)
+            validateAllExpectedAliasesFromSuperiorBuilderHaveMatchingConcepts(builderClassInterpreter)
         }
     }
 
@@ -30,6 +31,18 @@ object BuilderClassValidator {
         val expectedAliases = builderClassInterpreter.expectedAliasesFromSuperiorBuilder()
         val providedAliases = builderClassInterpreter.newConceptAliasesFromSuperiorBuilder()
         checkAllExpectedAliasesAreProvided(expectedAliases, providedAliases)
+    }
+
+    private fun BuilderClassChecker.validateAllExpectedAliasesFromSuperiorBuilderHaveMatchingConcepts(
+        builderClassInterpreter: BuilderClassInterpreter
+    ) {
+        val expectedAliasesAndConcepts = builderClassInterpreter.expectedAliasesAndConceptNamesFromSuperiorBuilder()
+        val providedAliasesAndConcepts =
+            builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
+        checkAllExpectedAliasesAreMatchingProvidedAliasOnConceptNames(
+            expectedAliases = expectedAliasesAndConcepts,
+            providedAliases = providedAliasesAndConcepts,
+        )
     }
 
     private fun BuilderClassChecker.validateNoDuplicateAliasInExpectedAliasFromSuperiorBuilder(

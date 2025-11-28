@@ -1,10 +1,10 @@
 package org.codeblessing.sourceamazing.builder.validation
 
+import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderDataProviderInterpreter
-import kotlin.reflect.KFunction
 
 object BuilderDataProviderHierarchyValidator {
 
