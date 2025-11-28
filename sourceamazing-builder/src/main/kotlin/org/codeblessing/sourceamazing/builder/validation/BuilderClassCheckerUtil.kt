@@ -9,23 +9,23 @@ import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.utils.type.*
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasGenericTypeParameters
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.isAnnotationClass
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface
+import org.codeblessing.sourceamazing.utils.type.KClassUtil.isPrivateClass
 
 object BuilderClassCheckerUtil {
 
     fun checkIsNotAnnotation(classToInspect: KClass<*>, classDescription: String) {
-        if (classToInspect.isAnnotation) {
+        if (isAnnotationClass(classToInspect)) {
             throw BuilderSyntaxException(classToInspect, BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION, classDescription)
         }
     }
 
     fun checkIsNotPrivate(classToInspect: KClass<*>, classDescription: String) {
-        if (classToInspect.isPrivate) {
+        if (isPrivateClass(classToInspect)) {
             throw BuilderSyntaxException(classToInspect, BuilderErrorCode.CLASS_CANNOT_BE_PRIVATE, classDescription)
         }
-    }
-
-    fun isOrdinaryInterface(classToInspect: KClass<*>): Boolean {
-        return classToInspect.isInterface && !classToInspect.isAnnotation
     }
 
     fun checkIsOrdinaryInterface(classToInspect: KClass<*>, classDescription: String) {
@@ -34,9 +34,6 @@ object BuilderClassCheckerUtil {
         }
     }
 
-    fun hasGenericTypeParameters(classToInspect: KClass<*>): Boolean {
-        return classToInspect.typeParameters.isNotEmpty()
-    }
 
     fun checkHasNoGenericTypeParameters(classToInspect: KClass<*>, classDescription: String) {
         if (hasGenericTypeParameters(classToInspect)) {
@@ -96,29 +93,6 @@ object BuilderClassCheckerUtil {
             }
     }
 
-    fun checkHasNotAnnotation(
-        deniedAnnotation: KClass<out Annotation>,
-        classToInspect: KClass<*>,
-        classDescription: String,
-    ) {
-        classToInspect.annotationsIncludingSuperclasses
-            .filter { it.isAnnotationFromSourceAmazing() }
-            .forEach { annotationOnClass ->
-                if (deniedAnnotation == annotationOnClass.annotationClass) {
-                    throw BuilderSyntaxException(
-                        classToInspect,
-                        BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-                        classDescription,
-                        annotationOnClass.annotationClass.annotationText(),
-                    )
-                }
-            }
-    }
-
-    fun hasMemberExtensionFunctions(classToInspect: KClass<*>): Boolean {
-        return classToInspect.memberExtensionFunctions.isNotEmpty()
-    }
-
     fun checkHasNoExtensionFunctions(classToInspect: KClass<*>, classDescription: String) {
         if (classToInspect.memberExtensionFunctions.isNotEmpty()) {
             throw BuilderSyntaxException(
@@ -137,32 +111,6 @@ object BuilderClassCheckerUtil {
                 BuilderErrorCode.CLASS_CANNOT_HAVE_PROPERTIES,
                 classDescription,
                 classToInspect.memberProperties,
-            )
-        }
-    }
-
-    fun hasMemberFunctions(classToInspect: KClass<*>): Boolean {
-        return classToInspect.memberFunctions.filterNot { it.isFromKotlinAnyClass() }.isNotEmpty()
-    }
-
-    fun checkHasNoFunctions(classToInspect: KClass<*>, classDescription: String) {
-        if (hasMemberFunctions(classToInspect)) {
-            throw BuilderSyntaxException(
-                classToInspect,
-                BuilderErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS,
-                classDescription,
-                classToInspect.memberFunctions,
-            )
-        }
-    }
-
-    fun checkHasNoMembers(classToInspect: KClass<*>, classDescription: String) {
-        if (classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()) {
-            throw BuilderSyntaxException(
-                classToInspect,
-                BuilderErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES,
-                classDescription,
-                classToInspect.members,
             )
         }
     }

@@ -6,7 +6,7 @@ import kotlin.reflect.full.*
 
 object KClassUtil {
 
-    fun isAnnotationClas(classToInspect: KClass<*>): Boolean {
+    fun isAnnotationClass(classToInspect: KClass<*>): Boolean {
         return classToInspect.isAnnotation
     }
 

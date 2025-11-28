@@ -13,8 +13,6 @@ enum class BuilderErrorCode(override val messageFormat: String) : ErrorCode {
     CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
     CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
     CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
-    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS("%s must not have member functions but has %s."),
-    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),
     MUST_HAVE_ANNOTATION("%s must have an annotation %s."),
     NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS("%s can not have more than %s annotation %s."),
     CAN_NOT_HAVE_ANNOTATION("%s can not have annotation of type %s."),

@@ -34,7 +34,7 @@ object BuilderHierarchyValidator {
                 val builderMethodValidationData = builderClassValidationData.builderMethod(method)
                 validateBuilderMethodSyntax(builderMethodValidationData)
 
-                val subBuilderClass = validateAndGetSubBuilderClass(builderMethodValidationData)
+                val subBuilderClass = validateSubBuilderClassAndGet(builderMethodValidationData)
                 if (subBuilderClass != null) {
                     val subBuilderClassValidationData = builderMethodValidationData.subBuilderClass(subBuilderClass)
                     validateBuilderClassStructureAndMethodSyntax(subBuilderClassValidationData)
@@ -63,7 +63,7 @@ object BuilderHierarchyValidator {
         )
     }
 
-    private fun validateAndGetSubBuilderClass(builderMethodValidationData: BuilderMethodValidationData): KClass<*>? {
+    private fun validateSubBuilderClassAndGet(builderMethodValidationData: BuilderMethodValidationData): KClass<*>? {
         val builderMethodReturnType = builderMethodValidationData.builderMethodReturnType()
 
         if (builderMethodReturnType.hasNoSubBuilder()) {
