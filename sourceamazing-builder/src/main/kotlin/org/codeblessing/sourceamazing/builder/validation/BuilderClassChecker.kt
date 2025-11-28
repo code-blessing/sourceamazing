@@ -6,9 +6,9 @@ import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberProperties
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.annotationText
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
+import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.hasGenericTypeParameters
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.isAnnotationClass
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface

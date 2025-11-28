@@ -5,8 +5,6 @@ import kotlin.reflect.full.hasAnnotation
 import org.codeblessing.sourceamazing.builder.BuilderErrorCode
 import org.codeblessing.sourceamazing.builder.MethodLocation
 import org.codeblessing.sourceamazing.builder.alias.Alias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstDuplicateAlias
-import org.codeblessing.sourceamazing.builder.alias.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderMethod
 import org.codeblessing.sourceamazing.builder.api.annotations.SetConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetRandomConceptIdentifierValue
@@ -14,6 +12,8 @@ import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions
 import org.codeblessing.sourceamazing.builder.documentation.TypesAsTextFunctions.longText
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationBaseData
+import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstDuplicateAlias
+import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.SchemaAccess
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil

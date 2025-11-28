@@ -1,4 +1,6 @@
-package org.codeblessing.sourceamazing.builder.alias
+package org.codeblessing.sourceamazing.builder.validation
+
+import org.codeblessing.sourceamazing.builder.alias.Alias
 
 object BuilderAliasHelper {
 
