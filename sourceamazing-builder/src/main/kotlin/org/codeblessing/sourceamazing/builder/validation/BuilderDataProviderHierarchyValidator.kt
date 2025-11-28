@@ -1,82 +1,54 @@
 package org.codeblessing.sourceamazing.builder.validation
 
-import kotlin.reflect.full.extensionReceiverParameter
-import kotlin.reflect.full.hasAnnotation
-import org.codeblessing.sourceamazing.builder.BuilderErrorCode
+import kotlin.reflect.KFunction
 import org.codeblessing.sourceamazing.builder.api.annotations.BuilderDataProvider
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedConceptIdentifierValue
 import org.codeblessing.sourceamazing.builder.api.annotations.SetProvidedFacetValue
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderDataProviderInterpreter
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasExactNumberOfAnnotations
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkHasOnlyAnnotations
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsNotAnnotation
-import org.codeblessing.sourceamazing.builder.validation.BuilderClassCheckerUtil.checkIsNotPrivate
-import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
-import org.codeblessing.sourceamazing.utils.type.valueParameters
 
 object BuilderDataProviderHierarchyValidator {
-    private const val BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION = "Builder data provider class"
 
     fun validateTopLevelBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
         validateBuilderDataProvider(builderDataProviderInterpreter)
     }
 
     private fun validateBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
-        val builderDataProviderClass = builderDataProviderInterpreter.dataProviderClass
-
-        checkIsNotAnnotation(builderDataProviderClass, BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION)
-        checkIsNotPrivate(builderDataProviderClass, BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION)
-        checkHasAnnotation(
-            BuilderDataProvider::class,
-            builderDataProviderClass,
-            BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION,
-        )
-        checkHasExactNumberOfAnnotations(
-            BuilderDataProvider::class,
-            builderDataProviderClass,
-            BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION,
-            numberOf = 1,
-        )
-        checkHasOnlyAnnotations(
-            listOf(BuilderDataProvider::class),
-            builderDataProviderClass,
-            BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION,
-        )
+        val builderClassChecker = builderClassChecker(builderDataProviderInterpreter)
+        with(builderClassChecker) {
+            checkIsNotAnnotation()
+            checkIsNotPrivate()
+            checkHasAnnotation(BuilderDataProvider::class)
+            checkHasExactNumberOfAnnotations(BuilderDataProvider::class, numberOf = 1)
+            checkHasOnlyAnnotations(listOf(BuilderDataProvider::class))
+        }
 
         builderDataProviderInterpreter.getBuilderDataMethods().forEach { builderDataMethod ->
-            val builderDataMethodLocation = builderDataProviderInterpreter.builderMethodLocation(builderDataMethod)
+            val dataProviderMethodChecker = dataProviderMethodChecker(builderDataMethod, builderDataProviderInterpreter)
 
-            if (builderDataMethod.extensionReceiverParameter != null) {
-                throw BuilderMethodSyntaxException(
-                    builderDataMethodLocation,
-                    BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_CAN_NOT_BE_EXTENSION_FUNCTION,
-                )
-            }
-
-            if (builderDataMethod.valueParameters().isNotEmpty()) {
-                throw BuilderMethodSyntaxException(
-                    builderDataMethodLocation,
-                    BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_HAS_PARAMETERS,
-                )
-            }
-
-            if (
-                builderDataMethod.hasAnnotation<SetProvidedFacetValue>() ||
-                    builderDataMethod.hasAnnotation<SetProvidedConceptIdentifierValue>()
-            ) {
-                if (builderDataMethod.returnTypeOrNull() == null) {
-                    throw BuilderMethodSyntaxException(
-                        builderDataMethodLocation,
-                        BuilderErrorCode.BUILDER_DATA_PROVIDER_FUNCTION_RETURNS_NOTHING,
-                    )
-                }
+            with(dataProviderMethodChecker) {
+                checkHasNoExtensionReceiverParameter()
+                checkHasNoValueParameters()
+                checkHasReturnTypeIfHasAnnotation(SetProvidedFacetValue::class)
+                checkHasReturnTypeIfHasAnnotation(SetProvidedConceptIdentifierValue::class)
             }
         }
 
         // if we have something like sub data provider, these can be validated here using something
         // like the [RecursionDetector].
 
+    }
+
+    private fun builderClassChecker(
+        builderDataProviderInterpreter: BuilderDataProviderInterpreter
+    ): BuilderClassChecker {
+        return BuilderClassChecker(builderDataProviderInterpreter.dataProviderClass, "Builder data provider class")
+    }
+
+    private fun dataProviderMethodChecker(
+        builderDataMethod: KFunction<*>,
+        builderDataProviderInterpreter: BuilderDataProviderInterpreter,
+    ): DataProviderMethodChecker {
+        val methodLocation = builderDataProviderInterpreter.builderMethodLocation(builderDataMethod)
+        return DataProviderMethodChecker(builderDataMethod, methodLocation)
     }
 }
