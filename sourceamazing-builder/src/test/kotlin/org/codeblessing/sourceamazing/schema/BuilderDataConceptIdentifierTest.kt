@@ -20,8 +20,7 @@ class BuilderDataConceptIdentifierTest {
 
         interface ConceptTwo : AbstractNumericConcept
 
-        @References([ConceptOne::class, ConceptTwo::class])
-        val concepts: List<AbstractNumericConcept>
+        @References([ConceptOne::class, ConceptTwo::class]) val concepts: List<AbstractNumericConcept>
     }
 
     @Builder
@@ -36,8 +35,7 @@ class BuilderDataConceptIdentifierTest {
             referencedConceptAlias = "myConcept",
         )
         fun createConceptOne(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-            conceptIdentifier: ConceptIdentifier
+            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier
         )
 
         @BuilderMethod
@@ -48,8 +46,7 @@ class BuilderDataConceptIdentifierTest {
             referencedConceptAlias = "myConcept",
         )
         fun createConceptTwo(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-            conceptIdentifier: ConceptIdentifier
+            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier
         )
     }
 
@@ -128,9 +125,7 @@ class BuilderDataConceptIdentifierTest {
                     mapOf("root" to conceptNameAndIdentifier),
                 ) { builder ->
                     builder.createConceptOne(myConceptId)
-                    assertThrows<DuplicateConceptIdentifierException> {
-                        builder.createConceptTwo(myConceptId)
-                    }
+                    assertThrows<DuplicateConceptIdentifierException> { builder.createConceptTwo(myConceptId) }
                 }
             }
         }

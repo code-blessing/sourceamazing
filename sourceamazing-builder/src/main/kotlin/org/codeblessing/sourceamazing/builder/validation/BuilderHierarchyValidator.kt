@@ -24,11 +24,7 @@ object BuilderHierarchyValidator {
                 builderClass = builderClass,
                 newConceptNamesWithAliasFromSuperiorBuilder = superiorConcepts,
             )
-        validateBuilderClassStructureAndMethodSyntax(
-            builderClassInterpreter,
-            RecursionDetector(),
-            schemaAccess,
-        )
+        validateBuilderClassStructureAndMethodSyntax(builderClassInterpreter, RecursionDetector(), schemaAccess)
     }
 
     /** This method is called by recursion. */
@@ -42,11 +38,8 @@ object BuilderHierarchyValidator {
         val expectedConceptsFromSuperiorBuilder: Map<Alias, ConceptName> =
             builderClassInterpreter.newConceptNamesFromSuperiorBuilderFilteredByExpectedAliases()
 
-        RelevantMethodFetcher.ownMemberFunctions(builderClassInterpreter.builderClass).forEach {
-            method ->
-            if (
-                recursionDetector.pushMethodOntoStack(method, expectedConceptsFromSuperiorBuilder)
-            ) {
+        RelevantMethodFetcher.ownMemberFunctions(builderClassInterpreter.builderClass).forEach { method ->
+            if (recursionDetector.pushMethodOntoStack(method, expectedConceptsFromSuperiorBuilder)) {
 
                 val builderMethodInterpreter =
                     BuilderMethodInterpreter(
@@ -65,8 +58,7 @@ object BuilderHierarchyValidator {
                         BuilderClassInterpreter(
                             builderClass = subBuilderClass,
                             newConceptNamesWithAliasFromSuperiorBuilder =
-                                expectedConceptsFromSuperiorMethod +
-                                    builderMethodInterpreter.newConcepts(),
+                                expectedConceptsFromSuperiorMethod + builderMethodInterpreter.newConcepts(),
                         )
 
                     validateBuilderClassStructureAndMethodSyntax(
@@ -80,9 +72,7 @@ object BuilderHierarchyValidator {
         }
     }
 
-    private fun validateAndGetSubBuilderClass(
-        builderMethodInterpreter: BuilderMethodInterpreter
-    ): KClass<*>? {
+    private fun validateAndGetSubBuilderClass(builderMethodInterpreter: BuilderMethodInterpreter): KClass<*>? {
         val subBuilderClassFromNewBuilderAnnotation =
             builderMethodInterpreter.getBuilderClassFromWithNewBuilderAnnotation()
         val subBuilderClassFromReturnType = builderMethodInterpreter.getBuilderClassFromReturnType()
@@ -97,28 +87,21 @@ object BuilderHierarchyValidator {
             return null
         }
 
-        if (
-            subBuilderClassFromReturnType != null &&
-                subBuilderClassFromInjectBuilderAnnotation != null
-        ) {
+        if (subBuilderClassFromReturnType != null && subBuilderClassFromInjectBuilderAnnotation != null) {
             throw BuilderMethodSyntaxException(
                 builderMethodInterpreter.methodLocation,
                 BuilderErrorCode.BUILDER_INJECTION_AND_RETURN_AT_SAME_TIME,
             )
         }
 
-        if (
-            subBuilderClassFromReturnType == null &&
-                subBuilderClassFromInjectBuilderAnnotation == null
-        ) {
+        if (subBuilderClassFromReturnType == null && subBuilderClassFromInjectBuilderAnnotation == null) {
             throw BuilderMethodSyntaxException(
                 builderMethodInterpreter.methodLocation,
                 BuilderErrorCode.BUILDER_DECLARED_IN_WITH_NEW_BUILDER_ANNOTATION_MUST_BE_USED,
             )
         }
 
-        val subBuilderClass =
-            subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation
+        val subBuilderClass = subBuilderClassFromReturnType ?: subBuilderClassFromInjectBuilderAnnotation
 
         if (subBuilderClassFromNewBuilderAnnotation != null) {
             if (subBuilderClassFromNewBuilderAnnotation != subBuilderClass) {

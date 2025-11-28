@@ -33,10 +33,7 @@ class BuilderDataCardinalityTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "myConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun addText(
@@ -89,12 +86,7 @@ class BuilderDataCardinalityTest {
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .addText("hallo1")
-                            .addText("hallo2")
-                            .addText("hallo3")
-                            .addText("hallo4")
+                        builder.createConcept().addText("hallo1").addText("hallo2").addText("hallo3").addText("hallo4")
                     }
                 }
             }

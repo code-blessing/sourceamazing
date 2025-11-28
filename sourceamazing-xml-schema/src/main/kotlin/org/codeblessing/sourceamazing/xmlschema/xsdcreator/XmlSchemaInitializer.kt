@@ -17,11 +17,7 @@ object XmlSchemaInitializer {
         return schemaDirectory
     }
 
-    fun initializeXmlSchemaFile(
-        xmlFile: Path,
-        schema: SchemaAccess,
-        fileSystemAccess: FileSystemAccess,
-    ): Path {
+    fun initializeXmlSchemaFile(xmlFile: Path, schema: SchemaAccess, fileSystemAccess: FileSystemAccess): Path {
         val schemaDirectory = createSchemaDirectory(xmlFile, fileSystemAccess)
         val xmlSchemaFileContent = XmlDomSchemaCreator.createXsdSchemaContent(schema)
         val xsdFilePath = schemaDirectory.resolve(XSD_SCHEMA_FILE_NAME)

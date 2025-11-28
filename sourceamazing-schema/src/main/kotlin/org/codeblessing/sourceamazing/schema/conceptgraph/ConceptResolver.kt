@@ -9,10 +9,7 @@ import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 object ConceptResolver {
 
     @Throws(DataValidationException::class)
-    fun validateAndResolveConcepts(
-        schema: SchemaAccess,
-        conceptDataEntries: List<ConceptData>,
-    ): ConceptGraph {
+    fun validateAndResolveConcepts(schema: SchemaAccess, conceptDataEntries: List<ConceptData>): ConceptGraph {
         val validatedDataEntries = ConceptDataValidator.validateEntries(schema, conceptDataEntries)
         val conceptNodeMap: Map<ConceptIdentifier, MutableConceptNode> =
             createConceptNodeMap(schema, validatedDataEntries)
@@ -63,15 +60,11 @@ object ConceptResolver {
             is NumberFacetSchema,
             is BooleanFacetSchema -> conceptData.getFacet(facetName)
             is EnumFacetSchema -> transformEnumFacetValues(facetSchema, conceptData)
-            is ReferenceFacetSchema ->
-                transformReferenceFacetValues(facetName, conceptData, conceptNodeMap)
+            is ReferenceFacetSchema -> transformReferenceFacetValues(facetName, conceptData, conceptNodeMap)
         }
     }
 
-    private fun transformEnumFacetValues(
-        facetSchema: EnumFacetSchema,
-        conceptData: ConceptData,
-    ): List<Any> {
+    private fun transformEnumFacetValues(facetSchema: EnumFacetSchema, conceptData: ConceptData): List<Any> {
         val enumerationType = facetSchema.enumerationType
         return conceptData.getFacet(facetSchema.facetName).map { value ->
             transformEnumFacetValue(enumerationType, value)

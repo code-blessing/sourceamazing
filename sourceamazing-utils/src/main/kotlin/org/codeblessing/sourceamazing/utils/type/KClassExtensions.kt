@@ -11,10 +11,7 @@ val KClass<*>.classAndSuperclasses: List<KClass<*>>
 val KClass<*>.annotationsIncludingSuperclasses: List<Annotation>
     get() = classAndSuperclasses.map { it.annotations }.flatten()
 
-private fun <T : Annotation> findAnnotationIncludingSuperclasses(
-    annotation: KClass<T>,
-    clazz: KClass<*>,
-): List<T> {
+private fun <T : Annotation> findAnnotationIncludingSuperclasses(annotation: KClass<T>, clazz: KClass<*>): List<T> {
     return clazz.classAndSuperclasses.map { it.findAnnotations(annotation) }.flatten()
 }
 
@@ -27,9 +24,8 @@ fun <T : Annotation> KClass<*>.getAnnotationIncludingSuperclasses(annotationClas
 fun KClass<*>.hasAnnotationIncludingSuperclasses(annotationClass: KClass<out Annotation>): Boolean =
     findAnnotationIncludingSuperclasses(annotationClass, this).any()
 
-fun KClass<*>.getNumberOfAnnotationIncludingSuperclasses(
-    annotationClass: KClass<out Annotation>
-): Int = findAnnotationIncludingSuperclasses(annotationClass, this).count()
+fun KClass<*>.getNumberOfAnnotationIncludingSuperclasses(annotationClass: KClass<out Annotation>): Int =
+    findAnnotationIncludingSuperclasses(annotationClass, this).count()
 
 val KClass<*>.isInterface: Boolean
     get() = java.isInterface && !this.isAnnotation

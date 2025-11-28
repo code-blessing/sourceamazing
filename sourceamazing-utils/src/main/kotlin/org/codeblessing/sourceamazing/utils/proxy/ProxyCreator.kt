@@ -6,10 +6,7 @@ import kotlin.reflect.KClass
 
 object ProxyCreator {
 
-    fun <X : Any> createProxy(
-        interfaceForProxy: KClass<X>,
-        invocationHandler: InvocationHandler,
-    ): X {
+    fun <X : Any> createProxy(interfaceForProxy: KClass<X>, invocationHandler: InvocationHandler): X {
         @Suppress("UNCHECKED_CAST")
         return Proxy.newProxyInstance(
             this::class.java.classLoader,

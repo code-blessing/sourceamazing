@@ -17,14 +17,8 @@ object BuilderUpdater {
         builderMethodInterpreter: BuilderMethodInterpreter,
         builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
     ) {
-        addNewConceptDataWithDedicatedConceptIdentifier(
-            builderMethodInterpreter,
-            builderInterpreterDataCollector,
-        )
-        addNewConceptDataWithRandomConceptIdentifier(
-            builderMethodInterpreter,
-            builderInterpreterDataCollector,
-        )
+        addNewConceptDataWithDedicatedConceptIdentifier(builderMethodInterpreter, builderInterpreterDataCollector)
+        addNewConceptDataWithRandomConceptIdentifier(builderMethodInterpreter, builderInterpreterDataCollector)
         updateFacetValues(builderMethodInterpreter, builderInterpreterDataCollector)
     }
 
@@ -35,22 +29,17 @@ object BuilderUpdater {
         val method: KFunction<*> = builderMethodInterpreter.method
         val dataContext = builderInterpreterDataCollector.getDataContext()
 
-        builderMethodInterpreter
-            .getManualAssignedConceptIdentifierAnnotationContent(dataContext)
-            .forEach { conceptIdentifierAnnotationData ->
-                val conceptAlias = conceptIdentifierAnnotationData.alias
-                val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
-                val conceptIdentifier =
-                    conceptIdentifierAnnotationData.conceptIdentifier
-                        ?: throw IllegalArgumentException(
-                            "Can not pass null value as concept identifier argument on method $method"
-                        )
-                builderInterpreterDataCollector.newConceptData(
-                    conceptAlias,
-                    conceptName,
-                    conceptIdentifier,
-                )
-            }
+        builderMethodInterpreter.getManualAssignedConceptIdentifierAnnotationContent(dataContext).forEach {
+            conceptIdentifierAnnotationData ->
+            val conceptAlias = conceptIdentifierAnnotationData.alias
+            val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
+            val conceptIdentifier =
+                conceptIdentifierAnnotationData.conceptIdentifier
+                    ?: throw IllegalArgumentException(
+                        "Can not pass null value as concept identifier argument on method $method"
+                    )
+            builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
+        }
     }
 
     private fun addNewConceptDataWithRandomConceptIdentifier(
@@ -62,11 +51,7 @@ object BuilderUpdater {
         aliasesToSetRandomConceptIdentifierValue.forEach { conceptAlias ->
             val conceptName = builderMethodInterpreter.getConceptByAlias(conceptAlias)
             val conceptIdentifier = conceptName.randomConceptIdentifier()
-            builderInterpreterDataCollector.newConceptData(
-                conceptAlias,
-                conceptName,
-                conceptIdentifier,
-            )
+            builderInterpreterDataCollector.newConceptData(conceptAlias, conceptName, conceptIdentifier)
         }
     }
 
@@ -75,8 +60,7 @@ object BuilderUpdater {
         builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
     ) {
         val dataContext = builderInterpreterDataCollector.getDataContext()
-        builderMethodInterpreter.getFacetValueAnnotationContent(dataContext).forEach {
-            facetValueAnnotationContent ->
+        builderMethodInterpreter.getFacetValueAnnotationContent(dataContext).forEach { facetValueAnnotationContent ->
             val value: Any =
                 facetValueAnnotationContent.value
                     ?: if (!facetValueAnnotationContent.base.ignoreNullValue) {
@@ -105,8 +89,7 @@ object BuilderUpdater {
         facetModificationRule: FacetModificationRule,
         builderInterpreterDataCollector: BuilderMethodInterpreterDataCollector,
     ) {
-        val conceptId: ConceptIdentifier =
-            builderInterpreterDataCollector.conceptIdByAlias(conceptAlias)
+        val conceptId: ConceptIdentifier = builderInterpreterDataCollector.conceptIdByAlias(conceptAlias)
         val conceptData = builderInterpreterDataCollector.existingConceptData(conceptId)
         val facetValues = BuilderCollectionHelper.facetValueListFromFacetValue(value)
         when (facetModificationRule) {

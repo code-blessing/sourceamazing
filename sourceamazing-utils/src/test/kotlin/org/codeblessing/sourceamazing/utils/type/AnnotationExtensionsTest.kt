@@ -15,14 +15,12 @@ class AnnotationExtensionsTest {
         assertTrue(annotationFromSourceamazing.isAnnotationFromSourceAmazing())
     }
 
-    @Deprecated("Only an annotation not from source amazing")
-    private interface ClassWithoutSourceamazingAnnotation
+    @Deprecated("Only an annotation not from source amazing") private interface ClassWithoutSourceamazingAnnotation
 
     @Test
     fun `test with another annotation than source amazing annotation`() {
         @Suppress("DEPRECATION")
-        val annotationNotFromSourceamazing =
-            ClassWithoutSourceamazingAnnotation::class.annotations.first()
+        val annotationNotFromSourceamazing = ClassWithoutSourceamazingAnnotation::class.annotations.first()
 
         assertFalse(annotationNotFromSourceamazing.isAnnotationFromSourceAmazing())
     }

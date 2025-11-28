@@ -61,10 +61,7 @@ class SaxParserHandler(
         }
     }
 
-    private fun handleXmlTag(
-        localName: String,
-        xmlAttributes: List<XmlAttribute>,
-    ): XmlStackElement {
+    private fun handleXmlTag(localName: String, xmlAttributes: List<XmlAttribute>): XmlStackElement {
         val currentStackElement = getCurrentXmlStackElement()
         val conceptSchemaFromTagName = XmlNames.conceptFromXmlConceptName(localName, schema)
         if (conceptSchemaFromTagName != null) {
@@ -72,12 +69,9 @@ class SaxParserHandler(
         }
 
         if (currentStackElement == null) {
-            throw IllegalStateException(
-                "No stack element. Probably not valid concept name '$localName'."
-            )
+            throw IllegalStateException("No stack element. Probably not valid concept name '$localName'.")
         }
-        val facetSchemaFromTagName =
-            XmlNames.facetFromXmlFacetName(localName, currentStackElement.conceptSchema)
+        val facetSchemaFromTagName = XmlNames.facetFromXmlFacetName(localName, currentStackElement.conceptSchema)
         if (facetSchemaFromTagName != null) {
             return declareNewFacet(facetSchemaFromTagName)
         }
@@ -93,25 +87,17 @@ class SaxParserHandler(
         throw IllegalStateException("Unsupported tag '$localName'.")
     }
 
-    private fun declareNewConcept(
-        newConceptSchema: ConceptSchema,
-        xmlAttributes: List<XmlAttribute>,
-    ): XmlStackElement {
+    private fun declareNewConcept(newConceptSchema: ConceptSchema, xmlAttributes: List<XmlAttribute>): XmlStackElement {
         val newConceptIdentifier =
-            extractXmlAttributeValue(XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME, xmlAttributes)
-                ?.let { ConceptIdentifier.of(it) }
-                ?: newConceptSchema.conceptName.randomConceptIdentifier()
+            extractXmlAttributeValue(XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME, xmlAttributes)?.let {
+                ConceptIdentifier.of(it)
+            } ?: newConceptSchema.conceptName.randomConceptIdentifier()
         if (getCurrentXmlStackElement() != null) {
             addRawValueToCurrentFacet(newConceptIdentifier.name)
         }
 
-        val newConceptData =
-            dataCollector.existingOrNewConceptData(
-                newConceptSchema.conceptName,
-                newConceptIdentifier,
-            )
-        val facetValues: Map<FacetName, Any> =
-            facetValuesFromAttributes(newConceptSchema, xmlAttributes)
+        val newConceptData = dataCollector.existingOrNewConceptData(newConceptSchema.conceptName, newConceptIdentifier)
+        val facetValues: Map<FacetName, Any> = facetValuesFromAttributes(newConceptSchema, xmlAttributes)
         facetValues.forEach { (facetName, value) -> newConceptData.addFacetValue(facetName, value) }
 
         return XmlStackElement(
@@ -133,21 +119,13 @@ class SaxParserHandler(
     }
 
     private fun addFacetReferenceValue(xmlAttributes: List<XmlAttribute>): XmlStackElement {
-        return addAttributeFacetValue(
-            XmlNames.CONCEPT_IDENTIFIER_REFERENCE_ATTRIBUTE_NAME,
-            xmlAttributes,
-        )
+        return addAttributeFacetValue(XmlNames.CONCEPT_IDENTIFIER_REFERENCE_ATTRIBUTE_NAME, xmlAttributes)
     }
 
-    private fun addAttributeFacetValue(
-        attributeName: String,
-        xmlAttributes: List<XmlAttribute>,
-    ): XmlStackElement {
+    private fun addAttributeFacetValue(attributeName: String, xmlAttributes: List<XmlAttribute>): XmlStackElement {
         val value =
             extractXmlAttributeValue(attributeName, xmlAttributes)
-                ?: throw IllegalStateException(
-                    "No value for attribute '${attributeName}' in $xmlAttributes."
-                )
+                ?: throw IllegalStateException("No value for attribute '${attributeName}' in $xmlAttributes.")
         return addRawValueToCurrentFacet(value).copy()
     }
 
@@ -156,8 +134,7 @@ class SaxParserHandler(
             this.getCurrentXmlStackElement()
                 ?: throw IllegalStateException("No current stack element found to add value.")
         val currentFacetSchema =
-            xmlStackElement.currentFacetSchema
-                ?: throw IllegalStateException("Can not add value as no facet defined.")
+            xmlStackElement.currentFacetSchema ?: throw IllegalStateException("Can not add value as no facet defined.")
 
         val value = XmlFacetValueConverter.convertString(currentFacetSchema, rawValue)
         xmlStackElement.conceptData.addFacetValue(currentFacetSchema.facetName, value)
@@ -173,8 +150,7 @@ class SaxParserHandler(
             val attributeName = xmlAttribute.qName
             val facetSchema = XmlNames.facetFromXmlFacetName(attributeName, conceptSchema)
             if (facetSchema != null) {
-                val attributeValue =
-                    PlaceholderUtil.replacePlaceholders(xmlAttribute.value, placeholders)
+                val attributeValue = PlaceholderUtil.replacePlaceholders(xmlAttribute.value, placeholders)
                 val facetValue = XmlFacetValueConverter.convertString(facetSchema, attributeValue)
                 facetValuesMap[facetSchema.facetName] = facetValue
             } else {
@@ -190,10 +166,7 @@ class SaxParserHandler(
         return this.conceptStack.lastOrNull()
     }
 
-    private fun extractXmlAttributeValue(
-        attributeName: String,
-        xmlAttributes: List<XmlAttribute>,
-    ): String? {
+    private fun extractXmlAttributeValue(attributeName: String, xmlAttributes: List<XmlAttribute>): String? {
         return xmlAttributes.filter { it.localName == attributeName }.map { it.value }.firstOrNull()
     }
 
@@ -209,21 +182,10 @@ class SaxParserHandler(
         logger.logWarnings(e.message ?: e.toString())
     }
 
-    override fun resolveEntity(
-        name: String?,
-        publicId: String?,
-        baseURI: String?,
-        systemId: String?,
-    ): InputSource? {
-        logger.logDebug {
-            "XML: resolveEntity: systemId:$systemId, publicId:$publicId, baseURI:$baseURI"
-        }
+    override fun resolveEntity(name: String?, publicId: String?, baseURI: String?, systemId: String?): InputSource? {
+        logger.logDebug { "XML: resolveEntity: systemId:$systemId, publicId:$publicId, baseURI:$baseURI" }
         return if (systemId != null && systemId.startsWith("./")) {
-            InputSource(
-                fileSystemAccess.fileAsInputStream(
-                    schemaFileDirectory.resolve(systemId).normalize()
-                )
-            )
+            InputSource(fileSystemAccess.fileAsInputStream(schemaFileDirectory.resolve(systemId).normalize()))
         } else {
             super.resolveEntity(name, publicId, baseURI, systemId)
         }

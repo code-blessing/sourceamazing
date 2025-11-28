@@ -9,11 +9,7 @@ import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 
 object BuilderCollectionHelper {
     val SUPPORTED_COLLECTION_TYPES =
-        setOf(
-            List::class.starProjectedType,
-            Set::class.starProjectedType,
-            Array::class.starProjectedType,
-        )
+        setOf(List::class.starProjectedType, Set::class.starProjectedType, Array::class.starProjectedType)
 
     /** keep in sync with [SUPPORTED_COLLECTION_TYPES] */
     fun facetValueListFromFacetValue(value: Any): List<Any> {
@@ -32,9 +28,7 @@ object BuilderCollectionHelper {
         methodLocation: MethodLocation,
     ): KTypeClassInformation {
         val valueClassOrCollectionClass = classesInformation.first()
-        return if (
-            valueClassOrCollectionClass.clazz.starProjectedType in SUPPORTED_COLLECTION_TYPES
-        ) {
+        return if (valueClassOrCollectionClass.clazz.starProjectedType in SUPPORTED_COLLECTION_TYPES) {
             if (valueClassOrCollectionClass.isValueNullable) {
                 throw BuilderMethodSyntaxException(
                     methodLocation,

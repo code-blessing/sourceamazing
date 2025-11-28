@@ -14,13 +14,9 @@ import org.codeblessing.sourceamazing.utils.logger.JavaUtilLoggerFacade
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 
-class SchemaProcessor(
-    private val fileSystemAccess: FileSystemAccess,
-    private val loggerFacade: LoggerFacade,
-) : SchemaProcessorApi {
-    constructor(
-        fileSystemAccess: FileSystemAccess
-    ) : this(fileSystemAccess, JavaUtilLoggerFacade(fileSystemAccess))
+class SchemaProcessor(private val fileSystemAccess: FileSystemAccess, private val loggerFacade: LoggerFacade) :
+    SchemaProcessorApi {
+    constructor(fileSystemAccess: FileSystemAccess) : this(fileSystemAccess, JavaUtilLoggerFacade(fileSystemAccess))
 
     @Suppress("unused") constructor() : this(PhysicalFilesFileSystemAccess())
 
@@ -28,16 +24,10 @@ class SchemaProcessor(
         schemaDefinitionClass: KClass<S>,
         schemaUsage: (schemaContext: SchemaContext) -> ConceptIdentifier,
     ): S {
-        val schemaAccess: SchemaAccess =
-            SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
+        val schemaAccess: SchemaAccess = SchemaCreator.createSchemaFromSchemaDefinitionClass(schemaDefinitionClass)
         val conceptDataCollector = ConceptDataCollectorImpl(schemaAccess)
         val revealedSchemaContext =
-            RevealedSchemaContext(
-                schemaAccess,
-                conceptDataCollector,
-                fileSystemAccess,
-                loggerFacade,
-            )
+            RevealedSchemaContext(schemaAccess, conceptDataCollector, fileSystemAccess, loggerFacade)
 
         val rootConceptIdentifier = schemaUsage(revealedSchemaContext)
 
@@ -53,10 +43,7 @@ class SchemaProcessor(
                 )
             }
         val schemaInstance =
-            ProxyCreator.createProxy(
-                schemaDefinitionClass,
-                ConceptInstanceInvocationHandler(rootConceptNode),
-            )
+            ProxyCreator.createProxy(schemaDefinitionClass, ConceptInstanceInvocationHandler(rootConceptNode))
         return schemaInstance
     }
 }

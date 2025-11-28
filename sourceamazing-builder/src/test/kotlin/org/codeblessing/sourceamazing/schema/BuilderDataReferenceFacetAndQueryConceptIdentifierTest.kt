@@ -34,16 +34,12 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
             referencedConceptAlias = "myConcept",
         )
         fun createConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier,
             @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "id") id: String,
         ): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "myConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun addReference(
@@ -70,10 +66,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
                         builder
-                            .createConcept(
-                                selfReferencingConceptIdentifier,
-                                selfReferencingConceptIdentifier.name,
-                            )
+                            .createConcept(selfReferencingConceptIdentifier, selfReferencingConceptIdentifier.name)
                             .addReference(selfReferencingConceptIdentifier)
                     }
                 }
@@ -104,14 +97,8 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
                             .createConcept(mainConceptIdentifier, mainConceptIdentifier.name)
                             .addReference(firstReferencedConceptIdentifier)
                             .addReference(secondReferencedConceptIdentifier)
-                        builder.createConcept(
-                            firstReferencedConceptIdentifier,
-                            firstReferencedConceptIdentifier.name,
-                        )
-                        builder.createConcept(
-                            secondReferencedConceptIdentifier,
-                            secondReferencedConceptIdentifier.name,
-                        )
+                        builder.createConcept(firstReferencedConceptIdentifier, firstReferencedConceptIdentifier.name)
+                        builder.createConcept(secondReferencedConceptIdentifier, secondReferencedConceptIdentifier.name)
                     }
                 }
             }

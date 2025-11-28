@@ -34,21 +34,13 @@ object KClassUtil {
         return classToInspect.getNumberOfAnnotationIncludingSuperclasses(annotation) == numberOf
     }
 
-    fun hasOnlyAnnotations(
-        permittedAnnotations: List<KClass<out Annotation>>,
-        classToInspect: KClass<*>,
-    ): Boolean {
+    fun hasOnlyAnnotations(permittedAnnotations: List<KClass<out Annotation>>, classToInspect: KClass<*>): Boolean {
         return classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
-            .all { annotationOnClass ->
-                permittedAnnotations.contains(annotationOnClass.annotationClass)
-            }
+            .all { annotationOnClass -> permittedAnnotations.contains(annotationOnClass.annotationClass) }
     }
 
-    fun hasNotAnnotation(
-        deniedAnnotation: KClass<out Annotation>,
-        classToInspect: KClass<*>,
-    ): Boolean {
+    fun hasNotAnnotation(deniedAnnotation: KClass<out Annotation>, classToInspect: KClass<*>): Boolean {
         return classToInspect.annotationsIncludingSuperclasses
             .filter { it.isAnnotationFromSourceAmazing() }
             .none { annotationOnClass -> deniedAnnotation == annotationOnClass.annotationClass }
@@ -75,9 +67,7 @@ object KClassUtil {
     }
 
     fun hasMembers(classToInspect: KClass<*>): Boolean {
-        return classToInspect.members
-            .filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }
-            .isNotEmpty()
+        return classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()
     }
 
     fun findAllCommonBaseClasses(classes: List<KClass<*>>): Set<KClass<*>> {
@@ -87,8 +77,7 @@ object KClassUtil {
             val otherClasses = classesSet - clazz
             val thisClassAndItsSuperclasses = (clazz.superclasses + clazz).toSet()
             thisClassAndItsSuperclasses.forEach { classInHierarchy ->
-                val isCommonBaseClass =
-                    otherClasses.all { otherConcept -> otherConcept.isSubclassOf(classInHierarchy) }
+                val isCommonBaseClass = otherClasses.all { otherConcept -> otherConcept.isSubclassOf(classInHierarchy) }
                 if (isCommonBaseClass) {
                     compatibleBaseClasses.add(classInHierarchy)
                 }

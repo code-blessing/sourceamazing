@@ -25,8 +25,7 @@ object XmlDomSchemaCreator {
     private const val xsdNamespacePrefix = "xsd"
 
     private const val conceptIdentifierAttributeGroupName = "conceptIdentifierAttributeGroup"
-    private const val conceptIdentifierReferenceAttributeGroupName =
-        "conceptIdentifierReferenceAttributeGroup"
+    private const val conceptIdentifierReferenceAttributeGroupName = "conceptIdentifierReferenceAttributeGroup"
 
     fun createXsdSchemaContent(schema: SchemaAccess): String {
         val document = initializeDocument()
@@ -42,14 +41,8 @@ object XmlDomSchemaCreator {
         val overallXmlSchemaName = "sourceamazing-xml-schema"
         val schemaElement: Element = document.createElementNS(xsdNamespace, xsdName("schema"))
 
-        schemaElement.setAttribute(
-            "targetNamespace",
-            "https://codeblessing.org/sourceamazing/$overallXmlSchemaName",
-        )
-        schemaElement.setAttribute(
-            "xmlns",
-            "https://codeblessing.org/sourceamazing/$overallXmlSchemaName",
-        )
+        schemaElement.setAttribute("targetNamespace", "https://codeblessing.org/sourceamazing/$overallXmlSchemaName")
+        schemaElement.setAttribute("xmlns", "https://codeblessing.org/sourceamazing/$overallXmlSchemaName")
         schemaElement.setAttribute("elementFormDefault", "qualified")
 
         document.appendChild(schemaElement)
@@ -59,29 +52,18 @@ object XmlDomSchemaCreator {
 
     private fun attachConceptIdentifierAttribute(document: Document, schemaElement: Element) {
         attachComment(document, schemaElement, " CONCEPT IDENTIFIER ATTRIBUTE")
-        val conceptIdAttributeGroupElement =
-            createAndAttachXsdElement(document, schemaElement, "attributeGroup")
-        setElementXsdAttribute(
-            conceptIdAttributeGroupElement,
-            "name",
-            conceptIdentifierAttributeGroupName,
-        )
+        val conceptIdAttributeGroupElement = createAndAttachXsdElement(document, schemaElement, "attributeGroup")
+        setElementXsdAttribute(conceptIdAttributeGroupElement, "name", conceptIdentifierAttributeGroupName)
 
         val conceptIdAttributeElement = createXsdElement(document, "attribute")
-        setElementXsdAttribute(
-            conceptIdAttributeElement,
-            "name",
-            XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME,
-        )
+        setElementXsdAttribute(conceptIdAttributeElement, "name", XmlNames.CONCEPT_IDENTIFIER_ATTRIBUTE_NAME)
         setElementXsdAttribute(conceptIdAttributeElement, "type", "$xsdNamespacePrefix:ID")
         conceptIdAttributeGroupElement.appendChild(conceptIdAttributeElement)
 
         val conceptRefElement = createAndAttachXsdElement(document, schemaElement, "element")
         setElementXsdAttribute(conceptRefElement, "name", XmlNames.CONCEPT_REF_TAG_NAME)
-        val conceptRefComplexType =
-            createAndAttachXsdElement(document, conceptRefElement, "complexType")
-        val conceptIdRefAttributeElement =
-            createAndAttachXsdElement(document, conceptRefComplexType, "attribute")
+        val conceptRefComplexType = createAndAttachXsdElement(document, conceptRefElement, "complexType")
+        val conceptIdRefAttributeElement = createAndAttachXsdElement(document, conceptRefComplexType, "attribute")
         setElementXsdAttribute(
             conceptIdRefAttributeElement,
             "name",
@@ -91,32 +73,21 @@ object XmlDomSchemaCreator {
     }
 
     private fun attachComment(document: Document, schemaElement: Element, comment: String) {
-        schemaElement.appendChild(
-            document.createComment(" - - - - - - - -      $comment     - - - - - - - ")
-        )
+        schemaElement.appendChild(document.createComment(" - - - - - - - -      $comment     - - - - - - - "))
     }
 
-    private fun attachXmlRootReferences(
-        document: Document,
-        schemaElement: Element,
-        schema: SchemaAccess,
-    ) {
+    private fun attachXmlRootReferences(document: Document, schemaElement: Element, schema: SchemaAccess) {
         attachComment(document, schemaElement, " DEFINITIONS")
         val sourceamazingElement = createAndAttachXsdElement(document, schemaElement, "element")
         setElementXsdAttribute(sourceamazingElement, "name", "sourceamazing")
-        val sourceamazingComplexType =
-            createAndAttachXsdElement(document, sourceamazingElement, "complexType")
+        val sourceamazingComplexType = createAndAttachXsdElement(document, sourceamazingElement, "complexType")
 
-        val sourceamazingSequence =
-            createAndAttachXsdElement(document, sourceamazingComplexType, "sequence")
-        val definitionsElement =
-            createAndAttachXsdElement(document, sourceamazingSequence, "element")
+        val sourceamazingSequence = createAndAttachXsdElement(document, sourceamazingComplexType, "sequence")
+        val definitionsElement = createAndAttachXsdElement(document, sourceamazingSequence, "element")
         setElementXsdAttribute(definitionsElement, "name", "definitions")
-        val definitionsComplexType =
-            createAndAttachXsdElement(document, definitionsElement, "complexType")
+        val definitionsComplexType = createAndAttachXsdElement(document, definitionsElement, "complexType")
         attachComment(document, definitionsComplexType, " CONCEPTS")
-        val definitionsChoice =
-            createAndAttachXsdElement(document, definitionsComplexType, "choice")
+        val definitionsChoice = createAndAttachXsdElement(document, definitionsComplexType, "choice")
         setElementXsdAttribute(definitionsChoice, "minOccurs", "0")
         setElementXsdAttribute(definitionsChoice, "maxOccurs", "unbounded")
         schema.allConcepts().forEach { conceptSchema ->
@@ -125,21 +96,13 @@ object XmlDomSchemaCreator {
         }
     }
 
-    private fun attachAllConceptElements(
-        document: Document,
-        schemaElement: Element,
-        schema: SchemaAccess,
-    ) {
+    private fun attachAllConceptElements(document: Document, schemaElement: Element, schema: SchemaAccess) {
         attachComment(document, schemaElement, " ALL CONCEPTS AS TYPES")
         schema.allConcepts().forEach { conceptSchema ->
             val singletonFacets = conceptSchema.facets.filter { it.maximumOccurrences <= 1 }
             val multiValueFacets = conceptSchema.facets.filter { it.maximumOccurrences > 1 }
 
-            attachComment(
-                document,
-                schemaElement,
-                " Concept: ${conceptSchema.toXmlElementTagName()}",
-            )
+            attachComment(document, schemaElement, " Concept: ${conceptSchema.toXmlElementTagName()}")
 
             // tag to create the element for the concept
             val conceptElement = createAndAttachXsdElement(document, schemaElement, "element")
@@ -147,13 +110,8 @@ object XmlDomSchemaCreator {
             setElementXsdAttribute(conceptElement, "type", conceptSchema.toXmlElementTypeName())
 
             // type of the concept tag
-            val complexTypeForElement =
-                createAndAttachXsdElement(document, schemaElement, "complexType")
-            setElementXsdAttribute(
-                complexTypeForElement,
-                "name",
-                conceptSchema.toXmlElementTypeName(),
-            )
+            val complexTypeForElement = createAndAttachXsdElement(document, schemaElement, "complexType")
+            setElementXsdAttribute(complexTypeForElement, "name", conceptSchema.toXmlElementTypeName())
 
             // element referencing the multi value facets
             if (multiValueFacets.isNotEmpty()) {
@@ -161,56 +119,28 @@ object XmlDomSchemaCreator {
                 multiValueFacets.forEach { facetSchema ->
                     attachComment(document, all, " Facet: ${facetSchema.facetName()}")
                     val elementForFacet = createAndAttachXsdElement(document, all, "element")
-                    setElementXsdAttribute(
-                        elementForFacet,
-                        "name",
-                        facetSchema.toXmlElementListTagName(),
-                    )
+                    setElementXsdAttribute(elementForFacet, "name", facetSchema.toXmlElementListTagName())
                     setElementXsdAttribute(
                         elementForFacet,
                         "minOccurs",
                         occurrenceAsString(facetSchema.minimumOccurrences, 1),
                     )
                     setElementXsdAttribute(elementForFacet, "maxOccurs", "1")
-                    val complexType =
-                        createAndAttachXsdElement(document, elementForFacet, "complexType")
+                    val complexType = createAndAttachXsdElement(document, elementForFacet, "complexType")
                     val sequence = createAndAttachXsdElement(document, complexType, "sequence")
-                    setElementXsdAttribute(
-                        sequence,
-                        "minOccurs",
-                        occurrenceAsString(facetSchema.minimumOccurrences),
-                    )
-                    setElementXsdAttribute(
-                        sequence,
-                        "maxOccurs",
-                        occurrenceAsString(facetSchema.maximumOccurrences),
-                    )
+                    setElementXsdAttribute(sequence, "minOccurs", occurrenceAsString(facetSchema.minimumOccurrences))
+                    setElementXsdAttribute(sequence, "maxOccurs", occurrenceAsString(facetSchema.maximumOccurrences))
 
                     when (facetSchema) {
                         is TextFacetSchema,
                         is NumberFacetSchema,
                         is BooleanFacetSchema,
                         is EnumFacetSchema -> {
-                            val facetValueElement =
-                                createAndAttachXsdElement(document, sequence, "element")
-                            setElementXsdAttribute(
-                                facetValueElement,
-                                "name",
-                                XmlNames.FACET_VALUE_TAG_NAME,
-                            )
-                            val valueComplexType =
-                                createAndAttachXsdElement(
-                                    document,
-                                    facetValueElement,
-                                    "complexType",
-                                )
-                            val attributeElement =
-                                createAndAttachXsdElement(document, valueComplexType, "attribute")
-                            setElementXsdAttribute(
-                                attributeElement,
-                                "name",
-                                XmlNames.FACET_SIMPLE_VALUE_ATTRIBUTE_NAME,
-                            )
+                            val facetValueElement = createAndAttachXsdElement(document, sequence, "element")
+                            setElementXsdAttribute(facetValueElement, "name", XmlNames.FACET_VALUE_TAG_NAME)
+                            val valueComplexType = createAndAttachXsdElement(document, facetValueElement, "complexType")
+                            val attributeElement = createAndAttachXsdElement(document, valueComplexType, "attribute")
+                            setElementXsdAttribute(attributeElement, "name", XmlNames.FACET_SIMPLE_VALUE_ATTRIBUTE_NAME)
                             attachFacetTypeElement(facetSchema, attributeElement, document)
                         }
 
@@ -234,30 +164,21 @@ object XmlDomSchemaCreator {
                                         referencingConceptSchema.toXmlElementTypeName(),
                                     )
                                 }
-                            val elementForForeignConceptRef =
-                                createAndAttachXsdElement(document, choice, "element")
-                            setElementXsdAttribute(
-                                elementForForeignConceptRef,
-                                "ref",
-                                XmlNames.CONCEPT_REF_TAG_NAME,
-                            )
+                            val elementForForeignConceptRef = createAndAttachXsdElement(document, choice, "element")
+                            setElementXsdAttribute(elementForForeignConceptRef, "ref", XmlNames.CONCEPT_REF_TAG_NAME)
                         }
                     }
                 }
             }
 
             // attribute for the concept identifier
-            complexTypeForElement.appendChild(
-                createAttributeReference(document, conceptIdentifierAttributeGroupName)
-            )
+            complexTypeForElement.appendChild(createAttributeReference(document, conceptIdentifierAttributeGroupName))
 
             // all attributes for the single value facets
             singletonFacets.forEach { facetSchema ->
-                val useAttribute =
-                    if (facetSchema.minimumOccurrences > 0) "required" else "optional"
+                val useAttribute = if (facetSchema.minimumOccurrences > 0) "required" else "optional"
                 attachComment(document, complexTypeForElement, " Facet: ${facetSchema.facetName()}")
-                val attributeElement =
-                    createAndAttachXsdElement(document, complexTypeForElement, "attribute")
+                val attributeElement = createAndAttachXsdElement(document, complexTypeForElement, "attribute")
                 setElementXsdAttribute(attributeElement, "name", facetSchema.toXmlAttributeName())
                 setElementXsdAttribute(attributeElement, "use", useAttribute)
                 attachFacetTypeElement(facetSchema, attributeElement, document)
@@ -265,11 +186,7 @@ object XmlDomSchemaCreator {
         }
     }
 
-    private fun attachFacetTypeElement(
-        facetSchema: FacetSchema,
-        attributeElement: Element,
-        document: Document,
-    ) {
+    private fun attachFacetTypeElement(facetSchema: FacetSchema, attributeElement: Element, document: Document) {
         when (facetSchema) {
             is EnumFacetSchema -> {
                 val simpleType = createAndAttachXsdElement(document, attributeElement, "simpleType")
@@ -278,8 +195,7 @@ object XmlDomSchemaCreator {
                 facetSchema.enumerationValues
                     .map { it.name }
                     .forEach { enumerationValue ->
-                        val enumerationValueElement =
-                            createAndAttachXsdElement(document, restriction, "enumeration")
+                        val enumerationValueElement = createAndAttachXsdElement(document, restriction, "enumeration")
                         setElementXsdAttribute(
                             enumerationValueElement,
                             XmlNames.FACET_SIMPLE_VALUE_ATTRIBUTE_NAME,
@@ -287,14 +203,10 @@ object XmlDomSchemaCreator {
                         )
                     }
             }
-            is TextFacetSchema ->
-                setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:string")
-            is NumberFacetSchema ->
-                setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:integer")
-            is BooleanFacetSchema ->
-                setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:boolean")
-            is ReferenceFacetSchema ->
-                setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:IDREF")
+            is TextFacetSchema -> setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:string")
+            is NumberFacetSchema -> setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:integer")
+            is BooleanFacetSchema -> setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:boolean")
+            is ReferenceFacetSchema -> setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:IDREF")
         }
     }
 
@@ -334,10 +246,7 @@ object XmlDomSchemaCreator {
         return "${this.conceptName()}ReferenceType"
     }
 
-    private fun occurrenceAsString(
-        maximumOccurrences: Int,
-        upperBound: Int = Int.MAX_VALUE,
-    ): String {
+    private fun occurrenceAsString(maximumOccurrences: Int, upperBound: Int = Int.MAX_VALUE): String {
         if (maximumOccurrences == Int.MAX_VALUE) {
             return "unbounded"
         }
@@ -350,11 +259,7 @@ object XmlDomSchemaCreator {
         return attributeElement
     }
 
-    private fun createFixedAttribute(
-        document: Document,
-        attributeName: String,
-        attributeValue: String,
-    ): Element {
+    private fun createFixedAttribute(document: Document, attributeName: String, attributeValue: String): Element {
         val attributeElement = createXsdElement(document, "attribute")
         setElementXsdAttribute(attributeElement, "name", attributeName)
         setElementXsdAttribute(attributeElement, "type", "$xsdNamespacePrefix:string")
@@ -393,21 +298,13 @@ object XmlDomSchemaCreator {
         return document.createElementNS(xsdNamespace, xsdName(elementName))
     }
 
-    private fun createAndAttachXsdElement(
-        document: Document,
-        parentElement: Element,
-        elementName: String,
-    ): Element {
+    private fun createAndAttachXsdElement(document: Document, parentElement: Element, elementName: String): Element {
         val element = createXsdElement(document, elementName)
         parentElement.appendChild(element)
         return element
     }
 
-    private fun setElementXsdAttribute(
-        element: Element,
-        attributeName: String,
-        attributeValue: String,
-    ) {
+    private fun setElementXsdAttribute(element: Element, attributeName: String, attributeValue: String) {
         element.setAttribute(attributeName, attributeValue)
     }
 }

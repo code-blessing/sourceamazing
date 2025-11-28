@@ -30,12 +30,7 @@ object BuilderClassValidator {
         checkHasNoExtensionFunctions(builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasNoProperties(builderClass, BUILDER_CLASS_DESCRIPTION)
         checkHasAnnotation(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION)
-        checkHasExactNumberOfAnnotations(
-            Builder::class,
-            builderClass,
-            BUILDER_CLASS_DESCRIPTION,
-            numberOf = 1,
-        )
+        checkHasExactNumberOfAnnotations(Builder::class, builderClass, BUILDER_CLASS_DESCRIPTION, numberOf = 1)
         checkHasOnlyAnnotations(
             listOf(Builder::class, ExpectedAliasFromSuperiorBuilder::class),
             builderClass,
@@ -53,8 +48,7 @@ object BuilderClassValidator {
             if (expectedAlias !in providedAliases) {
                 throw BuilderSyntaxException(
                     builderClass,
-                    BuilderErrorCode
-                        .ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION,
+                    BuilderErrorCode.ALIAS_NO_AVAILABLE_IN_EXPECTED_ALIAS_FROM_SUPERIOR_BUILDER_ANNOTATION,
                     expectedAlias,
                 )
             }
@@ -65,8 +59,7 @@ object BuilderClassValidator {
         builderClassInterpreter: BuilderClassInterpreter
     ) {
         val builderClass = builderClassInterpreter.builderClass
-        val aliasesIncludingDuplicates =
-            builderClassInterpreter.expectedAliasesFromSuperiorBuilderIncludingDuplicates()
+        val aliasesIncludingDuplicates = builderClassInterpreter.expectedAliasesFromSuperiorBuilderIncludingDuplicates()
         val duplicateAlias = firstDuplicateAlias(aliasesIncludingDuplicates)
 
         if (duplicateAlias != null) {

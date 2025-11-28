@@ -22,8 +22,7 @@ class NestedConceptsBuilderTest {
         interface BusinessObjectConcept {
             val name: String
 
-            @References([SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class])
-            val fields: List<Field>
+            @References([SingleValueFieldConcept::class, CollectionOfValuesFieldConcept::class]) val fields: List<Field>
         }
 
         sealed interface Field {
@@ -71,18 +70,14 @@ class NestedConceptsBuilderTest {
 
         @BuilderMethod
         @WithNewBuilder(builderClass = BusinessObjectConceptBuilder::class)
-        @NewConcept(
-            NestedConceptsSchema.BusinessObjectConcept::class,
-            declareConceptAlias = "bizObj",
-        )
+        @NewConcept(NestedConceptsSchema.BusinessObjectConcept::class, declareConceptAlias = "bizObj")
         @SetAliasConceptIdentifierReferenceFacetValue(
             conceptToModifyAlias = "root",
             facetToModify = "businessObjects",
             referencedConceptAlias = "bizObj",
         )
         fun newBusinessObject(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "bizObj")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "bizObj") conceptIdentifier: ConceptIdentifier,
             @SetFacetValue(conceptToModifyAlias = "bizObj", facetToModify = "name") name: String,
             @InjectBuilder builder: BusinessObjectConceptBuilder.() -> Unit,
         )
@@ -96,10 +91,7 @@ class NestedConceptsBuilderTest {
 
             @BuilderMethod
             @WithNewBuilder(builderClass = FieldTypeForSingleFieldConceptBuilder::class)
-            @NewConcept(
-                NestedConceptsSchema.SingleValueFieldConcept::class,
-                declareConceptAlias = "field",
-            )
+            @NewConcept(NestedConceptsSchema.SingleValueFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "bizObj",
@@ -107,19 +99,14 @@ class NestedConceptsBuilderTest {
                 referencedConceptAlias = "field",
             )
             fun addSingleValueField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName")
-                fieldName: String,
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "nullable")
-                nullable: Boolean = false,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName") fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "nullable") nullable: Boolean = false,
                 @InjectBuilder builder: FieldTypeForSingleFieldConceptBuilder.() -> Unit,
             )
 
             @BuilderMethod
             @WithNewBuilder(builderClass = FieldTypeForCollectionFieldConceptBuilder::class)
-            @NewConcept(
-                NestedConceptsSchema.CollectionOfValuesFieldConcept::class,
-                declareConceptAlias = "field",
-            )
+            @NewConcept(NestedConceptsSchema.CollectionOfValuesFieldConcept::class, declareConceptAlias = "field")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "field")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "bizObj",
@@ -127,8 +114,7 @@ class NestedConceptsBuilderTest {
                 referencedConceptAlias = "field",
             )
             fun addCollectionOfValuesField(
-                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName")
-                fieldName: String,
+                @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "fieldName") fieldName: String,
                 @SetFacetValue(conceptToModifyAlias = "field", facetToModify = "collectionKind")
                 collectionKind: CollectionKindEnum,
                 @InjectBuilder builder: FieldTypeForCollectionFieldConceptBuilder.() -> Unit,
@@ -143,10 +129,7 @@ class NestedConceptsBuilderTest {
         interface FieldTypeForSingleFieldConceptBuilder {
 
             @BuilderMethod
-            @NewConcept(
-                NestedConceptsSchema.BuiltinFieldTypeConcept::class,
-                declareConceptAlias = "fieldType",
-            )
+            @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "field",
@@ -159,10 +142,7 @@ class NestedConceptsBuilderTest {
             )
 
             @BuilderMethod
-            @NewConcept(
-                NestedConceptsSchema.ReferenceFieldTypeConcept::class,
-                declareConceptAlias = "fieldType",
-            )
+            @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "field",
@@ -170,10 +150,7 @@ class NestedConceptsBuilderTest {
                 referencedConceptAlias = "fieldType",
             )
             fun reference(
-                @SetFacetValue(
-                    conceptToModifyAlias = "fieldType",
-                    facetToModify = "referencedBusinessObject",
-                )
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "referencedBusinessObject")
                 id: ConceptIdentifier
             )
         }
@@ -186,10 +163,7 @@ class NestedConceptsBuilderTest {
         interface FieldTypeForCollectionFieldConceptBuilder {
 
             @BuilderMethod
-            @NewConcept(
-                NestedConceptsSchema.BuiltinFieldTypeConcept::class,
-                declareConceptAlias = "fieldType",
-            )
+            @NewConcept(NestedConceptsSchema.BuiltinFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "field",
@@ -202,10 +176,7 @@ class NestedConceptsBuilderTest {
             )
 
             @BuilderMethod
-            @NewConcept(
-                NestedConceptsSchema.ReferenceFieldTypeConcept::class,
-                declareConceptAlias = "fieldType",
-            )
+            @NewConcept(NestedConceptsSchema.ReferenceFieldTypeConcept::class, declareConceptAlias = "fieldType")
             @SetRandomConceptIdentifierValue(conceptToModifyAlias = "fieldType")
             @SetAliasConceptIdentifierReferenceFacetValue(
                 conceptToModifyAlias = "field",
@@ -213,10 +184,7 @@ class NestedConceptsBuilderTest {
                 referencedConceptAlias = "fieldType",
             )
             fun reference(
-                @SetFacetValue(
-                    conceptToModifyAlias = "fieldType",
-                    facetToModify = "referencedBusinessObject",
-                )
+                @SetFacetValue(conceptToModifyAlias = "fieldType", facetToModify = "referencedBusinessObject")
                 id: ConceptIdentifier
             )
         }
@@ -242,9 +210,7 @@ class NestedConceptsBuilderTest {
                             addCollectionOfValuesField("nicknames", CollectionKindEnum.LIST) {
                                 builtinType(BuiltinTypeEnum.STRING)
                             }
-                            addCollectionOfValuesField("children", CollectionKindEnum.SET) {
-                                reference(personBo)
-                            }
+                            addCollectionOfValuesField("children", CollectionKindEnum.SET) { reference(personBo) }
                         }
                     }
                 }
@@ -268,8 +234,7 @@ class NestedConceptsBuilderTest {
         val childrenField = fields[4] as NestedConceptsSchema.CollectionOfValuesFieldConcept
 
         assertEquals("firstname", firstnameField.fieldName)
-        val firstnameType =
-            firstnameField.singleValueType as NestedConceptsSchema.BuiltinFieldTypeConcept
+        val firstnameType = firstnameField.singleValueType as NestedConceptsSchema.BuiltinFieldTypeConcept
         assertEquals(BuiltinTypeEnum.STRING, firstnameType.builtinType)
 
         assertEquals("age", ageField.fieldName)
@@ -277,20 +242,17 @@ class NestedConceptsBuilderTest {
         assertEquals(BuiltinTypeEnum.INTEGER, ageType.builtinType)
 
         assertEquals("spouse", spouseReferenceField.fieldName)
-        val spouseType =
-            spouseReferenceField.singleValueType as NestedConceptsSchema.ReferenceFieldTypeConcept
+        val spouseType = spouseReferenceField.singleValueType as NestedConceptsSchema.ReferenceFieldTypeConcept
         assertEquals("the person business object", spouseType.referencedBusinessObject.name)
 
         assertEquals("nicknames", nicknamesField.fieldName)
         assertEquals(CollectionKindEnum.LIST, nicknamesField.collectionKind)
-        val nicknameType =
-            nicknamesField.collectionValuesType as NestedConceptsSchema.BuiltinFieldTypeConcept
+        val nicknameType = nicknamesField.collectionValuesType as NestedConceptsSchema.BuiltinFieldTypeConcept
         assertEquals(BuiltinTypeEnum.STRING, nicknameType.builtinType)
 
         assertEquals("children", childrenField.fieldName)
         assertEquals(CollectionKindEnum.SET, childrenField.collectionKind)
-        val childrenType =
-            childrenField.collectionValuesType as NestedConceptsSchema.ReferenceFieldTypeConcept
+        val childrenType = childrenField.collectionValuesType as NestedConceptsSchema.ReferenceFieldTypeConcept
         assertEquals("the person business object", childrenType.referencedBusinessObject.name)
     }
 }

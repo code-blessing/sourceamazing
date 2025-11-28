@@ -9,8 +9,7 @@ object SchemaApi {
         schemaDefinitionClass: KClass<S>,
         schemaUsage: (schemaContext: SchemaContext) -> ConceptIdentifier,
     ): S {
-        val schemaProcessorApis: ServiceLoader<SchemaProcessorApi> =
-            ServiceLoader.load(SchemaProcessorApi::class.java)
+        val schemaProcessorApis: ServiceLoader<SchemaProcessorApi> = ServiceLoader.load(SchemaProcessorApi::class.java)
 
         val schemaProcessorApi =
             requireNotNull(schemaProcessorApis.firstOrNull()) {

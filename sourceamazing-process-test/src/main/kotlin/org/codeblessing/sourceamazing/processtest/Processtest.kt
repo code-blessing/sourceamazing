@@ -14,15 +14,11 @@ private val pathToXmlFile = Paths.get("input-data").resolve("input-data.xml")
 fun main() {
     val formSchema =
         SchemaApi.withSchema(FormSchema::class) { schemaContext ->
-            val rootConceptData =
-                schemaContext.dataCollector.newConceptData(ConceptName.of(FormSchema::class))
+            val rootConceptData = schemaContext.dataCollector.newConceptData(ConceptName.of(FormSchema::class))
 
             // TODO activate XML schema as soon as it supports root concepts
             //  XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, pathToXmlFile)
-            BuilderApi.withBuilder(
-                schemaContext = schemaContext,
-                builderClass = FormBuilder::class,
-            ) { dataCollector ->
+            BuilderApi.withBuilder(schemaContext = schemaContext, builderClass = FormBuilder::class) { dataCollector ->
                 FormData.collectFormData(dataCollector)
             }
             rootConceptData.conceptIdentifier

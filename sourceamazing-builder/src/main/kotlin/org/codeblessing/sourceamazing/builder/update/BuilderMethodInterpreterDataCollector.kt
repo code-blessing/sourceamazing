@@ -29,11 +29,7 @@ class BuilderMethodInterpreterDataCollector(
             ?: throw IllegalStateException("Can not find concept id for alias '$conceptAlias'.")
     }
 
-    fun newConceptData(
-        alias: Alias,
-        conceptName: ConceptName,
-        conceptIdentifier: ConceptIdentifier,
-    ) {
+    fun newConceptData(alias: Alias, conceptName: ConceptName, conceptIdentifier: ConceptIdentifier) {
         newConceptIds[alias] = conceptIdentifier
         conceptDataCollector.newConceptData(conceptName, conceptIdentifier)
     }

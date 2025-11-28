@@ -11,11 +11,7 @@ abstract class KotlinInvocationHandler(
     private val allowMemberProperties: Boolean,
     private val allowMemberFunctions: Boolean,
 ) : InvocationHandler {
-    override fun invoke(
-        proxyOrNull: Any?,
-        methodOrNull: Method?,
-        argsOrNull: Array<out Any>?,
-    ): Any? {
+    override fun invoke(proxyOrNull: Any?, methodOrNull: Method?, argsOrNull: Array<out Any>?): Any? {
         val proxy = requiredProxy(proxyOrNull, methodOrNull)
         val memberFunction = validatedMethod(methodOrNull)
         val arguments = validatedArguments(memberFunction, argsOrNull)
@@ -36,10 +32,7 @@ abstract class KotlinInvocationHandler(
 
     abstract fun invoke(proxy: Any, function: KFunction<*>, arguments: List<Any?>): Any?
 
-    private fun validatedArguments(
-        kFunction: KFunction<*>,
-        argsOrNull: Array<out Any?>?,
-    ): List<Any?> {
+    private fun validatedArguments(kFunction: KFunction<*>, argsOrNull: Array<out Any?>?): List<Any?> {
         val args = argsOrNull?.toList() ?: emptyList()
 
         val parameterCount = kFunction.parameters.size
@@ -59,31 +52,16 @@ abstract class KotlinInvocationHandler(
                 .firstOrNull { member -> member.getter.javaMethod == method }
                 ?.getter
         val memberFunction =
-            method.declaringClass.kotlin.memberFunctions.firstOrNull { member ->
-                member.javaMethod == method
-            }
+            method.declaringClass.kotlin.memberFunctions.firstOrNull { member -> member.javaMethod == method }
 
-        if (
-            allowMemberFunctions &&
-                allowMemberProperties &&
-                memberFunction != null &&
-                memberProperty != null
-        ) {
-            throw IllegalStateException(
-                "Ambiguous function found for $method: $memberProperty / $memberFunction"
-            )
+        if (allowMemberFunctions && allowMemberProperties && memberFunction != null && memberProperty != null) {
+            throw IllegalStateException("Ambiguous function found for $method: $memberProperty / $memberFunction")
         } else if (allowMemberFunctions) {
-            return requireNotNull(memberFunction) {
-                "Can not adapt java method $method to a kotlin function."
-            }
+            return requireNotNull(memberFunction) { "Can not adapt java method $method to a kotlin function." }
         } else if (allowMemberProperties) {
-            return requireNotNull(memberProperty) {
-                "Can not adapt java method $method to a kotlin property function."
-            }
+            return requireNotNull(memberProperty) { "Can not adapt java method $method to a kotlin property function." }
         } else {
-            throw IllegalStateException(
-                "Can not adapt java method $method to a kotlin function or property."
-            )
+            throw IllegalStateException("Can not adapt java method $method to a kotlin function or property.")
         }
     }
 

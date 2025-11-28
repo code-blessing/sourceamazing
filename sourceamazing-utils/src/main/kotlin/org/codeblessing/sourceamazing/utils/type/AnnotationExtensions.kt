@@ -10,8 +10,6 @@ fun Annotation.isAnnotationFromSourceAmazing(): Boolean {
 
 inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T = getAnnotation(T::class)
 
-fun <T : Annotation> KAnnotatedElement.getAnnotation(clazz: KClass<T>): T =
-    findAnnotations(clazz).first()
+fun <T : Annotation> KAnnotatedElement.getAnnotation(clazz: KClass<T>): T = findAnnotations(clazz).first()
 
-fun KAnnotatedElement.hasAnnotation(clazz: KClass<out Annotation>): Boolean =
-    findAnnotations(clazz).any()
+fun KAnnotatedElement.hasAnnotation(clazz: KClass<out Annotation>): Boolean = findAnnotations(clazz).any()

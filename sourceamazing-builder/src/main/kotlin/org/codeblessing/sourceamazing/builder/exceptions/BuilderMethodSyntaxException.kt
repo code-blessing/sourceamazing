@@ -8,8 +8,4 @@ class BuilderMethodSyntaxException(
     methodLocation: MethodLocation,
     errorCode: BuilderErrorCode,
     vararg messageArguments: Any,
-) :
-    SyntaxException(
-        errorCode,
-        "${errorCode.format(*messageArguments)}\n${methodLocation.locationDescription()}",
-    )
+) : SyntaxException(errorCode, "${errorCode.format(*messageArguments)}\n${methodLocation.locationDescription()}")

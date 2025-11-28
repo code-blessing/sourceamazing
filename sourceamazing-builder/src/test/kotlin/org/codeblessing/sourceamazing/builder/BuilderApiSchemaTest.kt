@@ -60,16 +60,10 @@ class BuilderApiSchemaTest {
 
     @Test
     fun `test using NewConcept annotation with unknown concept should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_CONCEPT,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_CONCEPT) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodCreatingUnknownConcept::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodCreatingUnknownConcept::class) {
                         // do nothing
                     }
                 }
@@ -83,24 +77,15 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet")
-            myValue: String
-        )
+        fun doSomething(@SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet") myValue: String)
     }
 
     @Test
     fun `test using unknown facet as parameter value of known concept should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodUsingUnknownFacetAsParameterValue::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodUsingUnknownFacetAsParameterValue::class) {
                         // do nothing
                     }
                 }
@@ -114,26 +99,16 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(
-            conceptToModifyAlias = "foo",
-            facetToModify = "UnknownFacet",
-            value = "hello",
-        )
+        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "UnknownFacet", value = "hello")
         fun doSomething()
     }
 
     @Test
     fun `test using unknown facet as fixed value of known concept should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodUsingUnknownFacetAsFixedValue::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodUsingUnknownFacetAsFixedValue::class) {
                         // do nothing
                     }
                 }
@@ -147,18 +122,12 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        fun doSomething(
-            @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet")
-            myValue: String
-        )
+        fun doSomething(@SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet") myValue: String)
     }
 
     @Test
     fun `test using known facet of another concept as parameter value should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -178,20 +147,13 @@ class BuilderApiSchemaTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyKnownConcept::class, declareConceptAlias = "foo")
         @SetRandomConceptIdentifierValue(conceptToModifyAlias = "foo")
-        @SetFixedStringFacetValue(
-            conceptToModifyAlias = "foo",
-            facetToModify = "AlsoKnownFacet",
-            value = "hello",
-        )
+        @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet", value = "hello")
         fun doSomething()
     }
 
     @Test
     fun `test using known facet of another concept as fixed value should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -215,16 +177,12 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyKnownConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyKnownConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod
             fun doSomethingNested(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet")
-                myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet") myValue: String
             )
         }
     }
@@ -253,18 +211,11 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyKnownConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyKnownConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod
-            @SetFixedStringFacetValue(
-                conceptToModifyAlias = "foo",
-                facetToModify = "knownFacet",
-                value = "hello",
-            )
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet", value = "hello")
             fun doSomethingNested()
         }
     }
@@ -293,32 +244,24 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyKnownConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyKnownConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod
             fun doSomethingWrongFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "alsoKnownFacet")
-                myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "alsoKnownFacet") myValue: String
             )
 
             @BuilderMethod
             fun doSomethingCorrectFacet(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet")
-                myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "knownFacet") myValue: String
             )
         }
     }
 
     @Test
     fun `test using known facet of wrong concept as parameter value in nested builder should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -342,36 +285,22 @@ class BuilderApiSchemaTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyKnownConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyKnownConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod
-            @SetFixedStringFacetValue(
-                conceptToModifyAlias = "foo",
-                facetToModify = "AlsoKnownFacet",
-                value = "hello",
-            )
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "AlsoKnownFacet", value = "hello")
             fun doSomethingWrongFacet()
 
             @BuilderMethod
-            @SetFixedStringFacetValue(
-                conceptToModifyAlias = "foo",
-                facetToModify = "KnownFacet",
-                value = "hello",
-            )
+            @SetFixedStringFacetValue(conceptToModifyAlias = "foo", facetToModify = "KnownFacet", value = "hello")
             fun doSomethingCorrectFacet()
         }
     }
 
     @Test
     fun `test using known facet of wrong concept as fixed value in nested builder should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(

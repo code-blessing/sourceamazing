@@ -27,9 +27,7 @@ object QueryMethodUtil {
                 if (returnTypeValueClassInfo.isValueNullable) {
                     null
                 } else {
-                    throw IllegalStateException(
-                        "No value was provided but the return type is not nullable."
-                    )
+                    throw IllegalStateException("No value was provided but the return type is not nullable.")
                 }
             } else {
                 resultList.first()
@@ -37,15 +35,12 @@ object QueryMethodUtil {
         }
     }
 
-    fun collectionClassInfo(
-        classesInformation: List<KTypeClassInformation>
-    ): KTypeClassInformation? {
+    fun collectionClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation? {
         return if (hasCollection(classesInformation)) classesInformation.first() else null
     }
 
     fun valueClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation {
-        return if (hasCollection(classesInformation)) classesInformation.last()
-        else classesInformation.first()
+        return if (hasCollection(classesInformation)) classesInformation.last() else classesInformation.first()
     }
 
     private fun hasCollection(classesInformation: List<KTypeClassInformation>): Boolean {

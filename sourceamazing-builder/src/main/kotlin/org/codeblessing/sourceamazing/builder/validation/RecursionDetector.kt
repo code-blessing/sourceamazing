@@ -30,9 +30,7 @@ class RecursionDetector {
     }
 
     fun removeLastMethodFromStack() {
-        require(validatedBuilderClasses.isNotEmpty()) {
-            "At least one method must be removed from the stack"
-        }
+        require(validatedBuilderClasses.isNotEmpty()) { "At least one method must be removed from the stack" }
         val inspectedMethod = validatedBuilderClasses.removeLast()
         if (printTrace) {
             println("Remove item: $inspectedMethod")

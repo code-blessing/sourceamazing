@@ -32,10 +32,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "myConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
@@ -133,11 +130,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .setText("hallo1")
-                            .setText("hallo2")
-                            .setText("hallo3")
+                        builder.createConcept().setText("hallo1").setText("hallo2").setText("hallo3")
                     }
                 }
             }
@@ -157,10 +150,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .setText("hallo1")
-                            .setTexts(listOf("hallo2", "hallo3"))
+                        builder.createConcept().setText("hallo1").setTexts(listOf("hallo2", "hallo3"))
                     }
                 }
             }
@@ -249,11 +239,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .addText("hallo1")
-                            .addText("hallo2")
-                            .addText("hallo3")
+                        builder.createConcept().addText("hallo1").addText("hallo2").addText("hallo3")
                     }
                 }
             }
@@ -275,10 +261,7 @@ class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
                         BuilderToAddOrReplaceFacets::class,
                         mapOf("root" to conceptNameAndIdentifier),
                     ) { builder ->
-                        builder
-                            .createConcept()
-                            .addText("hallo1")
-                            .addTexts(listOf("hallo2", "hallo3"))
+                        builder.createConcept().addText("hallo1").addTexts(listOf("hallo2", "hallo3"))
                     }
                 }
             }

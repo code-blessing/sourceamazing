@@ -5,9 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.*
 data class SchemaImpl(private val concepts: Map<ConceptName, ConceptSchema>) : SchemaAccess {
     override fun conceptByConceptName(conceptName: ConceptName): ConceptSchema {
         return concepts[conceptName]
-            ?: throw IllegalStateException(
-                "Concept with name '$conceptName' not found in schema: $concepts"
-            )
+            ?: throw IllegalStateException("Concept with name '$conceptName' not found in schema: $concepts")
     }
 
     override fun hasConceptName(conceptName: ConceptName): Boolean {

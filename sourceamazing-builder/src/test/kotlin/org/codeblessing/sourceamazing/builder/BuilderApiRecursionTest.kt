@@ -25,27 +25,17 @@ class BuilderApiRecursionTest {
         fun doSomething(): OuterNestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.OneConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.OneConcept::class, conceptAlias = "foo")
         private interface OuterNestedBuilder {
 
-            @BuilderMethod
-            @WithNewBuilder(InnerNestedBuilder::class)
-            fun doSomething(): InnerNestedBuilder
+            @BuilderMethod @WithNewBuilder(InnerNestedBuilder::class) fun doSomething(): InnerNestedBuilder
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.OneConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.OneConcept::class, conceptAlias = "foo")
         private interface InnerNestedBuilder {
 
-            @BuilderMethod
-            @WithNewBuilder(OuterNestedBuilder::class)
-            fun doSomething(): OuterNestedBuilder
+            @BuilderMethod @WithNewBuilder(OuterNestedBuilder::class) fun doSomething(): OuterNestedBuilder
         }
     }
 
@@ -53,10 +43,7 @@ class BuilderApiRecursionTest {
     fun `test using nested builder returning another inner nested builder that returns the first nested builder should not fail with a stack overflow`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodUsingSameBuilderIndirectly::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderIndirectly::class) {
                     // do nothing
                 }
             }
@@ -73,10 +60,7 @@ class BuilderApiRecursionTest {
         fun doSomething(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.OneConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.OneConcept::class, conceptAlias = "foo")
         private interface NestedBuilder {
 
             @BuilderMethod @WithNewBuilder(NestedBuilder::class) fun doSomething(): NestedBuilder
@@ -87,10 +71,7 @@ class BuilderApiRecursionTest {
     fun `test using nested builder returning itself should not fail with a stack overflow`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodUsingSameBuilderDirectly::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderDirectly::class) {
                     // do nothing
                 }
             }

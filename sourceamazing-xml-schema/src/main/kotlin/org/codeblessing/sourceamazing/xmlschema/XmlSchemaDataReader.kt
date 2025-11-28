@@ -37,8 +37,7 @@ object XmlSchemaDataReader {
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false)
 
-        val sources =
-            listOf(StreamSource(fileSystemAccess.fileAsInputStream(sourceAmazingSchemaXsd)))
+        val sources = listOf(StreamSource(fileSystemAccess.fileAsInputStream(sourceAmazingSchemaXsd)))
 
         val schemaFactory: SchemaFactory = SchemaFactory.newInstance(SCHEMA_LANGUAGE)
         factory.schema = schemaFactory.newSchema(sources.toTypedArray())

@@ -26,9 +26,7 @@ object XmlFacetValueConverter {
                 ?: throw IllegalStateException(
                     "No enumeration type defined for facet ${facetSchema.facetName} but value was '$attributeValue'"
                 )
-        return enumerationType.enumValues.firstOrNull { enumValue ->
-            enumValue.name == attributeValue
-        }
+        return enumerationType.enumValues.firstOrNull { enumValue -> enumValue.name == attributeValue }
             ?: throw IllegalStateException(
                 "Value '$attributeValue' is not within the possible values ${enumerationType.enumValues.joinToString(",") { "'${it}'" }} for facet ${facetSchema.facetName}."
             )

@@ -31,10 +31,7 @@ object EnumUtil {
         return enumClass.enumValues
     }
 
-    fun isSameOrSubsetEnumerationClass(
-        fullEnumClass: KClass<*>,
-        fullOrSubsetEnumClass: KClass<*>,
-    ): Boolean {
+    fun isSameOrSubsetEnumerationClass(fullEnumClass: KClass<*>, fullOrSubsetEnumClass: KClass<*>): Boolean {
         if (fullEnumClass == fullOrSubsetEnumClass) {
             return true
         }

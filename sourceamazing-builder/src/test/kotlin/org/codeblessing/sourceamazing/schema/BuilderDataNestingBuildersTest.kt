@@ -34,28 +34,20 @@ class BuilderDataNestingBuildersTest {
         fun createConcept(): NestedBuilder
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "myConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedBuilder {
             @BuilderMethod
             fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "texts")
-                textValue: String
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "texts") textValue: String
             ): NestedSubBuilder
         }
 
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "myConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
         interface NestedSubBuilder {
             @BuilderMethod
             fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "numbers")
-                numberValue: Int
+                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "numbers") numberValue: Int
             ): NestedBuilder
         }
     }

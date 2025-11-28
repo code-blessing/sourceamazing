@@ -33,11 +33,6 @@ object BuilderApi {
             requireNotNull(builderProcessorApis.firstOrNull()) {
                 "Could not find an implementation of the interface '${BuilderProcessorApi::class}'."
             }
-        builderProcessorApi.withBuilder(
-            schemaContext,
-            builderClass,
-            builderRootAliases,
-            builderUsage,
-        )
+        builderProcessorApi.withBuilder(schemaContext, builderClass, builderRootAliases, builderUsage)
     }
 }

@@ -44,8 +44,7 @@ class ConceptDataImpl(
     }
 
     override fun describe(): String {
-        val facetDescription =
-            mutableFacets.map { (key, value) -> describeFacet(key, value) }.joinToString("\n")
+        val facetDescription = mutableFacets.map { (key, value) -> describeFacet(key, value) }.joinToString("\n")
 
         return "${conceptName.simpleName()}:${conceptIdentifier.name} {\n$facetDescription\n}"
     }

@@ -98,17 +98,11 @@ object SchemaCreator {
 
         val extensionProperty = definitionClass.memberExtensionProperties.firstOrNull()
         if (extensionProperty != null) {
-            throw WrongPropertySyntaxException(
-                extensionProperty,
-                SchemaErrorCode.PROPERTY_MUST_NOT_HAVE_EXTENSION_TYPE,
-            )
+            throw WrongPropertySyntaxException(extensionProperty, SchemaErrorCode.PROPERTY_MUST_NOT_HAVE_EXTENSION_TYPE)
         }
     }
 
-    private fun createFacetSchema(
-        facetProperty: KProperty1<out Any, *>,
-        conceptName: ConceptName,
-    ): FacetSchema {
+    private fun createFacetSchema(facetProperty: KProperty1<out Any, *>, conceptName: ConceptName): FacetSchema {
         val facetName = FacetName.of(facetProperty.name)
         val facetDescription = facetProperty.toString()
         if (hasValueParameters(facetProperty)) {
@@ -148,8 +142,7 @@ object SchemaCreator {
             )
         }
 
-        val returnTypeClassesInformation =
-            classesInformationFromReturnType(facetProperty, facetDescription)
+        val returnTypeClassesInformation = classesInformationFromReturnType(facetProperty, facetDescription)
         val returnTypeCollectionClassInfo = collectionClassInfo(returnTypeClassesInformation)
         val returnTypeValueClassInfo = valueClassInfo(returnTypeClassesInformation)
 
@@ -172,8 +165,7 @@ object SchemaCreator {
         }
 
         val isReference =
-            !returnTypeValueClassInfo.clazz.isEnum &&
-                supportedDataClasses.none { returnTypeValueClassInfo.clazz == it }
+            !returnTypeValueClassInfo.clazz.isEnum && supportedDataClasses.none { returnTypeValueClassInfo.clazz == it }
 
         if (!isReference && facetProperty.hasAnnotation<References>()) {
             throw WrongPropertySyntaxException(
@@ -187,8 +179,7 @@ object SchemaCreator {
             val possibleClassesToReference: Set<KClass<*>>
             if (facetProperty.hasAnnotation<References>()) {
                 possibleClassesToReference =
-                    facetProperty.findAnnotation<References>()?.possibleClassesToReference?.toSet()
-                        ?: emptySet()
+                    facetProperty.findAnnotation<References>()?.possibleClassesToReference?.toSet() ?: emptySet()
                 if (possibleClassesToReference.isEmpty()) {
                     throw WrongPropertySyntaxException(
                         facetProperty,
@@ -198,12 +189,7 @@ object SchemaCreator {
                     )
                 }
 
-                if (
-                    !isInheritanceCompatibleClass(
-                        returnTypeValueClassInfo.clazz,
-                        possibleClassesToReference,
-                    )
-                ) {
+                if (!isInheritanceCompatibleClass(returnTypeValueClassInfo.clazz, possibleClassesToReference)) {
                     throw WrongPropertySyntaxException(
                         facetProperty,
                         SchemaErrorCode.RETURN_TYPE_MUST_BE_INHERITABLE,
@@ -284,26 +270,18 @@ object SchemaCreator {
         }
     }
 
-    private fun isInheritanceCompatibleClass(
-        clazz: KClass<*>,
-        classesCompatibleWithClazz: Set<KClass<*>>,
-    ): Boolean {
+    private fun isInheritanceCompatibleClass(clazz: KClass<*>, classesCompatibleWithClazz: Set<KClass<*>>): Boolean {
         return classesCompatibleWithClazz.all { classCompatibleWithClazz ->
             classCompatibleWithClazz == clazz || classCompatibleWithClazz.isSubclassOf(clazz)
         }
     }
 
-    private fun collectionClassInfo(
-        classesInformation: List<KTypeClassInformation>
-    ): KTypeClassInformation? {
+    private fun collectionClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation? {
         return if (hasCollection(classesInformation)) classesInformation.first() else null
     }
 
-    private fun valueClassInfo(
-        classesInformation: List<KTypeClassInformation>
-    ): KTypeClassInformation {
-        return if (hasCollection(classesInformation)) classesInformation.last()
-        else classesInformation.first()
+    private fun valueClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation {
+        return if (hasCollection(classesInformation)) classesInformation.last() else classesInformation.first()
     }
 
     private fun hasCollection(classesInformation: List<KTypeClassInformation>): Boolean {

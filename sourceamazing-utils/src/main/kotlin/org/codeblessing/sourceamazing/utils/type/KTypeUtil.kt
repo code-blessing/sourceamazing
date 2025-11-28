@@ -29,9 +29,7 @@ object KTypeUtil {
         classInfos.add(KTypeClassInformation(classifier, kType.isMarkedNullable))
         kType.arguments.forEach { kTypeProjection ->
             val argumentKType = kTypeFromProjection(kTypeProjection)
-            classInfos.add(
-                KTypeClassInformation(classFromType(argumentKType), argumentKType.isMarkedNullable)
-            )
+            classInfos.add(KTypeClassInformation(classFromType(argumentKType), argumentKType.isMarkedNullable))
         }
         return classInfos
     }
@@ -40,9 +38,7 @@ object KTypeUtil {
         projection: KTypeProjection,
         validVariances: Set<KVariance> = setOf(KVariance.INVARIANT, KVariance.OUT),
     ): KType {
-        requireNotNull(projection.variance) {
-            "type can not have a star-type projection for function type."
-        }
+        requireNotNull(projection.variance) { "type can not have a star-type projection for function type." }
         require(validVariances.contains(projection.variance)) {
             "type can only have the variances $validVariances but was ${projection.variance} for function type."
         }

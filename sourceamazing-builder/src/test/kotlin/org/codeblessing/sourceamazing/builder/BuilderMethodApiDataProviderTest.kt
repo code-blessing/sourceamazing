@@ -45,10 +45,7 @@ class BuilderMethodApiDataProviderTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithDataProviderAsLambdaFunction::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithDataProviderAsLambdaFunction::class) {
                         // do nothing
                     }
                 }
@@ -99,16 +96,10 @@ class BuilderMethodApiDataProviderTest {
 
     @Test
     fun `test builder data provider passing an array as parameter should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.MUST_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderDataProviderWithArray::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderDataProviderWithArray::class) {
                         // do nothing
                     }
                 }
@@ -122,24 +113,17 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: Any,
         )
     }
 
     @Test
     fun `test builder data provider passing an unannotated object should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.MUST_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderDataProviderWithAnyObject::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderDataProviderWithAnyObject::class) {
                         // do nothing
                     }
                 }
@@ -152,8 +136,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @IgnoreNullFacetValue @ProvideBuilderData data: EmptyBuilderDataProvider,
         )
     }
@@ -182,8 +165,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider?,
         )
     }
@@ -196,10 +178,7 @@ class BuilderMethodApiDataProviderTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodParamWithBuilderDataAsNullableParam::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithBuilderDataAsNullableParam::class) {
                         // do nothing
                     }
                 }
@@ -212,8 +191,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProvider,
         )
     }
@@ -222,10 +200,7 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing an annotated data provider object should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodParamWithEmptyDataProvider::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithEmptyDataProvider::class) {
                     // do nothing
                 }
             }
@@ -237,8 +212,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherAnnotations,
         )
 
@@ -247,10 +221,7 @@ class BuilderMethodApiDataProviderTest {
 
     @Test
     fun `test builder data provider passing a data object with other annotations from source amazing should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -269,14 +240,11 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation,
         )
 
-        @BuilderDataProvider
-        @FunctionalInterface
-        class EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation
+        @BuilderDataProvider @FunctionalInterface class EmptyBuilderDataProviderWithOtherNonSourceamazingAnnotation
     }
 
     @Test
@@ -298,8 +266,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
@@ -322,10 +289,7 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing a data object with generic parameter but not returning it should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderMethodDataProviderWithGenericParameter::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithGenericParameter::class) {
                     // do nothing
                 }
             }
@@ -337,8 +301,7 @@ class BuilderMethodApiDataProviderTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @ProvideBuilderData data: BuilderDataProviderWithGenericParameter<String>,
         )
 
@@ -394,16 +357,13 @@ class BuilderMethodApiDataProviderTest {
 
     @Test
     fun `test builder data provider method throwing an exception should fail with this exception`() {
-        val builderDataProvider =
-            BuilderMethodDataProviderThrowingException.BuilderDataProviderThrowingException()
+        val builderDataProvider = BuilderMethodDataProviderThrowingException.BuilderDataProviderThrowingException()
         val exception =
             assertThrows<DataProviderInvocationRuntimeException> {
                 SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                     withRootInstance<MyConcepts>(schemaContext) {
-                        BuilderApi.withBuilder(
-                            schemaContext,
-                            BuilderMethodDataProviderThrowingException::class,
-                        ) { builder ->
+                        BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderThrowingException::class) {
+                            builder ->
                             builder.doThrowAnException(builderDataProvider)
                         }
                     }

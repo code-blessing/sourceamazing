@@ -5,8 +5,7 @@ import kotlin.reflect.KClass
 /**
  * Creates a new instance of a concept of type [concept].
  *
- * The created concept is accessible by other annotations over the concept alias declared with
- * [declareConceptAlias].
+ * The created concept is accessible by other annotations over the concept alias declared with [declareConceptAlias].
  *
  * The following annotations access the concept instance with help of the [declareConceptAlias]:
  *
@@ -17,13 +16,12 @@ import kotlin.reflect.KClass
  * To change facet values of a concept of a concept instance:
  * * [SetAliasConceptIdentifierReferenceFacetValue]
  * * [SetFacetValue]
- * * [SetFixedEnumFacetValue], [SetFixedBooleanFacetValue], [SetFixedIntFacetValue],
- *   [SetFixedStringFacetValue], [SetFixedEnumFacetValue],
- *   [SetAliasConceptIdentifierReferenceFacetValue]
+ * * [SetFixedEnumFacetValue], [SetFixedBooleanFacetValue], [SetFixedIntFacetValue], [SetFixedStringFacetValue],
+ *   [SetFixedEnumFacetValue], [SetAliasConceptIdentifierReferenceFacetValue]
  *
  * @property concept The type of concept to create.
- * @property declareConceptAlias Arbitrary name (alias,shortcut) to point to this created concept
- *   instance in other annotations.
+ * @property declareConceptAlias Arbitrary name (alias,shortcut) to point to this created concept instance in other
+ *   annotations.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

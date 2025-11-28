@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class PlaceholderUtilTest {
-    private val placeholders =
-        mapOf("dataDir" to "/foo/data", "imageDir" to "/foo/image", "emptyPlaceholder" to "")
+    private val placeholders = mapOf("dataDir" to "/foo/data", "imageDir" to "/foo/image", "emptyPlaceholder" to "")
 
     @Test
     fun `should do nothing if no placeholder is in passed value`() {
@@ -26,10 +25,8 @@ internal class PlaceholderUtilTest {
     @Test
     fun `should replace multiple placeholders in passed value`() {
         assertReplacement(
-            expectedResult =
-                "Put your data in /foo/data directory and your images not in /foo/data but in /foo/image.",
-            template =
-                "Put your data in @{dataDir} directory and your images not in @{dataDir} but in @{imageDir}.",
+            expectedResult = "Put your data in /foo/data directory and your images not in /foo/data but in /foo/image.",
+            template = "Put your data in @{dataDir} directory and your images not in @{dataDir} but in @{imageDir}.",
             placeholders = placeholders,
         )
     }
@@ -56,8 +53,7 @@ internal class PlaceholderUtilTest {
     fun `should work properly with empty placeholders`() {
         assertReplacement(
             expectedResult = "not /foo/image and /foo/image is existing",
-            template =
-                "@{emptyPlaceholder}not @{imageDir} and @{imageDir} is existing@{emptyPlaceholder}",
+            template = "@{emptyPlaceholder}not @{imageDir} and @{imageDir} is existing@{emptyPlaceholder}",
             placeholders = placeholders,
         )
     }
@@ -71,8 +67,7 @@ internal class PlaceholderUtilTest {
 
     @Test
     fun `should replace placeholders that itself have placeholders in it (without resolving them recursively)`() {
-        val placeholdersWithPlaceholders =
-            mapOf("dataDir" to "/foo/data", "imageDir" to "/@{dataDir}/image")
+        val placeholdersWithPlaceholders = mapOf("dataDir" to "/foo/data", "imageDir" to "/@{dataDir}/image")
 
         assertReplacement(
             expectedResult = "Put your data in /@{dataDir}/image directory.",
@@ -81,16 +76,9 @@ internal class PlaceholderUtilTest {
         )
     }
 
-    private fun assertReplacement(
-        expectedResult: String,
-        template: String,
-        placeholders: Map<String, String>,
-    ) {
+    private fun assertReplacement(expectedResult: String, template: String, placeholders: Map<String, String>) {
         try {
-            assertEquals(
-                expectedResult,
-                PlaceholderUtil.replacePlaceholders(template, placeholders),
-            )
+            assertEquals(expectedResult, PlaceholderUtil.replacePlaceholders(template, placeholders))
         } catch (assertionException: AssertionError) {
             throw assertionException
         } catch (e: Exception) {

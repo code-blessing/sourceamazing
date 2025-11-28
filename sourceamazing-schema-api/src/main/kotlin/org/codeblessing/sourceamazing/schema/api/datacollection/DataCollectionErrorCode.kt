@@ -12,9 +12,7 @@ enum class DataCollectionErrorCode(override val messageFormat: String) : ErrorCo
     WRONG_REFERENCED_CONCEPT_FACET_VALUE(
         "Facet '%s' of concept identifier '%s' in concept '%s' points to a concept that is not permitted. Referenced concept was '%s'. Must be one of these concepts: %s. \n%s"
     ),
-    UNKNOWN_CONCEPT(
-        "The entry with the identifier '%s' points to a concept '%s' that is not known. \n%s"
-    ),
+    UNKNOWN_CONCEPT("The entry with the identifier '%s' points to a concept '%s' that is not known. \n%s"),
     DUPLICATE_CONCEPT_IDENTIFIER(
         "The identifier '%s' (concept: '%s') occurred multiple times. A concept identifier must be unique. \n%s"
     ),

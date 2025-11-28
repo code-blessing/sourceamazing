@@ -9,9 +9,7 @@ class PhysicalFilesFileSystemAccess : FileSystemAccess {
 
     override fun classpathResourceAsInputStream(classpathResource: String): InputStream {
         return this.javaClass.getResourceAsStream(classpathResource)
-            ?: throw IllegalArgumentException(
-                "Resource with name '${classpathResource}' not found."
-            )
+            ?: throw IllegalArgumentException("Resource with name '${classpathResource}' not found.")
     }
 
     override fun fileAsInputStream(filePath: Path): InputStream {

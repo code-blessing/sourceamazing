@@ -35,24 +35,20 @@ class BuilderMethodInterpreter(
         return listOf(this) + collectAllBuilderDataProviderInterpreter()
     }
 
-    override fun getBuilderInterpreterNewConceptsIncludingDuplicates():
-        List<Pair<Alias, ConceptName>> {
+    override fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>> {
         return CommonMethodInterpretationHelper.extractNewConceptsAsPair(listOf(method))
     }
 
-    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates():
-        List<Alias> {
-        return CommonMethodInterpretationHelper
-            .extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(listOf(method))
+    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
+        return CommonMethodInterpretationHelper.extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
+            listOf(method)
+        )
     }
 
-    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates():
-        List<Alias> {
+    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias> {
         return method
             .valueParameters()
-            .flatMap { parameter ->
-                parameter.annotations.filterIsInstance<SetConceptIdentifierValue>()
-            }
+            .flatMap { parameter -> parameter.annotations.filterIsInstance<SetConceptIdentifierValue>() }
             .map { it.conceptToModifyAlias.toAlias() }
     }
 
@@ -75,9 +71,7 @@ class BuilderMethodInterpreter(
         return newConceptsFromMethod + expectedConceptsFromSuperiorMethod
     }
 
-    private fun getFixedFacetValues(
-        dataContext: DataContext? = null
-    ): List<FacetValueAnnotationContent> {
+    private fun getFixedFacetValues(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
         return CommonMethodInterpretationHelper.extractFixedFacetValues(
             method,
             methodLocation,
@@ -86,9 +80,7 @@ class BuilderMethodInterpreter(
         )
     }
 
-    private fun getMethodParamAssignedFacetValues(
-        dataContext: DataContext? = null
-    ): List<FacetValueAnnotationContent> {
+    private fun getMethodParamAssignedFacetValues(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
         return method.valueParameters.flatMap { methodParameter ->
             methodParameter.annotations.filterIsInstance<SetFacetValue>().map { annotation ->
                 val value = dataContext?.valueForMethodParameter(methodParameter)
@@ -126,12 +118,9 @@ class BuilderMethodInterpreter(
         dataContext: DataContext?
     ): List<ConceptIdentifierAnnotationData> {
         return method.valueParameters.flatMap { methodParameter ->
-            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().map {
-                annotation ->
+            methodParameter.annotations.filterIsInstance<SetConceptIdentifierValue>().map { annotation ->
                 val conceptIdentifier =
-                    dataContext?.valueForMethodParameter(methodParameter)?.let {
-                        castConceptIdentifier(it)
-                    }
+                    dataContext?.valueForMethodParameter(methodParameter)?.let { castConceptIdentifier(it) }
                 ConceptIdentifierAnnotationData(
                     methodLocation = builderMethodParameterLocation(methodParameter),
                     alias = annotation.conceptToModifyAlias.toAlias(),
@@ -168,9 +157,7 @@ class BuilderMethodInterpreter(
 
         val injectionBuilderKType = methodParameter.type
         val receiverParameterType =
-            requireNotNull(injectionBuilderKType.receiverParameter()) {
-                "receiverParameterType must not be null"
-            }
+            requireNotNull(injectionBuilderKType.receiverParameter()) { "receiverParameterType must not be null" }
 
         return KTypeUtil.classFromType(KTypeUtil.kTypeFromProjection(receiverParameterType))
     }
@@ -184,8 +171,6 @@ class BuilderMethodInterpreter(
         val newConceptsByAlias: Map<Alias, ConceptName> = newConcepts()
 
         return newConceptsByAlias[conceptAlias]
-            ?: throw IllegalStateException(
-                "Can not find concept name for alias '$conceptAlias' on method $method"
-            )
+            ?: throw IllegalStateException("Can not find concept name for alias '$conceptAlias' on method $method")
     }
 }

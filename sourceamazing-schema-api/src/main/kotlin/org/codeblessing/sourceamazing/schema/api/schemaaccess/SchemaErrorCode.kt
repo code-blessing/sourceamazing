@@ -9,19 +9,13 @@ enum class SchemaErrorCode(override val messageFormat: String) : ErrorCode {
     NOT_MORE_THAN_NUMBER_OF_ANNOTATIONS("%s can not have more than %s annotation %s."),
     CAN_NOT_HAVE_ANNOTATION("%s can not have annotation of type %s."),
     CLASS_MUST_BE_AN_INTERFACE("%s must be an interface."),
-    CLASS_CANNOT_BE_PRIVATE(
-        "%s can not be private. Change to modifier of the class to public or default."
-    ),
+    CLASS_CANNOT_BE_PRIVATE("%s can not be private. Change to modifier of the class to public or default."),
     CLASS_CANNOT_BE_ANNOTATION("%s can not be an annotation interface."),
     CLASS_CANNOT_HAVE_EXTENSION_FUNCTIONS("%s must not have extension functions but has %s."),
     CLASS_CANNOT_HAVE_PROPERTIES("%s must not have member properties but has %s."),
     CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS("%s must not have member functions but has %s."),
-    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES(
-        "%s must not have any member functions or properties but has %s."
-    ),
-    RETURN_TYPE_MUST_BE_INHERITABLE(
-        "The return type class %s must be inheritable for all concepts %s."
-    ),
+    CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES("%s must not have any member functions or properties but has %s."),
+    RETURN_TYPE_MUST_BE_INHERITABLE("The return type class %s must be inheritable for all concepts %s."),
     PROPERTY_RETURN_TYPE_MUST_BE_INTERFACE("return type is invalid. %s"),
     RETURN_TYPE_IS_INVALID("%s return type is invalid. %s"),
     RETURN_TYPE_IS_INVALID_ONLY_COLLECTION_OR_CLASS(
@@ -51,9 +45,7 @@ enum class SchemaErrorCode(override val messageFormat: String) : ErrorCode {
     FACET_UNKNOWN_REFERENCED_CONCEPT(
         "Facet '%s' on concept '%s' has an reference concept '%s' which is not a known concept (known concepts are '%s')"
     ),
-    NO_GENERIC_TYPE_PARAMETER(
-        "%s must not have generic type parameters but has type parameters %s."
-    ),
+    NO_GENERIC_TYPE_PARAMETER("%s must not have generic type parameters but has type parameters %s."),
     NO_NEGATIVE_FACET_CARDINALITIES(
         "Facet '%s' on concept '%s' has negative cardinalities. Only number greater/equal zero are allowed, but was %s/%s."
     ),

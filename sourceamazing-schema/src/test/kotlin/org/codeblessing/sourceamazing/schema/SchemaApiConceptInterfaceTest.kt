@@ -23,9 +23,7 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test sealed interface instead of interface schema class should not fail`() {
-        SchemaApi.withSchema(
-            schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class
-        ) { schemaContext ->
+        SchemaApi.withSchema(schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class) { schemaContext ->
             withRootInstance<SealedInterfaceInsteadOfInterfaceSchema>(schemaContext) {
                 // do nothing
             }
@@ -38,8 +36,7 @@ class SchemaApiConceptInterfaceTest {
 
     @Test
     fun `test schema with parent interface without annotations should not fail`() {
-        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithParentInterface::class) {
-            schemaContext ->
+        SchemaApi.withSchema(schemaDefinitionClass = SchemaWithParentInterface::class) { schemaContext ->
             withRootInstance<SchemaWithParentInterface>(schemaContext) {
                 // do nothing
             }
@@ -54,9 +51,8 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
-            SchemaApi.withSchema(
-                schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class
-            ) { schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class) { schemaContext
+                ->
                 withRootInstance<AbstractClassInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -72,8 +68,7 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
-            SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) {
-                schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) { schemaContext ->
                 withRootInstance<ClassInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -89,8 +84,7 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
-            SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) {
-                schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) { schemaContext ->
                 withRootInstance<EnumInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -106,8 +100,7 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
-            SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) {
-                schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) { schemaContext ->
                 withRootInstance<ObjectInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -123,9 +116,7 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
-            SchemaApi.withSchema(
-                schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class
-            ) { schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class) { schemaContext ->
                 withRootInstance<AnnotationInsteadOfInterfaceSchema>(schemaContext) {
                     // do nothing
                 }
@@ -141,8 +132,7 @@ class SchemaApiConceptInterfaceTest {
             WrongClassStructureSyntaxException::class,
             SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER,
         ) {
-            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) {
-                schemaContext ->
+            SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) { schemaContext ->
                 withRootInstance<Any>(schemaContext) {
                     // do nothing
                 }

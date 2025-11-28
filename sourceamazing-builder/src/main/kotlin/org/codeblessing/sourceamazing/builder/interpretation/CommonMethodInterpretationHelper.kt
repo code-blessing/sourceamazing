@@ -22,9 +22,7 @@ object CommonMethodInterpretationHelper {
         }
     }
 
-    fun extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
-        methods: List<KFunction<*>>
-    ): List<Alias> {
+    fun extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(methods: List<KFunction<*>>): List<Alias> {
         return methods.flatMap { method ->
             method.annotations.filterIsInstance<SetRandomConceptIdentifierValue>().map {
                 it.conceptToModifyAlias.toAlias()
@@ -152,11 +150,7 @@ object CommonMethodInterpretationHelper {
         return facetValues
     }
 
-    private fun enumValueByString(
-        enumValueString: String,
-        facetName: FacetName,
-        schemaAccess: SchemaAccess,
-    ): Enum<*>? {
+    private fun enumValueByString(enumValueString: String, facetName: FacetName, schemaAccess: SchemaAccess): Enum<*>? {
         val facetSchema = schemaAccess.facetByFacetName(facetName)
         return if (facetSchema != null && facetSchema is EnumFacetSchema) {
             facetSchema.enumerationValues.firstOrNull { it.name == enumValueString }

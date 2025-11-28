@@ -19,15 +19,11 @@ import org.codeblessing.sourceamazing.utils.type.valueParameters
 object BuilderDataProviderHierarchyValidator {
     private const val BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION = "Builder data provider class"
 
-    fun validateTopLevelBuilderDataProvider(
-        builderDataProviderInterpreter: BuilderDataProviderInterpreter
-    ) {
+    fun validateTopLevelBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
         validateBuilderDataProvider(builderDataProviderInterpreter)
     }
 
-    private fun validateBuilderDataProvider(
-        builderDataProviderInterpreter: BuilderDataProviderInterpreter
-    ) {
+    private fun validateBuilderDataProvider(builderDataProviderInterpreter: BuilderDataProviderInterpreter) {
         val builderDataProviderClass = builderDataProviderInterpreter.dataProviderClass
 
         checkIsNotAnnotation(builderDataProviderClass, BUILDER_DATA_PROVIDER_CLASS_DESCRIPTION)
@@ -50,8 +46,7 @@ object BuilderDataProviderHierarchyValidator {
         )
 
         builderDataProviderInterpreter.getBuilderDataMethods().forEach { builderDataMethod ->
-            val builderDataMethodLocation =
-                builderDataProviderInterpreter.builderMethodLocation(builderDataMethod)
+            val builderDataMethodLocation = builderDataProviderInterpreter.builderMethodLocation(builderDataMethod)
 
             if (builderDataMethod.extensionReceiverParameter != null) {
                 throw BuilderMethodSyntaxException(

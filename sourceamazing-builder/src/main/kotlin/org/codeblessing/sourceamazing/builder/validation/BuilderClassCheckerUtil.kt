@@ -14,21 +14,13 @@ object BuilderClassCheckerUtil {
 
     fun checkIsNotAnnotation(classToInspect: KClass<*>, classDescription: String) {
         if (classToInspect.isAnnotation) {
-            throw BuilderSyntaxException(
-                classToInspect,
-                BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION,
-                classDescription,
-            )
+            throw BuilderSyntaxException(classToInspect, BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION, classDescription)
         }
     }
 
     fun checkIsNotPrivate(classToInspect: KClass<*>, classDescription: String) {
         if (classToInspect.isPrivate) {
-            throw BuilderSyntaxException(
-                classToInspect,
-                BuilderErrorCode.CLASS_CANNOT_BE_PRIVATE,
-                classDescription,
-            )
+            throw BuilderSyntaxException(classToInspect, BuilderErrorCode.CLASS_CANNOT_BE_PRIVATE, classDescription)
         }
     }
 
@@ -38,11 +30,7 @@ object BuilderClassCheckerUtil {
 
     fun checkIsOrdinaryInterface(classToInspect: KClass<*>, classDescription: String) {
         if (!isOrdinaryInterface(classToInspect)) {
-            throw BuilderSyntaxException(
-                classToInspect,
-                BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE,
-                classDescription,
-            )
+            throw BuilderSyntaxException(classToInspect, BuilderErrorCode.CLASS_MUST_BE_AN_INTERFACE, classDescription)
         }
     }
 
@@ -61,11 +49,7 @@ object BuilderClassCheckerUtil {
         }
     }
 
-    fun checkHasAnnotation(
-        annotation: KClass<out Annotation>,
-        classToInspect: KClass<*>,
-        classDescription: String,
-    ) {
+    fun checkHasAnnotation(annotation: KClass<out Annotation>, classToInspect: KClass<*>, classDescription: String) {
         if (!classToInspect.hasAnnotationIncludingSuperclasses(annotation)) {
             throw BuilderSyntaxException(
                 classToInspect,
@@ -173,11 +157,7 @@ object BuilderClassCheckerUtil {
     }
 
     fun checkHasNoMembers(classToInspect: KClass<*>, classDescription: String) {
-        if (
-            classToInspect.members
-                .filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }
-                .isNotEmpty()
-        ) {
+        if (classToInspect.members.filterNot { it is KFunction<*> && it.isFromKotlinAnyClass() }.isNotEmpty()) {
             throw BuilderSyntaxException(
                 classToInspect,
                 BuilderErrorCode.CLASS_CANNOT_HAVE_MEMBER_FUNCTIONS_OR_PROPERTIES,

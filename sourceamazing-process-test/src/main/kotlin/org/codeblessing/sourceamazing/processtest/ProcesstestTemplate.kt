@@ -25,8 +25,7 @@ object ProcesstestTemplate {
                         "\n"
                 formControl.selectDropdownEntries.forEach { optionEntry ->
                     content +=
-                        """      <option value="${optionEntry.value}">${optionEntry.displayValue}</option>""" +
-                            "\n"
+                        """      <option value="${optionEntry.value}">${optionEntry.displayValue}</option>""" + "\n"
                 }
                 content += """    </select>""" + "\n"
             }
@@ -75,9 +74,10 @@ object ProcesstestTemplate {
             }
 
             val listOfTextInputFormControlNames =
-                entity.formControls
-                    .filterIsInstance<FormSchema.TextInputFormControlConcept>()
-                    .joinToString { textInputFormControl -> textInputFormControl.displayName }
+                entity.formControls.filterIsInstance<FormSchema.TextInputFormControlConcept>().joinToString {
+                    textInputFormControl ->
+                    textInputFormControl.displayName
+                }
             content +=
                 """
                     Text Input Form Control Names: [$listOfTextInputFormControlNames]

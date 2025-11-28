@@ -11,28 +11,18 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess) : Concept
 
     override fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData {
         return conceptData[conceptIdentifier]
-            ?: throw IllegalArgumentException(
-                "No concept with concept id '$conceptIdentifier' found."
-            )
+            ?: throw IllegalArgumentException("No concept with concept id '$conceptIdentifier' found.")
     }
 
-    override fun existingOrNewConceptData(
-        conceptName: ConceptName,
-        conceptIdentifier: ConceptIdentifier,
-    ): ConceptData {
-        return conceptData.getOrPut(conceptIdentifier) {
-            createNewConceptData(conceptName, conceptIdentifier)
-        }
+    override fun existingOrNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
+        return conceptData.getOrPut(conceptIdentifier) { createNewConceptData(conceptName, conceptIdentifier) }
     }
 
     override fun newConceptData(conceptName: ConceptName): ConceptData {
         return newConceptData(conceptName, conceptName.randomConceptIdentifier())
     }
 
-    override fun newConceptData(
-        conceptName: ConceptName,
-        conceptIdentifier: ConceptIdentifier,
-    ): ConceptData {
+    override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         val newConceptData = createNewConceptData(conceptName, conceptIdentifier)
         ConceptDataValidator.validateDuplicateConceptIdentifiers(conceptData.keys, newConceptData)
         conceptData[conceptIdentifier] = newConceptData
@@ -40,16 +30,10 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess) : Concept
     }
 
     override fun validateAfterUpdate(conceptData: ConceptData) {
-        ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(
-            schemaAccess,
-            conceptData,
-        )
+        ConceptDataValidator.validateEntryWithoutReferenceAndCardinalityIntegrity(schemaAccess, conceptData)
     }
 
-    private fun createNewConceptData(
-        conceptName: ConceptName,
-        conceptIdentifier: ConceptIdentifier,
-    ): ConceptData {
+    private fun createNewConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         return ConceptDataImpl(sequenceNumber++, conceptName, conceptIdentifier)
     }
 

@@ -123,24 +123,20 @@ class SourceamazingProcessTest {
 
     private val classpathResourcesWithContent: Map<String, String> =
         mapOf(loggingConfigurationClasspath to loggingConfiguration)
-    private val filePathsWithContent: Map<Path, String> =
-        mapOf(definitionXmlFile to testXmlDefinitionFileContent)
+    private val filePathsWithContent: Map<Path, String> = mapOf(definitionXmlFile to testXmlDefinitionFileContent)
 
     @Test
     fun `run test to import data from xml files and builder`() {
-        val fileSystemAccess =
-            StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
+        val fileSystemAccess = StringBasedFileSystemAccess(classpathResourcesWithContent, filePathsWithContent)
         val schemaProcessor = SchemaProcessor(fileSystemAccess)
 
         val formSchema =
             schemaProcessor.withSchema(FormSchema::class) { schemaContext ->
-                val rootConceptData =
-                    schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
+                val rootConceptData = schemaContext.dataCollector.newConceptData(FormSchema::class.toConceptName())
                 // TODO activate XML schema as soon as it supports root concepts
                 // XmlSchemaApi.createXsdSchemaAndReadXmlFile(schemaContext, definitionXmlFile,
                 // parameterMap)
-                val builderRootAliases =
-                    mapOf("root" to rootConceptData.toConceptNameAndIdentifier())
+                val builderRootAliases = mapOf("root" to rootConceptData.toConceptNameAndIdentifier())
                 BuilderApi.withBuilder(
                     schemaContext = schemaContext,
                     builderClass = FormBuilder::class,
@@ -160,9 +156,6 @@ class SourceamazingProcessTest {
     }
 
     private fun ConceptData.toConceptNameAndIdentifier(): ConceptNameAndIdentifier {
-        return ConceptNameAndIdentifier(
-            conceptName = conceptName,
-            conceptIdentifier = conceptIdentifier,
-        )
+        return ConceptNameAndIdentifier(conceptName = conceptName, conceptIdentifier = conceptIdentifier)
     }
 }

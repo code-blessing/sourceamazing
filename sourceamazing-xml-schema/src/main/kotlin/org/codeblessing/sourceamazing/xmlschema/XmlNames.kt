@@ -20,13 +20,8 @@ object XmlNames {
         return CaseUtil.decapitalize(facetName.simpleName())
     }
 
-    fun conceptFromXmlConceptName(
-        xmlConceptName: String,
-        schemaAccess: SchemaAccess,
-    ): ConceptSchema? {
-        return schemaAccess.allConcepts().firstOrNull {
-            xmlConceptName(it.conceptName) == xmlConceptName
-        }
+    fun conceptFromXmlConceptName(xmlConceptName: String, schemaAccess: SchemaAccess): ConceptSchema? {
+        return schemaAccess.allConcepts().firstOrNull { xmlConceptName(it.conceptName) == xmlConceptName }
     }
 
     fun facetFromXmlFacetName(xmlFacetName: String, conceptSchema: ConceptSchema): FacetSchema? {

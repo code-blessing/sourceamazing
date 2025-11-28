@@ -7,10 +7,7 @@ import kotlin.reflect.jvm.jvmName
 
 // In the future, there will be the whole call stack for data provider
 class MethodLocation
-private constructor(
-    private val method: KFunction<*>,
-    private val locationElements: List<LocationElement>,
-) {
+private constructor(private val method: KFunction<*>, private val locationElements: List<LocationElement>) {
     companion object {
         private const val LOCATION_ELEMENT_SEPARATOR = "\n  -> "
 
@@ -23,9 +20,7 @@ private constructor(
 
     fun locationDescription(): String {
         val locationElementsDescription =
-            locationElements.joinToString(separator = LOCATION_ELEMENT_SEPARATOR) {
-                it.elementDescription
-            }
+            locationElements.joinToString(separator = LOCATION_ELEMENT_SEPARATOR) { it.elementDescription }
         val locationWithPrefixSeparator =
             if (locationElementsDescription.isBlank()) ""
             else "${LOCATION_ELEMENT_SEPARATOR}$locationElementsDescription"
@@ -38,8 +33,7 @@ private constructor(
     }
 
     fun extendWithMethodParam(methodParameterToAdd: KParameter): MethodLocation {
-        val locationElement =
-            LocationElement(methodParameterToAdd, "Parameter:[${methodParameterToAdd.name}]")
+        val locationElement = LocationElement(methodParameterToAdd, "Parameter:[${methodParameterToAdd.name}]")
         return extendWithLocationElement(locationElement)
     }
 

@@ -14,10 +14,7 @@ object BuilderAliasHelper {
         return null // no duplicate
     }
 
-    fun firstMissingAlias(
-        listOfAlias: Collection<Alias>,
-        listOfMaybeMissingAliases: Collection<Alias>,
-    ): Alias? {
+    fun firstMissingAlias(listOfAlias: Collection<Alias>, listOfMaybeMissingAliases: Collection<Alias>): Alias? {
         return listOfAlias.firstOrNull { alias -> alias !in listOfMaybeMissingAliases }
     }
 }

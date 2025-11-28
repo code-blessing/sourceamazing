@@ -16,13 +16,9 @@ object PlaceholderUtil {
                     )
             val key = matchResult.groupValues.last()
             val replacementValue =
-                placeholders[key]
-                    ?: throw IllegalArgumentException(
-                        "No placeholder value found for placeholder $key"
-                    )
+                placeholders[key] ?: throw IllegalArgumentException("No placeholder value found for placeholder $key")
 
-            val rangeBeforePlaceholder =
-                indexInTemplateString until entirePlaceholderGroup.range.first
+            val rangeBeforePlaceholder = indexInTemplateString until entirePlaceholderGroup.range.first
             resolvedTemplateParts.add(templateString.substring(rangeBeforePlaceholder))
             resolvedTemplateParts.add(replacementValue)
 

@@ -10,19 +10,13 @@ class ClassNameUtilTest {
     fun simpleNameFromQualifiedName() {
         assertNull(ClassNameUtil.simpleNameFromQualifiedName(null))
         assertEquals("MyClass", ClassNameUtil.simpleNameFromQualifiedName("MyClass"))
-        assertEquals(
-            "MyClass",
-            ClassNameUtil.simpleNameFromQualifiedName("org.codeblessing.MyClass"),
-        )
+        assertEquals("MyClass", ClassNameUtil.simpleNameFromQualifiedName("org.codeblessing.MyClass"))
     }
 
     @Test
     fun packageFromQualifiedName() {
         assertEquals("", ClassNameUtil.packageFromQualifiedName(null))
         assertEquals("", ClassNameUtil.packageFromQualifiedName("MyClass"))
-        assertEquals(
-            "org.codeblessing",
-            ClassNameUtil.packageFromQualifiedName("org.codeblessing.MyClass"),
-        )
+        assertEquals("org.codeblessing", ClassNameUtil.packageFromQualifiedName("org.codeblessing.MyClass"))
     }
 }

@@ -26,19 +26,10 @@ object ConceptDataValidator {
         return validConceptIdentifierWithConceptName
     }
 
-    fun validateEntryWithoutReferenceAndCardinalityIntegrity(
-        schema: SchemaAccess,
-        conceptDataEntry: ConceptData,
-    ) {
+    fun validateEntryWithoutReferenceAndCardinalityIntegrity(schema: SchemaAccess, conceptDataEntry: ConceptData) {
         val exceptionCollector = DataValidationExceptionCollector()
-        exceptionCollector.catchAndCollectDataValidationExceptions {
-            validateConceptName(schema, conceptDataEntry)
-        }
-        validateFacetsWithoutReferencesAndCardinalities(
-            schema,
-            conceptDataEntry,
-            exceptionCollector,
-        )
+        exceptionCollector.catchAndCollectDataValidationExceptions { validateConceptName(schema, conceptDataEntry) }
+        validateFacetsWithoutReferencesAndCardinalities(schema, conceptDataEntry, exceptionCollector)
         exceptionCollector.throwDataValidationException()
     }
 
@@ -47,8 +38,7 @@ object ConceptDataValidator {
         conceptDataEntries: List<ConceptData>,
         exceptionCollector: DataValidationExceptionCollector,
     ): Map<ConceptIdentifier, ConceptData> {
-        val validConceptIdentifierWithConceptName: MutableMap<ConceptIdentifier, ConceptData> =
-            mutableMapOf()
+        val validConceptIdentifierWithConceptName: MutableMap<ConceptIdentifier, ConceptData> = mutableMapOf()
 
         val allConceptIdentifiers: MutableSet<ConceptIdentifier> = mutableSetOf()
         conceptDataEntries.forEach { conceptDataEntry ->
@@ -63,8 +53,7 @@ object ConceptDataValidator {
 
             allConceptIdentifiers.add(conceptDataEntry.conceptIdentifier)
             if (exceptionCollectorForConcept.isEmpty()) {
-                validConceptIdentifierWithConceptName[conceptDataEntry.conceptIdentifier] =
-                    conceptDataEntry
+                validConceptIdentifierWithConceptName[conceptDataEntry.conceptIdentifier] = conceptDataEntry
             }
             exceptionCollector.merge(exceptionCollectorForConcept)
         }
@@ -96,11 +85,7 @@ object ConceptDataValidator {
             // if we have wrong facets and wrong types, we early return and
             // avoid validation errors that are based on wrong types, etc.
             if (exceptionCollectorForConcept.isEmpty()) {
-                validateForFacetCardinality(
-                    conceptSchema,
-                    conceptDataEntry,
-                    exceptionCollectorForConcept,
-                )
+                validateForFacetCardinality(conceptSchema, conceptDataEntry, exceptionCollectorForConcept)
                 validateForReferenceFacetWithWrongConcepts(
                     conceptSchema,
                     conceptDataEntry,
@@ -124,8 +109,7 @@ object ConceptDataValidator {
         conceptDataMap: Map<ConceptIdentifier, ConceptData>,
         exceptionCollector: DataValidationExceptionCollector,
     ) {
-        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema
-            ->
+        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema ->
             val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
             val possibleConcepts = referenceFacetSchema.referencingConcepts
             facetValues.forEach { facetValue ->
@@ -154,18 +138,14 @@ object ConceptDataValidator {
         conceptDataMap: Map<ConceptIdentifier, ConceptData>,
         exceptionCollector: DataValidationExceptionCollector,
     ) {
-        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema
-            ->
+        conceptSchema.facets.filterIsInstance<ReferenceFacetSchema>().forEach { referenceFacetSchema ->
             val facetValues = conceptDataEntry.getFacet(referenceFacetSchema.facetName)
             val possibleConcepts = referenceFacetSchema.referencingConcepts
             facetValues.forEach { facetValue ->
                 exceptionCollector.catchAndCollectDataValidationExceptions {
                     val referenceConceptIdentifier = facetValue as ConceptIdentifier
                     val referencedConcept = conceptDataMap[referenceConceptIdentifier]
-                    if (
-                        referencedConcept != null &&
-                            referencedConcept.conceptName !in possibleConcepts
-                    ) {
+                    if (referencedConcept != null && referencedConcept.conceptName !in possibleConcepts) {
                         throw WrongReferencedConceptFacetValueException(
                             DataCollectionErrorCode.WRONG_REFERENCED_CONCEPT_FACET_VALUE,
                             referenceFacetSchema.facetName,
@@ -245,11 +225,7 @@ object ConceptDataValidator {
         }
     }
 
-    private fun validateDataType(
-        conceptDataEntry: ConceptData,
-        facetSchema: FacetSchema,
-        facetValue: Any,
-    ) {
+    private fun validateDataType(conceptDataEntry: ConceptData, facetSchema: FacetSchema, facetValue: Any) {
         val actualClass = facetValue::class
         val isValidType =
             when (facetSchema) {
@@ -288,9 +264,7 @@ object ConceptDataValidator {
     }
 
     private fun facetEnumType(facetSchema: EnumFacetSchema): KClass<*> {
-        return requireNotNull(facetSchema.enumerationType) {
-            "EnumerationType was empty for facet schema $facetSchema"
-        }
+        return requireNotNull(facetSchema.enumerationType) { "EnumerationType was empty for facet schema $facetSchema" }
     }
 
     private fun isValidEnumValue(enumFacetValue: Any, facetSchema: EnumFacetSchema): Boolean {

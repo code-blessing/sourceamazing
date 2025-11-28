@@ -74,10 +74,7 @@ class EnumUtilTest {
             )
         )
         assertFalse(
-            EnumUtil.isSameOrSubsetEnumerationClass(
-                fullEnumClass = MyEnum::class,
-                fullOrSubsetEnumClass = Any::class,
-            )
+            EnumUtil.isSameOrSubsetEnumerationClass(fullEnumClass = MyEnum::class, fullOrSubsetEnumClass = Any::class)
         )
     }
 }

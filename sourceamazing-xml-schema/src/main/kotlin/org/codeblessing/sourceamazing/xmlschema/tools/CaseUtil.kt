@@ -29,9 +29,7 @@ object CaseUtil {
     }
 
     fun capitalize(stringValue: String): String {
-        return stringValue.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase() else it.toString()
-        }
+        return stringValue.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
     }
 
     fun decapitalize(stringValue: String): String {

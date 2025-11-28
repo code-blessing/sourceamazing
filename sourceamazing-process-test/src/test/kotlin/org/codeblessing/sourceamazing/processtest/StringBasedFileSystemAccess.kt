@@ -48,9 +48,7 @@ class StringBasedFileSystemAccess(
     override fun writeFile(filePath: Path, fileContent: String) {
         val normalizedFilePath = filePath.normalize()
         if (writtenFiles.containsKey(normalizedFilePath)) {
-            throw IllegalStateException(
-                "File with filepath $normalizedFilePath has already been written."
-            )
+            throw IllegalStateException("File with filepath $normalizedFilePath has already been written.")
         }
         writtenFiles[normalizedFilePath] = fileContent
     }
@@ -62,9 +60,7 @@ class StringBasedFileSystemAccess(
     override fun getFileWriter(filePath: Path): Writer {
         val normalizedFilePath = filePath.normalize()
         if (writtenFileWriter.containsKey(normalizedFilePath)) {
-            throw IllegalStateException(
-                "File writer with filepath $normalizedFilePath has already been requested."
-            )
+            throw IllegalStateException("File writer with filepath $normalizedFilePath has already been requested.")
         }
         val stringWriter = registerClosable(filePath.pathString, StringWriter())
         writtenFileWriter[normalizedFilePath] = stringWriter

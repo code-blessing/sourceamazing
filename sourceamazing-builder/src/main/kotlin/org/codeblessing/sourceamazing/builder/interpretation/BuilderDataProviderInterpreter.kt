@@ -39,8 +39,7 @@ class BuilderDataProviderInterpreter(
             builderMethodInterpreter: BuilderMethodInterpreter,
             schemaAccess: SchemaAccess,
         ): BuilderDataProviderInterpreter {
-            val builderMethodLocation =
-                builderMethodInterpreter.methodLocation.extendWithMethodParam(methodParameter)
+            val builderMethodLocation = builderMethodInterpreter.methodLocation.extendWithMethodParam(methodParameter)
             val dataProviderClass = KTypeUtil.classFromType(methodParameter.type)
 
             val dataProviderInstanceSupplier = BuilderDataProviderInstanceSupplier { dataContext ->
@@ -58,55 +57,44 @@ class BuilderDataProviderInterpreter(
         }
     }
 
-    override fun getBuilderInterpreterNewConceptsIncludingDuplicates():
-        List<Pair<Alias, ConceptName>> {
+    override fun getBuilderInterpreterNewConceptsIncludingDuplicates(): List<Pair<Alias, ConceptName>> {
         return CommonMethodInterpretationHelper.extractNewConceptsAsPair(getBuilderDataMethods())
     }
 
-    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates():
-        List<Alias> {
-        return CommonMethodInterpretationHelper
-            .extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
-                getBuilderDataMethods()
-            )
+    override fun getBuilderInterpreterAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
+        return CommonMethodInterpretationHelper.extractAliasesToSetRandomConceptIdentifierValueIncludingDuplicates(
+            getBuilderDataMethods()
+        )
     }
 
-    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates():
-        List<Alias> {
+    override fun getBuilderInterpreterAliasesToSetConceptIdentifierValueAliasesIncludingDuplicates(): List<Alias> {
         return getBuilderDataMethods()
-            .flatMap { parameter ->
-                parameter.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>()
-            }
+            .flatMap { parameter -> parameter.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>() }
             .map { it.conceptToModifyAlias.toAlias() }
     }
 
     override fun getBuilderInterpreterFacetValueAnnotationContent(
         dataContext: DataContext?
     ): List<FacetValueAnnotationContent> {
-        return getFixedFacetValuesOfBuilderDataMethods(dataContext) +
-            getFacetValuesOfBuilderDataMethods(dataContext)
+        return getFixedFacetValuesOfBuilderDataMethods(dataContext) + getFacetValuesOfBuilderDataMethods(dataContext)
     }
 
     override fun getBuilderInterpreterManualAssignedConceptIdentifierAnnotationContent(
         dataContext: DataContext?
     ): List<ConceptIdentifierAnnotationData> {
         return getBuilderDataMethods().flatMap { builderDataMethod ->
-            builderDataMethod.annotations
-                .filterIsInstance<SetProvidedConceptIdentifierValue>()
-                .map { annotation ->
-                    val conceptIdentifier =
-                        getBuilderDataValue(builderDataMethod, dataContext)?.let {
-                            castConceptIdentifier(it)
-                        }
-                    ConceptIdentifierAnnotationData(
-                        methodLocation = builderMethodLocation(builderDataMethod),
-                        alias = annotation.conceptToModifyAlias.toAlias(),
-                        annotation = annotation,
-                        ignoreNullValue = isIgnoreNullValue(builderDataMethod),
-                        type = builderDataMethodDataType(builderDataMethod),
-                        conceptIdentifier = conceptIdentifier,
-                    )
-                }
+            builderDataMethod.annotations.filterIsInstance<SetProvidedConceptIdentifierValue>().map { annotation ->
+                val conceptIdentifier =
+                    getBuilderDataValue(builderDataMethod, dataContext)?.let { castConceptIdentifier(it) }
+                ConceptIdentifierAnnotationData(
+                    methodLocation = builderMethodLocation(builderDataMethod),
+                    alias = annotation.conceptToModifyAlias.toAlias(),
+                    annotation = annotation,
+                    ignoreNullValue = isIgnoreNullValue(builderDataMethod),
+                    type = builderDataMethodDataType(builderDataMethod),
+                    conceptIdentifier = conceptIdentifier,
+                )
+            }
         }
     }
 
@@ -126,8 +114,7 @@ class BuilderDataProviderInterpreter(
     private fun getBuilderDataValue(method: KFunction<*>, dataContext: DataContext? = null): Any? {
         if (dataContext == null) return null
 
-        val dataProviderInstance =
-            dataProviderInstanceSupplier.getBuilderDataProviderInstance(dataContext)
+        val dataProviderInstance = dataProviderInstanceSupplier.getBuilderDataProviderInstance(dataContext)
         val exceptionMessage = "Exception during call of $method"
         try {
             return method.call(dataProviderInstance)
@@ -142,8 +129,7 @@ class BuilderDataProviderInterpreter(
         dataContext: DataContext? = null
     ): List<FacetValueAnnotationContent> {
         return getBuilderDataMethods().flatMap { builderDataMethod ->
-            builderDataMethod.annotations.filterIsInstance<SetProvidedFacetValue>().map { annotation
-                ->
+            builderDataMethod.annotations.filterIsInstance<SetProvidedFacetValue>().map { annotation ->
                 val value = getBuilderDataValue(builderDataMethod, dataContext)
                 FacetValueAnnotationContent(
                     base =
@@ -176,7 +162,8 @@ class BuilderDataProviderInterpreter(
     }
 
     fun getBuilderDataMethods(): List<KFunction<*>> {
-        return RelevantMethodFetcher.filterOwnFunctions(dataProviderClass.declaredFunctions)
-            .filter { it.hasAnnotation<BuilderData>() }
+        return RelevantMethodFetcher.filterOwnFunctions(dataProviderClass.declaredFunctions).filter {
+            it.hasAnnotation<BuilderData>()
+        }
     }
 }

@@ -69,10 +69,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Test
     fun `test builder method returning another builder without Builder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.MUST_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -100,10 +97,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodNoReturnTypeButWithNewBuilderAnnotation::class) {
                         // do nothing
                     }
                 }
@@ -115,9 +109,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     private interface BuilderMethodReturningOtherBuilderThanDeclaredInWithNewBuilderAnnotation {
         private interface OtherBuilder
 
-        @BuilderMethod
-        @WithNewBuilder(builderClass = OtherBuilder::class)
-        fun doSomething(): EmptyBuilder
+        @BuilderMethod @WithNewBuilder(builderClass = OtherBuilder::class) fun doSomething(): EmptyBuilder
     }
 
     @Test
@@ -142,9 +134,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodReturningOtherBuilderWithNewBuilderAnnotation {
 
-        @BuilderMethod
-        @WithNewBuilder(builderClass = AnotherSubBuilder::class)
-        fun doSomething(): AnotherSubBuilder
+        @BuilderMethod @WithNewBuilder(builderClass = AnotherSubBuilder::class) fun doSomething(): AnotherSubBuilder
 
         @Builder private interface AnotherSubBuilder
     }
@@ -166,9 +156,7 @@ class BuilderMethodApiInjectionAndReturnTest {
     @Builder
     private interface BuilderMethodWithBuilderInjectionWithoutDeclaringWithNewBuilderAnnotation {
 
-        @BuilderMethod
-        @WithNewBuilder(builderClass = AnotherSubBuilder::class)
-        fun doSomething(): AnotherSubBuilder
+        @BuilderMethod @WithNewBuilder(builderClass = AnotherSubBuilder::class) fun doSomething(): AnotherSubBuilder
 
         @Builder
         private interface AnotherSubBuilder {
@@ -254,10 +242,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderInjectionWithValueParameters::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithValueParameters::class) {
                         // do nothing
                     }
                 }
@@ -279,10 +264,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderInjectionWithReturnType::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithReturnType::class) {
                         // do nothing
                     }
                 }
@@ -304,10 +286,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderInjectionWithNullableType::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionWithNullableType::class) {
                         // do nothing
                     }
                 }
@@ -333,10 +312,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithTwoBuilderInjectionParameter::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithTwoBuilderInjectionParameter::class) {
                         // do nothing
                     }
                 }
@@ -364,10 +340,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithBuilderInjectionOnNonLastParam::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderInjectionOnNonLastParam::class) {
                         // do nothing
                     }
                 }
@@ -380,8 +353,7 @@ class BuilderMethodApiInjectionAndReturnTest {
         @BuilderMethod
         @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "foo")
         fun doSomething(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "foo")
-            conceptIdentifier: ConceptIdentifier,
+            @SetConceptIdentifierValue(conceptToModifyAlias = "foo") conceptIdentifier: ConceptIdentifier,
             @IgnoreNullFacetValue @InjectBuilder builder: EmptyBuilder.() -> Unit,
         )
     }
@@ -407,8 +379,7 @@ class BuilderMethodApiInjectionAndReturnTest {
 
     @Builder
     private interface BuilderMethodWithBuilderInjectionAndReturnTypeBuilder {
-        @BuilderMethod
-        fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> Unit): EmptyBuilder
+        @BuilderMethod fun doSomething(@InjectBuilder builder: EmptyBuilder.() -> Unit): EmptyBuilder
     }
 
     @Test

@@ -57,8 +57,7 @@ class BuilderApiFacetMultiUseTest {
 
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")
-                myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
             )
         }
     }
@@ -101,18 +100,14 @@ class BuilderApiFacetMultiUseTest {
 
             @BuilderMethod
             fun doSomethingWithFacetAlpha(
-                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha")
-                myValue: String
+                @SetFacetValue(conceptToModifyAlias = "foo", facetToModify = "facetAlpha") myValue: String
             )
         }
     }
 
     @Test
     fun `test using nested builder for two different concepts without overlapping facets should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderMethodSyntaxException::class,
-            BuilderErrorCode.UNKNOWN_FACET,
-        ) {
+        assertExceptionWithErrorCode(BuilderMethodSyntaxException::class, BuilderErrorCode.UNKNOWN_FACET) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(

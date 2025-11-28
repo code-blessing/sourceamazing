@@ -11,9 +11,7 @@ abstract class BuilderMethodApi {
     protected abstract fun allBuilderInterpreters(): List<BuilderInterpreter>
 
     private fun newConceptsAsPair(): List<Pair<Alias, ConceptName>> {
-        return allBuilderInterpreters().flatMap {
-            it.getBuilderInterpreterNewConceptsIncludingDuplicates()
-        }
+        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterNewConceptsIncludingDuplicates() }
     }
 
     fun newConcepts(): Map<Alias, ConceptName> {
@@ -29,9 +27,7 @@ abstract class BuilderMethodApi {
     }
 
     fun newConceptByAlias(alias: Alias): ConceptName {
-        return requireNotNull(newConcepts()[alias]) {
-            "No concept found for alias $alias in ${newConcepts()}."
-        }
+        return requireNotNull(newConcepts()[alias]) { "No concept found for alias $alias in ${newConcepts()}." }
     }
 
     fun aliasesToSetRandomConceptIdentifierValueIncludingDuplicates(): List<Alias> {
@@ -50,12 +46,8 @@ abstract class BuilderMethodApi {
         }
     }
 
-    fun getFacetValueAnnotationContent(
-        dataContext: DataContext? = null
-    ): List<FacetValueAnnotationContent> {
-        return allBuilderInterpreters().flatMap {
-            it.getBuilderInterpreterFacetValueAnnotationContent(dataContext)
-        }
+    fun getFacetValueAnnotationContent(dataContext: DataContext? = null): List<FacetValueAnnotationContent> {
+        return allBuilderInterpreters().flatMap { it.getBuilderInterpreterFacetValueAnnotationContent(dataContext) }
     }
 
     fun getManualAssignedConceptIdentifierAnnotationContent(

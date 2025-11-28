@@ -6,11 +6,9 @@ import kotlin.reflect.jvm.jvmErasure
 
 fun KType.receiverParameter() = if (isExtensionFunction()) this.arguments.firstOrNull() else null
 
-fun KType.isExtensionFunction(): Boolean =
-    annotations.any { it.annotationClass == ExtensionFunctionType::class }
+fun KType.isExtensionFunction(): Boolean = annotations.any { it.annotationClass == ExtensionFunctionType::class }
 
-fun KType.valueParameters() =
-    arguments.subList(if (isExtensionFunction()) 1 else 0, arguments.size - 1)
+fun KType.valueParameters() = arguments.subList(if (isExtensionFunction()) 1 else 0, arguments.size - 1)
 
 fun KType.returnTypeOrNull(): KType? {
     val lastArgument = arguments.lastOrNull() ?: return null

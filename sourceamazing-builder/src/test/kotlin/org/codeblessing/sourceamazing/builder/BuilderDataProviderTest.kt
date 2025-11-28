@@ -125,9 +125,7 @@ class BuilderDataProviderTest {
         )
 
         @BuilderMethod
-        fun doSomethingWithTheProvidedConcept(
-            @ProvideBuilderData myDataParameter: MyConceptWithTextAndNumberData
-        )
+        fun doSomethingWithTheProvidedConcept(@ProvideBuilderData myDataParameter: MyConceptWithTextAndNumberData)
     }
 
     @Test
@@ -168,20 +166,17 @@ class BuilderDataProviderTest {
                 }
             }
 
-        val conceptFromSimpleObject =
-            schemaWithConcept.concepts.first { it.id == fromSimpleDataObjectId.name }
+        val conceptFromSimpleObject = schemaWithConcept.concepts.first { it.id == fromSimpleDataObjectId.name }
         assertEquals(fromSimpleDataObjectId.name, conceptFromSimpleObject.id)
         assertEquals("hallo from simple facet", conceptFromSimpleObject.text)
         assertEquals(23, conceptFromSimpleObject.number)
 
-        val conceptFromGenericObject =
-            schemaWithConcept.concepts.first { it.id == fromGenericDataObjectId.name }
+        val conceptFromGenericObject = schemaWithConcept.concepts.first { it.id == fromGenericDataObjectId.name }
         assertEquals(fromGenericDataObjectId.name, conceptFromGenericObject.id)
         assertEquals("hallo from generic facet", conceptFromGenericObject.text)
         assertEquals(24, conceptFromGenericObject.number)
 
-        val conceptFromNewObject =
-            schemaWithConcept.concepts.first { it.id == fromNewConceptDataObjectId.name }
+        val conceptFromNewObject = schemaWithConcept.concepts.first { it.id == fromNewConceptDataObjectId.name }
         assertEquals(fromNewConceptDataObjectId.name, conceptFromNewObject.id)
         assertEquals("hallo new concept", conceptFromNewObject.text)
         assertEquals(42, conceptFromNewObject.number)

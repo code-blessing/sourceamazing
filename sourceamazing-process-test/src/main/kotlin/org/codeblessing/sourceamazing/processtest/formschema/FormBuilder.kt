@@ -17,19 +17,12 @@ interface FormBuilder {
     ): FormConceptBuilder
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(
-        concept = FormSchema.FormConcept::class,
-        conceptAlias = "form",
-    )
+    @ExpectedAliasFromSuperiorBuilder(concept = FormSchema.FormConcept::class, conceptAlias = "form")
     interface FormConceptBuilder {
 
         @BuilderMethod
         @NewConcept(FormSchema.TextInputFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            "form",
-            "formControls",
-            referencedConceptAlias = "formControl",
-        )
+        @SetAliasConceptIdentifierReferenceFacetValue("form", "formControls", referencedConceptAlias = "formControl")
         @WithNewBuilder(FormControlBuilder::class)
         fun addTextInputFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
@@ -41,11 +34,7 @@ interface FormBuilder {
 
         @BuilderMethod
         @NewConcept(FormSchema.SelectDropdownFormControlConcept::class, "formControl")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            "form",
-            "formControls",
-            referencedConceptAlias = "formControl",
-        )
+        @SetAliasConceptIdentifierReferenceFacetValue("form", "formControls", referencedConceptAlias = "formControl")
         @WithNewBuilder(SelectDropdownEntryConceptBuilder::class)
         fun addSelectDropdownFormControl(
             @SetConceptIdentifierValue("formControl") conceptIdentifier: ConceptIdentifier,
@@ -57,23 +46,14 @@ interface FormBuilder {
 
     interface FormControlBuilderMethods {
 
-        @BuilderMethod
-        fun addLabel(@SetFacetValue("formControl", "labels") label: String): FormControlBuilder
+        @BuilderMethod fun addLabel(@SetFacetValue("formControl", "labels") label: String): FormControlBuilder
+
+        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: List<String>): FormControlBuilder
+
+        @BuilderMethod fun addLabels(@SetFacetValue("formControl", "labels") labels: Array<String>): FormControlBuilder
 
         @BuilderMethod
-        fun addLabels(
-            @SetFacetValue("formControl", "labels") labels: List<String>
-        ): FormControlBuilder
-
-        @BuilderMethod
-        fun addLabels(
-            @SetFacetValue("formControl", "labels") labels: Array<String>
-        ): FormControlBuilder
-
-        @BuilderMethod
-        fun addVariableAmountOfLabels(
-            @SetFacetValue("formControl", "labels") vararg labels: String
-        ): FormControlBuilder
+        fun addVariableAmountOfLabels(@SetFacetValue("formControl", "labels") vararg labels: String): FormControlBuilder
     }
 
     @Builder

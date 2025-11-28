@@ -123,10 +123,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test unannotated builder class should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.MUST_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(schemaContext, UnannotatedBuilder::class) {
@@ -146,16 +143,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test unannotated data provider class should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.MUST_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithUnannotatedDataProvider::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithUnannotatedDataProvider::class) {
                         // do nothing
                     }
                 }
@@ -170,10 +161,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        AbstractClassInsteadOfInterfaceBuilder::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, AbstractClassInsteadOfInterfaceBuilder::class) {
                         // do nothing
                     }
                 }
@@ -305,10 +293,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, CLASS_MUST_BE_AN_INTERFACE) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        AnnotationInsteadOfInterfaceBuilder::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, AnnotationInsteadOfInterfaceBuilder::class) {
                         // do nothing
                     }
                 }
@@ -325,16 +310,10 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test annotation data provider class should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_CANNOT_BE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithAnnotationDataProvider::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithAnnotationDataProvider::class) {
                         // do nothing
                     }
                 }
@@ -343,10 +322,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     }
 
     @Builder
-    @ExpectedAliasFromSuperiorBuilder(
-        concept = MyConcepts.MyConcept::class,
-        conceptAlias = "anotherConcept",
-    )
+    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "anotherConcept")
     private interface BuilderWithExpectedAliasFromSuperiorBuilderAnnotation
 
     @Test
@@ -369,19 +345,13 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         @BuilderMethod fun doSomething(@ProvideBuilderData data: DataProvider)
 
         @BuilderDataProvider
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "anotherConcept",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "anotherConcept")
         class DataProvider
     }
 
     @Test
     fun `test data provider class with ExpectedAliasFromSuperiorBuilder annotation should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -398,10 +368,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     @Builder
     private interface BuilderWithNestedBuilderHavingExpectedAliasFromSuperiorBuilderAnnotation {
         @Builder
-        @ExpectedAliasFromSuperiorBuilder(
-            concept = MyConcepts.MyConcept::class,
-            conceptAlias = "foo",
-        )
+        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "foo")
         private interface NestedBuilder
 
         @BuilderMethod
@@ -438,10 +405,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithTwoBuilderAnnotationsInHierarchyClasses::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithTwoBuilderAnnotationsInHierarchyClasses::class) {
                         // do nothing
                     }
                 }
@@ -466,10 +430,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithDataProviderWithTwoAnnotationsInHierarchy::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithTwoAnnotationsInHierarchy::class) {
                         // do nothing
                     }
                 }
@@ -479,22 +440,14 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @BuilderDataProvider private interface ParentClassWithDataProviderAnnotation
 
-    @Builder
-    private interface BuilderWithSchemaAnnotationsInHierarchyClasses :
-        ParentClassWithDataProviderAnnotation
+    @Builder private interface BuilderWithSchemaAnnotationsInHierarchyClasses : ParentClassWithDataProviderAnnotation
 
     @Test
     fun `test builder with schema annotations in hierarchy should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithSchemaAnnotationsInHierarchyClasses::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithSchemaAnnotationsInHierarchyClasses::class) {
                         // do nothing
                     }
                 }
@@ -513,10 +466,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test data provider with two different annotations in hierarchy should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(
@@ -534,10 +484,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test builder class with generic type parameter should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.NO_GENERIC_TYPE_PARAMETER,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.NO_GENERIC_TYPE_PARAMETER) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(schemaContext, BuilderWithGenericTypeParameter::class) {
@@ -559,10 +506,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test data provider with with generic type parameter should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderWithDataProviderWithGenericTypeParameter::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithGenericTypeParameter::class) {
                     // do nothing
                 }
             }
@@ -576,10 +520,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
 
     @Test
     fun `test builder class with properties should throw an exception`() {
-        assertExceptionWithErrorCode(
-            BuilderSyntaxException::class,
-            BuilderErrorCode.CLASS_CANNOT_HAVE_PROPERTIES,
-        ) {
+        assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CLASS_CANNOT_HAVE_PROPERTIES) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
                     BuilderApi.withBuilder(schemaContext, BuilderWithProperties::class) {
@@ -613,10 +554,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
     fun `test data provider with properties and methods should should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
             withRootInstance<MyConcepts>(schemaContext) {
-                BuilderApi.withBuilder(
-                    schemaContext,
-                    BuilderWithDataProviderWithPropertiesAndMethods::class,
-                ) {
+                BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithPropertiesAndMethods::class) {
                     // do nothing
                 }
             }
@@ -681,10 +619,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithDataProviderWithExtensionType::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithExtensionType::class) {
                         // do nothing
                     }
                 }
@@ -717,10 +652,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithDataProviderWithMethodsWithParameters::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithMethodsWithParameters::class) {
                         // do nothing
                     }
                 }
@@ -752,10 +684,7 @@ class BuilderApiBuilderAndDataProviderAnnotationTest {
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
                 withRootInstance<MyConcepts>(schemaContext) {
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderWithDataProviderWithMethodReturningNothing::class,
-                    ) {
+                    BuilderApi.withBuilder(schemaContext, BuilderWithDataProviderWithMethodReturningNothing::class) {
                         // do nothing
                     }
                 }
