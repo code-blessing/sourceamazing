@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class BuilderDataInheritanceTypeTest {
+class SchemaDataInheritanceTypeTest {
 
     private interface MyConcepts {
 

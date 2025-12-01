@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 @Suppress("UNUSED")
-class BuilderDataSubsetEnumTest {
+class SchemaDataSubsetEnumTest {
     enum class AllDatatypesEnum {
         STRING,
         INT,

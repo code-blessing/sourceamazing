@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 @Suppress("UNUSED")
-class BuilderDataMixedConceptReferenceFacetTest {
+class SchemaDataMixedConceptReferenceFacetTest {
 
     private interface MyConcepts {
 

@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class BuilderDataAddOrReplaceNonNullAndNullValuesTest {
+class SchemaDataAddOrReplaceNonNullAndNullValuesTest {
 
     private interface MyConcepts {
 

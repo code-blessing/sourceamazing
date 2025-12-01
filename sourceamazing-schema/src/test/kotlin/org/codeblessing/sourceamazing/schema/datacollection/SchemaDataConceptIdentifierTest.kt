@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class BuilderDataConceptIdentifierTest {
+class SchemaDataConceptIdentifierTest {
 
     private interface MyConcepts {
 
