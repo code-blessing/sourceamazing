@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
@@ -30,7 +28,7 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId3 = ConceptIdentifier.of("My-Id-3")
 
         val schemaInstance =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         assertEquals(3, schemaInstance.concepts.size)
     }
@@ -39,7 +37,7 @@ class BuilderDataConceptIdentifierTest {
     fun `test using the same concept identifier for creating same concepts throws an exception`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         }
     }
 
@@ -48,7 +46,7 @@ class BuilderDataConceptIdentifierTest {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
         assertThrows<DuplicateConceptIdentifierException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         }
     }
 
@@ -56,6 +54,6 @@ class BuilderDataConceptIdentifierTest {
     fun `test quick validation throws the exception immediately on the wrong builder method`() {
         val myConceptId = ConceptIdentifier.of("My-Id")
 
-        SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+        SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
     }
 }

@@ -1,9 +1,7 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -31,7 +29,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -45,7 +43,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -61,7 +59,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -75,8 +73,8 @@ class BuilderDataSubsetEnumTest {
 
     @Test
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
-        assertThrows<BuilderMethodSyntaxException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+        assertThrows<SyntaxException> {
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         }
     }
 }

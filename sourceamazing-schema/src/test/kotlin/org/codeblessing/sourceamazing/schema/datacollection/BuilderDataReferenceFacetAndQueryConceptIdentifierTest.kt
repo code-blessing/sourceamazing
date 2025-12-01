@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingReferencedConceptFacetValueException
@@ -26,7 +24,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
     fun `test add reference to itself`() {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         assertEquals(1, schemaInstance.concepts.size)
         val concept = schemaInstance.concepts.first()
@@ -42,7 +40,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val secondReferencedConceptIdentifier = ConceptIdentifier.of("Second-Referenced-Id")
 
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         assertEquals(3, schemaInstance.concepts.size)
         val mainConcept = schemaInstance.concepts.first { it.id == mainConceptIdentifier.name }
@@ -66,7 +64,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         assertEquals(3, schemaInstance.concepts.size)
 
@@ -90,7 +88,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val thirdConceptIdentifier = ConceptIdentifier.of("Third-Referenced-Id")
 
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         assertEquals(3, schemaInstance.concepts.size)
 
@@ -117,7 +115,7 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val uninstantiatedConceptId = ConceptIdentifier.of("Uninstantiated-Referenced-Id")
 
         assertThrows<MissingReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         }
     }
 }

@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -22,7 +20,7 @@ class BuilderDataNestingBuildersTest {
     @Test
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcepts = schemaInstance.concepts.first()

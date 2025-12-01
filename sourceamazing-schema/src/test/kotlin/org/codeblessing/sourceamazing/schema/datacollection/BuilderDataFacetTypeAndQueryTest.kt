@@ -1,8 +1,5 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
-import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.MyConcepts.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -32,7 +29,7 @@ class BuilderDataFacetTypeAndQueryTest {
     @Test
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(0, concept.texts.size)
@@ -44,7 +41,7 @@ class BuilderDataFacetTypeAndQueryTest {
     @Test
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(1, concept.texts.size)
@@ -57,13 +54,13 @@ class BuilderDataFacetTypeAndQueryTest {
         Assertions.assertEquals(42, concept.numbers[0])
 
         Assertions.assertEquals(1, concept.enumerations.size)
-        Assertions.assertEquals(MyEnum.FOO, concept.enumerations[0])
+        Assertions.assertEquals(MyConcepts.MyEnum.FOO, concept.enumerations[0])
     }
 
     @Test
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(2, concept.texts.size)
@@ -79,7 +76,7 @@ class BuilderDataFacetTypeAndQueryTest {
         Assertions.assertEquals(44, concept.numbers[1])
 
         Assertions.assertEquals(2, concept.enumerations.size)
-        Assertions.assertEquals(MyEnum.BAR, concept.enumerations[0])
-        Assertions.assertEquals(MyEnum.FOO, concept.enumerations[1])
+        Assertions.assertEquals(MyConcepts.MyEnum.BAR, concept.enumerations[0])
+        Assertions.assertEquals(MyConcepts.MyEnum.FOO, concept.enumerations[1])
     }
 }

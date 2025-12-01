@@ -1,7 +1,5 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
-import org.codeblessing.sourceamazing.builder.api.BuilderApi
-import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
@@ -38,7 +36,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val beta2ConceptIdentifier = ConceptIdentifier.of("Beta2-Id")
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         val expectedConceptIdentifiers =
             listOf(alpha1ConceptIdentifier, beta1ConceptIdentifier, alpha1ConceptIdentifier, alpha2ConceptIdentifier)
                 .map { it.name }
@@ -55,7 +53,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
 
         assertThrows<WrongReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> TODO("implement test setup") }
         }
     }
 }
