@@ -47,7 +47,7 @@ object SchemaCreator {
                 .let { conceptClassesToProcess.addAll(it) }
         }
 
-        return SchemaImpl(concepts)
+        return SchemaImpl(schemaDefinitionClass.toConceptName(), concepts)
     }
 
     private fun createConceptSchema(definitionClass: KClass<*>): ConceptSchema {

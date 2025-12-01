@@ -9,5 +9,5 @@ interface SchemaAccess {
 
     fun facetByFacetName(conceptName: ConceptName, facetName: FacetName): FacetSchema?
 
-    // TODO Add rootConceptName(): ConceptSchema method
+    fun rootConceptName(): ConceptName
 }
