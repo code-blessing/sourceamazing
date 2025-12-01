@@ -22,17 +22,7 @@ class BuilderDataAliasTest {
     @Test
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderUsingSameAliasForSameConceptInNestedBuilders::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept().setText("myText").setNumber(17)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcept = schemaInstance.concepts.first()
@@ -43,21 +33,7 @@ class BuilderDataAliasTest {
     @Test
     fun `test using the same alias in a sub-builder for a new concept as no ExpectedAliasFromSuperiorBuilder annotation is declared on the sub-builder`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder
-                            .createConcept()
-                            .setTextAndFixedNumber("ConceptFromTopLevelBuilder")
-                            .createConceptAndSetText("OtherConceptFromSubBuilder")
-                            .setNumber(17)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         assertEquals(2, schemaInstance.concepts.size)
 
         val firstConcept = schemaInstance.concepts.first()

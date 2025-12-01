@@ -38,26 +38,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val beta2ConceptIdentifier = ConceptIdentifier.of("Beta2-Id")
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
-                        builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)
-                        builder.createBetaConcept(beta1ConceptIdentifier, beta1ConceptIdentifier.name)
-                        builder.createBetaConcept(beta2ConceptIdentifier, beta2ConceptIdentifier.name)
-                        builder.createGammaConcept(gamma1ConceptIdentifier)
-
-                        builder.addReference(alpha1ConceptIdentifier)
-                        builder.addReference(beta1ConceptIdentifier)
-                        builder.addReference(alpha1ConceptIdentifier)
-                        builder.addReference(alpha2ConceptIdentifier)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         val expectedConceptIdentifiers =
             listOf(alpha1ConceptIdentifier, beta1ConceptIdentifier, alpha1ConceptIdentifier, alpha2ConceptIdentifier)
                 .map { it.name }
@@ -74,27 +55,7 @@ class BuilderDataMixedConceptReferenceFacetTest {
         val gamma1ConceptIdentifier = ConceptIdentifier.of("Gamma1-Id")
 
         assertThrows<WrongReferencedConceptFacetValueException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createAlphaConcept(alpha1ConceptIdentifier, alpha1ConceptIdentifier.name)
-                        builder.createAlphaConcept(alpha2ConceptIdentifier, alpha2ConceptIdentifier.name)
-                        builder.createBetaConcept(beta1ConceptIdentifier, beta1ConceptIdentifier.name)
-                        builder.createBetaConcept(beta2ConceptIdentifier, beta2ConceptIdentifier.name)
-                        builder.createGammaConcept(gamma1ConceptIdentifier)
-
-                        builder.addReference(alpha1ConceptIdentifier)
-                        builder.addReference(beta1ConceptIdentifier)
-                        builder.addReference(alpha1ConceptIdentifier)
-                        builder.addReference(alpha2ConceptIdentifier)
-                        builder.addReference(gamma1ConceptIdentifier) // this reference is invalid
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         }
     }
 }

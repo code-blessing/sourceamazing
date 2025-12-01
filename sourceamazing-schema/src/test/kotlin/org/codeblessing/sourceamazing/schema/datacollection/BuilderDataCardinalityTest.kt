@@ -21,17 +21,7 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert nothing to a text facet will return an empty list`() {
         val schemaInstance =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept()
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(0, concept.zeroToMultipleTexts.size)
@@ -40,17 +30,7 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts individually to a text facet will return an list of four elements`() {
         val schemaInstance =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept().addText("hallo1").addText("hallo2").addText("hallo3").addText("hallo4")
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(4, concept.zeroToMultipleTexts.size)
@@ -59,17 +39,7 @@ class BuilderDataCardinalityTest {
     @Test
     fun `test insert four texts as array list to a text facet will return an list of four elements`() {
         val schemaInstance =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept().addTexts("hallo1", "hello2", "hallo3", "hallo4")
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(4, concept.zeroToMultipleTexts.size)

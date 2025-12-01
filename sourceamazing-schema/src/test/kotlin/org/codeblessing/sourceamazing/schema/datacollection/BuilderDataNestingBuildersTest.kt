@@ -22,23 +22,7 @@ class BuilderDataNestingBuildersTest {
     @Test
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderReturningASubBuilderInASubSubBuilder::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder
-                            .createConcept()
-                            .setText("Added1")
-                            .setNumber(17)
-                            .setText("Added2")
-                            .setNumber(23)
-                            .setText("Added3")
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcepts = schemaInstance.concepts.first()

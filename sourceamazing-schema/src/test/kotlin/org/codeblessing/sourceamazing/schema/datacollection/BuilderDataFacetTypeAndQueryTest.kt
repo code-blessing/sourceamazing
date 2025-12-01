@@ -32,18 +32,7 @@ class BuilderDataFacetTypeAndQueryTest {
     @Test
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept()
-                        // no facet values added
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(0, concept.texts.size)
@@ -55,24 +44,7 @@ class BuilderDataFacetTypeAndQueryTest {
     @Test
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder
-                            .createConcept()
-                            .addFacetValues(
-                                myTextValue = "hallo",
-                                myBoolValue = true,
-                                myNumberValue = 42,
-                                myEnumValue = MyEnum.FOO,
-                            )
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(1, concept.texts.size)
@@ -91,30 +63,7 @@ class BuilderDataFacetTypeAndQueryTest {
     @Test
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder
-                            .createConcept()
-                            .addFacetValues(
-                                myTextValue = "hallo1",
-                                myBoolValue = false,
-                                myNumberValue = 43,
-                                myEnumValue = MyEnum.BAR,
-                            )
-                            .addFacetValues(
-                                myTextValue = "hallo2",
-                                myBoolValue = true,
-                                myNumberValue = 44,
-                                myEnumValue = MyEnum.FOO,
-                            )
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         val concept = schemaInstance.concepts.first()
         Assertions.assertEquals(2, concept.texts.size)

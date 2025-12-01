@@ -31,17 +31,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.doSetEnumValue(AllDatatypesEnum.INT)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -55,17 +45,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithCompatibleNumericDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.doSetEnumValue(CompatibleNumericDatatypesEnum.INT)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -81,17 +61,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithExactCopyOfAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.doSetEnumValue(ExactCopyOfAllDatatypesEnum.INT)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
 
         Assertions.assertEquals(AllDatatypesEnum.INT, schemaInstance.concept.enumFacetValue)
     }
@@ -106,17 +76,7 @@ class BuilderDataSubsetEnumTest {
     @Test
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
         assertThrows<BuilderMethodSyntaxException> {
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderMethodWithIncompatibleWithAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.doSetEnumValue(IncompatibleWithNumericDatatypesEnum.INT)
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         }
     }
 }

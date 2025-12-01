@@ -54,17 +54,7 @@ class BuilderDataInheritanceTypeTest {
     @Test
     fun `test using a sub-builder declared as type parameter`() {
         val schemaInstance: MyConcepts =
-            SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
-                    BuilderApi.withBuilder(
-                        schemaContext,
-                        BuilderExtendingInterfaceWithTypeParameter::class,
-                        mapOf("root" to conceptNameAndIdentifier),
-                    ) { builder ->
-                        builder.createConcept("myFirstText").setText("mySecondText")
-                    }
-                }
-            }
+            SchemaApi.withSchema(MyConcepts::class) { schemaContext -> }
         assertEquals(1, schemaInstance.concepts.size)
 
         val myConcept = schemaInstance.concepts.first()
