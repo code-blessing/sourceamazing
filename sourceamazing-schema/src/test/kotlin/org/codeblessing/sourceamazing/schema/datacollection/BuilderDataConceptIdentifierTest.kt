@@ -23,33 +23,6 @@ class BuilderDataConceptIdentifierTest {
         @References([ConceptOne::class, ConceptTwo::class]) val concepts: List<AbstractNumericConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderToAddConcepts {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.ConceptOne::class, declareConceptAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConceptOne(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier
-        )
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.ConceptTwo::class, declareConceptAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConceptTwo(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier
-        )
-    }
-
     @Test
     fun `test using the different concept identifier for creating same and different concepts should not fail`() {
         val myConceptId1 = ConceptIdentifier.of("My-Id-1")

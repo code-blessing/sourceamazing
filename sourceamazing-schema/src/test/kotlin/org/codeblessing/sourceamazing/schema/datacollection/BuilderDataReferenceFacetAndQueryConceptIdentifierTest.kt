@@ -22,38 +22,6 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val concepts: List<MyConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderToAddReferences {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "myConcept") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "id") id: String,
-        ): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun addReference(
-                @SetFacetValue(
-                    facetToModify = "conceptReferences",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                @IgnoreNullFacetValue
-                myReference: ConceptIdentifier?
-            ): NestedBuilder
-        }
-    }
-
     @Test
     fun `test add reference to itself`() {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")

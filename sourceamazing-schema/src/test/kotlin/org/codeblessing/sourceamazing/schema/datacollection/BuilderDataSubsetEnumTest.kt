@@ -28,24 +28,6 @@ class BuilderDataSubsetEnumTest {
         val concept: MyConcept
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderMethodWithAllDatatypesEnum {
-
-        @BuilderMethod
-        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concept",
-            referencedConceptAlias = "myConcept",
-        )
-        fun doSetEnumValue(
-            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
-            enumValue: AllDatatypesEnum
-        )
-    }
-
     @Test
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
@@ -68,24 +50,6 @@ class BuilderDataSubsetEnumTest {
         INT,
         FLOAT,
         DOUBLE,
-    }
-
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderMethodWithCompatibleNumericDatatypesEnum {
-
-        @BuilderMethod
-        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concept",
-            referencedConceptAlias = "myConcept",
-        )
-        fun doSetEnumValue(
-            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
-            enumValue: CompatibleNumericDatatypesEnum
-        )
     }
 
     @Test
@@ -114,24 +78,6 @@ class BuilderDataSubsetEnumTest {
         UUID,
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderMethodWithExactCopyOfAllDatatypesEnum {
-
-        @BuilderMethod
-        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concept",
-            referencedConceptAlias = "myConcept",
-        )
-        fun doSetEnumValue(
-            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
-            enumValue: ExactCopyOfAllDatatypesEnum
-        )
-    }
-
     @Test
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
@@ -155,24 +101,6 @@ class BuilderDataSubsetEnumTest {
         FLOAT,
         DOUBLE,
         BYTE, // this is an incompatible facet value
-    }
-
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderMethodWithIncompatibleWithAllDatatypesEnum {
-
-        @BuilderMethod
-        @NewConcept(MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concept",
-            referencedConceptAlias = "myConcept",
-        )
-        fun doSetEnumValue(
-            @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "enumFacetValue")
-            enumValue: IncompatibleWithNumericDatatypesEnum
-        )
     }
 
     @Test

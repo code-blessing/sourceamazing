@@ -19,39 +19,6 @@ class BuilderDataNestingBuildersTest {
         val concepts: List<MyConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderReturningASubBuilderInASubSubBuilder {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "texts") textValue: String
-            ): NestedSubBuilder
-        }
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedSubBuilder {
-            @BuilderMethod
-            fun setNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "numbers") numberValue: Int
-            ): NestedBuilder
-        }
-    }
-
     @Test
     fun `test returning a higher level builder from a lower level builder`() {
         val schemaInstance: MyConcepts =

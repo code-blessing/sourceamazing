@@ -51,10 +51,6 @@ class BuilderDataInheritanceTypeTest {
         ): R
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderExtendingInterfaceWithTypeParameter : BuilderWithTypeParameter<String, NestedBuilder>
-
     @Test
     fun `test using a sub-builder declared as type parameter`() {
         val schemaInstance: MyConcepts =

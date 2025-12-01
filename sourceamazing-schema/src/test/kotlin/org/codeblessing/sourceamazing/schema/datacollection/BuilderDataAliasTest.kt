@@ -19,38 +19,6 @@ class BuilderDataAliasTest {
         val concepts: List<MyConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderUsingSameAliasForSameConceptInNestedBuilders {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun setText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text") textValue: String
-            ): NestedSubBuilder
-        }
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedSubBuilder {
-
-            @BuilderMethod
-            fun setNumber(@SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number") numberValue: Int)
-        }
-    }
-
     @Test
     fun `test using the same alias in a sub-builder and a sub-sub-builder`() {
         val schemaInstance: MyConcepts =
@@ -70,57 +38,6 @@ class BuilderDataAliasTest {
         val myConcept = schemaInstance.concepts.first()
         assertEquals(17, myConcept.number)
         assertEquals("myText", myConcept.text)
-    }
-
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderUsingSameAliasForTwoDifferentConceptsOnDifferentBuilderLevels {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue("myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            @SetFixedIntFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number", value = 42)
-            fun setTextAndFixedNumber(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text") textValue: String
-            ): NestedSubBuilder
-        }
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-        // no ExpectedAliasFromSuperiorBuilder("myConcept) here, therefore "myConcept" is a new
-        // alias
-        interface NestedSubBuilder {
-            @BuilderMethod
-            @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-            @SetRandomConceptIdentifierValue("myConcept")
-            @SetAliasConceptIdentifierReferenceFacetValue(
-                conceptToModifyAlias = "root",
-                facetToModify = "concepts",
-                referencedConceptAlias = "myConcept",
-            )
-            fun createConceptAndSetText(
-                @SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "text") textValue: String
-            ): NestedSubSubBuilder
-        }
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedSubSubBuilder {
-            @BuilderMethod
-            fun setNumber(@SetFacetValue(conceptToModifyAlias = "myConcept", facetToModify = "number") numberValue: Int)
-        }
     }
 
     @Test

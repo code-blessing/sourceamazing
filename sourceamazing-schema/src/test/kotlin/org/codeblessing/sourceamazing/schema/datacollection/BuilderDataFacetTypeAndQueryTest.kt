@@ -29,53 +29,6 @@ class BuilderDataFacetTypeAndQueryTest {
         val concepts: List<MyConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderToAddOrReplaceFacets {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun addFacetValues(
-                @SetFacetValue(
-                    facetToModify = "texts",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                myTextValue: String,
-                @SetFacetValue(
-                    facetToModify = "booleans",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                myBoolValue: Boolean,
-                @SetFacetValue(
-                    facetToModify = "numbers",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                myNumberValue: Int,
-                @SetFacetValue(
-                    facetToModify = "enumerations",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                myEnumValue: MyEnum,
-            ): NestedBuilder
-        }
-    }
-
     @Test
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =

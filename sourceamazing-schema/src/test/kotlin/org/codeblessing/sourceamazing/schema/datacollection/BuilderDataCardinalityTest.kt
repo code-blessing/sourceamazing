@@ -18,45 +18,6 @@ class BuilderDataCardinalityTest {
         val concepts: List<MyConcept>
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderToAddOrReplaceFacets {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.MyConcept::class, declareConceptAlias = "myConcept")
-        @SetRandomConceptIdentifierValue(conceptToModifyAlias = "myConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "concepts",
-            referencedConceptAlias = "myConcept",
-        )
-        fun createConcept(): NestedBuilder
-
-        @Builder
-        @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts.MyConcept::class, conceptAlias = "myConcept")
-        interface NestedBuilder {
-            @BuilderMethod
-            fun addText(
-                @SetFacetValue(
-                    facetToModify = "zeroToMultipleTexts",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                myValue: String
-            ): NestedBuilder
-
-            @BuilderMethod
-            fun addTexts(
-                @SetFacetValue(
-                    facetToModify = "zeroToMultipleTexts",
-                    conceptToModifyAlias = "myConcept",
-                    facetModificationRule = FacetModificationRule.ADD,
-                )
-                vararg myValues: String
-            ): NestedBuilder
-        }
-    }
-
     @Test
     fun `test insert nothing to a text facet will return an empty list`() {
         val schemaInstance =

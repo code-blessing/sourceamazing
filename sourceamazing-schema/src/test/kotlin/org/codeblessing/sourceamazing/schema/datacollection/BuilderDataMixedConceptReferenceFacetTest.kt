@@ -30,46 +30,6 @@ class BuilderDataMixedConceptReferenceFacetTest {
         interface ConceptGamma
     }
 
-    @Builder
-    @ExpectedAliasFromSuperiorBuilder(concept = MyConcepts::class, conceptAlias = "root")
-    private interface BuilderToAddReferences {
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.ConceptAlpha::class, declareConceptAlias = "alphaConcept")
-        fun createAlphaConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "alphaConcept") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "alphaConcept", facetToModify = "id") id: String,
-        )
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.ConceptBeta::class, declareConceptAlias = "betaConcept")
-        fun createBetaConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "betaConcept") conceptIdentifier: ConceptIdentifier,
-            @SetFacetValue(conceptToModifyAlias = "betaConcept", facetToModify = "id") id: String,
-        )
-
-        @BuilderMethod
-        @NewConcept(concept = MyConcepts.ConceptGamma::class, declareConceptAlias = "gammaConcept")
-        @SetAliasConceptIdentifierReferenceFacetValue(
-            conceptToModifyAlias = "root",
-            facetToModify = "gammaAsList",
-            referencedConceptAlias = "gammaConcept",
-        )
-        fun createGammaConcept(
-            @SetConceptIdentifierValue(conceptToModifyAlias = "gammaConcept") conceptIdentifier: ConceptIdentifier
-        )
-
-        @BuilderMethod
-        fun addReference(
-            @SetFacetValue(
-                conceptToModifyAlias = "root",
-                facetToModify = "alphaAndBetaAsList",
-                facetModificationRule = FacetModificationRule.ADD,
-            )
-            conceptIdentifier: ConceptIdentifier
-        )
-    }
-
     @Test
     fun `test mixed concept of alpha and beta references`() {
         val alpha1ConceptIdentifier = ConceptIdentifier.of("Alpha1-Id")
