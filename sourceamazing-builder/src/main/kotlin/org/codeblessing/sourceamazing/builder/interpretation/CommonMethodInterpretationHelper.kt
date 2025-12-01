@@ -164,6 +164,8 @@ object CommonMethodInterpretationHelper {
     }
 
     private fun enumValueByString(facetSchema: FacetSchema, enumValueString: String): Enum<*>? {
+        // TODO maybe use org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
+        // TODO maybe think about putting plain strings into the model and let it validate by schema/concept resolver
         return if (facetSchema is EnumFacetSchema) {
             facetSchema.enumerationValues.firstOrNull { it.name == enumValueString }
         } else {
