@@ -1,12 +1,12 @@
 package org.codeblessing.sourceamazing.xmlschema.parser
 
-import org.codeblessing.sourceamazing.schema.api.BooleanFacetSchema
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
-import org.codeblessing.sourceamazing.schema.api.EnumFacetSchema
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
-import org.codeblessing.sourceamazing.schema.api.NumberFacetSchema
-import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
-import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.BooleanFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.enumValues
 

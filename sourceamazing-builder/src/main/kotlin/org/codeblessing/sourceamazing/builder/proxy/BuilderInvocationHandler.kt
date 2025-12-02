@@ -11,11 +11,11 @@ import org.codeblessing.sourceamazing.builder.interpretation.BuilderClassInterpr
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.builder.update.BuilderMethodInterpreterDataCollector
 import org.codeblessing.sourceamazing.builder.update.BuilderUpdater
-import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 import org.codeblessing.sourceamazing.utils.type.KFunctionUtil

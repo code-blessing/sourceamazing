@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.builder.validation
 import org.codeblessing.sourceamazing.builder.alias.Alias
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 
 object BuilderMethodValidator {
 

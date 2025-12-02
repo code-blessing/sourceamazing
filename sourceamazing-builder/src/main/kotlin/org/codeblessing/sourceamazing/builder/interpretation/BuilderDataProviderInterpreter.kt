@@ -21,7 +21,7 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.codeblessing.sourceamazing.utils.RelevantMethodFetcher
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil

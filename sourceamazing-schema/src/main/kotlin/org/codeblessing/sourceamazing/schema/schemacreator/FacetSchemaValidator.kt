@@ -1,6 +1,8 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
-import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongFacetSchemaException
 import org.codeblessing.sourceamazing.utils.type.isEnum

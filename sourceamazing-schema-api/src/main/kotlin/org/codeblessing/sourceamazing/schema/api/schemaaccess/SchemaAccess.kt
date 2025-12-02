@@ -1,4 +1,7 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.schemaaccess
+
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
 
 interface SchemaAccess {
     fun hasConceptName(conceptName: ConceptName): Boolean

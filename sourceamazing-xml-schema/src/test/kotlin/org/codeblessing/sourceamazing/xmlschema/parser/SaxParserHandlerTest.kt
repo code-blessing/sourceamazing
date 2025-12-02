@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.xmlschema.parser
 import java.nio.file.Paths
 import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.utils.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.JavaUtilLoggerFacade

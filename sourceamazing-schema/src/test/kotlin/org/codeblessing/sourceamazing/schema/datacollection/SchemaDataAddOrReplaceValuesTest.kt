@@ -2,6 +2,10 @@ package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.annotations.References
+import org.codeblessing.sourceamazing.schema.api.datacollection.addFacetValue
+import org.codeblessing.sourceamazing.schema.api.datacollection.addFacetValues
+import org.codeblessing.sourceamazing.schema.api.datacollection.newConceptData
+import org.codeblessing.sourceamazing.schema.api.datacollection.replaceFacetValues
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.ConceptAlpha
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.MyEnum.BAR
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.MyEnum.FOO

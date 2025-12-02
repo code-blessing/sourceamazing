@@ -5,6 +5,8 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.full.*
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.annotations.References
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetType
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaErrorCode
 import org.codeblessing.sourceamazing.schema.api.schemaaccess.exceptions.WrongPropertySyntaxException
 import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface

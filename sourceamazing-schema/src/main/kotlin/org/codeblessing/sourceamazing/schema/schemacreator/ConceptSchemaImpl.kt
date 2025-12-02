@@ -1,9 +1,9 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.ConceptSchema
 import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
 
 class ConceptSchemaImpl(override val conceptName: ConceptName, override val facets: List<FacetSchema>) : ConceptSchema {
     override val facetNames: List<FacetName>

@@ -2,8 +2,10 @@ package org.codeblessing.sourceamazing.schema
 
 import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
 import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingRootConceptException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptGraph
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver

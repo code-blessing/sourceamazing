@@ -2,8 +2,8 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetType
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 
 data class TextFacetSchemaImpl(
     override val conceptName: ConceptName,

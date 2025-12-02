@@ -2,8 +2,8 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.FacetType
-import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetType
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
 
 data class ReferenceFacetSchemaImpl(
     override val conceptName: ConceptName,

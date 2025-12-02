@@ -1,4 +1,4 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.schemaaccess
 
 enum class FacetType {
     TEXT,

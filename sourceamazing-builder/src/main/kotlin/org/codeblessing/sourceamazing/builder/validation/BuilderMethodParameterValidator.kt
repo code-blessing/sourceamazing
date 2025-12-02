@@ -6,7 +6,7 @@ import kotlin.reflect.full.valueParameters
 import org.codeblessing.sourceamazing.builder.api.annotations.ProvideBuilderData
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderDataProviderInterpreter
 import org.codeblessing.sourceamazing.builder.interpretation.BuilderMethodInterpreter
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 
 object BuilderMethodParameterValidator {
 

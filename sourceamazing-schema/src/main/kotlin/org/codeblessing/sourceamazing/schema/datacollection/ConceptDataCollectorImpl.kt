@@ -1,6 +1,9 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 
 class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess) : ConceptDataCollector {

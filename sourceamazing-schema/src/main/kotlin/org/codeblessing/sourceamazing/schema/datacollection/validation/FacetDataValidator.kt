@@ -2,8 +2,17 @@ package org.codeblessing.sourceamazing.schema.datacollection.validation
 
 import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
 import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.*
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.BooleanFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 import org.codeblessing.sourceamazing.schema.datacollection.MultipleDataValidationException
 import org.codeblessing.sourceamazing.schema.datacollection.validation.DataValidationExceptionCollector.Companion.collectAndMergeExceptions
 import org.codeblessing.sourceamazing.schema.datacollection.validation.DataValidationExceptionCollector.Companion.collectAndThrowExceptions

@@ -2,7 +2,15 @@ package org.codeblessing.sourceamazing.schema.conceptgraph
 
 import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DataValidationException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.BooleanFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 import org.codeblessing.sourceamazing.schema.datacollection.validation.ConceptDataValidator
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 

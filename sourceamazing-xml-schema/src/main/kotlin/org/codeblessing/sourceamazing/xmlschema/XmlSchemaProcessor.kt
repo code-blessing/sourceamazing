@@ -13,12 +13,12 @@ class XmlSchemaProcessor() : XmlSchemaProcessorApi {
         xmlFile: Path,
         placeholders: Map<String, String>,
     ) {
-        val schemaContext: RevealedSchemaContext = schemaContext.toRevealedSchemaContext()
+        val schemaContextImpl: RevealedSchemaContext = schemaContext.toRevealedSchemaContext()
         XmlSchemaDataReader.createXsdSchemaAndReadXmlFile(
             xmlFile = xmlFile,
-            loggerFacade = schemaContext.loggerFacade,
+            loggerFacade = schemaContextImpl.loggerFacade,
             placeholders = placeholders,
-            fileSystemAccess = schemaContext.fileSystemAccess,
+            fileSystemAccess = schemaContextImpl.fileSystemAccess,
             schemaAccess = schemaContext.schema,
             dataCollector = schemaContext.dataCollector,
         )

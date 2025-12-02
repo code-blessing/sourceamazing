@@ -1,6 +1,7 @@
 package org.codeblessing.sourceamazing.schema.datacollection
 
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.addFacetValue
 import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

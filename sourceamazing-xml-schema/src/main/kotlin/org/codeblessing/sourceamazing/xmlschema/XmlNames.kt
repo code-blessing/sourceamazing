@@ -1,6 +1,9 @@
 package org.codeblessing.sourceamazing.xmlschema
 
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.xmlschema.tools.CaseUtil
 
 object XmlNames {

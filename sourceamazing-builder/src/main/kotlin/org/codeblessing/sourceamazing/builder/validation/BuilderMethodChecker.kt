@@ -14,7 +14,7 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstDuplicateAlias
 import org.codeblessing.sourceamazing.builder.validation.BuilderAliasHelper.firstMissingAlias
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.returnTypeOrNull
 

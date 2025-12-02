@@ -8,8 +8,8 @@ import org.codeblessing.sourceamazing.processtest.formschema.FormBuilder
 import org.codeblessing.sourceamazing.processtest.formschema.FormData
 import org.codeblessing.sourceamazing.processtest.formschema.FormSchema
 import org.codeblessing.sourceamazing.schema.SchemaProcessor
-import org.codeblessing.sourceamazing.schema.api.ConceptData
 import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
 import org.codeblessing.sourceamazing.schema.api.toConceptName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

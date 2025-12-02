@@ -1,6 +1,9 @@
 package org.codeblessing.sourceamazing.schema.schemacreator
 
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 
 data class SchemaImpl(private val rootConcept: ConceptName, private val concepts: Map<ConceptName, ConceptSchema>) :
     SchemaAccess {

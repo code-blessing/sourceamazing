@@ -1,6 +1,6 @@
 package org.codeblessing.sourceamazing.builder.interpretation.facetvalue
 
-import org.codeblessing.sourceamazing.schema.api.FacetType
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetType
 
 open class FacetValueAnnotationContent(
     val base: FacetValueAnnotationBaseData,

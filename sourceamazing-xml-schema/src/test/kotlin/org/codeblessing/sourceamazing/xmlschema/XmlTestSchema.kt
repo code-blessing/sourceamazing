@@ -2,7 +2,7 @@ package org.codeblessing.sourceamazing.xmlschema
 
 import org.codeblessing.sourceamazing.schema.api.ConceptName
 import org.codeblessing.sourceamazing.schema.api.FacetName
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
 
 object XmlTestSchema {

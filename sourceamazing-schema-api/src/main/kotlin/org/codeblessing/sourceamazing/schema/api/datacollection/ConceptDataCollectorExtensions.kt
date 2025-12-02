@@ -1,6 +1,10 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.datacollection
 
 import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.toConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.toConceptName
 
 fun ConceptDataCollector.existingConceptData(conceptIdentifier: String): ConceptData =
     existingConceptData(conceptIdentifier.toConceptIdentifier())

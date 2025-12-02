@@ -1,6 +1,13 @@
 package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.BooleanFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 
 inline fun <reified T : Any> SchemaContext.withDefaultValueRootInstance(
     executable: (rootConceptAndId: ConceptData) -> Unit

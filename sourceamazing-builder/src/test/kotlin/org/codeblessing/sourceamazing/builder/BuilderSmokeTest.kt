@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.api.datacollection.toConceptNameAndIdentifier
 import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

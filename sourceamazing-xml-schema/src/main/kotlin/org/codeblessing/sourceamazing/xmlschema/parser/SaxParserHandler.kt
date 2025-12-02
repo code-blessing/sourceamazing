@@ -2,6 +2,11 @@ package org.codeblessing.sourceamazing.xmlschema.parser
 
 import java.nio.file.Path
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptData
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.XmlNames

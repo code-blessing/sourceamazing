@@ -12,6 +12,14 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.validation.BuilderTypeChecker.checkIsClassParameterType
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.BooleanFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.EnumFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.FacetType
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.NumberFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.TextFacetSchema
 import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation

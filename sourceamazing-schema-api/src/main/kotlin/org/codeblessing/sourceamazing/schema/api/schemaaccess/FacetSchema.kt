@@ -1,6 +1,8 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.schemaaccess
 
 import kotlin.reflect.KClass
+import org.codeblessing.sourceamazing.schema.api.ConceptName
+import org.codeblessing.sourceamazing.schema.api.FacetName
 
 sealed interface FacetSchema {
     val conceptName: ConceptName

@@ -6,8 +6,8 @@ import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
-import org.codeblessing.sourceamazing.schema.api.ConceptDataCollector
-import org.codeblessing.sourceamazing.schema.api.SchemaAccess
+import org.codeblessing.sourceamazing.schema.api.datacollection.ConceptDataCollector
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.SchemaAccess
 import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.LoggerFacade
 import org.codeblessing.sourceamazing.xmlschema.parser.SaxParserHandler

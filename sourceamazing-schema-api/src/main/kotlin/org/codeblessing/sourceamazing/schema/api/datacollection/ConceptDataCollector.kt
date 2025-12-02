@@ -1,4 +1,7 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.datacollection
+
+import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
+import org.codeblessing.sourceamazing.schema.api.ConceptName
 
 interface ConceptDataCollector {
     fun existingConceptData(conceptIdentifier: ConceptIdentifier): ConceptData

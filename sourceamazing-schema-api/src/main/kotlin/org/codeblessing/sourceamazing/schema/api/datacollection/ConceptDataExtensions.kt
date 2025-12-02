@@ -1,6 +1,8 @@
-package org.codeblessing.sourceamazing.schema.api
+package org.codeblessing.sourceamazing.schema.api.datacollection
 
 import kotlin.reflect.KProperty
+import org.codeblessing.sourceamazing.schema.api.ConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.api.toFacetName
 
 fun ConceptData.hasFacet(facetName: String): Boolean = hasFacet(facetName.toFacetName())
 

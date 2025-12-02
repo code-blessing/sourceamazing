@@ -2,9 +2,9 @@ package org.codeblessing.sourceamazing.schema.schemacreator
 
 import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.ConceptName
-import org.codeblessing.sourceamazing.schema.api.ConceptSchema
-import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.exceptions.SyntaxException
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ConceptSchema
+import org.codeblessing.sourceamazing.schema.api.schemaaccess.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.toConceptName
 
 object SchemaCreator {
