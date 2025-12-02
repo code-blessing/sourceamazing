@@ -4,6 +4,8 @@ import kotlin.reflect.KClass
 import org.codeblessing.sourceamazing.schema.api.*
 import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionErrorCode
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingRootConceptException
+import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptGraph
+import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
 import org.codeblessing.sourceamazing.schema.proxy.ConceptInstanceInvocationHandler
@@ -33,17 +35,17 @@ class SchemaProcessor(private val fileSystemAccess: FileSystemAccess, private va
 
         val conceptData: List<ConceptData> = conceptDataCollector.provideConceptData()
         val conceptGraph = ConceptResolver.validateAndResolveConcepts(schemaAccess, conceptData)
-        val rootConceptNode =
-            try {
-                conceptGraph.conceptByConceptIdentifier(rootConceptIdentifier)
-            } catch (_: NoSuchElementException) {
-                throw MissingRootConceptException(
-                    DataCollectionErrorCode.MISSING_ROOT_CONCEPT,
-                    rootConceptIdentifier.name,
-                )
-            }
+        val rootConceptNode = getRootConceptNode(rootConceptIdentifier, conceptGraph)
         val schemaInstance =
             ProxyCreator.createProxy(schemaDefinitionClass, ConceptInstanceInvocationHandler(rootConceptNode))
         return schemaInstance
+    }
+
+    private fun getRootConceptNode(rootConceptIdentifier: ConceptIdentifier, conceptGraph: ConceptGraph): ConceptNode {
+        return try {
+            conceptGraph.conceptByConceptIdentifier(rootConceptIdentifier)
+        } catch (_: NoSuchElementException) {
+            throw MissingRootConceptException(DataCollectionErrorCode.MISSING_ROOT_CONCEPT, rootConceptIdentifier.name)
+        }
     }
 }
