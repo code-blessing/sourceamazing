@@ -7,6 +7,7 @@ import org.codeblessing.sourceamazing.schema.api.FacetSchema
 import org.codeblessing.sourceamazing.schema.api.NumberFacetSchema
 import org.codeblessing.sourceamazing.schema.api.ReferenceFacetSchema
 import org.codeblessing.sourceamazing.schema.api.TextFacetSchema
+import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 import org.codeblessing.sourceamazing.utils.type.enumValues
 
 object XmlFacetValueConverter {
@@ -21,14 +22,10 @@ object XmlFacetValueConverter {
     }
 
     private fun enumerationValue(facetSchema: EnumFacetSchema, attributeValue: String): Any {
-        val enumerationType =
-            facetSchema.enumerationType
-                ?: throw IllegalStateException(
-                    "No enumeration type defined for facet ${facetSchema.facetName} but value was '$attributeValue'"
-                )
-        return enumerationType.enumValues.firstOrNull { enumValue -> enumValue.name == attributeValue }
+        val enumerationClass = facetSchema.enumerationClass
+        return EnumUtil.fromStringToEnum(attributeValue, enumerationClass)
             ?: throw IllegalStateException(
-                "Value '$attributeValue' is not within the possible values ${enumerationType.enumValues.joinToString(",") { "'${it}'" }} for facet ${facetSchema.facetName}."
+                "Value '$attributeValue' is not within the possible values ${enumerationClass.enumValues.joinToString(",") { "'${it}'" }} for facet ${facetSchema.facetName}."
             )
     }
 }

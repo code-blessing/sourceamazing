@@ -174,15 +174,15 @@ class FacetValueAnnotationDataChecker(
                 }
             is EnumFacetSchema ->
                 if (
-                    !isEnumType(facetFromSchema.enumerationType, typeClass) ||
-                        !isCompatibleEnum(facetFromSchema.enumerationType, typeClass)
+                    !isEnumType(facetFromSchema.enumerationClass, typeClass) ||
+                        !isCompatibleEnum(facetFromSchema.enumerationClass, typeClass)
                 ) {
                     throw BuilderMethodSyntaxException(
                         methodLocation,
                         BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
                         facetName.longText(),
                         SUPPORTED_COLLECTION_TYPES,
-                        facetFromSchema.enumerationType.shortText(),
+                        facetFromSchema.enumerationClass.shortText(),
                         facetFromSchema.enumerationValues,
                     )
                 }

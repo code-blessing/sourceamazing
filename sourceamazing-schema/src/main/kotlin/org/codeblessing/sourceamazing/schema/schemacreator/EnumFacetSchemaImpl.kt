@@ -13,7 +13,7 @@ data class EnumFacetSchemaImpl(
     override val facetType: FacetType,
     override val minimumOccurrences: Int,
     override val maximumOccurrences: Int,
-    override val enumerationType: KClass<*>,
+    override val enumerationClass: KClass<*>,
 ) : EnumFacetSchema {
-    override val enumerationValues: List<Enum<*>> = enumerationType.enumValues
+    override val enumerationValues: List<Enum<*>> = enumerationClass.enumValues
 }

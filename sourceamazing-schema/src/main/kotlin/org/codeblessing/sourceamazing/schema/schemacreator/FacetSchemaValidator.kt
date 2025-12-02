@@ -26,23 +26,23 @@ object FacetSchemaValidator {
     }
 
     private fun checkIsEnumType(facetSchema: EnumFacetSchema) {
-        if (!facetSchema.enumerationType.isEnum) {
+        if (!facetSchema.enumerationClass.isEnum) {
             throw WrongFacetSchemaException(
                 SchemaErrorCode.FACET_ENUM_INVALID,
                 facetSchema.facetName,
                 facetSchema.conceptName,
-                facetSchema.enumerationType,
+                facetSchema.enumerationClass,
             )
         }
     }
 
     private fun checkIsNotPrivate(facetSchema: EnumFacetSchema) {
-        if (facetSchema.enumerationType.isPrivate) {
+        if (facetSchema.enumerationClass.isPrivate) {
             throw WrongFacetSchemaException(
                 SchemaErrorCode.FACET_ENUM_HAS_PRIVATE_MODIFIER,
                 facetSchema.facetName,
                 facetSchema.conceptName,
-                facetSchema.enumerationType,
+                facetSchema.enumerationClass,
             )
         }
     }

@@ -199,7 +199,9 @@ object FacetDataValidator {
     }
 
     private fun facetEnumType(facetSchema: EnumFacetSchema): KClass<*> {
-        return requireNotNull(facetSchema.enumerationType) { "EnumerationType was empty for facet schema $facetSchema" }
+        return requireNotNull(facetSchema.enumerationClass) {
+            "EnumerationClass was empty for facet schema $facetSchema"
+        }
     }
 
     private fun isValidEnumValue(enumFacetValue: Any, facetSchema: EnumFacetSchema): Boolean {

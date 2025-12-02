@@ -92,7 +92,7 @@ class SchemaCreatorTest {
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName) as EnumFacetSchema
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationType)
+        assertEquals(SchemaWithConceptWithEmptyEnumFacet.EmptyEnumeration::class, enumFacetSchema.enumerationClass)
         assertEquals(0, enumFacetSchema.enumerationValues.size)
     }
 
@@ -149,7 +149,7 @@ class SchemaCreatorTest {
         val enumFacetSchema = conceptSchema.facetByName(enumFacetName) as EnumFacetSchema
         assertEquals(enumFacetName, enumFacetSchema.facetName)
         assertEquals(FacetType.TEXT_ENUMERATION, enumFacetSchema.facetType)
-        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationType)
+        assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration::class, enumFacetSchema.enumerationClass)
         assertEquals(4, enumFacetSchema.enumerationValues.size)
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.WINTER, enumFacetSchema.enumerationValues[0])
         assertEquals(SchemaWithConceptWithEnumFacet.SeasonEnumeration.SPRING, enumFacetSchema.enumerationValues[1])

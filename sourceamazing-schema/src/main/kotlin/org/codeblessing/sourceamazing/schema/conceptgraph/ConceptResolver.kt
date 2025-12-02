@@ -67,7 +67,7 @@ object ConceptResolver {
     }
 
     private fun transformEnumFacetValues(facetSchema: EnumFacetSchema, conceptData: ConceptData): List<Any> {
-        val enumerationType = facetSchema.enumerationType
+        val enumerationType = facetSchema.enumerationClass
         return conceptData.getFacet(facetSchema.facetName).map { value ->
             transformEnumFacetValue(enumerationType, value)
         }

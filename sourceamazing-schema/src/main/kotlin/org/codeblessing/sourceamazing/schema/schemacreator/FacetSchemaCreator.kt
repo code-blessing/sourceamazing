@@ -335,7 +335,7 @@ object FacetSchemaCreator {
                     facetType = facetType,
                     minimumOccurrences = minimumOccurrences,
                     maximumOccurrences = maximumOccurrences,
-                    enumerationType = returnTypeValueClass.clazz,
+                    enumerationClass = returnTypeValueClass.clazz,
                 )
         }
     }

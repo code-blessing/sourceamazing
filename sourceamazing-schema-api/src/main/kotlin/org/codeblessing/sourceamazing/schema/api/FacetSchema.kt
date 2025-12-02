@@ -17,7 +17,7 @@ interface NumberFacetSchema : FacetSchema
 interface BooleanFacetSchema : FacetSchema
 
 interface EnumFacetSchema : FacetSchema {
-    val enumerationType: KClass<*>
+    val enumerationClass: KClass<*>
     val enumerationValues: List<Enum<*>>
 }
 

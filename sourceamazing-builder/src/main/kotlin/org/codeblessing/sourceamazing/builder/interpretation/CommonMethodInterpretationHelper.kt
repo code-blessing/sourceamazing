@@ -10,6 +10,7 @@ import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.FacetVal
 import org.codeblessing.sourceamazing.builder.interpretation.facetvalue.ReferenceFacetValueAnnotationContent
 import org.codeblessing.sourceamazing.builder.update.DataContext
 import org.codeblessing.sourceamazing.schema.api.*
+import org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
 
 object CommonMethodInterpretationHelper {
 
@@ -164,10 +165,8 @@ object CommonMethodInterpretationHelper {
     }
 
     private fun enumValueByString(facetSchema: FacetSchema, enumValueString: String): Enum<*>? {
-        // TODO maybe use org.codeblessing.sourceamazing.utils.enumeration.EnumUtil
-        // TODO maybe think about putting plain strings into the model and let it validate by schema/concept resolver
         return if (facetSchema is EnumFacetSchema) {
-            facetSchema.enumerationValues.firstOrNull { it.name == enumValueString }
+            return EnumUtil.fromStringToEnum(enumValueString, facetSchema.enumerationClass)
         } else {
             null
         }
