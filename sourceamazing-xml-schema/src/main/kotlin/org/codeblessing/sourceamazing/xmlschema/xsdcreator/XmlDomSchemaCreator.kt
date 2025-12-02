@@ -149,7 +149,11 @@ object XmlDomSchemaCreator {
                             setElementXsdAttribute(choice, "minOccurs", "1")
                             setElementXsdAttribute(choice, "maxOccurs", "1")
                             facetSchema.referencingConcepts
-                                .map { schema.conceptByConceptName(it) }
+                                .map {
+                                    requireNotNull(schema.conceptByConceptName(it)) {
+                                        "Referencing concept $it does not exist."
+                                    }
+                                }
                                 .forEach { referencingConceptSchema ->
                                     val elementForForeignConcept =
                                         createAndAttachXsdElement(document, choice, "element")

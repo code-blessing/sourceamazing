@@ -4,9 +4,8 @@ import org.codeblessing.sourceamazing.schema.api.*
 
 data class SchemaImpl(private val rootConcept: ConceptName, private val concepts: Map<ConceptName, ConceptSchema>) :
     SchemaAccess {
-    override fun conceptByConceptName(conceptName: ConceptName): ConceptSchema {
+    override fun conceptByConceptName(conceptName: ConceptName): ConceptSchema? {
         return concepts[conceptName]
-            ?: throw IllegalStateException("Concept with name '$conceptName' not found in schema: $concepts")
     }
 
     override fun hasConceptName(conceptName: ConceptName): Boolean {
@@ -22,7 +21,7 @@ data class SchemaImpl(private val rootConcept: ConceptName, private val concepts
     }
 
     override fun facetByFacetName(conceptName: ConceptName, facetName: FacetName): FacetSchema? {
-        return conceptByConceptName(conceptName).facetByName(facetName)
+        return conceptByConceptName(conceptName)?.facetByName(facetName)
     }
 
     override fun rootConceptName(): ConceptName {

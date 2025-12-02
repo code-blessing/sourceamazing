@@ -31,7 +31,10 @@ object FacetDataValidator {
     @Throws(MultipleDataValidationException::class, DataValidationException::class)
     fun validateFacetsWithoutReferencesAndCardinalities(schema: SchemaAccess, conceptDataEntry: ConceptData) {
         return collectAndThrowExceptions { exceptionCollector ->
-            val conceptSchema = schema.conceptByConceptName(conceptDataEntry.conceptName)
+            val conceptSchema =
+                requireNotNull(schema.conceptByConceptName(conceptDataEntry.conceptName)) {
+                    "Concept '${conceptDataEntry.conceptName}' does not exist"
+                }
             checkNoObsoletFacets(conceptSchema, conceptDataEntry, exceptionCollector)
             checkIsValidFacetTypes(conceptSchema, conceptDataEntry, exceptionCollector)
         }
@@ -256,7 +259,10 @@ object FacetDataValidator {
     ) {
         collectAndThrowExceptions { exceptionCollector ->
             conceptDataMap.values.forEach { conceptDataEntry ->
-                val conceptSchema = schema.conceptByConceptName(conceptDataEntry.conceptName)
+                val conceptSchema =
+                    requireNotNull(schema.conceptByConceptName(conceptDataEntry.conceptName)) {
+                        "Concept '${conceptDataEntry.conceptName}' does not exist."
+                    }
                 collectAndMergeExceptions(exceptionCollector) { conceptExceptionCollector ->
                     block(conceptSchema, conceptDataEntry, conceptExceptionCollector)
                 }

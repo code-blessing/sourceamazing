@@ -53,7 +53,8 @@ class FacetValueAnnotationDataChecker(
         val facetName = facetValueAnnotationContent.base.facetName
 
         val conceptName = requireNotNull(knownConceptAliases[alias]) { "Concept for ${alias.name} does not exist" }
-        val concept = schemaAccess.conceptByConceptName(conceptName)
+        val concept =
+            requireNotNull(schemaAccess.conceptByConceptName(conceptName)) { "Could not resolve $conceptName." }
         if (!concept.hasFacet(facetName)) {
             throw BuilderMethodSyntaxException(
                 methodLocation = facetValueAnnotationContent.base.methodLocation,

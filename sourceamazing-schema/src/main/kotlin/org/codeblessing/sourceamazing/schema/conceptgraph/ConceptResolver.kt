@@ -37,9 +37,11 @@ object ConceptResolver {
         //          (resolve the concept identifier to the real concept node)
         conceptNodeMap.forEach { (conceptIdentifier, conceptNode) ->
             val conceptData =
-                conceptDataEntries[conceptIdentifier]
-                    ?: throw IllegalStateException("Could not resolve $conceptIdentifier. ")
-            val conceptSchema = schema.conceptByConceptName(conceptNode.conceptName)
+                requireNotNull(conceptDataEntries[conceptIdentifier]) { "Could not resolve $conceptIdentifier." }
+            val conceptSchema =
+                requireNotNull(schema.conceptByConceptName(conceptNode.conceptName)) {
+                    "Could not resolve ${conceptNode.conceptName}."
+                }
             conceptSchema.facets.forEach { facetSchema ->
                 conceptNode.facetValues[facetSchema.facetName] =
                     transformFacetValues(facetSchema, conceptData, conceptNodeMap)
