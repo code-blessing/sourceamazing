@@ -24,7 +24,7 @@ class ConceptDataCollectorImpl(private val schemaAccess: SchemaAccess) : Concept
 
     override fun newConceptData(conceptName: ConceptName, conceptIdentifier: ConceptIdentifier): ConceptData {
         val newConceptData = createNewConceptData(conceptName, conceptIdentifier)
-        ConceptDataValidator.validateDuplicateConceptIdentifiers(conceptData.keys, newConceptData)
+        ConceptDataValidator.checkIsNotDuplicateConceptIdentifier(conceptData.keys, newConceptData)
         conceptData[conceptIdentifier] = newConceptData
         return newConceptData
     }
