@@ -15,7 +15,7 @@ object SchemaCreator {
 
         val conceptClassesToProcess: MutableSet<KClass<*>> = mutableSetOf(schemaDefinitionClass)
         while (conceptClassesToProcess.isNotEmpty()) {
-            val conceptSchema = ConceptSchemaCreator.createConceptSchema(conceptClassesToProcess.removeFirst())
+            val conceptSchema = ConceptSchemaCreator.createConceptSchema(conceptClassesToProcess.getAndRemoveFirst())
             concepts.put(conceptSchema.conceptName, conceptSchema)
 
             conceptSchema.facets
@@ -29,7 +29,7 @@ object SchemaCreator {
         return SchemaImpl(schemaDefinitionClass.toConceptName(), concepts)
     }
 
-    private fun <T> MutableSet<T>.removeFirst(): T {
+    private fun <T> MutableSet<T>.getAndRemoveFirst(): T {
         val first = this.first()
         this.remove(first)
         return first

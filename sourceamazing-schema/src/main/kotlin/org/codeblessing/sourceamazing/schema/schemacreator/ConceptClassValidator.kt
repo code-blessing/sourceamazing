@@ -70,7 +70,6 @@ object ConceptClassValidator {
         }
     }
 
-
     private fun KClass<*>.longText(): String {
         return java.name
     }

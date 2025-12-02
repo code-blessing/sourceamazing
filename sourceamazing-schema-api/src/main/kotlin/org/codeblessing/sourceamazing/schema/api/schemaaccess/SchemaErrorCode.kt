@@ -55,4 +55,7 @@ enum class SchemaErrorCode(override val messageFormat: String) : ErrorCode {
     REFERENCE_ANNOTATION_ONLY_FOR_REFERENCE_TYPES(
         "The property is not a reference type but has the annotation @${References::class.simpleName}."
     ),
+    REFERENCE_ANNOTATION_CONTAINS_DUPLICATES(
+        "The annotation @${References::class.simpleName} on facet '%s' on concept '%s' contains duplicates."
+    ),
 }

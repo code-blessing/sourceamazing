@@ -47,7 +47,6 @@ object FacetSchemaValidator {
         }
     }
 
-
     private fun checkHasReferencingConcepts(facetSchema: ReferenceFacetSchema) {
         if (facetSchema.referencingConcepts.isEmpty()) {
             throw WrongFacetSchemaException(
@@ -57,7 +56,6 @@ object FacetSchemaValidator {
             )
         }
     }
-
 
     private fun checkMinimumOccurrencesLowerOrEqualToMaximumOccurrences(facetSchema: FacetSchema) {
         val minimumOccurrences = facetSchema.minimumOccurrences

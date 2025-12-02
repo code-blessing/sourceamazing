@@ -175,6 +175,25 @@ class SchemaApiFacetTest {
         }
     }
 
+    private interface DefinitionClassWithDuplicateReferenceFacet {
+        @References([ReferenceConcept::class, ReferenceConcept::class]) val myProperty: List<ReferenceConcept>
+    }
+
+    @Test
+    fun `test concept having duplicate references should throw an exception`() {
+        assertExceptionWithErrorCode(
+            WrongPropertySyntaxException::class,
+            SchemaErrorCode.REFERENCE_ANNOTATION_CONTAINS_DUPLICATES,
+        ) {
+            SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithDuplicateReferenceFacet::class) {
+                schemaContext ->
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithDuplicateReferenceFacet> {
+                    // do nothing
+                }
+            }
+        }
+    }
+
     private interface DefinitionClassWithAbstractReferencedConceptFacet {
         abstract class AbstractReferenceConcept
 
