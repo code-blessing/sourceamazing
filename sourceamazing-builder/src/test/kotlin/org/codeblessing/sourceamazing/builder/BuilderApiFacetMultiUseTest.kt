@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
@@ -67,7 +67,7 @@ class BuilderApiFacetMultiUseTest {
             BuilderErrorCode.EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingSameBuilderForDifferentConceptsWithOverlappingFacets::class,
@@ -113,7 +113,7 @@ class BuilderApiFacetMultiUseTest {
             BuilderErrorCode.EXPECTED_CONCEPT_FROM_SUPERIOR_BUILDER_ANNOTATION_NOT_MATCHING_PROVIDED_CONCEPT,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodUsingSameBuilderForDifferentConceptsWithoutOverlappingFacets::class,

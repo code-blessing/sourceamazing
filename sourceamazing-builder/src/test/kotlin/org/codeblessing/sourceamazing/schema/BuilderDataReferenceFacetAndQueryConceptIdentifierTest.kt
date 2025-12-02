@@ -5,6 +5,7 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingReferencedConceptFacetValueException
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -59,11 +60,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
         val selfReferencingConceptIdentifier = ConceptIdentifier.of("Self-Referencing-Id")
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept(selfReferencingConceptIdentifier, selfReferencingConceptIdentifier.name)
@@ -87,11 +88,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept(mainConceptIdentifier, mainConceptIdentifier.name)
@@ -126,11 +127,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
@@ -168,11 +169,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept(firstConceptIdentifier, firstConceptIdentifier.name)
@@ -213,11 +214,11 @@ class BuilderDataReferenceFacetAndQueryConceptIdentifierTest {
 
         assertThrows<MissingReferencedConceptFacetValueException> {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddReferences::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept(mainConceptId, mainConceptId.name)

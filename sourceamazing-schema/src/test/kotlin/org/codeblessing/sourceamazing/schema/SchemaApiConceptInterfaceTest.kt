@@ -13,7 +13,7 @@ class SchemaApiConceptInterfaceTest {
     @Test
     fun `test create an empty schema from an empty schema interface should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = EmptySchema::class) { schemaContext ->
-            withRootInstance<EmptySchema>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<EmptySchema> {
                 // do nothing
             }
         }
@@ -24,7 +24,7 @@ class SchemaApiConceptInterfaceTest {
     @Test
     fun `test sealed interface instead of interface schema class should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SealedInterfaceInsteadOfInterfaceSchema::class) { schemaContext ->
-            withRootInstance<SealedInterfaceInsteadOfInterfaceSchema>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<SealedInterfaceInsteadOfInterfaceSchema> {
                 // do nothing
             }
         }
@@ -37,7 +37,7 @@ class SchemaApiConceptInterfaceTest {
     @Test
     fun `test schema with parent interface without annotations should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithParentInterface::class) { schemaContext ->
-            withRootInstance<SchemaWithParentInterface>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<SchemaWithParentInterface> {
                 // do nothing
             }
         }
@@ -53,7 +53,7 @@ class SchemaApiConceptInterfaceTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = AbstractClassInsteadOfInterfaceSchema::class) { schemaContext
                 ->
-                withRootInstance<AbstractClassInsteadOfInterfaceSchema>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<AbstractClassInsteadOfInterfaceSchema> {
                     // do nothing
                 }
             }
@@ -69,7 +69,7 @@ class SchemaApiConceptInterfaceTest {
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = ClassInsteadOfInterfaceSchema::class) { schemaContext ->
-                withRootInstance<ClassInsteadOfInterfaceSchema>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<ClassInsteadOfInterfaceSchema> {
                     // do nothing
                 }
             }
@@ -85,7 +85,7 @@ class SchemaApiConceptInterfaceTest {
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = EnumInsteadOfInterfaceSchema::class) { schemaContext ->
-                withRootInstance<EnumInsteadOfInterfaceSchema>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<EnumInsteadOfInterfaceSchema> {
                     // do nothing
                 }
             }
@@ -101,7 +101,7 @@ class SchemaApiConceptInterfaceTest {
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = ObjectInsteadOfInterfaceSchema::class) { schemaContext ->
-                withRootInstance<ObjectInsteadOfInterfaceSchema>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<ObjectInsteadOfInterfaceSchema> {
                     // do nothing
                 }
             }
@@ -117,7 +117,7 @@ class SchemaApiConceptInterfaceTest {
             SchemaErrorCode.CLASS_MUST_BE_AN_INTERFACE,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = AnnotationInsteadOfInterfaceSchema::class) { schemaContext ->
-                withRootInstance<AnnotationInsteadOfInterfaceSchema>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<AnnotationInsteadOfInterfaceSchema> {
                     // do nothing
                 }
             }
@@ -133,7 +133,7 @@ class SchemaApiConceptInterfaceTest {
             SchemaErrorCode.NO_GENERIC_TYPE_PARAMETER,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithGenericTypeParameter::class) { schemaContext ->
-                withRootInstance<Any>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<Any> {
                     // do nothing
                 }
             }

@@ -7,7 +7,8 @@ import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.annotations.References
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -193,11 +194,11 @@ class NestedConceptsBuilderTest {
 
         val schemaInstance: NestedConceptsSchema =
             SchemaApi.withSchema(NestedConceptsSchema::class) { schemaContext ->
-                withRootInstance<NestedConceptsSchema>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<NestedConceptsSchema> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         NestedObjectsBuilder::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.newBusinessObject(personBo, "the person business object") {
                             addSingleValueField("firstname") { builtinType(BuiltinTypeEnum.STRING) }

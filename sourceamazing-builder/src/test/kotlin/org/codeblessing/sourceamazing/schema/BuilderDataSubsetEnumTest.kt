@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxException
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -50,11 +51,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.doSetEnumValue(AllDatatypesEnum.INT)
                     }
@@ -92,11 +93,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithCompatibleNumericDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.doSetEnumValue(CompatibleNumericDatatypesEnum.INT)
                     }
@@ -136,11 +137,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithExactCopyOfAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.doSetEnumValue(ExactCopyOfAllDatatypesEnum.INT)
                     }
@@ -179,11 +180,11 @@ class BuilderDataSubsetEnumTest {
     fun `test using a enum type not defined on the facet but with a incompatible subset of enum values to set the enum value should throw an exception`() {
         assertThrows<BuilderMethodSyntaxException> {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithIncompatibleWithAllDatatypesEnum::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.doSetEnumValue(IncompatibleWithNumericDatatypesEnum.INT)
                     }

@@ -4,6 +4,7 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.BuilderDataFacetTypeAndQueryTest.MyConcepts.MyEnum
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -80,11 +81,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert zero values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.createConcept()
                         // no facet values added
@@ -103,11 +104,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert exactly one value for all the different types of facets does not fail and return null values`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept()
@@ -139,11 +140,11 @@ class BuilderDataFacetTypeAndQueryTest {
     fun `test insert two values for all the different types of facets does not fail`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder
                             .createConcept()

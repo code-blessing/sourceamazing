@@ -4,7 +4,7 @@ import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.addFacetValue
 import org.codeblessing.sourceamazing.schema.api.newConceptData
-import org.codeblessing.sourceamazing.schema.workOnRootInstance
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -26,7 +26,7 @@ class SchemaDataReferenceCircualDependenciesTest {
         val selfReferencingId = ConceptIdentifier.of("Self-Referencing-Id")
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
-                schemaContext.workOnRootInstance<MyConcepts> { root ->
+                schemaContext.withRootInstance<MyConcepts> { root ->
                     val selfReferencingConcept =
                         schemaContext.dataCollector
                             .newConceptData<MyConcepts.MyConcept>(selfReferencingId)
@@ -54,7 +54,7 @@ class SchemaDataReferenceCircualDependenciesTest {
 
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
-                schemaContext.workOnRootInstance<MyConcepts> { root ->
+                schemaContext.withRootInstance<MyConcepts> { root ->
                     val firstConcept =
                         schemaContext.dataCollector
                             .newConceptData<MyConcepts.MyConcept>(firstId)

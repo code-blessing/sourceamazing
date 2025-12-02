@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -59,11 +60,11 @@ class BuilderDataInheritanceTypeTest {
     fun `test using a sub-builder declared as type parameter`() {
         val schemaInstance: MyConcepts =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderExtendingInterfaceWithTypeParameter::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.createConcept("myFirstText").setText("mySecondText")
                     }

@@ -5,7 +5,8 @@ import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -169,11 +170,11 @@ class BuilderSmokeTest {
 
         val schemaInstance: SmokeTestSchema =
             SchemaApi.withSchema(SmokeTestSchema::class) { schemaContext ->
-                withRootInstance<SmokeTestSchema>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<SmokeTestSchema> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         SmokeTestRootBuilder::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         // add some data in DSL style
                         builder.newPerson(jamesConceptIdentifier) {

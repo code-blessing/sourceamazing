@@ -6,7 +6,7 @@ import org.codeblessing.sourceamazing.schema.api.addFacetValue
 import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.DuplicateConceptIdentifierException
 import org.codeblessing.sourceamazing.schema.api.newConceptData
-import org.codeblessing.sourceamazing.schema.workOnRootInstance
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -32,7 +32,7 @@ class SchemaDataConceptIdentifierTest {
 
         val schemaInstance =
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
-                schemaContext.workOnRootInstance<MyConcepts> { rootConcept ->
+                schemaContext.withRootInstance<MyConcepts> { rootConcept ->
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptOne>(id1)
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptTwo>(id2)
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptOne>(id3)
@@ -51,7 +51,7 @@ class SchemaDataConceptIdentifierTest {
         val id = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
-                schemaContext.workOnRootInstance<MyConcepts> { rootConcept ->
+                schemaContext.withRootInstance<MyConcepts> { rootConcept ->
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptOne>(id)
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptOne>(id)
                     rootConcept.addFacetValue(MyConcepts::concepts, id)
@@ -65,7 +65,7 @@ class SchemaDataConceptIdentifierTest {
         val id = ConceptIdentifier.of("My-Id")
         assertThrows<DuplicateConceptIdentifierException> {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
-                schemaContext.workOnRootInstance<MyConcepts> { rootConcept ->
+                schemaContext.withRootInstance<MyConcepts> { rootConcept ->
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptOne>(id)
                     schemaContext.dataCollector.newConceptData<MyConcepts.ConceptTwo>(id)
                     rootConcept.addFacetValue(MyConcepts::concepts, id)

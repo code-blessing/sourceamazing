@@ -27,3 +27,6 @@ fun ConceptData.addFacetValues(facetName: String, facetValues: List<Any>): Conce
 
 fun ConceptData.addFacetValues(facetName: KProperty<*>, facetValues: List<Any>): ConceptData =
     addFacetValues(facetName.name, facetValues)
+
+fun ConceptData.toConceptNameAndIdentifier(): ConceptNameAndIdentifier =
+    ConceptNameAndIdentifier(conceptName, conceptIdentifier)

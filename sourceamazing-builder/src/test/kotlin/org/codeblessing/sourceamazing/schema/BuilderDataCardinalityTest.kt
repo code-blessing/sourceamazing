@@ -3,6 +3,7 @@ package org.codeblessing.sourceamazing.schema
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
+import org.codeblessing.sourceamazing.schema.api.toConceptNameAndIdentifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -61,11 +62,11 @@ class BuilderDataCardinalityTest {
     fun `test insert nothing to a text facet will return an empty list`() {
         val schemaInstance =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.createConcept()
                     }
@@ -80,11 +81,11 @@ class BuilderDataCardinalityTest {
     fun `test insert four texts individually to a text facet will return an list of four elements`() {
         val schemaInstance =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.createConcept().addText("hallo1").addText("hallo2").addText("hallo3").addText("hallo4")
                     }
@@ -99,11 +100,11 @@ class BuilderDataCardinalityTest {
     fun `test insert four texts as array list to a text facet will return an list of four elements`() {
         val schemaInstance =
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) { conceptNameAndIdentifier ->
+                schemaContext.withDefaultValueRootInstance<MyConcepts> { conceptData ->
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderToAddOrReplaceFacets::class,
-                        mapOf("root" to conceptNameAndIdentifier),
+                        mapOf("root" to conceptData.toConceptNameAndIdentifier()),
                     ) { builder ->
                         builder.createConcept().addTexts("hallo1", "hello2", "hallo3", "hallo4")
                     }

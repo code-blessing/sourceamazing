@@ -5,7 +5,7 @@ import org.codeblessing.sourceamazing.schema.api.annotations.References
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.ConceptAlpha
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.MyEnum.BAR
 import org.codeblessing.sourceamazing.schema.datacollection.SchemaDataAddOrReplaceValuesTest.MyConcepts.MyEnum.FOO
-import org.codeblessing.sourceamazing.schema.workOnRootInstance
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -60,7 +60,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo1"))
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo2"))
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo3"))
@@ -96,7 +96,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo1", "hallo2"))
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo2", "hallo3"))
 
@@ -131,7 +131,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.replaceFacetValues(MyConcepts::texts, listOf("hallo1", "hallo2"))
                     conceptData.replaceFacetValues(MyConcepts::texts, emptyList())
 
@@ -162,7 +162,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.addFacetValue(MyConcepts::texts, "hallo1")
                     conceptData.addFacetValue(MyConcepts::texts, "hallo2")
                     conceptData.addFacetValue(MyConcepts::texts, "hallo3")
@@ -198,7 +198,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.addFacetValues(MyConcepts::texts, listOf("hallo1", "hallo2"))
                     conceptData.addFacetValues(MyConcepts::texts, listOf("hallo3"))
 
@@ -229,7 +229,7 @@ class SchemaDataAddOrReplaceValuesTest {
             SchemaApi.withSchema<MyConcepts> { schemaContext ->
                 addReferencedConcepts(schemaContext)
 
-                schemaContext.workOnRootInstance<MyConcepts> { conceptData ->
+                schemaContext.withRootInstance<MyConcepts> { conceptData ->
                     conceptData.addFacetValues(MyConcepts::texts, emptyList())
                     conceptData.addFacetValues(MyConcepts::texts, listOf("hallo1"))
                     conceptData.addFacetValues(MyConcepts::texts, emptyList())

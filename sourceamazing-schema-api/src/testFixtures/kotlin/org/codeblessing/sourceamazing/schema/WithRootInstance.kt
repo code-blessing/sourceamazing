@@ -2,14 +2,13 @@ package org.codeblessing.sourceamazing.schema
 
 import org.codeblessing.sourceamazing.schema.api.*
 
-inline fun <reified T : Any> withRootInstance(
-    schemaContext: SchemaContext,
-    executable: (rootConceptAndId: ConceptNameAndIdentifier) -> Unit,
+inline fun <reified T : Any> SchemaContext.withDefaultValueRootInstance(
+    executable: (rootConceptAndId: ConceptData) -> Unit
 ): ConceptIdentifier {
     val rootConceptClass = T::class
     val rootConceptName = rootConceptClass.toConceptName()
-    val rootConcept = schemaContext.schema.allConcepts().first { it.conceptName == rootConceptName }
-    val rootConceptData = schemaContext.dataCollector.newConceptData(rootConceptName)
+    val rootConcept = schema.allConcepts().first { it.conceptName == rootConceptName }
+    val rootConceptData = dataCollector.newConceptData(rootConceptName)
     writeDefaultValues(rootConcept, rootConceptData)
 
     val rootConceptAndId =
@@ -17,7 +16,7 @@ inline fun <reified T : Any> withRootInstance(
             conceptName = rootConceptData.conceptName,
             conceptIdentifier = rootConceptData.conceptIdentifier,
         )
-    executable(rootConceptAndId)
+    executable(rootConceptData)
     return rootConceptAndId.conceptIdentifier
 }
 
@@ -37,4 +36,10 @@ fun writeDefaultValues(rootConcept: ConceptSchema, rootConceptData: ConceptData)
             }
         }
     }
+}
+
+inline fun <reified T> SchemaContext.withRootInstance(block: (ConceptData) -> Unit): ConceptIdentifier {
+    val rootConcept = dataCollector.newConceptData(T::class.toConceptName())
+    block(rootConcept)
+    return rootConcept.conceptIdentifier
 }

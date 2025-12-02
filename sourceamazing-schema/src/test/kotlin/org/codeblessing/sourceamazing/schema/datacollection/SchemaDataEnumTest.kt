@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.schema.datacollection
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.api.addFacetValue
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.WrongTypeForFacetValueException
-import org.codeblessing.sourceamazing.schema.workOnRootInstance
+import org.codeblessing.sourceamazing.schema.withRootInstance
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -27,7 +27,7 @@ class SchemaDataEnumTest {
     fun `test using the enum type defined on the facet to set the enum value should not fail`() {
         val schemaInstance: MyEnums =
             SchemaApi.withSchema<MyEnums> { schemaContext ->
-                schemaContext.workOnRootInstance<MyEnums> { root ->
+                schemaContext.withRootInstance<MyEnums> { root ->
                     root.addFacetValue(MyEnums::enumFacetValue, AllDatatypesEnum.INT)
                 }
             }
@@ -45,7 +45,7 @@ class SchemaDataEnumTest {
     fun `test using a enum type not defined on the facet but with subset of all enum values to set the enum value should not fail`() {
         val schemaInstance: MyEnums =
             SchemaApi.withSchema<MyEnums> { schemaContext ->
-                schemaContext.workOnRootInstance<MyEnums> { root ->
+                schemaContext.withRootInstance<MyEnums> { root ->
                     root.addFacetValue(MyEnums::enumFacetValue, CompatibleNumericDatatypesEnum.INT)
                 }
             }
@@ -65,7 +65,7 @@ class SchemaDataEnumTest {
     fun `test using a enum type not defined on the facet but with exactly equal enum values to set the enum value should not fail`() {
         val schemaInstance: MyEnums =
             SchemaApi.withSchema<MyEnums> { schemaContext ->
-                schemaContext.workOnRootInstance<MyEnums> { root ->
+                schemaContext.withRootInstance<MyEnums> { root ->
                     root.addFacetValue(MyEnums::enumFacetValue, ExactCopyOfAllDatatypesEnum.INT)
                 }
             }
@@ -83,7 +83,7 @@ class SchemaDataEnumTest {
     @Test
     fun `test using a enum type from an incompatible subset of enum values but with a compatible enum type should not fail`() {
         SchemaApi.withSchema<MyEnums> { schemaContext ->
-            schemaContext.workOnRootInstance<MyEnums> { root ->
+            schemaContext.withRootInstance<MyEnums> { root ->
                 root.addFacetValue(MyEnums::enumFacetValue, IncompatibleWithNumericDatatypesEnum.INT)
             }
         }
@@ -92,7 +92,7 @@ class SchemaDataEnumTest {
     @Test
     fun `test using a string instead of an enum value should not fail`() {
         SchemaApi.withSchema<MyEnums> { schemaContext ->
-            schemaContext.workOnRootInstance<MyEnums> { root -> root.addFacetValue(MyEnums::enumFacetValue, "INT") }
+            schemaContext.withRootInstance<MyEnums> { root -> root.addFacetValue(MyEnums::enumFacetValue, "INT") }
         }
     }
 
@@ -100,7 +100,7 @@ class SchemaDataEnumTest {
     fun `test using a enum type not defined on the facet and with a incompatible subset of enum values with an incompatible value should throw an exception`() {
         assertThrows<WrongTypeForFacetValueException> {
             SchemaApi.withSchema<MyEnums> { schemaContext ->
-                schemaContext.workOnRootInstance<MyEnums> { root ->
+                schemaContext.withRootInstance<MyEnums> { root ->
                     root.addFacetValue(MyEnums::enumFacetValue, IncompatibleWithNumericDatatypesEnum.BYTE)
                 }
             }

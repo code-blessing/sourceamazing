@@ -7,7 +7,7 @@ import org.codeblessing.sourceamazing.builder.exceptions.BuilderMethodSyntaxExce
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
@@ -69,7 +69,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithIllegalConceptIdClass::class) {
                         // do nothing
                     }
@@ -103,7 +103,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_CONCEPT_IDENTIFIER_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithIllegalConceptIdClass::class) {
                         // do nothing
                     }
@@ -127,7 +127,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableConceptId::class) {
                         // do nothing
                     }
@@ -161,7 +161,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_TYPE_NO_NULLABLE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithNullableConceptId::class) {
                         // do nothing
                     }
@@ -187,7 +187,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation::class,
@@ -225,7 +225,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithNullableSetConceptIdAndIgnoreNullFacetValueAnnotation::class,
@@ -254,7 +254,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class,
@@ -292,7 +292,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_CONCEPT_IDENTIFIER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithSetConceptIdentifierAndIgnoreNullFacetValueAnnotation::class,
@@ -320,7 +320,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithNullableParameterWithoutIgnoreNullFacetValueAnnotation::class,
@@ -358,7 +358,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithNullableParameterWithoutIgnoreNullFacetValueAnnotation::class,
@@ -386,7 +386,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter as nullable type with IgnoreNullFacetValue should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithNullableParameterWithIgnoreNullFacetValueAnnotation::class,
@@ -420,7 +420,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter as nullable type with IgnoreNullFacetValue on data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithNullableParameterWithIgnoreNullFacetValueAnnotation::class,
@@ -443,7 +443,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter with collection type instead of string should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithCollectionTypedStringParameter::class) {
                     // do nothing
                 }
@@ -473,7 +473,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter with collection type instead of string on data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithCollectionTypedStringParameter::class,
@@ -499,7 +499,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test multiple assignments via parameter value for the same facet should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithMultipleSetFacetValueOnSameFacetMethod::class) {
                     // do nothing
                 }
@@ -535,7 +535,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test multiple assignments via data provider for the same facet should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithMultipleSetFacetValueOnSameFacetMethod::class,
@@ -569,7 +569,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test multiple assignments via the same data provider method for different facets should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithSameFacetValueOnMultipleFacetMethod::class,
@@ -598,7 +598,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithSortedSetStringCollectionParameter::class) {
                         // do nothing
                     }
@@ -633,7 +633,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithSortedSetStringCollectionParameter::class,
@@ -663,7 +663,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithCollectionTypedNullableStringParameter::class,
@@ -701,7 +701,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_NULLABLE_TYPE_WITHOUT_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithCollectionTypedNullableStringParameter::class,
@@ -729,7 +729,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter with collection type of nullable string and IgnoreNullFacetValue annotation should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation::class,
@@ -763,7 +763,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test string facet parameter with collection type of nullable string and IgnoreNullFacetValue annotation on data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithCollectionTypedNullableStringParameterWithIgnoreNullFacetValueAnnotation::class,
@@ -790,7 +790,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedStringParameter::class) {
                         // do nothing
                     }
@@ -825,7 +825,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_TEXT_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithWrongTypedStringParameter::class,
@@ -853,7 +853,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithWrongFunctionReturningStringParameter::class,
@@ -891,7 +891,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithWrongFunctionReturningStringParameter::class,
@@ -919,7 +919,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_BOOLEAN_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedBooleanParameter::class) {
                         // do nothing
                     }
@@ -942,7 +942,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test boolean facet parameter with array of boolean instead of boolean should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithArrayOfBooleanParameter::class) {
                     // do nothing
                 }
@@ -972,7 +972,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test boolean facet parameter with array of boolean instead of boolean with data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithArrayOfBooleanParameter::class) {
                     // do nothing
                 }
@@ -996,7 +996,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedIntParameter::class) {
                         // do nothing
                     }
@@ -1021,7 +1021,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithLongInsteadOfIntParameter::class) {
                         // do nothing
                     }
@@ -1056,7 +1056,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithLongInsteadOfIntParameter::class,
@@ -1084,7 +1084,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithNumberParameterInsteadOfIntParameter::class,
@@ -1122,7 +1122,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithNumberParameterInsteadOfIntParameter::class,
@@ -1150,7 +1150,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_NUMBER_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithAnyParameterInsteadOfIntParameter::class) {
                         // do nothing
                     }
@@ -1175,7 +1175,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithIntInsteadOfEnumParameter::class) {
                         // do nothing
                     }
@@ -1198,7 +1198,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test enum facet parameter with other compatible enum instead of same enum should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherCompatibleEnumParameter::class) {
                     // do nothing
                 }
@@ -1228,7 +1228,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test enum facet parameter with other compatible enum instead of same enum on data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodDataProviderWithOtherCompatibleEnumParameter::class,
@@ -1253,7 +1253,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test enum facet parameter with exact copy of enum instead of same enum should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithExactSameEnumParameter::class) {
                     // do nothing
                 }
@@ -1280,7 +1280,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithOtherIncompatibleEnumParameter::class) {
                         // do nothing
                     }
@@ -1305,7 +1305,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithStringInsteadOfEnumParameter::class) {
                         // do nothing
                     }
@@ -1340,7 +1340,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_ENUM_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithStringInsteadOfEnumParameter::class,
@@ -1364,7 +1364,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test enum facet parameter should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithCorrectEnumParameter::class) {
                     // do nothing
                 }
@@ -1386,7 +1386,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test enum facet parameter with set of enum instead of single enum should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithSetOfEnumParameter::class) {
                     // do nothing
                 }
@@ -1412,7 +1412,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_NO_NULLABLE_COLLECTION_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithNullableSetOfEnumParameter::class) {
                         // do nothing
                     }
@@ -1437,7 +1437,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithWrongTypedReferenceParameter::class) {
                         // do nothing
                     }
@@ -1472,7 +1472,7 @@ class BuilderMethodApiParameterTypesTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_REFERENCE_FACET_TYPE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderWithWrongTypedReferenceParameter::class,
@@ -1499,7 +1499,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test reference facet parameter with vararg array of ConceptIdentifier should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithVarargArray::class) {
                     // do nothing
                 }
@@ -1521,7 +1521,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test reference facet parameter with correct ConceptIdentifier type should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodWithConceptIdentifier::class) {
                     // do nothing
                 }
@@ -1551,7 +1551,7 @@ class BuilderMethodApiParameterTypesTest {
     @Test
     fun `test reference facet parameter with correct ConceptIdentifier type on data provider should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithConceptIdentifier::class) {
                     // do nothing
                 }

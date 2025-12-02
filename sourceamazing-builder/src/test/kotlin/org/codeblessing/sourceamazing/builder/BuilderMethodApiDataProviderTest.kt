@@ -8,7 +8,7 @@ import org.codeblessing.sourceamazing.builder.exceptions.DataProviderInvocationR
 import org.codeblessing.sourceamazing.schema.api.ConceptIdentifier
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
 import org.codeblessing.sourceamazing.schema.assertExceptionWithErrorCode
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -44,7 +44,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithDataProviderAsLambdaFunction::class) {
                         // do nothing
                     }
@@ -71,7 +71,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_PARAMS_INVALID,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodWithBuilderDataProviderWithLambdaFunction::class,
@@ -98,7 +98,7 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing an array as parameter should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderDataProviderWithArray::class) {
                         // do nothing
                     }
@@ -122,7 +122,7 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing an unannotated object should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.MUST_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodWithBuilderDataProviderWithAnyObject::class) {
                         // do nothing
                     }
@@ -148,7 +148,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_AND_IGNORE_NULL_ANNOTATION,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithBuilderDataAndIgnoreNullFacetValue::class,
@@ -177,7 +177,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_DATA_PROVIDER_CANNOT_BE_NULLABLE,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithBuilderDataAsNullableParam::class) {
                         // do nothing
                     }
@@ -199,7 +199,7 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing an annotated data provider object should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodParamWithEmptyDataProvider::class) {
                     // do nothing
                 }
@@ -223,7 +223,7 @@ class BuilderMethodApiDataProviderTest {
     fun `test builder data provider passing a data object with other annotations from source amazing should throw an exception`() {
         assertExceptionWithErrorCode(BuilderSyntaxException::class, BuilderErrorCode.CAN_NOT_HAVE_ANNOTATION) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodParamWithBuilderDataWithOtherAnnotations::class,
@@ -250,7 +250,7 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing a data object with other annotations not from source amazing should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(
                     schemaContext,
                     BuilderMethodParamWithBuilderDataWithOtherNonSourceamazingAnnotation::class,
@@ -288,7 +288,7 @@ class BuilderMethodApiDataProviderTest {
     @Test
     fun `test builder data provider passing a data object with generic parameter but not returning it should not fail`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderWithGenericParameter::class) {
                     // do nothing
                 }
@@ -326,7 +326,7 @@ class BuilderMethodApiDataProviderTest {
             BuilderErrorCode.BUILDER_PARAM_WRONG_SET_FACET_VALUE_PARAMETER,
         ) {
             SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                withRootInstance<MyConcepts>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<MyConcepts> {
                     BuilderApi.withBuilder(
                         schemaContext,
                         BuilderMethodDataProviderUsingAndReturningGenericParameter::class,
@@ -361,7 +361,7 @@ class BuilderMethodApiDataProviderTest {
         val exception =
             assertThrows<DataProviderInvocationRuntimeException> {
                 SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-                    withRootInstance<MyConcepts>(schemaContext) {
+                    schemaContext.withDefaultValueRootInstance<MyConcepts> {
                         BuilderApi.withBuilder(schemaContext, BuilderMethodDataProviderThrowingException::class) {
                             builder ->
                             builder.doThrowAnException(builderDataProvider)

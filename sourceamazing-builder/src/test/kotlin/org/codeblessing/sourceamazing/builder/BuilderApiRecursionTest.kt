@@ -3,7 +3,7 @@ package org.codeblessing.sourceamazing.builder
 import org.codeblessing.sourceamazing.builder.api.BuilderApi
 import org.codeblessing.sourceamazing.builder.api.annotations.*
 import org.codeblessing.sourceamazing.schema.api.SchemaApi
-import org.codeblessing.sourceamazing.schema.withRootInstance
+import org.codeblessing.sourceamazing.schema.withDefaultValueRootInstance
 import org.junit.jupiter.api.Test
 
 @Suppress("UNUSED")
@@ -41,7 +41,7 @@ class BuilderApiRecursionTest {
     @Test
     fun `test using nested builder returning another inner nested builder that returns the first nested builder should not fail with a stack overflow`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderIndirectly::class) {
                     // do nothing
                 }
@@ -68,7 +68,7 @@ class BuilderApiRecursionTest {
     @Test
     fun `test using nested builder returning itself should not fail with a stack overflow`() {
         SchemaApi.withSchema(MyConcepts::class) { schemaContext ->
-            withRootInstance<MyConcepts>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<MyConcepts> {
                 BuilderApi.withBuilder(schemaContext, BuilderMethodUsingSameBuilderDirectly::class) {
                     // do nothing
                 }

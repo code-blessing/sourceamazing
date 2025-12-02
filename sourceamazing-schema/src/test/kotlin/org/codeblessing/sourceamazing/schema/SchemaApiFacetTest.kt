@@ -25,7 +25,7 @@ class SchemaApiFacetTest {
     @Test
     fun `test create an schema with concept class having a text facet should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = ConceptWithTextFacet::class) { schemaContext ->
-            withRootInstance<ConceptWithTextFacet>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<ConceptWithTextFacet> {
                 // do nothing
             }
         }
@@ -40,7 +40,7 @@ class SchemaApiFacetTest {
     @Test
     fun `test concept having an enumeration facet with a valid enumeration type should not fail`() {
         SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithValidEnumFacet::class) { schemaContext ->
-            withRootInstance<DefinitionClassWithValidEnumFacet>(schemaContext) {
+            schemaContext.withDefaultValueRootInstance<DefinitionClassWithValidEnumFacet> {
                 // do nothing
             }
         }
@@ -64,7 +64,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithPrivateEnumFacet::class) { schemaContext
                 ->
-                withRootInstance<SchemaWithConceptWithPrivateEnumFacet>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithPrivateEnumFacet> {
                     // do nothing
                 }
             }
@@ -86,7 +86,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithFacetHavingMembers::class) { schemaContext
                 ->
-                withRootInstance<DefinitionClassWithFacetHavingMembers>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithFacetHavingMembers> {
                     // do nothing
                 }
             }
@@ -107,7 +107,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithFacetObjectInsteadOfInterface::class) {
                 schemaContext ->
-                withRootInstance<DefinitionClassWithFacetObjectInsteadOfInterface>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithFacetObjectInsteadOfInterface> {
                     // do nothing
                 }
             }
@@ -129,7 +129,9 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = DefinitionClassWithFacetAnnotationInterfaceInsteadOfInterface::class
             ) { schemaContext ->
-                withRootInstance<DefinitionClassWithFacetAnnotationInterfaceInsteadOfInterface>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<
+                    DefinitionClassWithFacetAnnotationInterfaceInsteadOfInterface
+                > {
                     // do nothing
                 }
             }
@@ -147,7 +149,7 @@ class SchemaApiFacetTest {
             SchemaErrorCode.PROPERTY_MUST_HAVE_RETURN_TYPE,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithUnitTypeOnFacet::class) { schemaContext ->
-                withRootInstance<DefinitionClassWithUnitTypeOnFacet>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithUnitTypeOnFacet> {
                     // do nothing
                 }
             }
@@ -166,7 +168,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithEmptyReferenceFacet::class) { schemaContext
                 ->
-                withRootInstance<DefinitionClassWithEmptyReferenceFacet>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithEmptyReferenceFacet> {
                     // do nothing
                 }
             }
@@ -187,7 +189,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithAbstractReferencedConceptFacet::class) {
                 schemaContext ->
-                withRootInstance<DefinitionClassWithAbstractReferencedConceptFacet>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithAbstractReferencedConceptFacet> {
                     // do nothing
                 }
             }
@@ -208,7 +210,7 @@ class SchemaApiFacetTest {
             SchemaErrorCode.FACET_UNKNOWN_REFERENCED_CONCEPT,
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithSelfReference::class) { schemaContext ->
-                withRootInstance<DefinitionClassWithSelfReference>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithSelfReference> {
                     // do nothing
                 }
             }
@@ -227,7 +229,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = DefinitionClassWithFacetWithFunctionType::class) {
                 schemaContext ->
-                withRootInstance<DefinitionClassWithFacetWithFunctionType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<DefinitionClassWithFacetWithFunctionType> {
                     // do nothing
                 }
             }
@@ -246,7 +248,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithFunctionalInterface::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithConceptWithFunctionalInterface>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithFunctionalInterface> {
                     // do nothing
                 }
             }
@@ -267,7 +269,9 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = DefinitionInterfaceWithQueryMethodReturningGenericParameterListValue::class
             ) { schemaContext ->
-                withRootInstance<DefinitionInterfaceWithQueryMethodReturningGenericParameterListValue>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<
+                    DefinitionInterfaceWithQueryMethodReturningGenericParameterListValue
+                > {
                     // do nothing
                 }
             }
@@ -283,7 +287,7 @@ class SchemaApiFacetTest {
     fun `test concept with an query method having a method body should throw an exception`() {
         assertExceptionWithErrorCode(SyntaxException::class, SchemaErrorCode.FUNCTION_MUST_BE_ABSTRACT) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithGetterFacet::class) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithGetterFacet>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithGetterFacet> {
                     // do nothing
                 }
             }
@@ -303,7 +307,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithExtensionProperty::class) { schemaContext
                 ->
-                withRootInstance<SchemaWithConceptWithExtensionProperty>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithExtensionProperty> {
                     // do nothing
                 }
             }
@@ -324,7 +328,9 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningWrongCollectionType::class
             ) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithQueryMethodReturningWrongCollectionType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<
+                    SchemaWithConceptWithQueryMethodReturningWrongCollectionType
+                > {
                     // do nothing
                 }
             }
@@ -345,7 +351,7 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = SchemaWithConceptWithQueryMethodReturningNullableListValue::class
             ) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithQueryMethodReturningNullableListValue>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithQueryMethodReturningNullableListValue> {
                     // do nothing
                 }
             }
@@ -367,7 +373,9 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = SchemaWithConceptWithReferencesAnnotationButNotReferenceType::class
             ) { schemaContext ->
-                withRootInstance<SchemaWithConceptWithReferencesAnnotationButNotReferenceType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<
+                    SchemaWithConceptWithReferencesAnnotationButNotReferenceType
+                > {
                     // do nothing
                 }
             }
@@ -392,7 +400,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithOnlyOneOfTwoConceptQueryMethod> {
                     // do nothing
                 }
             }
@@ -417,7 +425,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithUnreferencedConceptQueryMethod::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithConceptWithUnreferencedConceptQueryMethod>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithUnreferencedConceptQueryMethod> {
                     // do nothing
                 }
             }
@@ -444,7 +452,9 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = SchemaWithQueryMethodReturningConceptsWithoutCommonInterface::class
             ) { schemaContext ->
-                withRootInstance<SchemaWithQueryMethodReturningConceptsWithoutCommonInterface>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<
+                    SchemaWithQueryMethodReturningConceptsWithoutCommonInterface
+                > {
                     // do nothing
                 }
             }
@@ -469,7 +479,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionType::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionType> {
                     // do nothing
                 }
             }
@@ -497,7 +507,7 @@ class SchemaApiFacetTest {
             SchemaApi.withSchema(
                 schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionValueType::class
             ) { schemaContext ->
-                withRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionValueType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionValueType> {
                     // do nothing
                 }
             }
@@ -522,7 +532,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedCollectionType::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithQueryMethodWithUnsupportedCollectionType> {
                     // do nothing
                 }
             }
@@ -549,7 +559,7 @@ class SchemaApiFacetTest {
         ) {
             SchemaApi.withSchema(schemaDefinitionClass = SchemaWithQueryMethodWithUnsupportedValueType::class) {
                 schemaContext ->
-                withRootInstance<SchemaWithQueryMethodWithUnsupportedValueType>(schemaContext) {
+                schemaContext.withDefaultValueRootInstance<SchemaWithQueryMethodWithUnsupportedValueType> {
                     // do nothing
                 }
             }
@@ -624,7 +634,7 @@ class SchemaApiFacetTest {
     @Test
     fun `test concept with valid return types should return without exception`() {
         SchemaApi.withSchema(schemaDefinitionClass = SchemaWithConceptWithValidFacets::class) { schemaContext ->
-            withRootInstance<SchemaWithConceptWithValidFacets>(schemaContext) { rootConceptNameAndId ->
+            schemaContext.withDefaultValueRootInstance<SchemaWithConceptWithValidFacets> { rootConceptNameAndId ->
                 val specificOneRef =
                     schemaContext.dataCollector.newConceptData(
                         SchemaWithConceptWithValidFacets.SpecificConceptOne::class.toConceptName()
