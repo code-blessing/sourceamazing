@@ -13,6 +13,14 @@ import org.codeblessing.sourceamazing.utils.type.KClassUtil.isOrdinaryInterface
 object ConceptClassValidator {
 
     fun validateConceptClass(definitionClass: KClass<*>) {
+        checkIsOrdinaryInterface(definitionClass)
+        checkHasNoGenericTypeParameters(definitionClass)
+        checkHasNoMemberExtensionFunctions(definitionClass)
+        checkHasNoMemberFunctions(definitionClass)
+        checkHasNoMemberExtensionProperties(definitionClass)
+    }
+
+    private fun checkIsOrdinaryInterface(definitionClass: KClass<*>) {
         if (!isOrdinaryInterface(definitionClass)) {
             throw WrongClassStructureSyntaxException(
                 definitionClass,
@@ -20,6 +28,9 @@ object ConceptClassValidator {
                 definitionClass,
             )
         }
+    }
+
+    private fun checkHasNoGenericTypeParameters(definitionClass: KClass<*>) {
         if (hasGenericTypeParameters(definitionClass)) {
             throw WrongClassStructureSyntaxException(
                 definitionClass,
@@ -28,7 +39,9 @@ object ConceptClassValidator {
                 definitionClass.typeParameters,
             )
         }
+    }
 
+    private fun checkHasNoMemberExtensionFunctions(definitionClass: KClass<*>) {
         if (hasMemberExtensionFunctions(definitionClass)) {
             throw WrongClassStructureSyntaxException(
                 definitionClass,
@@ -37,6 +50,9 @@ object ConceptClassValidator {
                 definitionClass.memberExtensionFunctions,
             )
         }
+    }
+
+    private fun checkHasNoMemberFunctions(definitionClass: KClass<*>) {
         if (hasMemberFunctions(definitionClass)) {
             throw WrongClassStructureSyntaxException(
                 definitionClass,
@@ -45,12 +61,15 @@ object ConceptClassValidator {
                 definitionClass.memberFunctions,
             )
         }
+    }
 
+    private fun checkHasNoMemberExtensionProperties(definitionClass: KClass<*>) {
         val extensionProperty = definitionClass.memberExtensionProperties.firstOrNull()
         if (extensionProperty != null) {
             throw WrongPropertySyntaxException(extensionProperty, SchemaErrorCode.PROPERTY_MUST_NOT_HAVE_EXTENSION_TYPE)
         }
     }
+
 
     private fun KClass<*>.longText(): String {
         return java.name
