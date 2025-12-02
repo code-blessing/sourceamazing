@@ -17,4 +17,10 @@ object SchemaApi {
             }
         return schemaProcessorApi.withSchema(schemaDefinitionClass, schemaUsage)
     }
+
+    inline fun <reified S : Any> withSchema(
+        noinline schemaUsage: (schemaContext: SchemaContext) -> ConceptIdentifier
+    ): S {
+        return withSchema(S::class, schemaUsage)
+    }
 }
