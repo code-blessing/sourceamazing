@@ -6,8 +6,8 @@ import org.codeblessing.sourceamazing.schema.api.datacollection.DataCollectionEr
 import org.codeblessing.sourceamazing.schema.api.datacollection.exceptions.MissingRootConceptException
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptResolver
 import org.codeblessing.sourceamazing.schema.datacollection.ConceptDataCollectorImpl
+import org.codeblessing.sourceamazing.schema.proxy.ConceptInstanceInvocationHandler
 import org.codeblessing.sourceamazing.schema.schemacreator.SchemaCreator
-import org.codeblessing.sourceamazing.schema.schemacreator.query.proxy.ConceptInstanceInvocationHandler
 import org.codeblessing.sourceamazing.utils.filesystem.FileSystemAccess
 import org.codeblessing.sourceamazing.utils.filesystem.PhysicalFilesFileSystemAccess
 import org.codeblessing.sourceamazing.utils.logger.JavaUtilLoggerFacade

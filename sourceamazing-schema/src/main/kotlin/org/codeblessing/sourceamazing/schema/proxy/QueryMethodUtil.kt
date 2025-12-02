@@ -1,8 +1,7 @@
-package org.codeblessing.sourceamazing.schema.schemacreator.query
+package org.codeblessing.sourceamazing.schema.proxy
 
 import kotlin.reflect.KType
 import org.codeblessing.sourceamazing.utils.type.KTypeUtil
-import org.codeblessing.sourceamazing.utils.type.KTypeUtil.KTypeClassInformation
 
 object QueryMethodUtil {
 
@@ -35,15 +34,17 @@ object QueryMethodUtil {
         }
     }
 
-    fun collectionClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation? {
+    fun collectionClassInfo(
+        classesInformation: List<KTypeUtil.KTypeClassInformation>
+    ): KTypeUtil.KTypeClassInformation? {
         return if (hasCollection(classesInformation)) classesInformation.first() else null
     }
 
-    fun valueClassInfo(classesInformation: List<KTypeClassInformation>): KTypeClassInformation {
+    fun valueClassInfo(classesInformation: List<KTypeUtil.KTypeClassInformation>): KTypeUtil.KTypeClassInformation {
         return if (hasCollection(classesInformation)) classesInformation.last() else classesInformation.first()
     }
 
-    private fun hasCollection(classesInformation: List<KTypeClassInformation>): Boolean {
+    private fun hasCollection(classesInformation: List<KTypeUtil.KTypeClassInformation>): Boolean {
         return classesInformation.size == 2
     }
 }

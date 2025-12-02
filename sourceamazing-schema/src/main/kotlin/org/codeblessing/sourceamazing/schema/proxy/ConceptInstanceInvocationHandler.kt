@@ -1,10 +1,9 @@
-package org.codeblessing.sourceamazing.schema.schemacreator.query.proxy
+package org.codeblessing.sourceamazing.schema.proxy
 
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import org.codeblessing.sourceamazing.schema.api.toFacetName
 import org.codeblessing.sourceamazing.schema.conceptgraph.ConceptNode
-import org.codeblessing.sourceamazing.schema.schemacreator.query.QueryMethodUtil
 import org.codeblessing.sourceamazing.utils.proxy.KotlinInvocationHandler
 import org.codeblessing.sourceamazing.utils.proxy.ProxyCreator
 
