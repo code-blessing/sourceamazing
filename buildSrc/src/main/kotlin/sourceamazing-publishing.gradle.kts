@@ -1,19 +1,17 @@
 plugins {
     `java-library`
     `maven-publish`
-//    signing
+    signing
 }
 
 group = "org.codeblessing.sourceamazing"
 version = project.property("sourceamazing.version") as String
-
 
 val publicationName = "mavenSourceamazing"
 
 configure<JavaPluginExtension> {
     withJavadocJar()
     withSourcesJar()
-
 }
 
 val publishingExtension: PublishingExtension = extensions.getByType<PublishingExtension>()
@@ -21,8 +19,8 @@ val publishingExtension: PublishingExtension = extensions.getByType<PublishingEx
 publishingExtension.repositories {
     maven {
         credentials {
-            username =  project.properties.getOrDefault("sourceamazing.ossrhUsername", "<no username>") as String
-            password =  project.properties.getOrDefault("sourceamazing.ossrhPassword", "<no password>") as String
+            username = project.properties.getOrDefault("sourceamazing.ossrhUsername", "<no username>") as String
+            password = project.properties.getOrDefault("sourceamazing.ossrhPassword", "<no password>") as String
         }
 
         // see https://central.sonatype.org/publish/publish-guide/#metadata-definition-and-upload
@@ -61,10 +59,10 @@ publishingExtension.publications {
     }
 }
 
-
-//configure<SigningExtension> {
-//    sign(publishingExtension.publications[publicationName])
-//}
+configure<SigningExtension> {
+    useGpgCmd()
+    sign(publishingExtension.publications[publicationName])
+}
 
 tasks.getByName<Javadoc>("javadoc") {
     if (JavaVersion.current().isJava9Compatible) {
