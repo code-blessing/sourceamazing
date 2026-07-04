@@ -2,27 +2,26 @@
 
 ## What is SourceAmazing
 
-SourceAmazing is a small kotlin framework to read data like configurations or 
-data for code generation with easy to read DSLs and builders, without having to 
-implement them.
+SourceAmazing is a small Kotlin framework that lets you define easy-to-read
+DSLs and builders for collecting structured data — such as configurations or
+code generation input — without having to implement them yourself.
 
-You write your DSL with help of kotlin interfaces with some annotations 
-and SourceAmazing provides all the necessary corresponding implementations
-dynamically.
+You define your DSL using annotated Kotlin interfaces, and SourceAmazing
+provides all the necessary implementations dynamically.
 
 ### How it works
 
 The process is always the following:
-1. Your first define your data classes as kotlin classes or interfaces.
-2. You define Builder/DSL interfaces, how your data is collected.
+1. You define your data classes as Kotlin classes or interfaces.
+2. You define Builder/DSL interfaces that describe how your data is collected.
 3. You collect your data.
 
-To have an idea how this works, we will make a small example and read 
-some *phone book data of employees* of a company.
+To see how this works, let's walk through a small example that reads
+*phone book data of employees* from a company.
 
 #### 1. Define your data classes
 
-You define your data schema as kotlin classes or interfaces.
+Define your data schema as Kotlin classes or interfaces.
 
 ```kotlin
 
@@ -49,10 +48,10 @@ enum class PhoneTypeEnum {
 
 ```
 
-### 2. Define the DSL/Builders how your data is collected
+#### 2. Define the DSL/Builders for collecting your data
 
-Define the builder/DSL as regular kotlin interfaces with method calls and
-add the instructions, how this data is assigned to your data with help of annotations.
+Define the builder/DSL as regular Kotlin interfaces. Use annotations to
+specify how the method parameters map to your data classes.
 
 ```kotlin
 //import org.codeblessing.sourceamazing.builder.api.annotations.Builder
@@ -94,9 +93,9 @@ interface EmployeeDsl {
 }
 
 ```
-## Collect your data with your Builder/DSL
+#### 3. Collect your data with your Builder/DSL
 
-Then use previously defined DSL/builders:
+Then use the previously defined DSL/builders:
 
 ```kotlin
 //import org.codeblessing.sourceamazing.schema.api.SchemaApi
@@ -121,8 +120,8 @@ Then use previously defined DSL/builders:
     }
 ```
 
-As you can see, there is nighter the need to implement the Builder/DSL interfaces nor to write code to create and wire up 
-the data classes.
+As you can see, you don't need to implement the Builder/DSL interfaces or write
+any code to instantiate and wire up the data classes.
 
 ## Setup, Documentation and Examples
 
