@@ -4,9 +4,7 @@ import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 
-fun Annotation.isAnnotationFromSourceAmazing(): Boolean {
-    return this.annotationClass.packageName.startsWith("org.codeblessing")
-}
+fun Annotation.isAnnotationFromSourceAmazing(): Boolean = this.annotationClass.packageName.startsWith("org.codeblessing.sourceamazing")
 
 inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T = getAnnotation(T::class)
 
